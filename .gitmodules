@@ -1,0 +1,4 @@
+[submodule "packages/frame-animation"]
+	path = packages/frame-animation
+	url = git@github.com:JusticHentai/frame-animation.git
+	branch = main
