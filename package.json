@@ -1,0 +1,24 @@
+{
+  "name": "@justichentai/utils-monorepo",
+  "version": "1.0.0",
+  "description": "持续集成工具链 monorepo",
+  "keywords": [
+    "justichentai",
+    "monorepo",
+    "douza"
+  ],
+  "license": "ISC",
+  "author": "douza",
+  "scripts": {
+    "format": "pnpm lint:prettier && pnpm lint:eslint",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --write ."
+  },
+  "devDependencies": {
+    "@justichentai/eslint-config": "^1.0.1",
+    "@justichentai/prettier-config": "^1.0.1",
+    "eslint": "^8.21.0",
+    "prettier": "^2.7.1",
+    "typescript": "^4.7.4"
+  }
+}
