@@ -4,4 +4,4 @@ continuous integration utils list
 
 ## [Frame-animation](https://github.com/JusticHentai/frame-animation)
 
-基于 raf 和 canvas 的帧动画处理工具
+raf and canvas based frame animation tools Support for arbitrary rows of frame animation originals
