@@ -2,3 +2,7 @@
 	path = packages/frame-animation
 	url = git@github.com:JusticHentai/frame-animation.git
 	branch = main
+[submodule "packages/utils-debug"]
+	path = packages/utils-debug
+	url = git@github.com:JusticHentai/utlis-debug.git
+	branch = main
