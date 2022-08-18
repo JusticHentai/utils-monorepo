@@ -6,3 +6,7 @@
 	path = packages/utils-debug
 	url = git@github.com:JusticHentai/utlis-debug.git
 	branch = main
+[submodule "packages/config-parsing"]
+	path = packages/config-parsing
+	url = git@github.com:JusticHentai/config-parsing.git
+	branch = main
