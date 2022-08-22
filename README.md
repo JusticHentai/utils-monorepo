@@ -13,3 +13,7 @@ simple program for debug in utils-monorepo
 ## [Config-parsing](https://github.com/JusticHentai/config-parsing)
 
 A tool that can parse custom configuration files like `xxx.config.js | ts | json`
+
+## [scss-utils](https://github.com/JusticHentai/scss-utils)
+
+scss style utils

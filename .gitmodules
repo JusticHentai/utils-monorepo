@@ -10,3 +10,11 @@
 	path = packages/config-parsing
 	url = git@github.com:JusticHentai/config-parsing.git
 	branch = main
+[submodule "packages/pixijs-utils"]
+	path = packages/pixijs-utils
+	url = git@github.com:JusticHentai/pixijs-utils.git
+	branch = main
+[submodule "packages/scss-utils"]
+	path = packages/scss-utils
+	url = git@github.com:JusticHentai/scss-utils.git
+	branch = main
