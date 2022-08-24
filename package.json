@@ -10,6 +10,7 @@
   "license": "ISC",
   "author": "douza",
   "scripts": {
+    "dev": "pnpm run -F @justichentai/utils-debug dev",
     "format": "pnpm lint:prettier && pnpm lint:eslint",
     "lint:eslint": "eslint .",
     "lint:prettier": "prettier --write .",
