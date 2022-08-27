@@ -102,7 +102,7 @@ importers:
       rollup: ^2.77.2
       rollup-plugin-dts: ^4.2.2
       rollup-plugin-terser: ^7.0.2
-      rollup-plugin-typescript2: ^0.31.2
+      rollup-plugin-typescript2: ^0.33.0
       typescript: ^4.7.4
     dependencies:
       pixi.js: 6.5.2
@@ -119,7 +119,7 @@ importers:
       rollup: 2.77.2
       rollup-plugin-dts: 4.2.2_oo3i3f3qmqiztdz5qgxrrjmd5e
       rollup-plugin-terser: 7.0.2_rollup@2.77.2
-      rollup-plugin-typescript2: 0.31.2_oo3i3f3qmqiztdz5qgxrrjmd5e
+      rollup-plugin-typescript2: 0.33.0_oo3i3f3qmqiztdz5qgxrrjmd5e
       typescript: 4.7.4
 
   packages/scss-utils:
@@ -6150,6 +6150,20 @@ packages:
       find-cache-dir: 3.3.2
       fs-extra: 10.1.0
       resolve: 1.22.1
+      rollup: 2.77.2
+      tslib: 2.4.0
+      typescript: 4.7.4
+    dev: true
+
+  /rollup-plugin-typescript2/0.33.0_oo3i3f3qmqiztdz5qgxrrjmd5e:
+    resolution: {integrity: sha512-7ZXoZeX93kNb4/ICzOi2AlperVV6cAsNz8THqrbz+KNvpn47P2F/nFdK/BGhkoOsOwuYDuY57vccdZZrcd8/dA==}
+    peerDependencies:
+      rollup: '>=1.26.3'
+      typescript: '>=2.4.0'
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      find-cache-dir: 3.3.2
+      fs-extra: 10.1.0
       rollup: 2.77.2
       tslib: 2.4.0
       typescript: 4.7.4
