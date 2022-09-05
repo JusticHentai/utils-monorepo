@@ -22,3 +22,7 @@
 	path = packages/utils-debug-node
 	url = git@github.com:JusticHentai/utils-debug-node.git
 	branch = main
+[submodule "packages/resize"]
+	path = packages/resize
+	url = git@github.com:JusticHentai/resize.git
+	branch = main
