@@ -26,3 +26,7 @@
 	path = packages/resize
 	url = git@github.com:JusticHentai/resize.git
 	branch = main
+[submodule "packages/types-utils"]
+	path = packages/types-utils
+	url = git@github.com:JusticHentai/types-utils.git
+	branch = main

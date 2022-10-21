@@ -150,6 +150,12 @@ importers:
       postcss: 8.4.16
       sass: 1.54.4
 
+  packages/types-utils:
+    specifiers:
+      typescript: ^4.8.4
+    dependencies:
+      typescript: 4.8.4
+
   packages/utils-debug:
     specifiers:
       '@justichentai/config-parsing': workspace:*
@@ -7637,7 +7643,6 @@ packages:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

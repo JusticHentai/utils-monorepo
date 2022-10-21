@@ -14,6 +14,10 @@ A tool that can parse custom configuration files like `xxx.config.js | ts | json
 
 scss style utils
 
+## [Types-utils](https://github.com/JusticHentai/types-utils)
+
+类型工具库
+
 ## [utils-debug](https://github.com/JusticHentai/utlis-debug)
 
 simple program for debug in utils-monorepo
