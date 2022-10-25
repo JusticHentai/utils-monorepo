@@ -10,6 +10,10 @@ raf and canvas based frame animation tools Support for arbitrary rows of frame a
 
 A tool that can parse custom configuration files like `xxx.config.js | ts | json`
 
+## [Is](https://github.com/JusticHentai/is)
+
+类型判断库
+
 ## [scss-utils](https://github.com/JusticHentai/scss-utils)
 
 scss style utils

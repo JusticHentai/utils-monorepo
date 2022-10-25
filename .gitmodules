@@ -30,3 +30,7 @@
 	path = packages/types-utils
 	url = git@github.com:JusticHentai/types-utils.git
 	branch = main
+[submodule "packages/is"]
+	path = packages/is
+	url = git@github.com:JusticHentai/is.git
+	branch = main
