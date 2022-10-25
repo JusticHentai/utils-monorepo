@@ -34,3 +34,7 @@
 	path = packages/is
 	url = git@github.com:JusticHentai/is.git
 	branch = main
+[submodule "packages/bgm"]
+	path = packages/bgm
+	url = git@github.com:JusticHentai/bgm.git
+	branch = main
