@@ -38,3 +38,7 @@
 	path = packages/bgm
 	url = git@github.com:JusticHentai/bgm.git
 	branch = main
+[submodule "packages/utils-template"]
+	path = packages/utils-template
+	url = git@github.com:JusticHentai/utils-template.git
+	branch = main

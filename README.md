@@ -29,3 +29,7 @@ simple program for debug in utils-monorepo
 ## [utils-debug-node](https://github.com/JusticHentai/utils-debug-node/tree/4d462ee799243d6ad12fe809818ddb6477fe436c)
 
 node env for utils-debug
+
+## [Utils-template](https://github.com/JusticHentai/utils-template)
+
+工具包模板
