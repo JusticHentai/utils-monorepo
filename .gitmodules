@@ -42,3 +42,7 @@
 	path = packages/utils-template
 	url = git@github.com:JusticHentai/utils-template.git
 	branch = main
+[submodule "packages/math"]
+	path = packages/math
+	url = git@github.com:JusticHentai/math.git
+	branch = main
