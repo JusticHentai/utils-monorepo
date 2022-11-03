@@ -46,3 +46,7 @@
 	path = packages/math
 	url = git@github.com:JusticHentai/math.git
 	branch = main
+[submodule "packages/leetcode"]
+	path = packages/leetcode
+	url = git@github.com:JusticHentai/leetcode.git
+	branch = main
