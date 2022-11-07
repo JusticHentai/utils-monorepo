@@ -50,3 +50,7 @@
 	path = packages/leetcode
 	url = git@github.com:JusticHentai/leetcode.git
 	branch = main
+[submodule "packages/dom"]
+	path = packages/dom
+	url = git@github.com:JusticHentai/dom.git
+	branch = main

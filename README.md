@@ -6,6 +6,10 @@ continuous integration utils list
 
 raf and canvas based frame animation tools Support for arbitrary rows of frame animation originals
 
+## [dom](https://github.com/JusticHentai/dom)
+
+dom 操作相关工具库
+
 ## [config-parsing](https://github.com/JusticHentai/config-parsing)
 
 A tool that can parse custom configuration files like `xxx.config.js | ts | json`
