@@ -20,9 +20,9 @@
     "@justichentai/eslint-config": "^1.0.2",
     "@justichentai/prettier-config": "^1.0.2",
     "@justichentai/stylelint-config": "^1.0.5",
-    "eslint": "^8.21.0",
-    "prettier": "^2.7.1",
-    "stylelint": "^14.11.0",
-    "typescript": "^4.8.4"
+    "eslint": "^8.28.0",
+    "prettier": "^2.8.0",
+    "stylelint": "^14.15.0",
+    "typescript": "^4.9.3"
   }
 }
