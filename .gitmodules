@@ -54,3 +54,7 @@
 	path = packages/dom
 	url = git@github.com:JusticHentai/dom.git
 	branch = main
+[submodule "packages/handwritten"]
+	path = packages/handwritten
+	url = git@github.com:JusticHentai/handwritten.git
+	branch = main
