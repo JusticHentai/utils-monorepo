@@ -58,3 +58,7 @@
 	path = packages/handwritten
 	url = git@github.com:JusticHentai/handwritten.git
 	branch = main
+[submodule ".\\packages\\/json-diff"]
+	path = .\\packages\\/json-diff
+	url = git@github.com:JusticHentai/json-diff.git
+	branch = main
