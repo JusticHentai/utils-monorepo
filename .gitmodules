@@ -62,3 +62,7 @@
 	path = .\\packages\\/json-diff
 	url = git@github.com:JusticHentai/json-diff.git
 	branch = main
+[submodule "packages/error-collection"]
+	path = packages/error-collection
+	url = git@github.com:JusticHentai/error-collection.git
+	branch = main
