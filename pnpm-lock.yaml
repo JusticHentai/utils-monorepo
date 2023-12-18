@@ -391,66 +391,6 @@ importers:
         specifier: ^4.8.4
         version: 4.8.4
 
-  packages/json-diff:
-    devDependencies:
-      '@babel/core':
-        specifier: ^7.18.10
-        version: 7.20.2
-      '@babel/plugin-transform-runtime':
-        specifier: ^7.18.10
-        version: 7.19.6(@babel/core@7.20.2)
-      '@babel/preset-env':
-        specifier: ^7.18.10
-        version: 7.19.4(@babel/core@7.20.2)
-      '@babel/runtime':
-        specifier: ^7.18.9
-        version: 7.20.0
-      '@justichentai/types-utils':
-        specifier: workspace:*
-        version: link:../types-utils
-      '@rollup/plugin-babel':
-        specifier: ^5.3.1
-        version: 5.3.1(@babel/core@7.20.2)(rollup@2.79.1)
-      '@rollup/plugin-commonjs':
-        specifier: ^22.0.1
-        version: 22.0.2(rollup@2.79.1)
-      '@rollup/plugin-node-resolve':
-        specifier: ^13.1.3
-        version: 13.3.0(rollup@2.79.1)
-      '@types/jest':
-        specifier: ^28.1.3
-        version: 28.1.8
-      clean-package:
-        specifier: ^2.2.0
-        version: 2.2.0
-      core-js:
-        specifier: ^3.24.1
-        version: 3.26.0
-      esbuild:
-        specifier: ^0.14.51
-        version: 0.14.54
-      esbuild-jest:
-        specifier: ^0.5.0
-        version: 0.5.0(esbuild@0.14.54)
-      jest:
-        specifier: ^28.1.1
-        version: 28.1.3
-      rollup:
-        specifier: ^2.77.2
-        version: 2.79.1
-      rollup-plugin-dts:
-        specifier: ^4.2.2
-        version: 4.2.3(rollup@2.79.1)(typescript@4.9.3)
-      rollup-plugin-terser:
-        specifier: ^7.0.2
-        version: 7.0.2(rollup@2.79.1)
-      rollup-plugin-typescript2:
-        specifier: ^0.31.2
-        version: 0.31.2(rollup@2.79.1)(typescript@4.9.3)
-      typescript:
-        specifier: ^4.9.3
-        version: 4.9.3
-
   packages/leetcode:
     devDependencies:
       '@babel/core':
@@ -7453,11 +7393,14 @@ packages:
     requiresBuild: true
     dev: true
 
+<<<<<<< HEAD
   /core-js@3.34.0:
     resolution: {integrity: sha512-aDdvlDder8QmY91H88GzNi9EtQi2TjvQhpCX6B1v/dAZHU1AuLgHvRh54RiOerpEhEW46Tkf+vgAViB/CWC0ag==}
     requiresBuild: true
     dev: false
 
+=======
+>>>>>>> 60a389377bafdbf03616819fee5c8615dd05fef7
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: false
@@ -12028,6 +11971,7 @@ packages:
       react-is: 18.2.0
     dev: true
 
+<<<<<<< HEAD
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -12037,6 +11981,8 @@ packages:
       react-is: 18.2.0
     dev: true
 
+=======
+>>>>>>> 60a389377bafdbf03616819fee5c8615dd05fef7
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: false
