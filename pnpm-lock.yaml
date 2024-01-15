@@ -639,9 +639,6 @@ importers:
       '@justichentai/scss-utils':
         specifier: workspace:*
         version: link:../scss-utils
-      '@justichentai/utils-template':
-        specifier: workspace:*
-        version: link:../utils-template
       gsap:
         specifier: ^3.11.4
         version: 3.11.4
@@ -7393,14 +7390,11 @@ packages:
     requiresBuild: true
     dev: true
 
-<<<<<<< HEAD
   /core-js@3.34.0:
     resolution: {integrity: sha512-aDdvlDder8QmY91H88GzNi9EtQi2TjvQhpCX6B1v/dAZHU1AuLgHvRh54RiOerpEhEW46Tkf+vgAViB/CWC0ag==}
     requiresBuild: true
     dev: false
 
-=======
->>>>>>> 60a389377bafdbf03616819fee5c8615dd05fef7
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: false
@@ -11971,7 +11965,6 @@ packages:
       react-is: 18.2.0
     dev: true
 
-<<<<<<< HEAD
   /pretty-format@29.7.0:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -11981,8 +11974,6 @@ packages:
       react-is: 18.2.0
     dev: true
 
-=======
->>>>>>> 60a389377bafdbf03616819fee5c8615dd05fef7
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: false
