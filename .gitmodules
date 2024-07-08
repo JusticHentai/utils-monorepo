@@ -58,11 +58,15 @@
 	path = packages/handwritten
 	url = git@github.com:JusticHentai/handwritten.git
 	branch = main
-[submodule ".\\packages\\/json-diff"]
-	path = .\\packages\\/json-diff
+[submodule "./packages/json-diff"]
+	path = ./packages/json-diff
 	url = git@github.com:JusticHentai/json-diff.git
 	branch = main
 [submodule "packages/error-collection"]
 	path = packages/error-collection
 	url = git@github.com:JusticHentai/error-collection.git
+	branch = main
+[submodule "packages/logger"]
+	path = packages/logger
+	url = git@github.com:JusticHentai/logger.git
 	branch = main
