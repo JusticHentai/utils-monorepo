@@ -751,9 +751,6 @@ importers:
       '@justichentai/scss-utils':
         specifier: workspace:*
         version: link:../scss-utils
-      '@justichentai/utils-template':
-        specifier: workspace:*
-        version: link:../utils-template
       gsap:
         specifier: ^3.11.4
         version: 3.11.4
