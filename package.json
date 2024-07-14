@@ -10,11 +10,8 @@
   "license": "ISC",
   "author": "douza",
   "scripts": {
-    "dev": "pnpm run -F @justichentai/utils-debug dev",
-    "format": "pnpm lint:prettier && pnpm lint:eslint",
-    "lint:eslint": "eslint .",
-    "lint:prettier": "prettier --write .",
-    "lint:stylelint": "stylelint \"**/*.(sc|c)ss\""
+    "cli:init": "pnpm run -F @justichentai/cli build && pnpm link ./cli",
+    "cli:test": "hentai test"
   },
   "devDependencies": {
     "@justichentai/eslint-config": "^1.0.2",
