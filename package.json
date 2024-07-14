@@ -10,8 +10,7 @@
   "license": "ISC",
   "author": "douza",
   "scripts": {
-    "cli:init": "pnpm run -F @justichentai/cli build && pnpm link ./cli",
-    "cli:test": "hentai test"
+    "cli:init": "pnpm run -F @justichentai/cli link:global"
   },
   "devDependencies": {
     "@justichentai/eslint-config": "^1.0.2",
