@@ -2,6 +2,10 @@
 
 JusticHentai 的 cli
 
+## 环境
+
+先安装 github cli
+
 ## 使用
 
 ### U
@@ -16,7 +20,6 @@ hentai u [message]
 
 从模板安装项目
 `name` 为项目名
-`dirname` 为文件名 组合为 `dirname/name`
 ```bash
-hentai i <name> [dirname]
+hentai i <name>
 ```

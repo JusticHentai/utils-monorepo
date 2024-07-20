@@ -70,3 +70,7 @@
 	path = packages/logger
 	url = git@github.com:JusticHentai/logger.git
 	branch = main
+[submodule "packages/resource-controller"]
+	path = packages/resource-controller
+	url = git@github.com:JusticHentai/resource-controller.git
+	branch = main
