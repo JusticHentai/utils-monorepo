@@ -11,7 +11,8 @@
   "author": "douza",
   "scripts": {
     "cli:add": "hentai i",
-    "cli:init": "pnpm run -F @justichentai/cli link:global"
+    "cli:init": "pnpm run -F @justichentai/cli link:global",
+    "cli:update": "git submodule update --init"
   },
   "devDependencies": {
     "@justichentai/eslint-config": "^1.0.2",
