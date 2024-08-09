@@ -1,6 +1,7 @@
 import CommandOptions from '../types/CommandOptions'
 import command from '../utils/command'
 import i from './i'
+import p from './p'
 import test from './test'
 import u from './u'
 
@@ -18,7 +19,7 @@ export default function registerCommand() {
 /**
  * 命令表
  */
-export const commandList: CommandOptions[] = [u, i, test]
+export const commandList: CommandOptions[] = [u, i, p, test]
 
 /**
  * 执行命令注册
