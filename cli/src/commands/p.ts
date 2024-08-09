@@ -1,8 +1,8 @@
-import shell from '../shell'
 import CommandOptions from '../types/CommandOptions'
 import jsonRead from '../utils/file/jsonRead'
 import jsonWrite from '../utils/file/jsonWrite'
 import gitUpdate from '../utils/git/gitUpdate'
+import shell from '../utils/shell'
 
 const p: CommandOptions = {
   name: 'p',
