@@ -1,3 +1,4 @@
+import shell from '../shell'
 import CommandOptions from '../types/CommandOptions'
 import jsonRead from '../utils/file/jsonRead'
 import jsonWrite from '../utils/file/jsonWrite'
@@ -9,6 +10,7 @@ const p: CommandOptions = {
   action: async () => {
     await updatePackageJsonVersion()
     await gitUpdate('版本更新')
+    shell('pnpm publish')
   },
 }
 
@@ -23,7 +25,7 @@ async function updatePackageJsonVersion() {
   const newVersion = +lowVersion + 1
   versionSplit[versionSplit.length - 1] = newVersion
 
-  const newInfo = { ...oldInfo, ...{ version: versionSplit.join() } }
+  const newInfo = { ...oldInfo, ...{ version: versionSplit.join('.') } }
 
   await jsonWrite('./package.json', newInfo)
 }
