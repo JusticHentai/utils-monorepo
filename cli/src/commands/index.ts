@@ -4,6 +4,7 @@ import i from './i'
 import p from './p'
 import test from './test'
 import u from './u'
+import upgrade from './upgrade'
 
 /**
  * 注册命令
@@ -19,7 +20,7 @@ export default function registerCommand() {
 /**
  * 命令表
  */
-export const commandList: CommandOptions[] = [u, i, p, test]
+export const commandList: CommandOptions[] = [u, i, p, upgrade, test]
 
 /**
  * 执行命令注册
