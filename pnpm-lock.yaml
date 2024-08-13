@@ -29,9 +29,6 @@ importers:
       stylelint:
         specifier: ^14.15.0
         version: 14.16.1
-      typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
 
   cli:
     dependencies:
