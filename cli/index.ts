@@ -3,7 +3,6 @@
 import commandHandle from '@/core'
 
 const init = () => {
-  // clear()
   commandHandle()
 }
 
