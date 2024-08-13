@@ -10,10 +10,6 @@
 	path = packages/config-parsing
 	url = git@github.com:JusticHentai/config-parsing.git
 	branch = main
-[submodule "packages/pixijs-utils"]
-	path = packages/pixijs-utils
-	url = git@github.com:JusticHentai/pixijs-utils.git
-	branch = main
 [submodule "packages/scss-utils"]
 	path = packages/scss-utils
 	url = git@github.com:JusticHentai/scss-utils.git
@@ -53,10 +49,6 @@
 [submodule "packages/handwritten"]
 	path = packages/handwritten
 	url = git@github.com:JusticHentai/handwritten.git
-	branch = main
-[submodule "packages/json-diff"]
-	path = packages/json-diff
-	url = git@github.com:JusticHentai/json-diff.git
 	branch = main
 [submodule "packages/error-collection"]
 	path = packages/error-collection

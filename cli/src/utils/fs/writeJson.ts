@@ -2,7 +2,6 @@ import jsonfile, { JFWriteOptions } from 'jsonfile'
 import path from 'path'
 import { error } from '../style/chalk'
 import Loading from '../style/loading'
-import ErrnoException = NodeJS.ErrnoException
 
 /**
  * 将json内容写入文件
@@ -25,7 +24,7 @@ export default function jsonWrite(
       fileFullPath,
       content,
       options || { spaces: 2 },
-      (err: ErrnoException) => {
+      (err) => {
         if (err) {
           loading.fail(`内容写入文件失败：${fileFullPath}`)
           console.log(content)

@@ -1,8 +1,8 @@
-import shell from '../shell'
+import shell from '@/utils/shell'
 
 /**
  * git 更新三连
- * @param message
+
  */
 export default async function gitUpdate(message: string): Promise<void> {
   const commands = [

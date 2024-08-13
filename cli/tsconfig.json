@@ -3,27 +3,21 @@
     "target": "esnext",
     "module": "esnext",
     "strict": true,
-    "jsx": "preserve",
-    "allowJs": true,
-    "importHelpers": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "inlineSourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "noImplicitThis": true,
     "noUnusedLocals": true,
-    "stripInternal": true,
     "declaration": true,
     "skipLibCheck": true,
-    "useDefineForClassFields": true,
-    "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-    "outDir": "./dist"
+    "lib": ["esnext"],
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "./dist"]

@@ -1,8 +1,8 @@
-import CommandOptions from '../types/CommandOptions'
-import jsonRead from '../utils/file/jsonRead'
-import jsonWrite from '../utils/file/jsonWrite'
-import gitUpdate from '../utils/git/gitUpdate'
-import shell from '../utils/shell'
+import { CommandOptions } from '@/core/types'
+import readJson from '@/utils/fs/readJson'
+import writeJson from '@/utils/fs/writeJson'
+import gitUpdate from '@/utils/git/gitUpdate'
+import shell from '@/utils/shell'
 
 const p: CommandOptions = {
   name: 'p',
@@ -17,7 +17,7 @@ const p: CommandOptions = {
 export default p
 
 async function updatePackageJsonVersion() {
-  const oldInfo = await jsonRead('./package.json')
+  const oldInfo = await readJson('./package.json')
   const version = oldInfo.version
 
   const versionSplit = version.split('.')
@@ -27,5 +27,5 @@ async function updatePackageJsonVersion() {
 
   const newInfo = { ...oldInfo, ...{ version: versionSplit.join('.') } }
 
-  await jsonWrite('./package.json', newInfo)
+  await writeJson('./package.json', newInfo)
 }

@@ -1,6 +1,6 @@
-import CommandOptions from '../types/CommandOptions'
-import getLib from '../utils/file/getLib'
-import shell from '../utils/shell'
+import { CommandOptions } from '@/core/types'
+import getLib from '@/utils/fs/getLib'
+import shell from '@/utils/shell'
 
 const upgrade: CommandOptions = {
   name: 'upgrade',

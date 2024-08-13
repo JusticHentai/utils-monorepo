@@ -1,18 +1,13 @@
+import { CommandOptions } from '@/core/types'
 import { Command } from 'commander'
-import CommandOptions from '../types/CommandOptions'
 
 class Commander {
-  // 命令实例
   program: Command
 
   constructor() {
     this.program = new Command()
   }
 
-  /**
-   * 添加命令
-   * @param options
-   */
   add(options: CommandOptions): Promise<any> {
     const { name, dec: commandDec, args = [], argOptions = [] } = options
 
@@ -60,19 +55,11 @@ class Commander {
     })
   }
 
-  /**
-   * 解析命令
-   * 添加后必需解析 会把命令与输入进行对比并触发commander的action
-   */
   init() {
     this.program.parse(process.argv)
   }
 }
 
-/**
- * 命令实例
- * 由于命令都维护在同一个实例里 所以只导出一个实例
- */
 const command = new Commander()
 
 export default command

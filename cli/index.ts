@@ -1,11 +1,10 @@
 #! /usr/bin/env node
 
-import clear from 'clear'
-import registerCommand from './src/commands'
+import commandHandle from '@/core'
 
 const init = () => {
-  clear()
-  registerCommand()
+  // clear()
+  commandHandle()
 }
 
 init()

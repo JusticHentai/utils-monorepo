@@ -4,10 +4,7 @@ import { error as myError, warn as myWarn } from './style/chalk'
 import Loading from './style/loading'
 
 /**
- * 执行单个shell命令
- * 将命令回调形式promise化 并添加chalk ora样式
- * @param command 命令
- * @param type 类型 是否报错后终止
+ * 执行单个 shell 命令
  */
 export function myShell(command: string, type: boolean): Promise<void> {
   return new Promise((resolve, reject) => {
