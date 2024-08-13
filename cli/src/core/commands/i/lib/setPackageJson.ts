@@ -9,10 +9,6 @@ const setPackageJson = async (name: string) => {
 
   const setInfo = {
     name: `@justichentai/${name}`,
-    repository: {
-      type: 'git',
-      url: `https://github.com/JusticHentai/${name}`,
-    },
   }
 
   const newInfo = { ...oldInfo, ...setInfo }

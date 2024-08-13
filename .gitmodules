@@ -62,3 +62,7 @@
 	path = packages/resource-controller
 	url = git@github.com:JusticHentai/resource-controller.git
 	branch = main
+[submodule "packages/less"]
+	path = packages/less
+	url = git@github.com:JusticHentai/less.git
+	branch = main

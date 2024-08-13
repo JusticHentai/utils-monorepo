@@ -7,9 +7,9 @@ import shell from '@/utils/shell'
  * 将模板拉到缓存文件夹中 并 cd 进入
  */
 const createTemplate = async (name: string) => {
-  await shell('git clone git@github.com:JusticHentai/utils-template.git')
+  await shell('gh repo clone JusticHentai/utils-template')
 
-  const cdRes = await cd(name)
+  const cdRes = await cd('utils-template')
 
   if (!cdRes) {
     backup.exe()

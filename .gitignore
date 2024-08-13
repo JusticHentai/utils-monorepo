@@ -3,6 +3,7 @@
 # command package
 node_modules
 dist
+utils-cache
 
 # local env files
 .env.local
