@@ -2,25 +2,20 @@
   "name": "@justichentai/utils-monorepo",
   "version": "1.0.0",
   "description": "持续集成工具链 monorepo",
-  "keywords": [
-    "justichentai",
-    "monorepo",
-    "douza"
-  ],
   "license": "ISC",
-  "author": "douza",
+  "author": "justichentai",
+  "type": "module",
   "scripts": {
     "cli:add": "hentai i",
     "cli:init": "pnpm run -F @justichentai/cli link:global",
     "cli:update": "git submodule update --init"
   },
   "devDependencies": {
-    "@justichentai/eslint-config": "^1.0.2",
-    "@justichentai/prettier-config": "^1.0.2",
-    "@justichentai/stylelint-config": "^1.0.5",
-    "eslint": "^8.28.0",
-    "prettier": "^2.8.0",
-    "prettier-eslint": "^16.3.0",
-    "stylelint": "^14.15.0"
+    "@justichentai/eslint-config": "workspace:*",
+    "@justichentai/prettier-config": "workspace:^",
+    "@justichentai/stylelint-config": "workspace:^",
+    "eslint": "^9.9.0",
+    "prettier": "^3.3.3",
+    "stylelint": "^16.8.1"
   }
 }

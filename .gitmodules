@@ -2,17 +2,9 @@
 	path = packages/frame-animation
 	url = git@github.com:JusticHentai/frame-animation.git
 	branch = main
-[submodule "packages/utils-debug"]
-	path = packages/utils-debug
-	url = git@github.com:JusticHentai/utlis-debug.git
-	branch = main
 [submodule "packages/config-parsing"]
 	path = packages/config-parsing
 	url = git@github.com:JusticHentai/config-parsing.git
-	branch = main
-[submodule "packages/scss-utils"]
-	path = packages/scss-utils
-	url = git@github.com:JusticHentai/scss-utils.git
 	branch = main
 [submodule "packages/resize"]
 	path = packages/resize
@@ -61,4 +53,16 @@
 [submodule "packages/less"]
 	path = packages/less
 	url = git@github.com:JusticHentai/less.git
+	branch = main
+[submodule "packages/eslint-config"]
+	path = packages/eslint-config
+	url = git@github.com:JusticHentai/eslint-config.git
+	branch = main
+[submodule "packages/prettier-config"]
+	path = packages/prettier-config
+	url = git@github.com:JusticHentai/prettier-config.git
+	branch = main
+[submodule "packages/stylelint-config"]
+	path = packages/stylelint-config
+	url = git@github.com:JusticHentai/stylelint-config.git
 	branch = main
