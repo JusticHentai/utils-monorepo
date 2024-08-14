@@ -1,1 +1,3 @@
-module.exports = require.resolve('@justichentai/prettier-config')
+import prettierConfig from '@justichentai/eslint-config/prettier.config.js'
+
+export default prettierConfig;
