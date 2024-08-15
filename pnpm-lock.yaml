@@ -86,48 +86,6 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(@types/node@22.3.0)(less@4.2.0)(sugarss@2.0.0)(terser@5.31.5)
 
-  debug/src/components/lint:
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.8.0
-        version: 9.9.0
-      '@eslint/json':
-        specifier: ^0.3.0
-        version: 0.3.0(eslint@9.9.0)
-      eslint:
-        specifier: ^9.9.0
-        version: 9.9.0
-      eslint-config-prettier:
-        specifier: ^9.1.0
-        version: 9.1.0(eslint@9.9.0)
-      eslint-plugin-prettier:
-        specifier: ^5.2.1
-        version: 5.2.1(eslint-config-prettier@9.1.0(eslint@9.9.0))(eslint@9.9.0)(prettier@3.3.3)
-      eslint-plugin-react-hooks:
-        specifier: ^5.1.0-rc.0
-        version: 5.1.0-rc-fb9a90fa48-20240614(eslint@9.9.0)
-      eslint-plugin-react-refresh:
-        specifier: ^0.4.9
-        version: 0.4.9(eslint@9.9.0)
-      globals:
-        specifier: ^15.9.0
-        version: 15.9.0
-      prettier:
-        specifier: ^3.3.3
-        version: 3.3.3
-      prettier-plugin-organize-imports:
-        specifier: ^3.1.1
-        version: 3.2.4(@volar/vue-typescript@1.6.5(typescript@5.5.4))(prettier@3.3.3)(typescript@5.5.4)
-      prettier-plugin-packagejson:
-        specifier: ^2.2.18
-        version: 2.5.1(prettier@3.3.3)
-      typescript:
-        specifier: ^5.5.4
-        version: 5.5.4
-      typescript-eslint:
-        specifier: ^8.0.0
-        version: 8.1.0(eslint@9.9.0)(typescript@5.5.4)
-
   packages/config-parsing:
     dependencies:
       fs-extra:
@@ -267,9 +225,6 @@ importers:
       '@eslint/js':
         specifier: ^9.8.0
         version: 9.9.0
-      '@eslint/json':
-        specifier: ^0.3.0
-        version: 0.3.0(eslint@9.9.0)
       eslint:
         specifier: ^9.9.0
         version: 9.9.0
@@ -1714,12 +1669,6 @@ packages:
     resolution: {integrity: sha512-hhetes6ZHP3BlXLxmd8K2SNgkhNSi+UcecbnwWKwpP7kyi/uC75DJ1lOOBO3xrC4jyojtGE3YxKZPHfk4yrgug==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@eslint/json@0.3.0':
-    resolution: {integrity: sha512-fdih4NZ6sGMI3YFZUqShMJ/AWvDzDrNepqDlTwRQUfgR434jmajVYIMNc2Vs2M2cHjxZpcHG6FRsrxuiwYvprA==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^9.6.0
-
   '@eslint/object-schema@2.1.4':
     resolution: {integrity: sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1727,10 +1676,6 @@ packages:
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
     engines: {node: '>=12.22'}
-
-  '@humanwhocodes/momoa@3.2.0':
-    resolution: {integrity: sha512-xvLEGSmd8qxcqlKFnTxdnmqQFsYGC4GhpuhHgdFoZBV9zxvmSlTuasj2D3vei3IsBGmjP/ITwPFejNAG/w+jsw==}
-    engines: {node: '>=18'}
 
   '@humanwhocodes/retry@0.3.0':
     resolution: {integrity: sha512-d2CGZR2o7fS6sWB7DG/3a95bGKQyHMACZ5aW8qGkkqQpUoZV6C0X7Pc7l4ZNMZkfNBf4VWNe9E1jRsf0G146Ew==}
@@ -1960,55 +1905,46 @@ packages:
     resolution: {integrity: sha512-jMYvxZwGmoHFBTbr12Xc6wOdc2xA5tF5F2q6t7Rcfab68TT0n+r7dgawD4qhPEvasDsVpQi+MgDzj2faOLsZjA==}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.20.0':
     resolution: {integrity: sha512-1asSTl4HKuIHIB1GcdFHNNZhxAYEdqML/MW4QmPS4G0ivbEcBr1JKlFLKsIRqjSwOBkdItn3/ZDlyvZ/N6KPlw==}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.20.0':
     resolution: {integrity: sha512-COBb8Bkx56KldOYJfMf6wKeYJrtJ9vEgBRAOkfw6Ens0tnmzPqvlpjZiLgkhg6cA3DGzCmLmmd319pmHvKWWlQ==}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.20.0':
     resolution: {integrity: sha512-+it+mBSyMslVQa8wSPvBx53fYuZK/oLTu5RJoXogjk6x7Q7sz1GNRsXWjn6SwyJm8E/oMjNVwPhmNdIjwP135Q==}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.20.0':
     resolution: {integrity: sha512-yAMvqhPfGKsAxHN8I4+jE0CpLWD8cv4z7CK7BMmhjDuz606Q2tFKkWRY8bHR9JQXYcoLfopo5TTqzxgPUjUMfw==}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-gnu@4.20.0':
     resolution: {integrity: sha512-qmuxFpfmi/2SUkAw95TtNq/w/I7Gpjurx609OOOV7U4vhvUhBcftcmXwl3rqAek+ADBwSjIC4IVNLiszoj3dPA==}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-s390x-gnu@4.20.0':
     resolution: {integrity: sha512-I0BtGXddHSHjV1mqTNkgUZLnS3WtsqebAXv11D5BZE/gfw5KoyXSAXVqyJximQXNvNzUo4GKlCK/dIwXlz+jlg==}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.20.0':
     resolution: {integrity: sha512-y+eoL2I3iphUg9tN9GB6ku1FA8kOfmF4oUEWhztDJ4KXJy1agk/9+pejOuZkNFhRwHAOxMsBPLbXPd6mJiCwew==}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.20.0':
     resolution: {integrity: sha512-hM3nhW40kBNYUkZb/r9k2FKK+/MnKglX7UYd4ZUy5DJs8/sMsIbqWK2piZtVGE3kcXVNj3B2IrUYROJMMCikNg==}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-win32-arm64-msvc@4.20.0':
     resolution: {integrity: sha512-psegMvP+Ik/Bg7QRJbv8w8PAytPA7Uo8fpFjXyCRHWm6Nt42L+JtoqH8eDQ5hRP7/XW2UiIriy1Z46jf0Oa1kA==}
@@ -2057,28 +1993,24 @@ packages:
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-arm64-musl@1.7.10':
     resolution: {integrity: sha512-PUi50bkNqnBL3Z/Zq6jSfwgN9A/taA6u2Zou0tjDJi7oVdpjdr7SxNgCGzMJ/nNg5D/IQn1opM1jktMvpsPAuQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-linux-x64-gnu@1.7.10':
     resolution: {integrity: sha512-Sc+pY55gknCAmBQBR6DhlA7jZSxHaLSDb5Sevzi6DOFMXR79NpA6zWTNKwp1GK2AnRIkbAfvYLgOxS5uWTFVpg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@swc/core-linux-x64-musl@1.7.10':
     resolution: {integrity: sha512-g5NKx2LXaGd0K26hmEts1Cvb7ptIvq3MHSgr6/D1tRPcDZw1Sp0dYsmyOv0ho4F5GOJyiCooG3oE9FXdb7jIpQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@swc/core-win32-arm64-msvc@1.7.10':
     resolution: {integrity: sha512-plRIsOcfy9t9Q/ivm5DA7I0HaIvfAWPbI+bvVRrr3C/1K2CSqnqZJjEWOAmx2LiyipijNnEaFYuLBp0IkGuJpg==}
@@ -6587,16 +6519,9 @@ snapshots:
 
   '@eslint/js@9.9.0': {}
 
-  '@eslint/json@0.3.0(eslint@9.9.0)':
-    dependencies:
-      '@humanwhocodes/momoa': 3.2.0
-      eslint: 9.9.0
-
   '@eslint/object-schema@2.1.4': {}
 
   '@humanwhocodes/module-importer@1.0.1': {}
-
-  '@humanwhocodes/momoa@3.2.0': {}
 
   '@humanwhocodes/retry@0.3.0': {}
 
@@ -9711,7 +9636,7 @@ snapshots:
     dependencies:
       htmlparser2: 3.10.1
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4)(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
+      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
 
   postcss-html@1.7.0:
     dependencies:
@@ -9724,7 +9649,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.25.2
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4)(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
+      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
     transitivePeerDependencies:
       - supports-color
 
@@ -9741,7 +9666,7 @@ snapshots:
   postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39):
     dependencies:
       postcss: 7.0.39
-      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4)(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
+      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
       remark: 10.0.1
       unist-util-find-all-after: 1.0.5
 
@@ -9808,7 +9733,7 @@ snapshots:
       lodash: 4.17.21
       postcss: 7.0.39
 
-  postcss-syntax@0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4)(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39):
+  postcss-syntax@0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39):
     dependencies:
       postcss: 7.0.39
     optionalDependencies:
@@ -10565,7 +10490,7 @@ snapshots:
       postcss-sass: 0.3.5
       postcss-scss: 2.1.1
       postcss-selector-parser: 3.1.2
-      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4)(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
+      postcss-syntax: 0.36.2(postcss-html@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-jsx@0.36.4(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-less@3.1.4)(postcss-markdown@0.36.0(postcss-syntax@0.36.2(postcss-html@1.7.0)(postcss@8.4.41))(postcss@7.0.39))(postcss-scss@2.1.1)(postcss@7.0.39)
       postcss-value-parser: 3.3.1
       resolve-from: 4.0.0
       signal-exit: 3.0.7

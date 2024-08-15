@@ -15,7 +15,6 @@
     "@justichentai/stylelint-config": "workspace:^",
     "eslint": "^9.9.0",
     "prettier": "^3.3.3",
-
     "stylelint": "^16.8.1"
   }
 }
