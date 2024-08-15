@@ -6,10 +6,10 @@
   "author": "justichentai",
   "type": "module",
   "scripts": {
-    "cli:init": "pnpm run -F @justichentai/cli link:global",
+    "cli:init": "pnpm run -F @justichentai/cli link:global"
   },
   "devDependencies": {
-    "@justichentai/lint": "workspace:*",
+    "@justichentai/lint": "^1.0.0",
     "eslint": "^9.9.0",
     "prettier": "^3.3.3"
   }
