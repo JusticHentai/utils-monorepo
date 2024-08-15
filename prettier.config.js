@@ -1,3 +1,3 @@
-import prettierConfig from '@justichentai/eslint-config/prettier.config.js'
+import prettierConfig from '@justichentai/lint/prettier.config.js'
 
 export default prettierConfig;

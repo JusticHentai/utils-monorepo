@@ -11,10 +11,8 @@
     "cli:update": "git submodule update --init"
   },
   "devDependencies": {
-    "@justichentai/eslint-config": "workspace:*",
-    "@justichentai/stylelint-config": "workspace:^",
+    "@justichentai/lint": "workspace:*",
     "eslint": "^9.9.0",
-    "prettier": "^3.3.3",
-    "stylelint": "^16.8.1"
+    "prettier": "^3.3.3"
   }
 }

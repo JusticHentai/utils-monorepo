@@ -54,11 +54,7 @@
 	path = packages/less
 	url = git@github.com:JusticHentai/less.git
 	branch = main
-[submodule "packages/eslint-config"]
-	path = packages/eslint-config
-	url = git@github.com:JusticHentai/eslint-config.git
-	branch = main
-[submodule "packages/stylelint-config"]
-	path = packages/stylelint-config
-	url = git@github.com:JusticHentai/stylelint-config.git
+[submodule "packages/lint"]
+	path = packages/lint
+	url = git@github.com:JusticHentai/lint.git
 	branch = main
