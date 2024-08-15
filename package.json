@@ -6,9 +6,7 @@
   "author": "justichentai",
   "type": "module",
   "scripts": {
-    "cli:add": "hentai i",
     "cli:init": "pnpm run -F @justichentai/cli link:global",
-    "cli:update": "git submodule update --init"
   },
   "devDependencies": {
     "@justichentai/lint": "workspace:*",
