@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@justichentai/lint':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: workspace:*
+        version: link:packages/lint
       eslint:
         specifier: ^9.9.0
         version: 9.9.0
@@ -1715,9 +1715,6 @@ packages:
 
   '@justichentai/is@1.0.7':
     resolution: {integrity: sha512-07XR9alrV0CMaVO+PF1mqZG/xRy5KT3/zwEyFexM8k9p5aD6/MDL7Q7GiViMk3S9mF2jjhrSyy2uEnWrwDjvwA==}
-
-  '@justichentai/lint@1.0.0':
-    resolution: {integrity: sha512-uU8ieytLjxHrWB6QNYKi+IYbDmJUxHQidmVaiMfgn3gg9Lxku3OweqUh6Kx/8PfN7Ui/7MkvtKAqlo8kCuTElw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -5657,8 +5654,6 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   '@justichentai/is@1.0.7': {}
-
-  '@justichentai/lint@1.0.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
