@@ -1,25 +1,18 @@
 import { CommandOptions } from '@/core/types'
-import getLib from '@/utils/fs/getLib'
 import shell from '@/utils/shell'
 
 const upgrade: CommandOptions = {
   name: 'upgrade',
   dec: '一键更新 utils monorepo 到最新',
   action: async () => {
-    const commands = ['git pull', 'git submodule update --init']
+    const commands = [
+      'git pull',
+      'git submodule update --init',
+      'git submodule foreach --recursive git checkout main',
+      'git submodule foreach --recursive git pull',
+    ]
+
     await shell(commands)
-
-    const lib = await getLib('packages')
-    for (const dir of lib) {
-      const commands = [
-        `cd packages/${dir}`,
-        'git checkout main',
-        'git pull',
-        'cd ../..',
-      ]
-
-      await shell(commands)
-    }
   },
 }
 
