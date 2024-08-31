@@ -58,3 +58,7 @@
 	path = packages/lint
 	url = git@github.com:JusticHentai/lint.git
 	branch = main
+[submodule "packages/components"]
+	path = packages/components
+	url = git@github.com:JusticHentai/components.git
+	branch = main
