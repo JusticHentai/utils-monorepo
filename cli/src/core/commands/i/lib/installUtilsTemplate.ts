@@ -4,6 +4,7 @@ import createRepo from './createRepo'
 import createTemplate from './createTemplate'
 import deleteCacheFolder from './deleteCacheFolder'
 import setPackageJson from './setPackageJson'
+import setREADME from './setREADME'
 
 const installUtilsTemplate = async (name: string) => {
   await createCacheFolder()
@@ -11,6 +12,8 @@ const installUtilsTemplate = async (name: string) => {
   await createTemplate(name)
 
   await setPackageJson(name)
+
+  await setREADME(name)
 
   await createRepo(name)
 

@@ -11,7 +11,7 @@ export default function read(dirname: string): Promise<string> {
     const loading = new Loading()
     loading.start(`开始读取文件：${dirname}`)
 
-    fs.readFile(dirname, 'utf-8', (err: Error, res) => {
+    fs.readFile(dirname, 'utf-8', (err, res) => {
       if (err) {
         loading.fail(`读取文件失败：${dirname}`)
         error(err)

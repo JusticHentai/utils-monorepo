@@ -1,5 +1,6 @@
 import { CommandOptions } from '@/core/types'
 import path from 'path'
+import setREADME from '../i/lib/setREADME'
 
 const test: CommandOptions = {
   name: 'test',
@@ -7,6 +8,8 @@ const test: CommandOptions = {
   action: async (...options) => {
     console.log('路径: ', path.resolve())
     console.log('参数: ', options)
+
+    await setREADME('testName')
   },
 }
 

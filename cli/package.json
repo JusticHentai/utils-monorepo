@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "link:global": "pnpm build && pnpm link --global"
+    "link:global": "pnpm build && pnpm link --global",
+    "test": "tsup && hentai test"
   },
   "dependencies": {
     "@justichentai/is": "^1.0.7",
