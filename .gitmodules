@@ -62,3 +62,7 @@
 	path = packages/components
 	url = git@github.com:JusticHentai/components.git
 	branch = main
+[submodule "packages/style"]
+	path = packages/style
+	url = git@github.com:JusticHentai/style.git
+	branch = main
