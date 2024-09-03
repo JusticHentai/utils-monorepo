@@ -687,6 +687,9 @@ importers:
       '@justichentai/is':
         specifier: ^1.0.7
         version: 1.0.7
+      '@types/react':
+        specifier: ^18.3.5
+        version: 18.3.5
       styled-components:
         specifier: ^6.1.13
         version: 6.1.13(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
