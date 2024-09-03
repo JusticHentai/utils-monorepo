@@ -27,18 +27,12 @@ const upall: CommandOptions = {
 
     const currentPath = path.resolve()
     const pathList = currentPath.split('\\')
+    const index = pathList.indexOf('utils-monorepo')
+    let count = pathList.length - 1 - index
 
-    let count = 0
-    for (const dir of pathList) {
-      if (dir === 'utils-monorepo') {
-        break
-      }
-
-      count++
-    }
-
-    for (let i = 0; i < count; i++) {
+    while (count > 0) {
       cd('..')
+      count--
     }
 
     const command2 = ['git add .', `git commit -m ${message}`, 'git push']
