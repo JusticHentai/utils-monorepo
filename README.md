@@ -1,6 +1,6 @@
-# Utils-monorepo
+# testName-monorepo
 
-continuous integration utils list
+continuous integration testName list
 
 ## [frame-animation](https://github.com/JusticHentai/frame-animation)
 
@@ -18,22 +18,22 @@ A tool that can parse custom configuration files like `xxx.config.js | ts | json
 
 类型判断库
 
-## [scss-utils](https://github.com/JusticHentai/scss-utils)
+## [scss-testName](https://github.com/JusticHentai/scss-testName)
 
-scss style utils
+scss style testName
 
-## [Types-utils](https://github.com/JusticHentai/types-utils)
+## [Types-testName](https://github.com/JusticHentai/types-testName)
 
 类型工具库
 
-## [utils-debug](https://github.com/JusticHentai/utlis-debug)
+## [testName-debug](https://github.com/JusticHentai/utlis-debug)
 
-simple program for debug in utils-monorepo
+simple program for debug in testName-monorepo
 
-## [utils-debug-node](https://github.com/JusticHentai/utils-debug-node/tree/4d462ee799243d6ad12fe809818ddb6477fe436c)
+## [testName-debug-node](https://github.com/JusticHentai/testName-debug-node/tree/4d462ee799243d6ad12fe809818ddb6477fe436c)
 
-node env for utils-debug
+node env for testName-debug
 
-## [Utils-template](https://github.com/JusticHentai/utils-template)
+## [testName-template](https://github.com/JusticHentai/testName-template)
 
 工具包模板

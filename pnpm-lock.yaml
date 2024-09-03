@@ -188,6 +188,10 @@ importers:
         version: 5.5.4
 
   packages/dom:
+    dependencies:
+      '@justichentai/is':
+        specifier: ^1.0.7
+        version: 1.0.7
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
