@@ -35,7 +35,11 @@ const upall: CommandOptions = {
       count--
     }
 
-    const command2 = ['git add .', `git commit -m ${message}`, 'git push']
+    const command2 = [
+      'git add .',
+      `git commit -m ${message || '普通更新'}`,
+      'git push',
+    ]
 
     await shell(command2)
 
