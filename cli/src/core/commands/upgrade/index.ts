@@ -10,6 +10,7 @@ const upgrade: CommandOptions = {
       'git submodule update --init',
       'git submodule foreach --recursive git checkout main',
       'git submodule foreach --recursive git pull',
+      'git submodule foreach --recursive pnpm build',
     ]
 
     await shell(commands)
