@@ -17,10 +17,10 @@ const upall: CommandOptions = {
     const { message } = options
 
     const commands = [
-      'git submodule foreach --recursive git add .',
-      `git submodule foreach --recursive git commit -m ${message || '普通更新'}`,
-      'git submodule foreach --recursive git push',
-      'git submodule foreach --recursive pnpm build',
+      'git add .',
+      `git commit -m ${message || '普通更新'}`,
+      'git push',
+      'pnpm build',
     ]
 
     await shell(commands)
