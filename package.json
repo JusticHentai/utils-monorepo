@@ -9,7 +9,7 @@
     "cli:init": "pnpm run -F @justichentai/cli link:global"
   },
   "devDependencies": {
-    "@justichentai/lint": "^1.0.1",
+    "@justichentai/lint": "^1.0.4",
     "eslint": "^9.9.1",
     "prettier": "^3.3.3"
   }
