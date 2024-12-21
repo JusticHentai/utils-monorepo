@@ -62,7 +62,4 @@
 	path = packages/style
 	url = git@github.com:JusticHentai/style.git
 	branch = main
-[submodule "packages/utils-template-esbuild"]
-	path = packages/utils-template-esbuild
-	url = git@github.com:JusticHentai/utils-template-esbuild.git
-	branch = main
+
