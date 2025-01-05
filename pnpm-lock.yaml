@@ -63,6 +63,9 @@ importers:
       '@justichentai/style':
         specifier: workspace:*
         version: link:../packages/style
+      '@justichentai/surveillance':
+        specifier: workspace:*
+        version: link:../packages/surveillance
       '@justichentai/utils-template':
         specifier: workspace:*
         version: link:../packages/utils-template
@@ -595,6 +598,28 @@ importers:
       styled-components:
         specifier: ^6.1.13
         version: 6.1.13(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+    devDependencies:
+      '@swc/core':
+        specifier: ^1.10.1
+        version: 1.10.1(@swc/helpers@0.5.15)
+      '@swc/helpers':
+        specifier: ^0.5.15
+        version: 0.5.15
+      esbuild:
+        specifier: ^0.24.2
+        version: 0.24.2
+      tsup:
+        specifier: ^8.3.5
+        version: 8.3.5(@swc/core@1.10.1(@swc/helpers@0.5.15))(postcss@8.4.49)(typescript@5.7.2)
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
+
+  packages/surveillance:
+    dependencies:
+      '@justichentai/logger':
+        specifier: workspace:*
+        version: link:../logger
     devDependencies:
       '@swc/core':
         specifier: ^1.10.1

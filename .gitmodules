@@ -63,3 +63,7 @@
 	url = git@github.com:JusticHentai/style.git
 	branch = main
 
+[submodule "packages/surveillance"]
+	path = packages/surveillance
+	url = git@github.com:JusticHentai/surveillance.git
+	branch = main
