@@ -30,10 +30,6 @@
 	path = packages/leetcode
 	url = git@github.com:JusticHentai/leetcode.git
 	branch = main
-[submodule "packages/dom"]
-	path = packages/dom
-	url = git@github.com:JusticHentai/dom.git
-	branch = main
 [submodule "packages/handwritten"]
 	path = packages/handwritten
 	url = git@github.com:JusticHentai/handwritten.git
@@ -62,8 +58,11 @@
 	path = packages/style
 	url = git@github.com:JusticHentai/style.git
 	branch = main
-
 [submodule "packages/surveillance"]
 	path = packages/surveillance
 	url = git@github.com:JusticHentai/surveillance.git
+	branch = main
+[submodule "packages/element-utils"]
+	path = packages/element-utils
+	url = git@github.com:JusticHentai/element-utils.git
 	branch = main
