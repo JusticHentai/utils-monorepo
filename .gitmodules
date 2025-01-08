@@ -66,3 +66,7 @@
 	path = packages/element-utils
 	url = git@github.com:JusticHentai/element-utils.git
 	branch = main
+[submodule "packages/js-utils"]
+	path = packages/js-utils
+	url = git@github.com:JusticHentai/js-utils.git
+	branch = main
