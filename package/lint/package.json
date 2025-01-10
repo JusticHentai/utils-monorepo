@@ -1,0 +1,31 @@
+{
+  "name": "@justichentai/lint",
+  "version": "1.0.3",
+  "description": "各种 lint 配置",
+  "license": "ISC",
+  "author": "justichentai",
+  "type": "module",
+  "files": [
+    "eslint.config.js",
+    "prettier.config.js",
+    ".prettierrc",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "@eslint/js": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react-hooks": "5.1.0-rc-fb9a90fa48-20240614",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^15.9.0",
+    "prettier-plugin-organize-imports": "^4.0.0",
+    "prettier-plugin-packagejson": "^2.5.2",
+    "typescript-eslint": "^8.3.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.9.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}

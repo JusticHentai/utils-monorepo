@@ -1,0 +1,37 @@
+{
+  "name": "@justichentai/config-parsing",
+  "version": "1.0.3",
+  "description": "一个用于解析自定义配置文件的工具 例如解析 xxx.config.js | ts | json; A tool that can parse custom configuration files like xxx.config.js | ts | json",
+  "license": "ISC",
+  "author": "justichentai",
+  "type": "module",
+  "main": "dist/utils.js",
+  "types": "dist/utils.d.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "prepublish": "pnpm build"
+  },
+  "dependencies": {
+    "fs-extra": "^10.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-runtime": "^7.24.7",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "core-js": "^3.38.0",
+    "rollup": "^4.20.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "typescript": "^5.5.4"
+  }
+}
