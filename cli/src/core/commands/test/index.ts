@@ -1,6 +1,5 @@
 import { CommandOptions } from '@/core/types'
 import path from 'path'
-import setREADME from '../i/lib/setREADME'
 
 const test: CommandOptions = {
   name: 'test',
@@ -9,7 +8,17 @@ const test: CommandOptions = {
     console.log('路径: ', path.resolve())
     console.log('参数: ', options)
 
-    await setREADME('testName')
+    enum LOG {
+      INFO = 'info',
+      DEBUG = 'debug',
+      WARN = 'warn',
+      ERROR = 'error',
+    }
+
+    for (const key in LOG) {
+      console.log('key: ', key)
+      console.log('value: ', LOG[key as keyof typeof LOG])
+    }
   },
 }
 

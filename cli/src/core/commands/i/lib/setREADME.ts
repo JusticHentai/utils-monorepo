@@ -7,7 +7,7 @@ import write from '@/utils/fs/write'
 const setREADME = async (name: string) => {
   const oldMd = await read('README.md')
 
-  const md = oldMd.replace(/utils/gi, name)
+  const md = oldMd.replace(/utils-template/gi, name)
 
   await write('README.md', md)
 }

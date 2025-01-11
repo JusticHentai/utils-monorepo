@@ -1,0 +1,9 @@
+# Building output
+node_modules
+dist
+
+# Log files
+pnpm-debug.log*
+
+# Editor directories and files
+.vscode
