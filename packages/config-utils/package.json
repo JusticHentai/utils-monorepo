@@ -1,7 +1,7 @@
 {
-  "name": "@justichentai/lint",
-  "version": "1.0.3",
-  "description": "各种 lint 配置",
+  "name": "@justichentai/config-utils",
+  "version": "1.0.0",
+  "description": "各种配置",
   "license": "ISC",
   "author": "justichentai",
   "type": "module",
