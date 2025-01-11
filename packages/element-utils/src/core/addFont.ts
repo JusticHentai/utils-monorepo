@@ -1,4 +1,4 @@
-import log from '../logger'
+import { log } from '@justichentai/js-utils'
 
 /**
  * 添加字体

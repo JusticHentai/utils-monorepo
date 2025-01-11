@@ -1,4 +1,4 @@
-import { debounce } from '@justichentai/math'
+import debounce from '@/core/debounce'
 import { InnerOptions } from '../types'
 import update from './update'
 

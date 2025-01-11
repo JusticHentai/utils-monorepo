@@ -1,5 +1,3 @@
-import { isUndefined } from '@justichentai/is'
-
 /**
  * 判断是否支持某些 css
  */
@@ -9,7 +7,7 @@ export default function isSupportCss(css: Record<string, string>): boolean {
 
 const supportCss = (key: string, value: string) => {
   if (typeof window !== 'undefined' && window.CSS && window.CSS.supports) {
-    if (!isUndefined(value)) {
+    if (value) {
       return window.CSS.supports(key, value)
     }
 
