@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@justichentai/components": "workspace:*",
-    "@justichentai/style": "workspace:*",
-    "@justichentai/surveillance": "workspace:*",
     "@justichentai/utils-template": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
