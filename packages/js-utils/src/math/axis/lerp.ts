@@ -7,6 +7,6 @@
  * @n 当前选点到低点的距离 范围[0,1]
  * @returns {number}
  */
-export function lerp(a: number, b: number, n: number): number {
+export default function lerp(a: number, b: number, n: number): number {
   return (1 - n) * a + n * b
 }

@@ -1,7 +1,7 @@
 {
   "name": "@justichentai/js-utils",
   "version": "1.0.0",
-  "description": "工具包模板",
+  "description": "js 工具包",
   "license": "ISC",
   "author": "justichentai",
   "type": "module",

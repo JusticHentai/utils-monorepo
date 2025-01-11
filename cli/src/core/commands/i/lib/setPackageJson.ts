@@ -12,7 +12,7 @@ const setPackageJson = async (name: string) => {
 
   const setInfo = {
     name: `@justichentai/${name}`,
-    dependencies: name,
+    description: name,
   }
 
   const newInfo = { ...oldInfo, ...setInfo }

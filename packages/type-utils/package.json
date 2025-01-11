@@ -1,7 +1,7 @@
 {
   "name": "@justichentai/type-utils",
   "version": "1.0.0",
-  "description": "类型工具库",
+  "description": "类型工具包",
   "license": "ISC",
   "author": "justichentai",
   "type": "module",

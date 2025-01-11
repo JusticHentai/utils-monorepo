@@ -1,3 +1,3 @@
 {
-  "prettier.configPath": "packages/lint/.prettierrc",
+  "prettier.configPath": "packages/config-utils/.prettierrc",
 }
