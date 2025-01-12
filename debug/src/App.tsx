@@ -1,13 +1,11 @@
-import Components from './components/components'
-import Style from './components/style'
+import ElementUtils from './components/ElementUtils'
 import Template from './components/template'
 
 function App() {
   return (
     <>
-      <Components />
-      <Style />
       <Template />
+      <ElementUtils />
     </>
   )
 }
