@@ -1,11 +1,2 @@
-import { Options } from '@/types'
-
-const defaults: Partial<Options> = {}
-
-export default class Utils {
-  options: Options
-
-  constructor(options: Options = {}) {
-    this.options = { ...defaults, ...options }
-  }
-}
+export { default as Loading } from '@/log/loading'
+export { default as log } from '@/log/log'

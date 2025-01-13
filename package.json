@@ -6,6 +6,7 @@
   "author": "justichentai",
   "type": "module",
   "scripts": {
+    "build": "pnpm run -r build",
     "cli:init": "pnpm run -F @justichentai/cli link:global"
   },
   "devDependencies": {

@@ -6,7 +6,6 @@ export default defineConfig({
   minify: true,
   clean: true,
   dts: true,
-  target: 'es5',
-  external: ['@swc/helpers'],
+  target: 'esnext',
   sourcemap: true,
 })

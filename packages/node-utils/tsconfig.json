@@ -10,11 +10,14 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "lib": ["esnext"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
+  },
+  "ts-node": {
+    "esm": true
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "dist"]
