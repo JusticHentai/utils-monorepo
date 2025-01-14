@@ -17,7 +17,7 @@ export { default as isString } from './is/isString'
 export { default as isWindow } from './is/isWindow'
 
 // log
-export { default as log } from './log'
+export { default as logger } from './logger'
 
 // math
 export { default as Axis2D } from './math/axis/Axis2D'
