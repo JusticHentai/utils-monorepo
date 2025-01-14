@@ -1,2 +1,3 @@
-export { default as Loading } from '@/log/loading'
-export { default as log } from '@/log/log'
+export { default as commandExists } from '@/command-exists'
+export { default as Loading } from '@/logger/loading'
+export { default as logger } from '@/logger/logger'

@@ -1,10 +1,9 @@
-import { log } from './src'
+import { commandExists } from './src'
 
 const test = async () => {
-  log.info('infotest')
-  log.debug('infotest')
-  log.warn('infotest')
-  log.error('infotest')
+  commandExists('git')
+  commandExists('hentai')
+  commandExists('hentai-test')
 }
 
 test()
