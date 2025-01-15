@@ -18,9 +18,15 @@ const shellExec = (command: string): Promise<boolean> => {
     })
 
     child?.on('exit', (code) => {
-      logger.info(`${command} 执行结束`)
+      if (!code) {
+        logger.info(`${command} 执行成功`)
 
-      resolve(!code)
+        resolve(true)
+      } else {
+        logger.error(`${command} 执行失败`)
+
+        resolve(false)
+      }
     })
   })
 }
