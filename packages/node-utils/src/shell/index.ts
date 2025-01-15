@@ -1,5 +1,5 @@
 import { isArray } from '@justichentai/js-utils'
-import shellExec from './shellExec'
+import shellExec from './core/shellExec'
 
 /**
  * 执行一个或多个 shell 命令
