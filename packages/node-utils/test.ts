@@ -1,9 +1,8 @@
-import { commandExists } from './src'
+import { shell } from './src'
 
 const test = async () => {
-  commandExists('git')
-  commandExists('hentai')
-  commandExists('hentai-test')
+  await shell('git add .')
+  await shell('git commit -m test')
 }
 
 test()
