@@ -23,11 +23,11 @@ const shellExec = (command: string): Promise<Result> => {
     })
 
     commandExec?.stdout?.on('data', (str) => {
-      logger.info(str)
+      console.log(str)
     })
 
     commandExec?.stderr?.on('data', (str) => {
-      logger.error(str)
+      console.log(str)
     })
   })
 }
