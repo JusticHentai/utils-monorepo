@@ -9,7 +9,7 @@ const shellExec = (command: string): Promise<Result> => {
     const loading = new Loading()
     loading.start(`执行：${command}`)
 
-    exec(command, (error, stdout, stderr) => {
+    const commandExec = exec(command, (error, stdout, stderr) => {
       if (error) {
         loading.fail(`执行失败：${command}`)
         logger.error('[stderr]: ', stderr)
@@ -21,6 +21,14 @@ const shellExec = (command: string): Promise<Result> => {
 
         resolve([stdout, undefined])
       }
+    })
+
+    commandExec?.stdout?.on('data', (str) => {
+      logger.info(str)
+    })
+
+    commandExec?.stderr?.on('data', (str) => {
+      logger.error(str)
     })
   })
 }
