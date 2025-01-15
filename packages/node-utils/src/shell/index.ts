@@ -1,6 +1,9 @@
 import { isArray } from '@justichentai/js-utils'
 import shellExec from './shellExec'
 
+/**
+ * 执行一个或多个 shell 命令
+ */
 const shell = async (command: string | string[]) => {
   if (!isArray(command)) {
     return await shellExec(command)
