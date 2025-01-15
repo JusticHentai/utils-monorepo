@@ -1,12 +1,12 @@
 import { isArray } from '@justichentai/js-utils'
-import shellExec, { Result } from './shell'
+import shellExec from './shellExec'
 
 const shell = async (command: string | string[]) => {
   if (!isArray(command)) {
     return await shellExec(command)
   }
 
-  const res: Result[] = []
+  const res: boolean[] = []
 
   for (const item of command) {
     const currentRes = await shellExec(item)
