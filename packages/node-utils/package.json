@@ -20,7 +20,6 @@
   "dependencies": {
     "@justichentai/js-utils": "workspace:*",
     "chalk": "^5.4.1",
-    "esbuild": "^0.24.2",
     "fs-extra": "^11.2.0",
     "ora": "^8.1.1"
   },
@@ -29,6 +28,7 @@
     "@swc/helpers": "^0.5.15",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.5",
+    "esbuild": "^0.24.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

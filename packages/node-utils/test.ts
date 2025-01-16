@@ -1,9 +1,8 @@
-import { shell } from './src'
+import { read } from './src'
 
 const test = async () => {
-  await shell('git add .')
-  await shell('git commit -m test')
-  await shell('git push')
+  const res = await read('package.json')
+  console.log(res)
 }
 
 test()
