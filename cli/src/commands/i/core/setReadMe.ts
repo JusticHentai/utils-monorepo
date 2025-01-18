@@ -10,7 +10,7 @@ const setReadMe = async (name: string) => {
     process.exit()
   }
 
-  const reg = /utils-template/i
+  const reg = /utils-template/gi
   const newInfo = info.replace(reg, `${AUTHOR}/${name}`)
 
   const writeRes = await write(path, newInfo)
