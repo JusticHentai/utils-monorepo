@@ -4,6 +4,7 @@ import i from '@/commands/i'
 import u from '@/commands/u'
 import { Command } from 'commander'
 import md from './commands/md'
+import p from './commands/p'
 
 const program = new Command()
 
@@ -20,5 +21,7 @@ program
   .command('md [obsidianPath]')
   .description('同步 Obsidian 文档到 README.md')
   .action(md)
+
+program.command('p [version]').description('发布到 npm').action(p)
 
 program.parse(process.argv)
