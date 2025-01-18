@@ -1,4 +1,4 @@
-import { log } from '@justichentai/js-utils'
+import { logger } from '@justichentai/js-utils'
 
 /**
  * 添加字体
@@ -17,7 +17,7 @@ const loadFont = async (
         resolve([font, undefined])
       })
       .catch((err) => {
-        log.error('[preloadFont] err: ', err, url)
+        logger.error('[preloadFont] err: ', err, url)
         resolve([undefined, err])
       })
   })
