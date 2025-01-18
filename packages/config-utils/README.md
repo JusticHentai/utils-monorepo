@@ -1,3 +1,3 @@
-## lint-config
+# Config-utils
 
-eslint 和 prettier 配置 2024.8.15 最新
+- 配置文件集合

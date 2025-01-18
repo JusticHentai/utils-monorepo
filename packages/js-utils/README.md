@@ -1,3 +1,3 @@
-# js-utils-template
+# Js-utils
 
-工具包模板
+- js 相关工具

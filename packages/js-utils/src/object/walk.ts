@@ -14,7 +14,7 @@ const walk = async (
     const value = obj[key]
 
     if (isObject(value)) {
-      walk(value, cb, parent.concat([key]))
+      await walk(value, cb, parent.concat([key]))
     } else {
       obj[key] = await cb({
         key,
