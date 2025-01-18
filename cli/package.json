@@ -15,6 +15,7 @@
     "test": "tsup && hentai test"
   },
   "dependencies": {
+    "@justichentai/js-utils": "workspace:*",
     "@justichentai/node-utils": "workspace:*",
     "commander": "^12.1.0"
   },

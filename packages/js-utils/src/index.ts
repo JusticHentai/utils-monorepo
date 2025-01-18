@@ -30,6 +30,7 @@ export { default as random } from './math/random'
 // object
 export { default as deepMerge } from './object/deepMerge'
 export { default as pick } from './object/pick'
+export { default as walk } from './object/walk'
 
 // time
 export { default as getLocalTime } from './time/getLocalTime'

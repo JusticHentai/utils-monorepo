@@ -1,25 +1,27 @@
 # Cli
 
-JusticHentai 的 cli
+- `utils-monorepo` 脚手架
 
-## 环境
+## I
 
-先安装 github cli
+- 利用 `utils-template` 在 `packages` 内新建名字为 `name` 的新工具
 
-## 使用
+```ts
+hentai i <name>
+```
 
-### U
+## U
 
-git 更新三连
-`message` 为 `git commit -m [message]`
-```bash
+- `git` 更新三连
+
+```ts
 hentai u [message]
 ```
 
-### I
+## Md
 
-从模板安装项目
-`name` 为项目名
-```bash
-hentai i <name>
+- 同步 `Obsidian` 文档到 `README.md`
+
+```ts
+hentai md [obsidianPath]
 ```

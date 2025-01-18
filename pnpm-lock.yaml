@@ -20,6 +20,9 @@ importers:
 
   cli:
     dependencies:
+      '@justichentai/js-utils':
+        specifier: workspace:*
+        version: link:../packages/js-utils
       '@justichentai/node-utils':
         specifier: workspace:*
         version: link:../packages/node-utils
