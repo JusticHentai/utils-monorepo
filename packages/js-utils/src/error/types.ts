@@ -9,5 +9,4 @@ export type ErrorCallback = (errorLog: string) => any
 export interface Options {
   runtime?: ErrorCallback
   reject?: ErrorCallback
-  consoleError?: ErrorCallback
 }
