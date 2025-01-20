@@ -1,4 +1,4 @@
-import debounce from '@/core/debounce'
+import debounce from '@/interact/debounce'
 import { InnerOptions } from '../types'
 import update from './update'
 

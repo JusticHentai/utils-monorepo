@@ -1,7 +1,7 @@
 {
-  "name": "@justichentai/components",
+  "name": "@justichentai/react-utils",
   "version": "1.0.0",
-  "description": "组件库",
+  "description": "react-utils",
   "license": "ISC",
   "author": "justichentai",
   "type": "module",
@@ -14,9 +14,11 @@
   ],
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "prepublish": "pnpm build"
   },
   "dependencies": {
+    "@justichentai/element-utils": "workspace:*",
     "@justichentai/js-utils": "workspace:*"
   },
   "devDependencies": {
@@ -24,9 +26,7 @@
     "@swc/helpers": "^0.5.15",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "core-js": "^3.38.1",
     "esbuild": "^0.24.2",
-    "styled-components": "^6.1.13",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
