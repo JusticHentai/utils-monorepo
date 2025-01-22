@@ -1,27 +1,21 @@
 #! /usr/bin/env node
 
-import i from '@/commands/i'
-import u from '@/commands/u'
 import { Command } from 'commander'
-import md from './commands/md'
-import p from './commands/p'
+import gui from './commands/gui'
+import { COMMAND_CONFIG } from './constants'
 
-const program = new Command()
+const init = () => {
+  const program = new Command()
 
-program.version('1.0.0').description('utils-monorepo 脚手架')
+  program.version('1.0.0').description('utils-monorepo 脚手架')
 
-program.command('u [message]').description('git 更新三连').action(u)
+  program.command('gui').description('操作面板').action(gui)
 
-program
-  .command('i <name>')
-  .description('利用 utils-template 在 packages 内新建名字为 name 的新工具')
-  .action(i)
+  for (const { command, description, action } of COMMAND_CONFIG) {
+    program.command(command).description(description).action(action)
+  }
 
-program
-  .command('md [obsidianPath]')
-  .description('同步 Obsidian 文档到 README.md')
-  .action(md)
+  program.parse(process.argv)
+}
 
-program.command('p [version]').description('发布到 npm').action(p)
-
-program.parse(process.argv)
+init()

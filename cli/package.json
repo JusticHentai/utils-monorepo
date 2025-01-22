@@ -17,7 +17,8 @@
   "dependencies": {
     "@justichentai/js-utils": "workspace:*",
     "@justichentai/node-utils": "workspace:*",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "inquirer": "^12.3.2"
   },
   "devDependencies": {
     "@types/node": "^22.2.0",
