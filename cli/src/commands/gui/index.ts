@@ -18,12 +18,7 @@ const gui = async () => {
 
   const { required, optional } = parseCommand(command.command)
 
-  console.log({
-    required,
-    optional,
-  })
-
-  // 顺序不对 先用着 规定先输入必填参数 再输入可选参数
+  // 规定先输入必填参数 再输入可选参数
   const arg = []
 
   for (const requiredArg of required) {
