@@ -1,6 +1,6 @@
+import { mergeChildren } from '@justichentai/react-utils'
 import { ForwardedRef, forwardRef, MouseEvent, useRef } from 'react'
 import useMergeProps from '../hooks/useMergeProps'
-import mergeChildren from '../utils/mergeChildren'
 import { defaultProps, name } from './config'
 import { ButtonProps } from './interface'
 import ButtonStyle from './style'
@@ -14,11 +14,9 @@ const Button = (
   const { onClick, disabled, loading, icon, children, htmlType, ...rest } =
     props
 
-  // 父组件传入一个 ref，子组件将元素挂到这个变量上给父组件使用
   const innerButtonRef = useRef<HTMLButtonElement>(null)
   const buttonRef = ref || innerButtonRef
 
-  // 点击事件处理
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     if (loading || disabled) {
       e?.preventDefault?.()
