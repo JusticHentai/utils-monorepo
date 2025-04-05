@@ -1,3 +1,4 @@
+import isArray from '@/is/isArray'
 import isObject from '@/is/isObject'
 
 const walk = async (
@@ -13,7 +14,7 @@ const walk = async (
   for (const key in obj) {
     const value = obj[key]
 
-    if (isObject(value)) {
+    if (isObject(value) || isArray(value)) {
       await walk(value, cb, parent.concat([key]))
     } else {
       obj[key] = await cb({
