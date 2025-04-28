@@ -1,6 +1,6 @@
-import { COMMAND_CONFIG, CommandConfig } from '@/constants'
 import { logger, parseCommand } from '@justichentai/node-utils'
 import inquirer from 'inquirer'
+import { COMMAND_CONFIG, CommandConfig } from '../../constants'
 
 const gui = async () => {
   const choices = COMMAND_CONFIG.map((config) => config.command)
