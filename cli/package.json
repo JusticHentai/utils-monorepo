@@ -9,8 +9,9 @@
     "hentai": "./dist/index.mjs"
   },
   "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
     "link:global": "pnpm build && pnpm link --global",
-    "start": "tsx ./src/index.ts",
     "test": "tsup && hentai test"
   },
   "dependencies": {

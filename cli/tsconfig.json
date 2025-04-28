@@ -14,10 +14,7 @@
     "noEmit": true,
     "lib": ["esnext"],
     "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "baseUrl": "."
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "./dist"]
