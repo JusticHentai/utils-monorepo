@@ -1,3 +1,4 @@
+import { classNames as cs } from '@justichentai/element-utils'
 import { useMemo } from 'react'
 import BaseProps from '../types/BaseProps'
 
@@ -5,14 +6,25 @@ export default function useMergeProps<PropsType extends BaseProps>(
   componentProps: PropsType,
   defaultProps: Partial<PropsType>,
   globalComponentProps: Partial<PropsType>
-): PropsType {
+): Omit<PropsType, 'className'> & { className: string } {
   const { ignoreGlobalComponentProps } = componentProps
 
   return useMemo(() => {
+    const { className: componentClassName, ...componentRest } = componentProps
+    const { className: defaultClassName, ...defaultRest } = defaultProps
+    const { className: globalClassName, ...globalRest } = globalComponentProps
+
+    const mergeClassName = cs(
+      componentClassName,
+      defaultClassName,
+      ignoreGlobalComponentProps ? null : globalClassName
+    )
+
     return {
-      ...defaultProps,
-      ...(ignoreGlobalComponentProps ? {} : globalComponentProps),
-      ...componentProps,
+      ...defaultRest,
+      ...(ignoreGlobalComponentProps ? {} : globalRest),
+      ...componentRest,
+      className: mergeClassName,
     }
   }, [
     componentProps,

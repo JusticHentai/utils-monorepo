@@ -5,8 +5,8 @@ export interface ContainerProps {
   size?: 'x' | 'y' | 'xy' | 'none'
 }
 
-const container = (props: ContainerProps) => {
-  const { type = 'r', size = 'x' } = props
+const container = (props?: ContainerProps) => {
+  const { type = 'r', size = 'x' } = props || {}
 
   const typeMap = {
     r: css`

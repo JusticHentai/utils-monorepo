@@ -1,5 +1,6 @@
 export { default as Canvas } from './canvas'
 export { default as addClipboard } from './element/addClipboard'
+export { default as classNames } from './element/classNames'
 export { default as isElementChildren } from './element/isElementChildren'
 export { default as isPureElement } from './element/isPureElement'
 export { default as isScrollBottom } from './element/isScrollBottom'

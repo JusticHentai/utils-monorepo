@@ -1,11 +1,15 @@
-import { CSSProperties, ReactNode } from 'react'
+import { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react'
 
 /**
  * 基础类型
  */
-export default interface BaseProps {
-  style?: CSSProperties // css 类型
-  className?: string // 类名
+type BaseProps = Omit<
+  DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>,
+  'className' | 'ref'
+> & {
   children?: ReactNode // 子元素
+  className?: string | string[] // 类名
   ignoreGlobalComponentProps?: boolean // 是否忽略全局 props
 }
+
+export default BaseProps
