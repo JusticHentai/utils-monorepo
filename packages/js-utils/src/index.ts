@@ -28,6 +28,7 @@ export { default as lerp } from './math/axis/lerp'
 export { default as Point } from './math/axis/Point'
 export { default as clamp } from './math/clamp'
 export { default as random } from './math/random'
+export { default as truncate } from './math/truncate'
 
 // object
 export { default as merge } from './object/merge'
