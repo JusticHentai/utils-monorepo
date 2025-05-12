@@ -26,6 +26,7 @@ export { default as getDistance } from './math/axis/getDistance'
 export { default as getPosition } from './math/axis/getPosition'
 export { default as lerp } from './math/axis/lerp'
 export { default as Point } from './math/axis/Point'
+export { default as clamp } from './math/clamp'
 export { default as random } from './math/random'
 
 // object
