@@ -14,6 +14,7 @@ const getTimezone = (ts: number, timezone: Intl.LocalesArgument = 'zh-CN') => {
     hour: '2-digit', // 两位数字小时（00-23）
     minute: '2-digit', // 两位数字分钟（00-59）
     second: '2-digit', // 两位数字秒数（00-59）
+    hour12: false, // 使用24小时制
   })
     .format(date)
     .replace(/\//g, '.') // 将日期分隔符从/替换为.
