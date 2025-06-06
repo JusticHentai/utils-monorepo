@@ -31,6 +31,7 @@ export { default as random } from './math/random'
 export { default as truncate } from './math/truncate'
 
 // object
+export { default as deepClone } from './object/deepClone'
 export { default as merge } from './object/merge'
 export { default as pick } from './object/pick'
 export { default as walk } from './object/walk'
