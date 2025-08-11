@@ -1,26 +1,26 @@
-import debounce from '@/interact/debounce'
-import { InnerOptions } from '../types'
+import debounce from '../../debounce'
+import { Options } from '../interface'
 import update from './update'
 
 /**
  * 设置 resize 事件
  */
-export default function setResizeEvent(options: InnerOptions) {
-  if (options.debounce) {
-    const { duration, immediate } = options.debounce
+const setResizeEvent = (options: Options) => {
+  const { debounce: duration } = options
 
-    const myUpdate = debounce({
-      cb: update,
-      duration,
-      immediate,
-    })
+  if (!duration) {
+    window.addEventListener('resize', () => update(options))
 
-    window.addEventListener('resize', () => {
-      myUpdate(options)
-    })
-  } else {
-    window.addEventListener('resize', () => {
-      update(options)
-    })
+    return
   }
+
+  const debounceUpdate = debounce({
+    cb: update,
+    duration,
+    immediate: false,
+  })
+
+  window.addEventListener('resize', () => debounceUpdate(options))
 }
+
+export default setResizeEvent
