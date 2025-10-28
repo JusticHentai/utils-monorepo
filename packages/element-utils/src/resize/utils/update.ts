@@ -1,29 +1,25 @@
-import { InnerOptions } from '../types'
-import getCurrentPreset from './getCurrentPreset'
+import { Options } from '../interface'
 import getCurrentRatio from './getCurrentRatio'
-import handleCb from './handleCb'
+import setFullScreen from './setFullScreen'
 import setRemSize from './setRemSize'
 
-export default function update(options: InnerOptions) {
-  const { resizePreset, resizeType, fullScreen } = options
-
-  // 获取当前屏幕状态的预设
-  const preset = getCurrentPreset(resizePreset)
+const update = (options: Options) => {
+  const { preset, type, fullScreen, cb } = options
 
   // 获取当前适配比率
   const ratio = getCurrentRatio({
     preset,
-    resizeType,
+    type,
   })
 
   // 设置适配比率
   setRemSize(ratio)
 
   // 执行回调函数
-  handleCb({ ...options, ratio })
+  cb?.({ ...options, ratio })
 
-  // 保证各种浏览器全屏高度适配 防止动态变更
-  if (fullScreen?.style?.height) {
-    fullScreen.style.height = `${window.innerHeight}px`
-  }
+  // 设置 body 全屏高度
+  fullScreen && setFullScreen()
 }
+
+export default update

@@ -1,16 +1,7 @@
 /**
- * width 宽度
- * height 高度
- */
-export interface GetScreenSizeResult {
-  width: number
-  height: number
-}
-
-/**
  * 获取当前屏幕尺寸
  */
-export default function getScreenSize(): GetScreenSizeResult {
+const getScreenSize = () => {
   const html = document.querySelector('html') as HTMLHtmlElement
 
   const width = html.clientWidth
@@ -21,3 +12,5 @@ export default function getScreenSize(): GetScreenSizeResult {
     height,
   }
 }
+
+export default getScreenSize
