@@ -2,6 +2,9 @@ import addImage, { AddImageOptions } from './core/addImage'
 import addText, { AddTextOptions } from './core/addText'
 import initCanvas, { InitCanvasOptions } from './core/initCanvas'
 
+/**
+ * 简易化 canvas 操作
+ */
 export default class Canvas {
   canvasElement!: HTMLCanvasElement
 

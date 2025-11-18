@@ -22,7 +22,7 @@ export const COMMAND_CONFIG: Array<CommandConfig> = [
   },
   {
     command: 'md [obsidianPath]',
-    description: '同步 Obsidian 文档到 README.md',
+    description: '根据 ts 文件生成 README.md 文件并同步到 obsidian',
     action: md,
   },
   {
