@@ -1,6 +1,6 @@
 import { sleep } from '@justichentai/js-utils'
 
-const getFPS = async () => {
+const getFps = async () => {
   let fps = 0
 
   const startTime = Date.now()
@@ -23,4 +23,4 @@ const getFPS = async () => {
   return fps
 }
 
-export default getFPS
+export default getFps
