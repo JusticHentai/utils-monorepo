@@ -1,0 +1,114 @@
+import tsconfig from '../../../tsconfig.json'
+import baseConfig from '../../../packages/config-utils/tsconfig.base.json'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# tsconfig.base.json
+
+- 基础 ts 配置文件
+
+## 外部使用
+
+<CodeOrSourceMdx language="json">{JSON.stringify(tsconfig, null, 2)}</CodeOrSourceMdx>
+
+- extend
+  - 继承基础包配置
+- include
+  - 将所有 .d.ts 文件全局声明在当前项目中
+
+## 配置
+
+<CodeOrSourceMdx language="json">{JSON.stringify(baseConfig, null, 2)}</CodeOrSourceMdx>
+
+### 基础编译目标
+- **`target: "ESNext"`**
+  - 编译目标为最新的 ECMAScript 版本
+  - 生成代码使用最新特性，需现代运行时支持
+
+- **`useDefineForClassFields: true`**
+  - 使用标准类字段语义（ES2022）
+  - 类字段在构造函数执行前初始化，符合标准
+  - 旧版 class 内初始化属性，编译后会移到 constructor 中初始化，不符合标准
+
+- **`lib: ["ESNext", "DOM", "DOM.Iterable"]`**
+  - 包含的类型定义库：
+    - `ESNext`：最新 ECMAScript API
+    - `DOM`：浏览器 DOM API
+    - `DOM.Iterable`：可迭代 DOM 集合（如 for ... of）
+
+- **`module: "ESNext"`**
+  - 使用最新的 ES 模块语法（import/export）
+  - 适合现代打包工具（Vite、Webpack 等）
+
+### 类型检查
+- **`skipLibCheck: true`**
+  - 跳过对声明文件（.d.ts）的类型检查
+  - 加快编译，减少第三方库类型错误影响
+
+### 模块解析（Bundler 模式）
+- **`moduleResolution: "bundler"`**
+  - 使用打包工具友好的模块解析
+  - 支持扩展名导入（如 `.ts`、`.tsx`）
+  - 旧版是 node 模块解析，会依次解析路径，直到找到文件为止，性能不好
+
+- **`allowImportingTsExtensions: true`**
+  - 允许在导入时使用 `.ts`、`.tsx` 等扩展名
+  - 兼容部分场景
+
+- **`isolatedModules: true`**
+  - 确保每个文件可独立编译
+  - 提升构建工具并行处理能力，避免跨文件依赖
+
+- **`moduleDetection: "force"`**
+  - 强制将所有文件视为模块
+  - 即使没有 import/export，也按模块处理
+
+### 输出控制
+- **`noEmit: true`**
+  - 不生成 JavaScript 文件
+  - 仅进行类型检查，输出由打包工具处理
+
+### JSX 支持
+- **`jsx: "react-jsx"`**
+  - 使用 React 17+ 的新 JSX 转换
+  - 自动从 `react/jsx-runtime` 导入，无需手动 `import React`
+
+### 辅助函数
+- **`importHelpers: true`**
+  - 从 `tslib` 导入辅助函数（如 `__extends`、`__spreadArray`）
+  - 减小输出体积，避免重复代码
+
+### 模块导入
+- **`allowSyntheticDefaultImports: true`**
+  - 允许从没有默认导出的模块中使用默认导入，兼容 cjs 和其他
+  - 例如：`import React from 'react'`（即使 `react` 没有默认导出）
+
+### 路径解析
+- **`baseUrl: "."`**
+  - 设置模块解析的基础路径为当前目录
+  - 用于配置 `paths` 路径映射
+
+### 严格模式
+- **`strict: true`**
+  - 启用所有严格类型检查选项，包括：
+    - `strictNullChecks`、`strictFunctionTypes`、`strictBindCallApply`、`strictPropertyInitialization`、`noImplicitThis`、`alwaysStrict`
+
+### 代码质量检查
+- **`noUnusedLocals: true`**
+  - 禁止未使用的局部变量，编译时报错
+
+- **`noUnusedParameters: true`**
+  - 禁止未使用的函数参数，编译时报错
+
+- **`noFallthroughCasesInSwitch: true`**
+  - 禁止 switch 语句中的 case 穿透（缺少 break）
+  - 要求每个 case 明确处理或使用 break/return
+
+- **`forceConsistentCasingInFileNames: true`**
+  - 强制文件名大小写一致
+  - 避免跨平台（Windows/macOS/Linux）的大小写问题
+
+### 排除选项 (exclude)
+
+- **`exclude: ["**/node_modules/", "**/dist"]`**
+  - 排除 `node_modules` 和 `dist` 目录
+  - 不编译这些目录中的文件，提升性能

@@ -9,8 +9,7 @@
     "build": "pnpm run -r build",
     "cli": "tsx ./cli/src/index.ts",
     "cli:init": "pnpm run -F @justichentai/cli link:global",
-    "md": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "md": "storybook dev -p 6006"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "4.1.3",
