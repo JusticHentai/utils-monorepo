@@ -1,0 +1,19 @@
+import NPMRC from '../../packages/config-utils/.npmrc?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .npmrc
+
+`.npmrc` 文件用于配置 npm 的注册表和访问权限
+
+## 配置
+
+<CodeOrSourceMdx language="bash">
+  {NPMRC}
+</CodeOrSourceMdx>
+
+- `registry` 注册表地址
+  - `https://registry.npmjs.org/` 使用官网的 `registry` 地址
+- `always-auth` 是否总是进行身份验证
+  - `true` 总是进行身份验证
+- `access` 访问权限
+  - `public` 避免每次发布时手动指定 --access public

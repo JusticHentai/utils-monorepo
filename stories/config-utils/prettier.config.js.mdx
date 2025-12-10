@@ -1,0 +1,172 @@
+import PrettierConfig from '../../packages/config-utils/prettier.config.js?raw'
+import PrettierUsage from '../../prettier.config.js?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# prettier.config.js
+
+`.prettier.config.js` 文件用于配置 prettier 的代码格式化规则
+
+
+## 外部使用
+
+<CodeOrSourceMdx language="javascript">
+  {PrettierUsage}
+</CodeOrSourceMdx>
+
+## 配置
+
+<CodeOrSourceMdx language="javascript">
+  {PrettierConfig}
+</CodeOrSourceMdx>
+
+#### `printWidth: 80`
+- **作用**：指定每行代码的最大字符数，超过此长度会自动换行
+- **示例**：
+  ```javascript
+  // 超过 80 个字符会自动换行
+  const veryLongVariableName = someFunctionCall(parameter1, parameter2, parameter3)
+  // 格式化后：
+  const veryLongVariableName = someFunctionCall(
+    parameter1,
+    parameter2,
+    parameter3
+  )
+  ```
+
+#### `tabWidth: 2`
+- **作用**：指定缩进使用的空格数，设置为 2 表示使用 2 个空格缩进
+- **示例**：
+  ```javascript
+  // 使用 2 个空格缩进
+  function example() {
+    if (condition) {
+      return true
+    }
+  }
+  ```
+
+### `useTabs: false`
+- **作用**：使用空格而不是 Tab 字符进行缩进
+- **说明**：与 `tabWidth` 配合使用，确保代码在不同编辑器中的显示一致
+- **示例**：
+  ```javascript
+  // 使用空格缩进（不是 Tab 字符）
+  const obj = {
+    key: 'value'
+  }
+  ```
+
+### `semi: false`
+- **作用**：不在语句末尾添加分号
+- **示例**：
+  ```javascript
+  // 格式化后不添加分号
+  const name = 'John'
+  const age = 30
+  function greet() {
+    return 'Hello'
+  }
+  ```
+
+### `singleQuote: true`
+- **作用**：使用单引号而不是双引号（JSON 文件除外）
+- **示例**：
+  ```javascript
+  // 格式化后使用单引号
+  const message = 'Hello World'
+  const name = 'John'
+  
+  // JSON 文件仍然使用双引号
+  // { "key": "value" }
+  ```
+
+### `quoteProps: 'as-needed'`
+- **作用**：对象的属性名只在需要时才添加引号（如包含特殊字符、关键字等）
+- **示例**：
+  ```javascript
+  // 不需要引号的属性名
+  const obj1 = {
+    name: 'John',
+    age: 30
+  }
+  
+  // 需要引号的属性名（包含特殊字符或关键字）
+  const obj2 = {
+    'first-name': 'John',
+    'class': 'student',
+    default: 'value'
+  }
+  ```
+
+### `jsxSingleQuote: false`
+- **作用**：在 JSX 中使用双引号而不是单引号
+- **示例**：
+  ```jsx
+  // JSX 中使用双引号
+  <div className="container">
+    <button onClick={handleClick}>Click me</button>
+  </div>
+  
+  // 普通 JavaScript 中使用单引号
+  const className = 'container'
+  ```
+
+### `trailingComma: 'es5'`
+- **作用**：在 ES5 有效的地方（对象、数组等）添加尾随逗号，但 TypeScript 类型参数中不添加
+- **好处**：减少 Git diff，添加新项时只需修改一行
+- **示例**：
+  ```javascript
+  // 对象和数组添加尾随逗号
+  const obj = {
+    name: 'John',
+    age: 30, // 尾随逗号
+  }
+  
+  const arr = [
+    'item1',
+    'item2', // 尾随逗号
+  ]
+  
+  // TypeScript 类型参数不添加尾随逗号
+  function example<T extends string>(param: T) {
+    // ...
+  }
+  ```
+
+### `arrowParens: 'always'`
+- **作用**：箭头函数的参数始终使用括号，即使只有一个参数
+- **示例**：
+  ```javascript
+  // 单个参数也加括号
+  const single = (x) => x * 2
+  const multiple = (x, y) => x + y
+  const noParams = () => 'Hello'
+  
+  // 如果不设置 always，单个参数可能没有括号：
+  // const single = x => x * 2
+  ```
+
+### `endOfLine: 'lf'`
+- **作用**：使用 LF（Line Feed，`\n`）作为换行符，而不是 CRLF（`\r\n`）
+- **说明**：LF 是 Unix/Linux/macOS 系统的标准换行符，确保跨平台一致性
+- **好处**：避免在不同操作系统间切换时产生不必要的 Git diff
+
+### `plugins: [importPlugin]`
+- **作用**：使用 `prettier-plugin-organize-imports` 插件自动整理 import 语句
+- **功能**：
+  - 自动排序 import 语句
+  - 合并来自同一模块的多个 import
+  - 移除未使用的 import
+- **示例**：
+  ```javascript
+  // 格式化前
+  import { c, a, b } from './utils'
+  import React from 'react'
+  import { useState } from 'react'
+  import { unused } from './other'
+  
+  // 格式化后（自动整理）
+  import React, { useState } from 'react'
+  import { a, b, c } from './utils'
+  // unused 被自动移除
+  ```

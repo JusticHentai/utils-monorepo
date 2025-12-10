@@ -1,3 +1,3 @@
-import eslintConfig from '@justichentai/lint/eslint.config.js'
+import eslintConfig from './packages/config-utils/eslint.config.js'
 
 export default eslintConfig

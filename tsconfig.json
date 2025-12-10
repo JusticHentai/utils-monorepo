@@ -1,4 +1,4 @@
 {
   "extends": "./packages/config-utils/tsconfig.base.json",
-  "include": ["stories", "./packages/config-utils/**/*.d.ts"]
+  "include": ["stories/**/*.ts", "./packages/config-utils/**/*.d.ts"]
 }

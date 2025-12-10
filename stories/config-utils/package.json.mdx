@@ -1,0 +1,92 @@
+import PackageJson from '../../packages/config-utils/package.json?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# package.json
+
+- 项目配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {PackageJson}
+</CodeOrSourceMdx>
+
+### dependencies（直接依赖）
+
+这些依赖会被安装到使用该配置包的项目中
+
+#### `@eslint/js: ^9.9.1`
+- 作用：ESLint 官方 JavaScript 核心规则集
+- 功能：提供基础的 JavaScript 代码质量检查规则
+- 使用场景：在 `eslint.config.js` 中通过 `js.configs.recommended` 使用
+
+#### `eslint-config-prettier: ^9.1.0`
+- 作用：关闭所有与 Prettier 冲突的 ESLint 格式化规则
+- 功能：避免 ESLint 和 Prettier 的格式化规则冲突
+- 使用场景：与 `eslint-plugin-prettier` 配合使用，确保代码格式化由 Prettier 统一处理
+
+#### `eslint-plugin-prettier: ^5.2.1`
+- 作用：将 Prettier 作为 ESLint 规则运行
+- 功能：
+  - 将 Prettier 格式化问题作为 ESLint 错误报告
+  - 在 ESLint 中统一代码风格检查
+- 使用场景：在 `eslint.config.js` 中通过 `eslint-plugin-prettier/recommended` 使用
+
+#### `eslint-plugin-react-hooks: 5.1.0-rc-fb9a90fa48-20240614`
+- 作用：React Hooks 规则插件
+- 功能：
+  - 检查 Hooks 调用规则（必须在顶层调用）
+  - 检查依赖数组完整性（`exhaustive-deps`）
+- 使用场景：在 `eslint.config.js` 中检查 React Hooks 使用规范
+
+#### `eslint-plugin-react-refresh: ^0.4.11`
+- 作用：React Fast Refresh 支持插件
+- 功能：确保组件导出符合 Fast Refresh 要求，避免热更新失效
+- 使用场景：在 `eslint.config.js` 中检查组件导出规范
+
+#### `globals: ^15.9.0`
+- 作用：全局变量定义库
+- 功能：提供不同环境（浏览器、Node.js、ES2021 等）的全局变量定义
+- 使用场景：在 `eslint.config.js` 中通过 `globals.browser` 定义浏览器全局变量
+
+#### `prettier-plugin-organize-imports: ^4.0.0`
+- 作用：Prettier 插件，自动整理 import 语句
+- 功能：
+  - 自动排序 import 语句
+  - 合并来自同一模块的多个 import
+  - 移除未使用的 import
+- 使用场景：在 `prettier.config.js` 中作为插件使用
+
+#### `prettier-plugin-packagejson: ^2.5.2`
+- 作用：Prettier 插件，格式化 `package.json` 文件
+- 功能：
+  - 自动排序 `package.json` 中的字段
+  - 统一字段顺序和格式
+- 使用场景：在 `prettier.config.js` 中作为插件使用（虽然当前配置中未显式使用，但已安装）
+
+#### `typescript-eslint: ^8.3.0`
+- 作用：TypeScript ESLint 集成工具
+- 功能：
+  - 提供 TypeScript 专用的 ESLint 规则
+  - 提供 TypeScript 配置工具（`tsEslint.config`）
+  - 包含类型感知的 linting 规则
+- 使用场景：在 `eslint.config.js` 中通过 `typescript-eslint` 使用 TypeScript 规则
+
+### peerDependencies（ peer 依赖）
+
+这些依赖需要在使用该配置包的项目中安装，不会被自动安装。
+
+#### `eslint: ^9.9.1`
+- 作用：ESLint 核心库
+- 说明：作为 peer 依赖，确保使用该配置的项目安装兼容版本的 ESLint
+- 原因：ESLint 配置包需要 ESLint 运行时，但不应强制安装特定版本
+
+#### `prettier: ^3.3.3`
+- 作用：Prettier 代码格式化工具
+- 说明：作为 peer 依赖，确保项目安装 Prettier
+- 原因：配置中使用了 Prettier 插件，需要 Prettier 运行时
+
+#### `typescript: ^5.9.3`
+- 作用：TypeScript 编译器
+- 说明：作为 peer 依赖，确保项目安装 TypeScript
+- 原因：配置中包含 TypeScript ESLint 规则，需要 TypeScript 支持

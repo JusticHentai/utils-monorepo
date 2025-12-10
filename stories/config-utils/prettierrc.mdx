@@ -1,0 +1,13 @@
+import PrettierConfig from '../../packages/config-utils/.prettierrc?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .prettierrc
+
+- Prettier 配置文件，主要是给 vscode 的 prettier 插件使用
+- 目前 prettier 插件不支持 prettier.config.js 文件，所以需要使用 .prettierrc 文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {PrettierConfig}
+</CodeOrSourceMdx>

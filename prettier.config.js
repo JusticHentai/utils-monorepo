@@ -1,3 +1,3 @@
-import prettierConfig from '@justichentai/lint/prettier.config.js'
+import prettierConfig from './packages/config-utils/prettier.config.js'
 
 export default prettierConfig
