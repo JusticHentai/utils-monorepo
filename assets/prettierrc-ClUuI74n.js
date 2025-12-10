@@ -1,4 +1,4 @@
-import{j as e}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as i}from"./index-XRo_CHS9.js";import{C as s}from"./blocks-D5fvTG9W.js";import"./iframe-BraaSPVI.js";import"./index-BAJDM1kl.js";const o=`{
+import{j as e}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as i}from"./index-Btc3cIrM.js";import{C as s}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const o=`{
   "printWidth": 80,
   "tabWidth": 2,
   "useTabs": false,

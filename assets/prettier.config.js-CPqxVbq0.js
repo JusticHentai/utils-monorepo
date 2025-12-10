@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-XRo_CHS9.js";import{C as r}from"./blocks-D5fvTG9W.js";import"./iframe-BraaSPVI.js";import"./index-BAJDM1kl.js";const c=`import importPlugin from 'prettier-plugin-organize-imports'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-Btc3cIrM.js";import{C as r}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=`import importPlugin from 'prettier-plugin-organize-imports'
 
 const prettierConfig = {
   printWidth: 80, // 最长 80 个字符

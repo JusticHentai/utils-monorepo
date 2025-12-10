@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-XRo_CHS9.js";import{C as l}from"./blocks-D5fvTG9W.js";import"./iframe-BraaSPVI.js";import"./index-BAJDM1kl.js";const c=`import js from '@eslint/js'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-Btc3cIrM.js";import{C as l}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=`import js from '@eslint/js'
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'

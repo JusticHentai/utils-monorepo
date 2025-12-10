@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as c}from"./index-XRo_CHS9.js";import{C as i}from"./blocks-D5fvTG9W.js";import"./iframe-BraaSPVI.js";import"./index-BAJDM1kl.js";const l=`# registry=https://registry.npmjs.org/
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as c}from"./index-Btc3cIrM.js";import{C as i}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const l=`# registry=https://registry.npmjs.org/
 always-auth=true
 access=public
 `;function r(e){const s={code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...c(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(s.h1,{id:"npmrc",children:".npmrc"}),`
