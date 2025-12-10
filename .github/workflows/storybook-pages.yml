@@ -21,6 +21,12 @@ jobs:
         with:
           node-version: 24   # 可根据你的项目修改
 
+      # 安装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
       # 安装依赖
       - name: Install dependencies
         run: |
