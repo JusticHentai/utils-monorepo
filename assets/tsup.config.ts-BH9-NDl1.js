@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as i}from"./index-CJRiz8xl.js";import{C as r}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=`import { defineConfig } from 'tsup'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as i}from"./index-BG77pm9a.js";import{C as r}from"./blocks-BembaQL3.js";import"./iframe-Bx1jIGpJ.js";import"./index-BEZfg86b.js";const c=`import { defineConfig } from 'tsup'
 
 export default defineConfig({
   entry: ['src/**/*.ts'],

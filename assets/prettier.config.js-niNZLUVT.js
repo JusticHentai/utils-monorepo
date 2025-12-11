@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-CJRiz8xl.js";import{C as r}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=`import importPlugin from 'prettier-plugin-organize-imports'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-BG77pm9a.js";import{P as c}from"./prettier.config-DdZQVH6u.js";import{C as r}from"./blocks-BembaQL3.js";import"./iframe-Bx1jIGpJ.js";import"./index-BEZfg86b.js";const t=`import importPlugin from 'prettier-plugin-organize-imports'
 
 const prettierConfig = {
   printWidth: 80, // 最长 80 个字符
@@ -17,15 +17,12 @@ const prettierConfig = {
 }
 
 export default prettierConfig
-`,t=`import prettierConfig from './packages/config-utils/prettier.config.js'
-
-export default prettierConfig
 `;function i(s){const e={code:"code",h1:"h1",h2:"h2",h3:"h3",h4:"h4",li:"li",p:"p",pre:"pre",strong:"strong",ul:"ul",...l(),...s.components};return n.jsxs(n.Fragment,{children:[n.jsx(e.h1,{id:"prettierconfigjs",children:"prettier.config.js"}),`
 `,n.jsxs(e.p,{children:[n.jsx(e.code,{children:".prettier.config.js"})," 文件用于配置 prettier 的代码格式化规则"]}),`
 `,n.jsx(e.h2,{id:"外部使用",children:"外部使用"}),`
-`,n.jsx(r,{language:"javascript",children:t}),`
-`,n.jsx(e.h2,{id:"配置",children:"配置"}),`
 `,n.jsx(r,{language:"javascript",children:c}),`
+`,n.jsx(e.h2,{id:"配置",children:"配置"}),`
+`,n.jsx(r,{language:"javascript",children:t}),`
 `,n.jsx(e.h2,{id:"配置详解",children:"配置详解"}),`
 `,n.jsx(e.h4,{id:"printwidth-80",children:n.jsx(e.code,{children:"printWidth: 80"})}),`
 `,n.jsxs(e.ul,{children:[`
@@ -192,4 +189,4 @@ import { a, b, c } from './utils'
 // unused 被自动移除
 `})}),`
 `]}),`
-`]})]})}function x(s={}){const{wrapper:e}={...l(),...s.components};return e?n.jsx(e,{...s,children:n.jsx(i,{...s})}):i(s)}export{x as default};
+`]})]})}function p(s={}){const{wrapper:e}={...l(),...s.components};return e?n.jsx(e,{...s,children:n.jsx(i,{...s})}):i(s)}export{p as default};

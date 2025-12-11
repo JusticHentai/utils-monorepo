@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-CJRiz8xl.js";import{C as c}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const r=`{
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-BG77pm9a.js";import{C as c}from"./blocks-BembaQL3.js";import"./iframe-Bx1jIGpJ.js";import"./index-BEZfg86b.js";const r=`{
   "extends": "../config-utils/tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
