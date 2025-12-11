@@ -1,0 +1,69 @@
+import TsconfigJson from '../../tsconfig.json?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# tsconfig.json
+
+- TypeScript 配置文件（根目录）
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {TsconfigJson}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `extends: "./packages/config-utils/tsconfig.base.json"`
+
+- **作用**：继承基础 TypeScript 配置
+- **说明**：
+  - 从 `packages/config-utils/tsconfig.base.json` 继承基础配置
+  - 复用共享的编译选项和类型检查规则
+  - 避免在根目录重复配置相同的选项
+- **好处**：
+  - **统一配置**：确保整个 monorepo 使用相同的 TypeScript 编译标准
+  - **易于维护**：修改基础配置即可影响所有项目
+  - **减少重复**：避免在每个配置中重复相同的选项
+
+### `include: ["stories/**/*.ts", "./packages/config-utils/**/*.d.ts"]`
+
+- **作用**：指定 TypeScript 编译器要包含的文件
+- **说明**：
+  - 使用数组指定多个 glob 模式
+  - 只有被 `include` 匹配的文件才会被 TypeScript 处理
+
+#### `"stories/**/*.ts"`
+- **作用**：包含 `stories` 目录下的所有 `.ts` 文件
+- **说明**：
+  - `stories/`：Storybook 文档目录
+  - `**/*.ts`：匹配所有子目录中的 `.ts` 文件
+- **使用场景**：Storybook 文档中的 TypeScript 代码示例
+
+#### `"./packages/config-utils/**/*.d.ts"`
+- **作用**：包含配置工具包中的所有类型声明文件
+- **说明**：
+  - `./packages/config-utils/`：配置工具包目录
+  - `**/*.d.ts`：匹配所有子目录中的 `.d.ts` 文件
+- **使用场景**：
+  - 将配置工具包的类型声明全局可用
+  - 在 Storybook 文档中可以使用这些类型定义
+  - 确保类型检查能够识别配置工具包的类型
+
+### 配置继承的详细内容
+
+根目录的 TypeScript 配置继承自基础配置，包含以下主要选项：
+
+- **编译目标**：`target: "ESNext"`（最新 ECMAScript 版本）
+- **模块系统**：`module: "ESNext"`（ES 模块）
+- **类型库**：`lib: ["ESNext", "DOM", "DOM.Iterable"]`
+- **模块解析**：`moduleResolution: "bundler"`（打包工具模式）
+- **严格模式**：`strict: true`（启用所有严格类型检查）
+- **JSX**：`jsx: "react-jsx"`（React JSX 支持）
+
+### 优势
+
+- **统一标准**：整个 monorepo 使用相同的 TypeScript 编译标准
+- **类型安全**：确保所有代码遵循相同的类型检查规则
+- **易于维护**：修改基础配置即可影响所有项目
+- **全局类型**：配置工具包的类型声明在整个项目中可用
+

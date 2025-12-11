@@ -1,0 +1,35 @@
+import Gitattributes from '../../.gitattributes?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .gitattributes
+
+- Git 属性配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="gitattributes">
+  {Gitattributes}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `* text=auto eol=lf`
+
+- **作用**：统一所有文本文件的换行符格式
+- **说明**：
+  - `*`：匹配所有文件
+  - `text=auto`：Git 自动检测文本文件
+  - `eol=lf`：强制使用 LF（Line Feed）作为换行符
+- **好处**：
+  - **跨平台一致性**：确保在不同操作系统（Windows、macOS、Linux）上换行符一致
+  - **避免冲突**：防止因换行符差异导致的 Git 合并冲突
+  - **统一格式**：所有开发者使用相同的换行符格式
+- **换行符说明**：
+  - **LF（`\n`）**：Unix/Linux/macOS 标准换行符
+  - **CRLF（`\r\n`）**：Windows 标准换行符
+  - 使用 LF 可以避免跨平台问题，现代编辑器都支持
+- **使用场景**：
+  - 多人协作项目
+  - 跨平台开发（Windows、macOS、Linux）
+  - CI/CD 环境（通常使用 Linux）
+

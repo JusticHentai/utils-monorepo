@@ -1,0 +1,107 @@
+import PackageJson from '../../package.json?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# package.json
+
+- 项目根目录配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {PackageJson}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 项目基本信息
+
+#### `name: "@justichentai/utils-monorepo"`
+- **作用**：项目名称
+- **说明**：使用 scoped package 命名（`@justichentai/` 前缀）
+
+#### `version: "1.0.0"`
+- **作用**：项目版本号
+
+#### `description: "持续集成工具链 monorepo"`
+- **作用**：项目描述
+- **说明**：说明这是一个持续集成工具链的 monorepo 项目
+
+#### `type: "module"`
+- **作用**：指定项目使用 ES 模块
+- **说明**：
+  - 启用 ES6 模块语法（`import/export`）
+  - 所有 `.js` 文件默认被视为 ES 模块
+  - 无需使用 `.mjs` 扩展名
+
+### 脚本命令
+
+#### `build: "pnpm run -r build"`
+- **作用**：构建所有包
+- **说明**：
+  - `-r`：递归执行，在所有 workspace 包中运行
+  - 构建 monorepo 中的所有包
+
+#### `cli: "tsx ./cli/src/index.ts"`
+- **作用**：运行 CLI 工具
+- **说明**：使用 `tsx` 直接运行 TypeScript 文件
+
+#### `cli:init: "pnpm run -F @justichentai/cli link:global"`
+- **作用**：全局安装 CLI 工具
+- **说明**：
+  - `-F`：过滤，只运行指定包的命令
+  - `link:global`：将 CLI 工具链接到全局
+
+#### `md: "storybook dev -p 6006"`
+- **作用**：启动 Storybook 开发服务器
+- **说明**：
+  - 在端口 6006 上运行 Storybook
+  - 用于查看和开发组件文档
+
+#### `md:build: "storybook build"`
+- **作用**：构建 Storybook 静态站点
+- **说明**：生成用于部署的静态文件
+
+### devDependencies（开发依赖）
+
+这些依赖只在开发时需要，不会被打包到生产代码中。
+
+#### `@chromatic-com/storybook: 4.1.3`
+- **作用**：Chromatic Storybook 集成
+- **功能**：用于视觉测试和组件审查
+
+#### `@storybook/addon-docs: 10.1.6`
+- **作用**：Storybook 文档插件
+- **功能**：生成组件文档和 MDX 支持
+
+#### `@storybook/react-vite: 10.1.6`
+- **作用**：Storybook React + Vite 集成
+- **功能**：使用 Vite 作为构建工具运行 Storybook
+
+#### `@types/react: ^19.2.7`、`@types/react-dom: ^19.2.3`
+- **作用**：React 和 React DOM 的 TypeScript 类型定义
+- **功能**：提供 React 的类型支持
+
+#### `eslint: ^9.39.1`
+- **作用**：ESLint 代码检查工具
+- **功能**：检查代码质量和规范
+
+#### `prettier: ^3.7.4`
+- **作用**：Prettier 代码格式化工具
+- **功能**：自动格式化代码
+
+#### `react: ^19.2.1`、`react-dom: ^19.2.1`
+- **作用**：React 库
+- **说明**：用于 Storybook 中展示 React 组件
+
+#### `storybook: 10.1.6`
+- **作用**：Storybook 核心库
+- **功能**：组件开发和文档工具
+
+#### `tsx: ^4.21.0`
+- **作用**：TypeScript 执行工具
+- **功能**：直接运行 TypeScript 文件，无需编译
+
+#### `typescript: ^5.9.3`
+- **作用**：TypeScript 编译器
+- **功能**：提供类型检查和编译功能
+

@@ -1,0 +1,96 @@
+import MainTs from '../../.storybook/main.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# main.ts
+
+- Storybook 主配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="typescript">
+  {MainTs}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 类型注释
+
+#### `/** @type { import('@storybook/react-vite').StorybookConfig } */`
+- **作用**：TypeScript JSDoc 类型注释
+- **说明**：
+  - 为配置对象提供类型提示
+  - 使用 `@storybook/react-vite` 包中的 `StorybookConfig` 类型
+  - 提供代码自动补全和类型检查
+
+### 配置对象
+
+#### `stories: [...]`
+- **作用**：指定 Storybook 要加载的故事文件
+- **说明**：使用 glob 模式匹配文件路径
+
+##### `'../stories/**/*.mdx'`
+- **作用**：加载所有 MDX 文档文件
+- **说明**：
+  - `../stories/`：从 `.storybook` 目录向上一级，进入 `stories` 目录
+  - `**/*.mdx`：匹配所有子目录中的 `.mdx` 文件
+- **使用场景**：组件文档、配置说明等 MDX 格式的文档
+
+##### `'../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)'`
+- **作用**：加载所有故事文件
+- **说明**：
+  - `**/*.stories.`：匹配所有以 `.stories.` 开头的文件
+  - `@(js|jsx|mjs|ts|tsx)`：匹配指定的文件扩展名
+  - 支持 JavaScript、JSX、ESM、TypeScript 和 TSX 格式
+- **使用场景**：组件示例和交互式演示
+
+#### `addons: [...]`
+- **作用**：配置 Storybook 插件
+- **说明**：启用额外的功能和工具
+
+##### `'@chromatic-com/storybook'`
+- **作用**：Chromatic Storybook 集成插件
+- **功能**：
+  - 视觉测试和组件审查
+  - 自动截图对比
+  - 组件变更检测
+
+##### `'@storybook/addon-docs'`
+- **作用**：Storybook 文档插件
+- **功能**：
+  - 自动生成组件文档
+  - 支持 MDX 格式
+  - 显示组件 Props 表格
+  - 代码示例展示
+
+#### `framework: { name: '@storybook/react-vite', options: {} }`
+- **作用**：指定 Storybook 使用的框架和构建工具
+- **说明**：
+  - `name: '@storybook/react-vite'`：使用 React + Vite 框架
+  - `options: {}`：框架选项（当前为空对象，使用默认配置）
+
+##### 框架选择说明
+- **`@storybook/react-vite`**：
+  - 使用 Vite 作为构建工具
+  - 快速的热模块替换（HMR）
+  - 现代化的构建体验
+  - 适合 React 项目
+
+### 导出配置
+
+#### `export default config`
+- **作用**：导出 Storybook 配置
+- **说明**：Storybook 会自动读取此文件作为配置
+
+### 配置文件位置
+
+- **路径**：`.storybook/main.ts`
+- **说明**：Storybook 默认读取此文件作为主配置文件
+- **格式**：TypeScript 文件（`.ts`），也可以使用 JavaScript（`.js`）
+
+### 优势
+
+- **类型安全**：使用 TypeScript 和类型注释，提供类型检查
+- **快速构建**：使用 Vite 作为构建工具，启动和构建速度快
+- **文档支持**：集成文档插件，支持 MDX 格式的文档
+- **视觉测试**：集成 Chromatic，支持组件视觉测试
+

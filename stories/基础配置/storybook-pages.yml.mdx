@@ -1,0 +1,152 @@
+import StorybookPages from '../../.github/workflows/storybook-pages.yml?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# storybook-pages.yml
+
+- GitHub Actions 工作流配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="yaml">
+  {StorybookPages}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 工作流基本信息
+
+#### `name: Deploy Storybook to GitHub Pages`
+- **作用**：工作流名称
+- **说明**：用于在 GitHub Actions 界面中显示
+
+### 触发条件
+
+#### `on:`
+- **作用**：定义工作流的触发条件
+
+##### `push: branches: - main`
+- **作用**：当代码推送到 `main` 分支时触发
+- **说明**：
+  - 每次推送到 `main` 分支都会自动部署
+  - 确保生产环境的 Storybook 始终是最新版本
+
+##### `workflow_dispatch:`
+- **作用**：允许手动触发工作流
+- **说明**：
+  - 在 GitHub Actions 界面中可以手动运行
+  - 用于测试部署流程或重新部署
+
+### 任务配置
+
+#### `jobs: build-and-deploy:`
+- **作用**：定义构建和部署任务
+- **说明**：包含所有部署步骤
+
+##### `runs-on: ubuntu-latest`
+- **作用**：指定运行环境
+- **说明**：使用最新的 Ubuntu 系统作为运行环境
+
+### 步骤详解
+
+#### 1. Checkout（拉取代码）
+
+```yaml
+- name: Checkout
+  uses: actions/checkout@v4
+```
+
+- **作用**：从仓库拉取代码
+- **说明**：使用 `actions/checkout@v4` 将代码检出到工作目录
+
+#### 2. Setup Node.js（安装 Node.js）
+
+```yaml
+- name: Setup Node.js
+  uses: actions/setup-node@v4
+  with:
+    node-version: 24
+```
+
+- **作用**：安装指定版本的 Node.js
+- **说明**：
+  - 使用 `actions/setup-node@v4`
+  - `node-version: 24`：安装 Node.js 24 版本
+  - 可根据项目需求修改版本号
+
+#### 3. Install pnpm（安装 pnpm）
+
+```yaml
+- name: Install pnpm
+  uses: pnpm/action-setup@v3
+  with:
+    version: 10
+```
+
+- **作用**：安装 pnpm 包管理器
+- **说明**：
+  - 使用 `pnpm/action-setup@v3`
+  - `version: 10`：安装 pnpm 10 版本
+  - pnpm 是 monorepo 项目的包管理器
+
+#### 4. Install dependencies（安装依赖）
+
+```yaml
+- name: Install dependencies
+  run: |
+    pnpm install
+```
+
+- **作用**：安装项目依赖
+- **说明**：
+  - 运行 `pnpm install` 安装所有依赖
+  - 包括 workspace 中所有包的依赖
+
+#### 5. Build Storybook（构建 Storybook）
+
+```yaml
+- name: Build Storybook
+  run: pnpm md:build
+```
+
+- **作用**：构建 Storybook 静态站点
+- **说明**：
+  - 运行 `pnpm md:build` 命令
+  - 对应 `package.json` 中的 `md:build: "storybook build"`
+  - 生成静态文件到 `storybook-static` 目录
+
+#### 6. Deploy to GitHub Pages（部署到 GitHub Pages）
+
+```yaml
+- name: Deploy to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v4
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: storybook-static
+```
+
+- **作用**：将构建产物部署到 GitHub Pages
+- **说明**：
+  - 使用 `peaceiris/actions-gh-pages@v4` 进行部署
+  - `github_token`：使用 GitHub 自动生成的 token（无需手动配置）
+  - `publish_dir: storybook-static`：指定部署目录（Storybook 默认输出目录）
+
+### 部署流程
+
+1. **代码推送**：开发者推送代码到 `main` 分支
+2. **自动触发**：GitHub Actions 自动触发工作流
+3. **环境准备**：安装 Node.js 和 pnpm
+4. **依赖安装**：安装项目依赖
+5. **构建**：构建 Storybook 静态站点
+6. **部署**：将构建产物部署到 GitHub Pages
+
+### 访问地址
+
+部署成功后，Storybook 可以通过以下地址访问：
+- `https://<用户名>.github.io/<仓库名>/`
+
+### 注意事项
+
+- **权限设置**：确保仓库的 GitHub Pages 功能已启用
+- **分支设置**：GitHub Pages 通常使用 `gh-pages` 分支或 `docs` 目录
+- **Token 权限**：`GITHUB_TOKEN` 需要写入权限才能部署
+

@@ -1,0 +1,80 @@
+import Gitignore from '../../.gitignore?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .gitignore
+
+- Git 忽略文件配置
+
+## 配置
+
+<CodeOrSourceMdx language="gitignore">
+  {Gitignore}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 系统文件
+
+#### `.DS_Store`
+- **作用**：忽略 macOS 系统生成的 `.DS_Store` 文件
+- **说明**：macOS 在每个目录中自动创建此文件，用于存储文件夹显示属性
+- **原因**：这些文件是系统文件，不应提交到版本控制
+
+### 依赖和构建产物
+
+#### `node_modules`
+- **作用**：忽略 Node.js 依赖包目录
+- **说明**：通过包管理器（pnpm、npm、yarn）安装的依赖
+- **原因**：依赖可以通过 `package.json` 重新安装，无需提交
+
+#### `dist`
+- **作用**：忽略构建输出目录
+- **说明**：编译后的代码输出目录
+- **原因**：构建产物可以通过源码重新生成
+
+#### `utils-cache`
+- **作用**：忽略工具缓存目录
+- **说明**：项目工具生成的缓存文件
+- **原因**：缓存文件可以重新生成，不应提交
+
+### 环境变量文件
+
+#### `.env.local`
+- **作用**：忽略本地环境变量文件
+- **说明**：包含本地开发环境的敏感配置（API 密钥、数据库密码等）
+
+#### `.env.*.local`
+- **作用**：忽略所有本地环境变量文件
+- **说明**：匹配所有以 `.env.` 开头、以 `.local` 结尾的文件
+- **示例**：`.env.development.local`、`.env.production.local`
+- **原因**：环境变量文件通常包含敏感信息，不应提交到版本控制
+
+### 日志文件
+
+#### `pnpm-debug.log*`
+- **作用**：忽略 pnpm 调试日志文件
+- **说明**：pnpm 包管理器生成的调试日志
+- **原因**：日志文件可以重新生成，不应提交
+
+### 编辑器配置
+
+#### `.idea`
+- **作用**：忽略 IntelliJ IDEA / WebStorm 编辑器配置目录
+- **说明**：JetBrains IDE 的项目配置目录
+
+#### `.cursor`
+- **作用**：忽略 Cursor 编辑器配置目录
+- **说明**：Cursor IDE 的项目配置目录
+- **原因**：编辑器配置是个人偏好，不应提交到版本控制
+
+### Storybook 相关
+
+#### `*storybook.log`
+- **作用**：忽略所有 Storybook 日志文件
+- **说明**：Storybook 生成的日志文件
+
+#### `storybook-static`
+- **作用**：忽略 Storybook 静态构建输出目录
+- **说明**：`storybook build` 命令生成的静态文件目录
+- **原因**：构建产物可以通过源码重新生成
+

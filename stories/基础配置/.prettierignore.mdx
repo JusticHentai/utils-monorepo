@@ -1,0 +1,81 @@
+import Prettierignore from '../../.prettierignore?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .prettierignore
+
+- Prettier 忽略文件配置
+
+## 配置
+
+<CodeOrSourceMdx language="gitignore">
+  {Prettierignore}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 日志文件
+
+忽略所有类型的日志文件，包括：
+- `logs` 目录
+- `*.log` 文件
+- 各种包管理器的调试日志（npm、yarn、pnpm、lerna）
+
+### 运行时和诊断文件
+
+- **`report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json`**：Node.js 诊断报告
+- **`pids`、`*.pid`、`*.seed`、`*.pid.lock`**：进程 ID 文件
+
+### 测试和覆盖率
+
+- **`lib-cov`、`coverage`、`__snapshots__`、`*.lcov`、`.nyc_output`**：测试覆盖率报告和快照文件
+
+### 构建工具缓存
+
+- **`.grunt`**：Grunt 中间存储
+- **`.cache`、`.parcel-cache`**：Parcel 缓存
+- **`.rpt2_cache/`、`.rts2_cache_*/`**：TypeScript 编译缓存
+
+### 依赖目录
+
+- **`node_modules/`、`jspm_packages/`、`web_modules/`**：各种包管理器的依赖目录
+
+### 框架构建输出
+
+- **`.next`、`out`**：Next.js 构建输出
+- **`.nuxt`**：Nuxt.js 构建输出
+- **`dist`**：通用构建输出目录
+- **`.cache/`**：Gatsby 缓存
+- **`.vuepress/dist`、`.temp`**：VuePress 构建输出
+- **`.docusaurus`**：Docusaurus 缓存
+
+### 环境变量文件
+
+忽略所有环境变量文件（`.env` 及其变体），这些文件通常包含敏感信息。
+
+### 打包和压缩文件
+
+- **`*.tgz`**：npm 打包文件
+- **`*.min.*`**：压缩后的文件（通常已格式化）
+
+### 锁定文件
+
+- **`*.lock`、`package-lock.json`、`pnpm-lock.yaml`**：包管理器锁定文件
+- **原因**：锁定文件由包管理器自动生成和维护，不应手动格式化
+
+### Monorepo 配置
+
+- **`pnpm-workspace.yaml`**：pnpm workspace 配置文件
+- **原因**：workspace 配置文件格式固定，不应格式化
+
+### 文档和资源文件
+
+- **`**/*.md`**：Markdown 文档文件
+- **`**/*.svg`**：SVG 图像文件
+- **`**/*.ejs`、`**/*.html`**：模板和 HTML 文件
+- **原因**：这些文件通常需要保持特定格式，不应由 Prettier 格式化
+
+### 其他
+
+- **`.umi`、`.umi-production`、`.umi-test`**：UmiJS 框架相关目录
+- **`output`、`public`、`temp`**：临时和输出目录
+

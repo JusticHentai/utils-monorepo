@@ -1,0 +1,50 @@
+import PrettierConfig from '../../prettier.config.js?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# prettier.config.js
+
+- Prettier 配置文件（根目录）
+
+## 配置
+
+<CodeOrSourceMdx language="javascript">
+  {PrettierConfig}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `import prettierConfig from './packages/config-utils/prettier.config.js'`
+
+- **作用**：从配置工具包中导入 Prettier 配置
+- **说明**：
+  - 复用 `packages/config-utils` 中的统一 Prettier 配置
+  - 避免在根目录重复配置相同的格式化规则
+  - 便于统一管理整个 monorepo 的代码格式
+
+### `export default prettierConfig`
+
+- **作用**：导出 Prettier 配置
+- **说明**：
+  - 直接使用配置工具包中的配置
+  - 根目录的 Prettier 配置与所有子包保持一致
+  - 确保整个项目的代码格式统一
+
+### 配置来源
+
+根目录的 Prettier 配置继承自 `packages/config-utils/prettier.config.js`，该配置包含：
+
+- **代码宽度**：`printWidth: 80`（每行最多 80 个字符）
+- **缩进**：`tabWidth: 2`（使用 2 个空格）
+- **引号**：`singleQuote: true`（使用单引号）
+- **分号**：`semi: false`（不使用分号）
+- **尾随逗号**：`trailingComma: 'es5'`（ES5 兼容的尾随逗号）
+- **换行符**：`endOfLine: 'lf'`（使用 LF 换行符）
+- **插件**：`prettier-plugin-organize-imports`（自动整理 import 语句）
+
+### 优势
+
+- **统一格式**：整个 monorepo 使用相同的代码格式
+- **易于维护**：修改配置工具包即可影响所有项目
+- **减少重复**：避免在每个包中重复配置
+- **一致性**：确保所有代码遵循相同的格式规范
+
