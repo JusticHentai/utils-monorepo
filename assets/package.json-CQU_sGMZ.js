@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-Btc3cIrM.js";import{C as l}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=`{
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-CJRiz8xl.js";import{C as l}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=`{
   "name": "@justichentai/config-utils",
   "version": "1.0.0",
   "description": "各种配置",
@@ -34,6 +34,7 @@ import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"
 `]}),`
 `,n.jsx(e.h2,{id:"配置",children:"配置"}),`
 `,n.jsx(l,{language:"json",children:c}),`
+`,n.jsx(e.h2,{id:"配置详解",children:"配置详解"}),`
 `,n.jsx(e.h3,{id:"dependencies直接依赖",children:"dependencies（直接依赖）"}),`
 `,n.jsx(e.p,{children:"这些依赖会被安装到使用该配置包的项目中"}),`
 `,n.jsx(e.h4,{id:"eslintjs-991",children:n.jsx(e.code,{children:"@eslint/js: ^9.9.1"})}),`

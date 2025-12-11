@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-Btc3cIrM.js";import{C as l}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=["stories/**/*.ts","./packages/config-utils/**/*.d.ts"],d={extends:"./packages/config-utils/tsconfig.base.json",include:c},h={target:"ESNext",useDefineForClassFields:!0,lib:["ESNext","DOM","DOM.Iterable"],module:"ESNext",skipLibCheck:!0,moduleResolution:"bundler",allowImportingTsExtensions:!0,isolatedModules:!0,moduleDetection:"force",noEmit:!0,jsx:"react-jsx",importHelpers:!0,allowSyntheticDefaultImports:!0,baseUrl:".",strict:!0,noUnusedLocals:!0,noUnusedParameters:!0,noFallthroughCasesInSwitch:!0,forceConsistentCasingInFileNames:!0},x=["**/node_modules/","**/dist"],j={compilerOptions:h,exclude:x};function i(e){const s={code:"code",h1:"h1",h2:"h2",h3:"h3",li:"li",p:"p",strong:"strong",ul:"ul",...r(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(s.h1,{id:"tsconfigbasejson",children:"tsconfig.base.json"}),`
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-CJRiz8xl.js";import{C as l}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=["stories/**/*.ts","./packages/config-utils/**/*.d.ts"],d={extends:"./packages/config-utils/tsconfig.base.json",include:c},h={target:"ESNext",useDefineForClassFields:!0,lib:["ESNext","DOM","DOM.Iterable"],module:"ESNext",skipLibCheck:!0,moduleResolution:"bundler",allowImportingTsExtensions:!0,isolatedModules:!0,moduleDetection:"force",noEmit:!0,jsx:"react-jsx",importHelpers:!0,allowSyntheticDefaultImports:!0,baseUrl:".",strict:!0,noUnusedLocals:!0,noUnusedParameters:!0,noFallthroughCasesInSwitch:!0,forceConsistentCasingInFileNames:!0},x=["**/node_modules/","**/dist"],j={compilerOptions:h,exclude:x};function i(e){const s={code:"code",h1:"h1",h2:"h2",h3:"h3",li:"li",p:"p",strong:"strong",ul:"ul",...r(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(s.h1,{id:"tsconfigbasejson",children:"tsconfig.base.json"}),`
 `,n.jsxs(s.ul,{children:[`
 `,n.jsx(s.li,{children:"基础 ts 配置文件"}),`
 `]}),`
@@ -19,6 +19,7 @@ import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"
 `]}),`
 `,n.jsx(s.h2,{id:"配置",children:"配置"}),`
 `,n.jsx(l,{language:"json",children:JSON.stringify(j,null,2)}),`
+`,n.jsx(s.h2,{id:"配置详解",children:"配置详解"}),`
 `,n.jsx(s.h3,{id:"基础编译目标",children:"基础编译目标"}),`
 `,n.jsxs(s.ul,{children:[`
 `,n.jsxs(s.li,{children:[`

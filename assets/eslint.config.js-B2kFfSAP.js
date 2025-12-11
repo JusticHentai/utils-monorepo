@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-Btc3cIrM.js";import{C as l}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=`import js from '@eslint/js'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as r}from"./index-CJRiz8xl.js";import{C as l}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=`import js from '@eslint/js'
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -38,6 +38,7 @@ export default tsConfig
 `]}),`
 `,n.jsx(e.h2,{id:"配置",children:"配置"}),`
 `,n.jsx(l,{language:"javascript",children:c}),`
+`,n.jsx(e.h2,{id:"配置详解",children:"配置详解"}),`
 `,n.jsx(e.h3,{id:"导入的插件和工具",children:"导入的插件和工具"}),`
 `,n.jsx(e.h4,{id:"import-js-from-eslintjs",children:n.jsx(e.code,{children:"import js from '@eslint/js'"})}),`
 `,n.jsxs(e.ul,{children:[`

@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as t}from"./index-Btc3cIrM.js";import{C as o}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const l=`// CSS modules
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as t}from"./index-CJRiz8xl.js";import{C as o}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const l=`// CSS modules
 type CSSModuleClasses = { readonly [key: string]: string }
 
 declare module '*.module.css' {

@@ -1,4 +1,4 @@
-import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-Btc3cIrM.js";import{C as r}from"./blocks-Brm0Ymjw.js";import"./iframe-Len7KEY0.js";import"./index-YsTR0c8F.js";const c=`import importPlugin from 'prettier-plugin-organize-imports'
+import{j as n}from"./jsx-runtime-u17CrQMm.js";import{useMDXComponents as l}from"./index-CJRiz8xl.js";import{C as r}from"./blocks-BQlzN-aX.js";import"./iframe-BNypc-Hr.js";import"./index-B1AKrtt8.js";const c=`import importPlugin from 'prettier-plugin-organize-imports'
 
 const prettierConfig = {
   printWidth: 80, // 最长 80 个字符
@@ -26,6 +26,7 @@ export default prettierConfig
 `,n.jsx(r,{language:"javascript",children:t}),`
 `,n.jsx(e.h2,{id:"配置",children:"配置"}),`
 `,n.jsx(r,{language:"javascript",children:c}),`
+`,n.jsx(e.h2,{id:"配置详解",children:"配置详解"}),`
 `,n.jsx(e.h4,{id:"printwidth-80",children:n.jsx(e.code,{children:"printWidth: 80"})}),`
 `,n.jsxs(e.ul,{children:[`
 `,n.jsxs(e.li,{children:[n.jsx(e.strong,{children:"作用"}),"：指定每行代码的最大字符数，超过此长度会自动换行"]}),`
