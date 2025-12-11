@@ -1,0 +1,201 @@
+import PackageJson from '../../packages/utils-template/package.json?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# package.json
+
+- 项目配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {PackageJson}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `name: "@justichentai/utils-template"`
+- **作用**：定义包的名称，使用 scoped package 格式（以 `@` 开头）
+- **说明**：
+  - Scoped package 可以避免包名冲突，所有以 `@justichentai/` 开头的包都属于同一个组织
+  - 安装时需要使用完整名称：`pnpm add @justichentai/utils-template`
+- **好处**：便于组织管理多个相关包，避免全局命名空间污染
+
+### `version: "1.0.0"`
+- **作用**：定义包的版本号，遵循语义化版本（Semantic Versioning）
+- **格式**：`主版本号.次版本号.修订号`
+  - 主版本号：不兼容的 API 修改
+  - 次版本号：向下兼容的功能性新增
+  - 修订号：向下兼容的问题修正
+- **示例**：
+  ```json
+  "version": "1.0.0"  // 初始版本
+  "version": "1.1.0"  // 新增功能
+  "version": "2.0.0"  // 重大更新（可能不兼容）
+  ```
+
+### `description: "工具包模板"`
+- **作用**：包的简短描述，用于在 npm 等包管理器中显示
+- **说明**：帮助其他开发者快速了解包的用途
+
+### `license: "ISC"`
+- **作用**：定义包的许可证类型
+- **说明**：ISC（Internet Systems Consortium）许可证是一个简洁的、类似 MIT 的开源许可证
+- **常见选项**：
+  - `MIT`：最流行的开源许可证
+  - `Apache-2.0`：Apache 许可证
+  - `GPL-3.0`：GNU 通用公共许可证
+  - `ISC`：简洁的许可证
+
+### `author: "justichentai"`
+- **作用**：定义包的作者信息
+- **说明**：可以是字符串或对象格式
+- **示例**：
+  ```json
+  // 字符串格式
+  "author": "justichentai"
+  
+  // 对象格式
+  "author": {
+    "name": "justichentai",
+    "email": "example@email.com",
+    "url": "https://example.com"
+  }
+  ```
+
+### `type: "module"`
+- **作用**：指定包使用 ES 模块（ESM）而不是 CommonJS
+- **说明**：
+  - 设置为 `"module"` 后，`.js` 文件会被视为 ES 模块
+  - 可以使用 `import/export` 语法
+  - 如果不设置或设置为 `"commonjs"`，则使用 `require/module.exports`
+- **示例**：
+  ```javascript
+  // 使用 type: "module" 后可以这样写
+  import { someFunction } from './utils.js'
+  export default someFunction
+  
+  // 而不是 CommonJS 的写法
+  // const { someFunction } = require('./utils')
+  // module.exports = someFunction
+  ```
+
+### `main: "dist/index.js"`
+- **作用**：定义包的入口文件，当其他项目通过 `require()` 或 `import` 引入包时使用的文件
+- **说明**：
+  - 这是包的默认入口点
+  - 路径相对于包的根目录
+  - 通常指向编译后的输出文件
+- **使用场景**：
+  ```javascript
+  // 其他项目可以这样引入
+  import utils from '@justichentai/utils-template'
+  // 实际会加载 dist/index.js
+  ```
+
+### `types: "dist/index.d.ts"`
+- **作用**：定义 TypeScript 类型定义文件的路径
+- **说明**：
+  - 当使用 TypeScript 开发时，IDE 和编译器会使用此文件提供类型提示
+  - 路径相对于包的根目录
+  - 通常与 `main` 字段对应的 `.d.ts` 文件
+- **好处**：提供完整的 TypeScript 类型支持，提升开发体验
+
+### `files: ["dist"]`
+- **作用**：指定发布到 npm 时包含的文件和目录
+- **说明**：
+  - 只有列出的文件和目录会被打包发布
+  - `package.json` 和 `README.md` 通常会自动包含
+  - `dist` 目录包含编译后的代码
+- **好处**：
+  - 减少包体积，不发布源码和开发文件
+  - 提高安装速度
+  - 保护源代码不被直接暴露
+- **注意**：某些文件总是会被包含（如 `package.json`），某些文件总是会被忽略（如 `.gitignore` 中的文件）
+
+### `scripts`
+- **作用**：定义可执行的 npm/pnpm 脚本命令
+- **说明**：可以通过 `pnpm <script-name>` 执行
+
+#### `build: "tsup"`
+- **作用**：构建生产版本
+- **说明**：使用 `tsup` 工具将 TypeScript 源码编译打包
+- **使用**：`pnpm build`
+
+#### `dev: "tsup --watch"`
+- **作用**：开发模式，监听文件变化自动重新构建
+- **说明**：`--watch` 参数使 tsup 在文件变化时自动重新编译
+- **使用**：`pnpm dev`
+- **好处**：提升开发效率，无需手动重新构建
+
+#### `prepublish: "pnpm build"`
+- **作用**：发布前的钩子脚本，在 `pnpm publish` 之前自动执行
+- **说明**：
+  - npm/pnpm 生命周期钩子，确保发布前代码已构建
+  - 如果构建失败，发布会被阻止
+- **好处**：防止发布未构建或构建失败的代码
+
+### `devDependencies`
+- **作用**：定义开发时需要的依赖包，不会安装到使用该包的项目中
+- **说明**：
+  - 这些依赖只在开发、构建、测试时使用
+  - 安装包的用户不会安装这些依赖
+  - 与 `dependencies` 的区别：`dependencies` 是运行时必需的依赖
+
+#### `@swc/core: "^1.15.3"`
+- **作用**：SWC（Speedy Web Compiler）核心库，用于快速编译 TypeScript/JavaScript
+- **说明**：Rust 编写的编译器，比 Babel 快很多倍
+
+#### `@swc/helpers: "^0.5.17"`
+- **作用**：SWC 编译器的辅助函数库
+- **说明**：
+  - 提供编译过程中需要的辅助函数
+  - 多个包可共用同一份 swc-helpers 代码节省包体积
+- **工作原理**：
+  ```javascript
+  // 使用 @swc/helpers 时，编译后代码：
+  import { _classCallCheck } from '@swc/helpers'
+  
+  // 不使用时, 会在文件中声明一个 polyfill：
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+  ```
+
+#### `esbuild: "^0.27.1"`
+- **作用**：极速的 JavaScript/TypeScript 打包工具
+- **说明**：Go 语言编写，构建速度极快，tsup 底层使用 esbuild
+
+#### `tsup: "^8.5.1"`
+- **作用**：基于 esbuild 的零配置 TypeScript 打包工具
+- **说明**：
+  - 简化 TypeScript 项目的构建配置
+  - 自动处理 TypeScript、ESM、类型定义等
+  - 支持多种输出格式
+
+#### `typescript: "^5.9.3"`
+- **作用**：TypeScript 编译器
+- **说明**：提供类型检查和编译功能
+
+### `sideEffects: false`
+- **作用**：标记包为无副作用，启用 tree-shaking 优化
+- **说明**：
+  - `false` 表示包中的所有模块都是纯函数，没有副作用
+  - 打包工具（如 webpack、rollup）可以安全地移除未使用的代码
+  - 如果包中有副作用代码（如 polyfill、全局样式），应设置为 `true` 或指定具体文件
+- **好处**：
+  - 减小最终打包体积
+  - 提升应用性能
+  - 优化加载速度
+- **示例**：
+  ```json
+  // 无副作用（推荐用于工具库）
+  "sideEffects": false
+  
+  // 有副作用，需要指定文件
+  "sideEffects": [
+    "./dist/polyfill.js",
+    "./dist/styles.css"
+  ]
+  ```

@@ -1,0 +1,110 @@
+import TsconfigJson from '../../packages/utils-template/tsconfig.json?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# tsconfig.json
+
+- TypeScript 编译器配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {TsconfigJson}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `extends: "../config-utils/tsconfig.base.json"`
+- **作用**：继承基础 TypeScript 配置，复用共享的编译选项
+- **说明**：
+  - 从父级目录的 `config-utils/tsconfig.base.json` 继承基础配置
+  - 避免在每个包中重复配置相同的选项
+  - 便于统一管理 monorepo 中所有包的 TypeScript 配置
+- **好处**：
+  - **统一配置**：确保所有包使用相同的编译标准
+  - **易于维护**：修改基础配置即可影响所有包
+  - **减少重复**：避免在每个包的配置中重复相同的选项
+
+### `compilerOptions`
+- **作用**：TypeScript 编译器的选项配置
+- **说明**：控制 TypeScript 如何编译代码、类型检查行为等
+
+#### `baseUrl: "."`
+- **作用**：设置模块解析的基础路径
+- **说明**：
+  - 所有非相对路径的模块导入都会相对于此路径解析
+  - `"."` 表示当前目录（即 `tsconfig.json` 所在目录）
+  - 与 `paths` 选项配合使用，实现路径别名功能
+- **使用场景**：
+  ```typescript
+  // 设置 baseUrl: "." 后，可以这样导入
+  import { utils } from 'src/utils'
+  
+  // 而不是使用相对路径
+  // import { utils } from './src/utils'
+  ```
+
+#### `paths`
+- **作用**：配置模块路径映射，实现路径别名
+- **说明**：
+  - 将导入路径映射到实际的文件系统路径
+  - 与 `baseUrl` 配合使用
+  - 仅用于 TypeScript 编译时的类型检查，不影响运行时路径解析
+- **配置格式**：
+  ```json
+  {
+    "paths": {
+      "别名/*": ["实际路径/*"]
+    }
+  }
+  ```
+
+##### `"@/*": ["src/*"]`
+- **作用**：将 `@/` 别名映射到 `src/` 目录
+- **说明**：
+  - 使用 `@/` 作为 `src/` 目录的别名
+  - 简化导入路径，避免使用相对路径（如 `../../../src/utils`）
+  - 提升代码可读性和可维护性
+- **使用示例**：
+  ```typescript
+  // 使用别名导入
+  import { utils } from '@/utils'
+  import { types } from '@/types'
+  
+  // 等价于
+  // import { utils } from './src/utils'
+  // import { types } from './src/types'
+  ```
+- **好处**：
+  - **简化路径**：避免深层相对路径（`../../..`）
+  - **易于重构**：移动文件时不需要修改导入路径
+  - **统一风格**：所有导入都使用统一的别名格式
+- **注意事项**：
+  - `paths` 只影响 TypeScript 类型检查，不影响运行时
+  - 如果使用打包工具（如 tsup、webpack），需要额外配置路径别名
+  - 某些打包工具会自动读取 `tsconfig.json` 的 `paths` 配置
+
+### `include: ["./**/*.ts"]`
+- **作用**：指定 TypeScript 编译器要包含的文件
+- **说明**：
+  - 使用 glob 模式匹配文件
+  - `./**/*.ts` 表示当前目录及其所有子目录中的 `.ts` 文件
+  - 只有被 `include` 匹配的文件才会被 TypeScript 处理
+- **匹配规则**：
+  - `./`：当前目录（`tsconfig.json` 所在目录）
+  - `**`：匹配任意深度的子目录
+  - `*.ts`：匹配所有 `.ts` 文件
+- **示例**：
+  ```json
+  {
+    "include": [
+      "./**/*.ts"        // 所有 .ts 文件
+      // 或者更具体
+      // "./src/**/*.ts"  // 只包含 src 目录下的 .ts 文件
+    ]
+  }
+  ```
+- **注意事项**：
+  - `include` 和 `exclude` 配合使用可以精确控制编译范围
+  - 默认情况下，如果没有 `include`，会包含所有 `.ts` 和 `.tsx` 文件
+  - `node_modules` 目录通常会被自动排除
+

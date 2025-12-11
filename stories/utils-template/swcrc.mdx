@@ -1,0 +1,69 @@
+import Swcrc from '../../packages/utils-template/.swcrc?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# .swcrc
+
+- SWC 编译器配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="json">
+  {Swcrc}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### `jsc`
+- **作用**：JavaScript Compiler 配置，SWC 的核心编译选项
+- **说明**：
+  - `jsc` 是 SWC 的主要配置对象，控制编译器的行为
+  - 包含解析器、转换器、代码生成等选项
+
+### `jsc.parser`
+- **作用**：配置源代码解析器
+- **说明**：定义如何解析和识别源代码语法
+
+#### `syntax: "typescript"`
+- **作用**：指定源代码的语法类型为 TypeScript
+- **说明**：
+  - 告诉 SWC 使用 TypeScript 解析器来解析代码
+  - 支持 TypeScript 的所有语法特性（类型注解、接口、泛型等）
+- **可选值**：
+  - `"typescript"`：TypeScript 语法
+  - `"ecmascript"`：标准 JavaScript/ECMAScript 语法
+- **示例**：
+  ```json
+  {
+    "jsc": {
+      "parser": {
+        "syntax": "typescript"  // 解析 TypeScript 代码
+      }
+    }
+  }
+  ```
+
+### `jsc.externalHelpers: true`
+- **作用**：启用外部辅助函数，将辅助函数从外部包导入而不是内联
+- **说明**：
+  - 设置为 `true` 时，编译后的代码会从 `@swc/helpers` 包导入辅助函数
+  - 设置为 `false` 时，辅助函数会被内联到编译后的代码中
+- **好处**：
+  - **减小包体积**：多个使用 SWC 编译的包可以共享同一份辅助函数代码
+  - **提升性能**：避免重复打包相同的辅助函数
+  - **便于维护**：辅助函数统一管理，更新更方便
+- **工作原理**：
+  ```javascript
+  // externalHelpers: true 时，编译后代码：
+  import { _classCallCheck } from '@swc/helpers'
+  
+  // externalHelpers: false 时，辅助函数会被内联：
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+  ```
+- **注意事项**：
+  - 使用 `externalHelpers: true` 时，需要确保 `@swc/helpers` 已安装
+  - 在 `package.json` 的 `devDependencies` 中通常已经包含 `@swc/helpers`
+
