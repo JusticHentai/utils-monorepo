@@ -16,4 +16,6 @@ const makeLog = () => {
   return res as Record<keyof typeof LOG, (...input: any[]) => void>
 }
 
-export default makeLog()
+const logger = makeLog()
+
+export default logger
