@@ -20,5 +20,11 @@
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "exports": {
+    "./test": {
+      "types": "./dist/test.d.ts",
+      "default": "./dist/test.js"
+    }
+  }
 }
