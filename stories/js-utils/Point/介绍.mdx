@@ -1,0 +1,33 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Point
+
+Point 是一个用于表示 2d 点的类型接口。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 类型定义
+
+```typescript
+interface Point {
+  x: number
+  y: number
+}
+```
+
+## 属性介绍
+
+### x
+
+- 类型：`number`
+- 描述：横坐标
+
+### y
+
+- 类型：`number`
+- 描述：纵坐标

@@ -1,0 +1,28 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getPosition
+
+getPosition 是一个用于将行列索引转换为 2d 坐标系的函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+- 类型：`Options`
+- 描述：选项对象
+  - `index`: 索引，从 0 开始
+  - `column`: 列数
+
+### 返回值
+
+- 类型：`Point`
+- 描述：2d 坐标点
+  - `x`: 横坐标
+  - `y`: 纵坐标

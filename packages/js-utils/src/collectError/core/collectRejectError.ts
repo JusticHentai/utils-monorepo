@@ -1,5 +1,5 @@
-import isObject from '@/isObject'
-import isString from '@/isString'
+import isObject from '../../isObject'
+import isString from '../../isString'
 import { ErrorCallback } from '../interface'
 
 /**

@@ -1,0 +1,40 @@
+import successDemo from './successDemo?raw'
+import errorDemo from './errorDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# asyncFormat
+
+将 async 函数转为返回 [res, err] 的形式
+
+## 成功用例
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 失败用例
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- 外部传入 `typeof 函数`, 会自动推导出函数的参数类型和返回值类型
+- 外部函数被限制为 `(...params: any[]) => Promise<any>` 类型
+- 返回值被限制为 `[Awaited<ReturnType<Fn>>, undefined] | [undefined, any]` 类型
+
+```typescript
+<Fn extends (...params: any[]) => Promise<any>>(
+  fn: Fn
+): ((
+  ...params: Parameters<Fn>
+) => Promise<[Awaited<ReturnType<Fn>>, undefined] | [undefined, any]>) => {
+```
+
+### fn
+
+- 类型：`(...params: any[]) => Promise<any>`
+- 描述：需要转换的 async 函数

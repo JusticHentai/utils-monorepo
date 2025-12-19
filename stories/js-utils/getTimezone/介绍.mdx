@@ -1,0 +1,36 @@
+import zhDemo from './zhDemo?raw'
+import enDemo from './enDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getTimezone
+
+getTimezone 是一个用于格式化时间戳为指定时区的日期时间字符串的函数。
+
+## 中文时区示例
+
+<CodeOrSourceMdx language="typescript">
+  {zhDemo}
+</CodeOrSourceMdx>
+
+## 英文时区示例
+
+<CodeOrSourceMdx language="typescript">
+  {enDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### ts
+
+- 类型：`number`
+- 描述：时间戳（毫秒）
+
+### timezone
+
+- 类型：`Intl.LocalesArgument`
+- 描述：时区标识符，默认值为 `'zh-CN'`
+
+### 返回值
+
+- 类型：`string`
+- 描述：格式为 YYYY.MM.DD HH:mm:ss 的本地化时间字符串

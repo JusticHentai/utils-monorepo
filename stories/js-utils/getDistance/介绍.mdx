@@ -1,0 +1,33 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getDistance
+
+getDistance 是一个用于获取两点间距离的函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### start
+
+- 类型：`Point`
+- 描述：起点坐标
+  - `x`: 横坐标
+  - `y`: 纵坐标
+
+### end
+
+- 类型：`Point`
+- 描述：终点坐标
+  - `x`: 横坐标
+  - `y`: 纵坐标
+
+### 返回值
+
+- 类型：`number`
+- 描述：两点间的距离

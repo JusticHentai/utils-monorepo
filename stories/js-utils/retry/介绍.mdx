@@ -1,0 +1,40 @@
+import successDemo from './successDemo?raw'
+import failDemo from './failDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# retry
+
+retry 是一个用于重试异步函数的函数，如果函数执行失败则重试，直到成功为止，如果重试次数达到上限，则返回最后一次错误信息。
+
+## 成功用例
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 失败用例
+
+<CodeOrSourceMdx language="typescript">
+  {failDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- `T` - 函数返回值的类型
+
+### fn
+
+- 类型：`() => Promise<T>`
+- 描述：需要重试的函数
+
+### retryCount
+
+- 类型：`number`
+- 描述：重试次数，默认值为 `3`
+
+### 返回值
+
+- 类型：`Promise<[T, undefined] | [undefined, any]>`
+- 描述：返回 `[res, err]` 的形式

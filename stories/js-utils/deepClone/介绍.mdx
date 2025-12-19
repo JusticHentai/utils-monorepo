@@ -1,0 +1,43 @@
+import normalDemo from './normalDemo?raw'
+import circularDemo from './circularDemo?raw'
+import dateDemo from './dateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# deepClone
+
+deepClone 是一个用于深拷贝对象的函数，支持处理循环引用、Date、RegExp 等特殊类型。
+
+## 普通对象示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 循环引用示例
+
+<CodeOrSourceMdx language="typescript">
+  {circularDemo}
+</CodeOrSourceMdx>
+
+## Date 对象示例
+
+<CodeOrSourceMdx language="typescript">
+  {dateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### obj
+
+- 类型：`any`
+- 描述：要深拷贝的对象
+
+### hash
+
+- 类型：`WeakMap<any, any>`
+- 描述：用于处理循环引用的内部参数，默认值为 `new WeakMap()`
+
+### 返回值
+
+- 类型：`any`
+- 描述：深拷贝后的对象

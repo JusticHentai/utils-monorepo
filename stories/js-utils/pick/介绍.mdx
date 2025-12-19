@@ -1,0 +1,34 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# pick
+
+pick 是一个用于从对象中提取指定 key 组成新对象的函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- `T extends Record<string, any>` - 源对象类型
+- `K extends keyof T` - 要提取的 key 数组类型
+
+### obj
+
+- 类型：`T`
+- 描述：源对象
+
+### keys
+
+- 类型：`Array<K>`
+- 描述：要提取的 key 数组
+
+### 返回值
+
+- 类型：`Pick<T, K>`
+- 描述：包含指定 key 的新对象

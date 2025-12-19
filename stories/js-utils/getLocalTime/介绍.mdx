@@ -1,0 +1,24 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getLocalTime
+
+getLocalTime 是一个用于获取本地时间的函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 返回值
+
+- 类型：`TimeResult`
+- 描述：时间结果对象
+  - `year`: 年
+  - `month`: 月
+  - `day`: 日
+  - `hour`: 小时
+  - `minutes`: 分钟
+  - `second`: 秒
+  - `time`: 时间戳

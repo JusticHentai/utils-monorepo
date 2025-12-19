@@ -1,0 +1,36 @@
+import normalDemo from './normalDemo?raw'
+import arrayDemo from './arrayDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# deepMerge
+
+deepMerge 是一个用于深度合并对象的函数，支持对象和数组的深度合并。
+
+## 对象合并示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 数组合并示例
+
+<CodeOrSourceMdx language="typescript">
+  {arrayDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### obj
+
+- 类型：`Record<string, any>`
+- 描述：目标对象
+
+### source
+
+- 类型：`Record<string, any>`
+- 描述：源对象
+
+### 返回值
+
+- 类型：`Record<string, any>`
+- 描述：合并后的对象

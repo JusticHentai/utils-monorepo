@@ -1,0 +1,37 @@
+import startCountDownDemo from './startCountDownDemo?raw'
+import clearCountdownDemo from './clearCountdownDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# countdown
+
+countdown 是一个倒计时定时器函数，每秒触发一次回调函数。
+
+
+## 开始倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {startCountDownDemo}
+</CodeOrSourceMdx>
+
+## 清除倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {clearCountdownDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### endTs
+
+- 类型：`number`
+- 描述：结束时间戳（秒级）
+
+### cb
+
+- 类型：`(...params: any[]) => void`
+- 描述：每秒触发的回调函数，参数为剩余秒数
+
+### 返回值
+
+- 类型：`() => void`
+- 描述：清除定时器的函数

@@ -1,0 +1,58 @@
+import addDemo from './addDemo?raw'
+import addImmediatelyDemo from './addImmediatelyDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# ResourceController
+
+ResourceController 是一个用于管理资源加载的类，支持优先级队列和立即加载。
+
+## 添加资源并加载示例
+
+<CodeOrSourceMdx language="typescript">
+  {addDemo}
+</CodeOrSourceMdx>
+
+## 立即添加并加载资源示例
+
+<CodeOrSourceMdx language="typescript">
+  {addImmediatelyDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+ResourceController 是一个类，不需要泛型参数。
+
+### add
+
+- 类型：`(options: ResourceOptions) => void`
+- 描述：添加资源到加载队列
+  - `name`: 资源名称
+  - `loadFn`: 加载函数，返回 Promise
+  - `priority?`: 优先级，数字越大优先级越高
+
+### load
+
+- 类型：`() => Promise<void>`
+- 描述：加载队列中的所有资源
+
+### addImmediately
+
+- 类型：`(options: ResourceOptions) => Promise<void>`
+- 描述：立即添加并加载资源
+
+### loadImmediately
+
+- 类型：`() => Promise<void>`
+- 描述：立即加载队列中的资源
+
+### reset
+
+- 类型：`() => void`
+- 描述：重置资源控制器，清空所有队列和资源映射
+
+### resourceMap
+
+- 类型：`ResourceMap`
+- 描述：资源映射表，key 为资源名称，value 为资源对象

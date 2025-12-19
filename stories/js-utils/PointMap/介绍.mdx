@@ -1,0 +1,39 @@
+import demo from './demo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# PointMap
+
+PointMap 是一个用于存储坐标点的地图，支持设置和获取坐标点。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {demo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- 接收范型 T 代表存放信息的类型
+- 例如：`class PointMap<string>` 表示存放信息的类型为 `string`
+
+```typescript
+class PointMap<T>
+```
+
+### set
+
+- 类型：`({ x, y }: Point, data: T) => void`
+- 描述：设置坐标点信息
+- x: 横坐标
+- y: 纵坐标
+- data: 存放信息
+
+### get
+
+- 类型：`({ x, y }: Point) => T | undefined`
+- 描述：获取坐标点信息
+- x: 横坐标
+- y: 纵坐标
+- 返回值：存放信息

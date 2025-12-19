@@ -1,4 +1,4 @@
-import logger from '@/logger'
+import logger from '../logger'
 
 const observerInit = () => {
   const observer = new PerformanceObserver((list) => {

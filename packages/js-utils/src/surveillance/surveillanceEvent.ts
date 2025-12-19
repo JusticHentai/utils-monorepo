@@ -1,4 +1,4 @@
-import logger from '@/logger'
+import logger from '../logger'
 
 export enum EVENT {
   DOM_CONTENT_LOADED = 'DOMContentLoaded',

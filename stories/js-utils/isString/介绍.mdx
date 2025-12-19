@@ -1,0 +1,31 @@
+import stringDemo from './stringDemo?raw'
+import notStringDemo from './notStringDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isString
+
+isString 是一个用于判断值是否为字符串的函数。
+
+## 字符串示例
+
+<CodeOrSourceMdx language="typescript">
+  {stringDemo}
+</CodeOrSourceMdx>
+
+## 非字符串示例
+
+<CodeOrSourceMdx language="typescript">
+  {notStringDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### obj
+
+- 类型：`any`
+- 描述：要检测的值
+
+### 返回值
+
+- 类型：`obj is string`
+- 描述：如果值是字符串则返回 `true`，否则返回 `false`

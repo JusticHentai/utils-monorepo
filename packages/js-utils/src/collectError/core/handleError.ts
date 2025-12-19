@@ -1,4 +1,4 @@
-import log from '@/logger'
+import log from '../../logger'
 
 const handleError = (errorLog: string) => {
   log.error(errorLog)

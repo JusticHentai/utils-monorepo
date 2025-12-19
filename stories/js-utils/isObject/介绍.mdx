@@ -1,0 +1,31 @@
+import objectDemo from './objectDemo?raw'
+import notObjectDemo from './notObjectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isObject
+
+isObject 是一个用于判断值是否为对象的函数。
+
+## 对象示例
+
+<CodeOrSourceMdx language="typescript">
+  {objectDemo}
+</CodeOrSourceMdx>
+
+## 非对象示例
+
+<CodeOrSourceMdx language="typescript">
+  {notObjectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### obj
+
+- 类型：`any`
+- 描述：要检测的值
+
+### 返回值
+
+- 类型：`obj is Record<string, any>`
+- 描述：如果值是对象则返回 `true`，否则返回 `false`
