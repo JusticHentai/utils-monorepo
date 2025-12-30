@@ -1,4 +1,6 @@
-import awaitFormat from '../awaitFormat'
+import asyncFormat from '../asyncFormat'
+import BaseFunction from '../BaseFunction'
+import { RetryOptions, RetryResult } from './interface'
 
 /**
  * 重试函数
@@ -8,17 +10,18 @@ import awaitFormat from '../awaitFormat'
  * @param retryCount 重试次数
  * @returns 返回 [res, err] 的形式
  */
-const retry = async <T>(
-  fn: () => Promise<T>,
-  retryCount: number = 3
-): Promise<[T, undefined] | [undefined, any]> => {
-  const formatFn = awaitFormat<any, T>(fn)
+const retry = async <Fn extends BaseFunction>(
+  options: RetryOptions<Fn>
+): RetryResult<Fn> => {
+  const { fn, params, retryCount = 3 } = options
+
+  const formatFn = asyncFormat<Fn>(fn)
 
   let count = retryCount
   let error
 
   while (count) {
-    const [res, err] = await formatFn()
+    const [res, err] = await formatFn(...params)
 
     if (res) {
       return [res, undefined]
