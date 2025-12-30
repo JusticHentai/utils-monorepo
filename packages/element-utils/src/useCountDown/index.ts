@@ -1,95 +1,145 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-interface Options {
-  cb?: () => any
-  duration: number
-}
+import { COUNT_DOWN_STATUS, UseCountDownProps } from './interface'
 
-export enum COUNT_DOWN_STATUS {
-  STOP,
-  RUNNING,
-}
+/**
+ * 倒计时 Hook
+ */
+const useCountDown = (options: UseCountDownProps) => {
+  const { initialSeconds } = options
 
-const useCountDown = (options: Options) => {
-  const { cb, duration } = options
+  // 剩余秒数
+  const [remainingSeconds, setRemainingSeconds] = useState(initialSeconds)
+  // 当前计时状态
+  const [countDownStatus, setCountDownStatus] = useState<COUNT_DOWN_STATUS>(
+    COUNT_DOWN_STATUS.IDLE
+  )
 
-  const refState = useRef<
-    Options & { timer: NodeJS.Timeout | null; countDown: number }
-  >({
-    cb,
-    duration,
-    timer: null,
-    countDown: duration,
-  })
+  // 使用 ref 存储状态，避免闭包问题
+  const statusRef = useRef<COUNT_DOWN_STATUS>(COUNT_DOWN_STATUS.IDLE)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const lastTickTimeRef = useRef<number>(0)
+  const remainingMsRef = useRef<number>(initialSeconds * 1000)
 
-  useEffect(() => {
-    refState.current.duration = duration
-    refState.current.cb = cb
-  }, [cb, duration])
+  /**
+   * 清除定时器
+   */
+  const clearTimer = useCallback(() => {
+    if (!timerRef.current) return
 
-  // ----
-
-  const [countDown, setCountDown] = useState(duration)
-  const [countDownStatus, setCountDownStatus] = useState(COUNT_DOWN_STATUS.STOP)
-
-  // ----
-  const stop = useCallback(() => {
-    const { timer } = refState.current
-    timer && clearInterval(timer)
-    setCountDownStatus(COUNT_DOWN_STATUS.STOP)
+    clearInterval(timerRef.current)
+    timerRef.current = null
   }, [])
 
-  const start = useCallback(() => {
-    const { cb, duration, timer } = refState.current
+  /**
+   * 启动定时器
+   */
+  const startTimer = useCallback(() => {
+    clearTimer()
 
-    timer && clearInterval(timer)
-    setCountDown(duration)
-    refState.current.countDown = duration
-    setCountDownStatus(COUNT_DOWN_STATUS.RUNNING)
+    // 每次启动定时器，记录当前启动时间与过去时间的差值，兼容多种场景
+    lastTickTimeRef.current = Date.now()
 
-    refState.current.timer = setInterval(async () => {
-      refState.current.countDown--
+    timerRef.current = setInterval(() => {
+      const now = Date.now()
+      const elapsed = now - lastTickTimeRef.current
+      lastTickTimeRef.current = now
 
-      if (refState.current.countDown <= 0) {
-        stop()
-        const canNext = await cb?.()
+      remainingMsRef.current = Math.max(0, remainingMsRef.current - elapsed)
+      const newSeconds = Math.ceil(remainingMsRef.current / 1000)
 
-        canNext && start()
+      setRemainingSeconds(newSeconds)
 
-        return
-      }
+      if (remainingMsRef.current > 0) return
 
-      setCountDown(refState.current.countDown)
+      // 倒计时结束
+
+      clearTimer()
+      statusRef.current = COUNT_DOWN_STATUS.IDLE
+      setCountDownStatus(COUNT_DOWN_STATUS.IDLE)
     }, 1000)
-  }, [stop])
+  }, [clearTimer])
 
-  const resume = useCallback(() => {
-    const { cb, timer, countDown } = refState.current
+  /**
+   * 启动倒计时
+   */
+  const startCountdown = useCallback(() => {
+    // 如果是 running 状态，不处理
+    if (statusRef.current === COUNT_DOWN_STATUS.RUNNING) return
 
-    timer && clearInterval(timer)
-    setCountDown(countDown)
+    // 如果是 idle 状态，重置剩余时间，再启动定时器
+    if (statusRef.current === COUNT_DOWN_STATUS.IDLE) {
+      remainingMsRef.current = initialSeconds * 1000
+      setRemainingSeconds(initialSeconds)
+    }
+
+    // 暂停状态，直接启动定时器
+    statusRef.current = COUNT_DOWN_STATUS.RUNNING
     setCountDownStatus(COUNT_DOWN_STATUS.RUNNING)
+    startTimer()
+  }, [initialSeconds, startTimer])
 
-    refState.current.timer = setInterval(async () => {
-      if (refState.current.countDown <= 0) {
-        stop()
-        const canNext = await cb?.()
+  /**
+   * 暂停倒计时
+   */
+  const pauseCountdown = useCallback(() => {
+    // 如果不是 running 状态，不处理
+    if (statusRef.current !== COUNT_DOWN_STATUS.RUNNING) return
 
-        canNext && start()
+    statusRef.current = COUNT_DOWN_STATUS.PAUSED
+    setCountDownStatus(COUNT_DOWN_STATUS.PAUSED)
+    clearTimer()
+  }, [clearTimer])
 
-        return
-      }
+  /**
+   * 结束倒计时
+   */
+  const endCountdown = useCallback(() => {
+    clearTimer()
+    statusRef.current = COUNT_DOWN_STATUS.IDLE
+    setCountDownStatus(COUNT_DOWN_STATUS.IDLE)
+  }, [clearTimer])
 
-      setCountDown(refState.current.countDown - 1)
-    }, 1000)
-  }, [stop, start])
+  /**
+   * 恢复倒计时
+   */
+  const resumeCountdown = useCallback(() => {
+    // 如果不是 paused 状态，不处理
+    if (statusRef.current !== COUNT_DOWN_STATUS.PAUSED) return
+
+    statusRef.current = COUNT_DOWN_STATUS.RUNNING
+    setCountDownStatus(COUNT_DOWN_STATUS.RUNNING)
+    startTimer()
+  }, [startTimer])
+
+  /**
+   * 重新开始倒计时
+   */
+  const restartCountdown = useCallback(() => {
+    clearTimer()
+
+    remainingMsRef.current = initialSeconds * 1000
+    setRemainingSeconds(initialSeconds)
+    statusRef.current = COUNT_DOWN_STATUS.RUNNING
+    setCountDownStatus(COUNT_DOWN_STATUS.RUNNING)
+    startTimer()
+  }, [clearTimer, initialSeconds, startTimer])
+
+  // 组件卸载时清除定时器
+  useEffect(() => {
+    return () => {
+      clearTimer()
+    }
+  }, [clearTimer])
 
   return {
-    countDown,
+    remainingSeconds,
     countDownStatus,
-    start,
-    stop,
-    resume,
+    startCountdown,
+    pauseCountdown,
+    resumeCountdown,
+    restartCountdown,
+    endCountdown,
   }
 }
 
