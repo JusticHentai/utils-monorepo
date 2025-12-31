@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/flatten?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/flatten/介绍" />
+
+# 二叉树展开为链表 (LeetCode 114)
+
+## 题目描述
+
+给你二叉树的根结点 `root`，请你将它展开为一个单链表。展开后的单链表应该同样使用 `TreeNode`，其中 `right` 子指针指向链表中下一个结点，而左子指针始终为 `null`。展开后的单链表应该与二叉树先序遍历顺序相同。
+
+## 核心原理
+
+**迭代法（Morris 遍历思想）**：
+- 对于每个节点，将其左子树的最右节点连接到当前节点的右子树
+- 然后将左子树移到右边，左子树置空
+
+## 解题思路
+
+1. 从根节点开始遍历
+2. 如果当前节点有左子树，找到左子树的最右节点
+3. 将最右节点的 right 指向当前节点的右子树
+4. 将当前节点的右子树设为左子树，左子树置空
+5. 移动到下一个节点（右子节点）
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

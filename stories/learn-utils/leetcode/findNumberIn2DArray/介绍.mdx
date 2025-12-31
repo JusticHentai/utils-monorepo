@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/findNumberIn2DArray?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/findNumberIn2DArray/介绍" />
+
+# 二维数组中的查找 (剑指 Offer 04)
+
+## 题目描述
+
+在一个 n * m 的二维数组中，每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个高效的函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。
+
+## 核心原理
+
+**二分查找**：
+- 利用矩阵的有序性
+- 对每一行进行二分查找
+
+## 解题思路
+
+1. 遍历每一行
+2. 对每一行进行二分查找
+3. 如果找到目标值，返回 true
+4. 遍历完所有行都没找到，返回 false
+
+## 复杂度分析
+
+- **时间复杂度**：O(m * log n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

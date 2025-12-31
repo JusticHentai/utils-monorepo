@@ -1,0 +1,41 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/combinationSum?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# combinationSum 组合总和
+
+[LeetCode 39. 组合总和](https://leetcode.cn/problems/combination-sum/) 是回溯算法的经典题目。
+
+## 题目描述
+
+给你一个无重复元素的整数数组 candidates 和一个目标整数 target，找出所有和为 target 的组合。candidates 中的数字可以无限制重复被选取。
+
+## 解题思路
+
+### 回溯 + 剪枝
+
+1. **递归选择**：每个位置可以选择当前数或跳过
+2. **重复选取**：选择当前数后，index 不变
+3. **剪枝**：当 target < 0 时返回
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(S)，S 为所有可行解的长度之和
+- **空间复杂度**：O(target)
+
+## 相关题目
+
+- [组合总和 II](https://leetcode.cn/problems/combination-sum-ii/)
+- [组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)

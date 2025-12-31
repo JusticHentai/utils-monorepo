@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/removeNthFromEnd?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/removeNthFromEnd/介绍" />
+
+# 删除链表的倒数第 N 个结点 (LeetCode 19)
+
+## 题目描述
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+## 核心原理
+
+**双指针**：
+- 快指针先走 n 步
+- 然后快慢指针同时走
+- 快指针到达末尾时，慢指针指向要删除节点的前一个
+
+## 解题思路
+
+1. 创建哑节点，指向头节点
+2. 快指针先走 n 步
+3. 快慢指针同时走，直到快指针到达末尾
+4. 删除慢指针的下一个节点
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

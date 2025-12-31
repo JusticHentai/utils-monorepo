@@ -1,0 +1,40 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/subsets?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# subsets 子集
+
+[LeetCode 78. 子集](https://leetcode.cn/problems/subsets/) 是回溯算法的经典题目。
+
+## 题目描述
+
+给你一个整数数组 nums，数组中的元素互不相同。返回该数组所有可能的子集。
+
+## 解题思路
+
+### DFS 选或不选
+
+1. 对于每个元素，有两种选择：选或不选
+2. 递归处理所有元素
+3. 到达末尾时记录当前组合
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n × 2^n)
+- **空间复杂度**：O(n)
+
+## 子集数量
+
+n 个元素的子集数量为 2^n

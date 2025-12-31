@@ -1,0 +1,41 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/singleNumber?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# singleNumber 只出现一次的数字
+
+[LeetCode 136. 只出现一次的数字](https://leetcode.cn/problems/single-number/) 是位运算的经典题目。
+
+## 题目描述
+
+给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+
+## 解题思路
+
+### 异或运算
+
+1. `a ^ a = 0`：相同的数异或为 0
+2. `a ^ 0 = a`：任何数与 0 异或等于自身
+3. 异或满足交换律和结合律
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 相关题目
+
+- [只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/)
+- [只出现一次的数字 III](https://leetcode.cn/problems/single-number-iii/)

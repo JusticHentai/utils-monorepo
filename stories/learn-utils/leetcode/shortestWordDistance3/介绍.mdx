@@ -1,0 +1,40 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/shortestWordDistance3?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/shortestWordDistance3/介绍" />
+
+# 最短单词距离 III (LeetCode 245)
+
+## 题目描述
+
+给定一个字符串数组 `wordsDict` 和两个字符串 `word1` 和 `word2`，返回列表中这两个单词之间的最短距离。注意：`word1` 和 `word2` 可能相同。
+
+## 核心原理
+
+**一次遍历 + 特殊处理**：
+- 当 word1 == word2 时，需要特殊处理
+- 记录同一单词相邻两次出现的距离
+
+## 解题思路
+
+1. 如果 word1 == word2，记录上一次出现位置，计算相邻距离
+2. 如果 word1 != word2，同最短单词距离 I 的解法
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

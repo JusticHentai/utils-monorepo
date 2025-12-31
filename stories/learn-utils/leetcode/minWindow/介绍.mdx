@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/minWindow?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/minWindow/介绍" />
+
+# 最小覆盖子串 (LeetCode 76)
+
+## 题目描述
+
+给你一个字符串 `s`、一个字符串 `t`。返回 `s` 中涵盖 `t` 所有字符的最小子串。如果 `s` 中不存在涵盖 `t` 所有字符的子串，则返回空字符串 `""`。
+
+## 核心原理
+
+**滑动窗口**：
+- 使用哈希表记录 t 中字符的需求量
+- 右指针扩展窗口，左指针收缩窗口
+- 记录满足条件的最小窗口
+
+## 解题思路
+
+1. 统计 t 中每个字符的出现次数
+2. 右指针扩展窗口，更新字符计数
+3. 当窗口包含所有字符时，尝试收缩左边界
+4. 记录最小窗口
+
+## 复杂度分析
+
+- **时间复杂度**：O(m + n)
+- **空间复杂度**：O(k)，k 为字符集大小
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

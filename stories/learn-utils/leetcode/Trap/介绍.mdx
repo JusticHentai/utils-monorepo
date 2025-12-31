@@ -1,0 +1,41 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/Trap?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Trap 接雨水
+
+[LeetCode 42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) 是经典的双指针/动态规划题目。
+
+## 题目描述
+
+给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。
+
+## 解题思路
+
+### 动态规划预处理
+
+1. **leftMax[i]**：位置 i 左边的最大高度
+2. **rightMax[i]**：位置 i 右边的最大高度
+3. **水量计算**：`min(leftMax[i], rightMax[i]) - height[i]`
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)
+
+## 其他解法
+
+1. **双指针**：O(1) 空间
+2. **单调栈**：O(n) 时间和空间

@@ -1,0 +1,40 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/permute?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# permute 全排列
+
+[LeetCode 46. 全排列](https://leetcode.cn/problems/permutations/) 是回溯算法的经典题目。
+
+## 题目描述
+
+给定一个不含重复数字的数组 nums，返回其所有可能的全排列。
+
+## 解题思路
+
+### 回溯法
+
+1. 每次从剩余元素中选择一个
+2. 递归处理剩余元素
+3. 回溯时恢复状态
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n × n!)
+- **空间复杂度**：O(n)
+
+## 相关题目
+
+- [全排列 II](https://leetcode.cn/problems/permutations-ii/)（包含重复数字）

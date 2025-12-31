@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/mergeTrees?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/mergeTrees/介绍" />
+
+# 合并二叉树 (LeetCode 617)
+
+## 题目描述
+
+给你两棵二叉树 `root1` 和 `root2`。将这两棵树合并成一棵新二叉树。合并规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点。
+
+## 核心原理
+
+**递归合并**：
+- 如果一棵树为空，返回另一棵树
+- 否则创建新节点，值为两节点值之和
+- 递归合并左右子树
+
+## 解题思路
+
+1. 如果 root1 为空，返回 root2
+2. 如果 root2 为空，返回 root1
+3. 创建新节点，值为 root1.val + root2.val
+4. 递归合并左子树和右子树
+
+## 复杂度分析
+
+- **时间复杂度**：O(min(m, n))
+- **空间复杂度**：O(min(m, n))，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

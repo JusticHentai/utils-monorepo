@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/findDuplicate?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/findDuplicate/介绍" />
+
+# 寻找重复数 (LeetCode 287)
+
+## 题目描述
+
+给定一个包含 `n + 1` 个整数的数组 `nums`，其数字都在 `[1, n]` 范围内（包括 1 和 n），可知至少存在一个重复的整数。假设 `nums` 只有一个重复的整数，返回这个重复的数。
+
+## 核心原理
+
+**快慢指针（Floyd 判圈算法）**：
+- 将数组看作链表，`nums[i]` 指向下一个节点
+- 由于有重复数字，必然存在环
+- 使用快慢指针找到环的入口即为重复数字
+
+## 解题思路
+
+1. 快指针每次走两步，慢指针每次走一步
+2. 第一次相遇后，将快指针重置到起点
+3. 两指针同速前进，再次相遇点即为重复数字
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

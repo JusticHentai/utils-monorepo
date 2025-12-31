@@ -1,0 +1,58 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/hash?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Hash 哈希表应用
+
+哈希表是一种通过键值对存储数据的数据结构，提供 O(1) 的查找、插入和删除操作。
+
+## 核心原理
+
+1. **哈希函数**：将键映射到数组索引
+2. **冲突处理**：使用链地址法或开放地址法处理哈希冲突
+3. **空间换时间**：用额外空间存储映射关系，换取查找效率
+
+## 应用场景
+
+- 数组去重
+- 两数之和
+- 统计频率
+- 缓存实现
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 函数说明
+
+### hash1
+
+- 求数组中最大值与最小值的差
+- 一次遍历同时记录最大最小值
+
+### hash2
+
+- 对象数组去重
+- 使用 `JSON.stringify` 作为哈希键
+- Map 记录已出现的对象
+
+## 时间复杂度
+
+- **查找**：O(1) 平均，O(n) 最坏
+- **插入**：O(1) 平均，O(n) 最坏
+- **删除**：O(1) 平均，O(n) 最坏
+
+## JavaScript 中的哈希表
+
+- `Object`：键只能是字符串或 Symbol
+- `Map`：键可以是任意类型
+- `Set`：只存储键，用于去重
+- `WeakMap`/`WeakSet`：键是弱引用

@@ -1,0 +1,54 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromiseAny?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromiseAny 手写 Promise.any
+
+`Promise.any` 返回第一个成功的 Promise，只有所有都失败才会 reject。
+
+## 核心原理
+
+1. **成功优先**：任一 Promise 成功就立即 resolve
+2. **错误收集**：收集所有失败的错误
+3. **全部失败**：所有 Promise 都失败时抛出 `AggregateError`
+
+## 与 Promise.race 的区别
+
+- `race`：第一个完成的（无论成功失败）
+- `any`：第一个成功的（忽略失败）
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### promises
+
+- 类型：`Promise<any>[]`
+- 描述：Promise 数组
+
+## 返回值
+
+- 类型：`Promise<any>`
+- 描述：第一个成功的 Promise 的结果
+
+## AggregateError
+
+当所有 Promise 都失败时，抛出 `AggregateError`，包含所有错误信息。
+
+```typescript
+try {
+  await Promise.any([...])
+} catch (e) {
+  console.log(e.errors) // 所有错误的数组
+}
+```

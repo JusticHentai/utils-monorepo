@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/maxProduct?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/maxProduct/介绍" />
+
+# 乘积最大子数组 (LeetCode 152)
+
+## 题目描述
+
+给你一个整数数组 `nums`，请你找出数组中乘积最大的非空连续子数组，并返回该子数组所对应的乘积。
+
+## 核心原理
+
+**动态规划**：
+- 由于负数乘以负数会变成正数，需要同时维护最大值和最小值
+- `prevMax` 记录以当前位置结尾的最大乘积
+- `prevMin` 记录以当前位置结尾的最小乘积
+
+## 解题思路
+
+1. 初始化 `prevMax = prevMin = nums[0]`
+2. 遍历数组，计算 `prevMin * nums[i]` 和 `prevMax * nums[i]`
+3. 更新 `prevMin = min(temp1, temp2, nums[i])`
+4. 更新 `prevMax = max(temp1, temp2, nums[i])`
+5. 记录全局最大值
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

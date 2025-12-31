@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/exist?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/exist/介绍" />
+
+# 单词搜索 (LeetCode 79)
+
+## 题目描述
+
+给定一个 `m x n` 二维字符网格 `board` 和一个字符串单词 `word`。如果 `word` 存在于网格中，返回 `true`；否则，返回 `false`。单词必须按照字母顺序，通过相邻的单元格内的字母构成。
+
+## 核心原理
+
+**DFS + 回溯**：
+- 从每个格子开始尝试 DFS 搜索
+- 使用 visited 数组标记已访问的格子
+- 回溯时恢复 visited 状态
+
+## 解题思路
+
+1. 遍历网格，找到与单词首字母匹配的格子
+2. 从该格子开始 DFS，向四个方向搜索
+3. 如果越界、已访问或字符不匹配，返回 false
+4. 如果找到完整单词，返回 true
+5. 回溯：恢复 visited 状态
+
+## 复杂度分析
+
+- **时间复杂度**：O(m * n * 3^L)，L 为单词长度
+- **空间复杂度**：O(m * n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/rob2?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/rob2/介绍" />
+
+# 打家劫舍 III (LeetCode 337)
+
+## 题目描述
+
+小偷又发现了一个新的可行窃的地区。这个地区只有一个入口，我们称之为 `root`。除了 `root` 之外，每栋房子有且只有一个"父"房子与之相连。如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。给定二叉树的 `root`，返回在不触动警报的情况下，小偷能够盗取的最高金额。
+
+## 核心原理
+
+**树形 DP**：
+- 对于每个节点，有两种状态：偷或不偷
+- 返回 [不偷当前节点的最大值, 偷当前节点的最大值]
+
+## 解题思路
+
+1. DFS 返回 [不偷, 偷] 两种状态
+2. 不偷当前节点：可以偷或不偷子节点，取最大值
+3. 偷当前节点：不能偷子节点
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

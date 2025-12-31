@@ -1,0 +1,48 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromiseResolve?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromiseResolve 手写 Promise.resolve
+
+`Promise.resolve` 将任意值包装为一个 resolved 状态的 Promise。
+
+## 核心原理
+
+1. **创建新 Promise**：返回一个新的 Promise 实例
+2. **立即 resolve**：在构造函数中直接调用 resolve
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### value
+
+- 类型：`any`
+- 描述：需要包装的值
+
+## 返回值
+
+- 类型：`Promise<any>`
+- 描述：resolved 状态的 Promise
+
+## 特殊情况
+
+1. **传入 Promise**：直接返回该 Promise
+2. **传入 thenable**：会尝试调用其 then 方法
+3. **传入普通值**：包装为 resolved 的 Promise
+
+## 应用场景
+
+1. **统一返回值**：将同步值转为 Promise
+2. **链式调用起点**：作为 Promise 链的起始
+3. **兼容处理**：处理可能是 Promise 也可能是普通值的情况

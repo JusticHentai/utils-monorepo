@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/diameterOfBinaryTree?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/diameterOfBinaryTree/介绍" />
+
+# 二叉树的直径 (LeetCode 543)
+
+## 题目描述
+
+给定一棵二叉树，你需要计算它的直径长度。一棵二叉树的直径长度是任意两个结点路径长度中的最大值。这条路径可能穿过也可能不穿过根结点。
+
+## 核心原理
+
+**DFS 深度优先搜索**：
+- 二叉树的直径 = 左子树深度 + 右子树深度
+- 在 DFS 过程中，维护全局最大直径
+
+## 解题思路
+
+1. 定义 DFS 函数返回以当前节点为根的子树深度
+2. 对于每个节点，计算左右子树深度之和，更新最大直径
+3. 返回 `max(左子树深度, 右子树深度) + 1`
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(h)，h 为树的高度
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

@@ -1,0 +1,54 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/flat?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flat 数组扁平化
+
+手写实现 `Array.prototype.flat()` 方法，将嵌套数组按指定深度展开为一维数组。
+
+## 核心原理
+
+1. **递归处理**：遍历数组，如果元素是数组则递归处理
+2. **深度控制**：通过 `deep` 参数控制展开的层数
+3. **使用 reduce**：利用 `reduce` 和 `concat` 实现数组合并
+
+## 实现要点
+
+- 当 `deep === 0` 时直接返回原数组
+- 使用 `Array.isArray()` 判断元素是否为数组
+- 递归时 `deep - 1` 控制递归深度
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### array
+
+- 类型：`any[]`
+- 描述：需要扁平化的嵌套数组
+
+### deep
+
+- 类型：`number`
+- 描述：扁平化的深度，`Infinity` 表示完全展开
+
+## 返回值
+
+- 类型：`any[]`
+- 描述：扁平化后的数组
+
+## 其他实现方式
+
+1. **使用 flat 原生方法**：`arr.flat(Infinity)`
+2. **使用 toString + split**：`arr.toString().split(',')`（仅适用于数字数组）
+3. **使用栈实现**：非递归方式

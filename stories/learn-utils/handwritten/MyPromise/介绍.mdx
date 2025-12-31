@@ -1,0 +1,61 @@
+import normalDemo from './normalDemo?raw'
+import rejectDemo from './rejectDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromise?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromise 手写 Promise
+
+手写 Promise 是前端面试中的高频考点，考察对异步编程和 Promise 规范的理解。
+
+## 核心原理
+
+1. **三种状态**：`pending`（进行中）、`fulfilled`（已成功）、`rejected`（已失败）
+2. **状态不可逆**：状态只能从 `pending` 变为 `fulfilled` 或 `rejected`
+3. **异步执行**：`resolve` 和 `reject` 使用 `setTimeout` 模拟微任务
+4. **链式调用**：`then` 方法返回新的 Promise
+
+## 实现要点
+
+- 使用队列存储回调函数，支持多次 `then` 调用
+- `then` 返回新的 Promise 实现链式调用
+- 处理 `then` 回调返回 Promise 的情况
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## resolve 示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## reject 示例
+
+<CodeOrSourceMdx language="typescript">
+  {rejectDemo}
+</CodeOrSourceMdx>
+
+## Promise 状态流转
+
+```
+pending ──resolve──> fulfilled
+   │
+   └──reject───> rejected
+```
+
+## 面试常见追问
+
+1. **Promise 的状态为什么不可逆？**
+   - 保证异步操作结果的确定性
+   - 一旦确定就不会再改变
+
+2. **then 为什么返回新的 Promise？**
+   - 实现链式调用
+   - 每个 then 的结果独立
+
+3. **resolve 为什么要异步执行？**
+   - 保证 then 的回调在当前同步代码执行完后执行
+   - 符合 Promise/A+ 规范

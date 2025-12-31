@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/numTrees?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/numTrees/介绍" />
+
+# 不同的二叉搜索树 (LeetCode 96)
+
+## 题目描述
+
+给你一个整数 `n`，求恰由 `n` 个节点组成且节点值从 `1` 到 `n` 互不相同的二叉搜索树有多少种？
+
+## 核心原理
+
+**动态规划（卡特兰数）**：
+- `dp[i]` 表示 i 个节点能组成的 BST 数量
+- 以每个节点为根，左子树和右子树的组合数相乘
+
+## 解题思路
+
+1. `dp[0] = dp[1] = 1`
+2. 对于 `dp[i]`，遍历每个可能的根节点 j
+3. `dp[i] += dp[j] * dp[i - j - 1]`
+
+## 复杂度分析
+
+- **时间复杂度**：O(n²)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

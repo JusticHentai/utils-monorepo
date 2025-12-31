@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/mergeArray?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/mergeArray/介绍" />
+
+# 合并两个有序数组 (LeetCode 88)
+
+## 题目描述
+
+给你两个按非递减顺序排列的整数数组 `nums1` 和 `nums2`，另有两个整数 `m` 和 `n`，分别表示 `nums1` 和 `nums2` 中的元素数目。请你合并 `nums2` 到 `nums1` 中，使合并后的数组同样按非递减顺序排列。
+
+## 核心原理
+
+**双指针（从后往前）**：
+- 从两个数组的末尾开始比较
+- 将较大的元素放到 nums1 的末尾
+- 避免覆盖未处理的元素
+
+## 解题思路
+
+1. 指针 pa 指向 nums1 有效元素末尾，pb 指向 nums2 末尾
+2. 指针 tail 指向 nums1 数组末尾
+3. 比较 nums1[pa] 和 nums2[pb]，将较大者放到 tail 位置
+4. 移动相应指针
+
+## 复杂度分析
+
+- **时间复杂度**：O(m + n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

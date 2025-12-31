@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/numSquares?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/numSquares/介绍" />
+
+# 完全平方数 (LeetCode 279)
+
+## 题目描述
+
+给你一个整数 `n`，返回和为 `n` 的完全平方数的最少数量。
+
+## 核心原理
+
+**动态规划**：
+- `dp[i]` 表示和为 i 的完全平方数的最少数量
+- 状态转移：`dp[i] = min(dp[i], dp[i - j*j] + 1)`
+
+## 解题思路
+
+1. 初始化 `dp[i] = i`（最坏情况全是 1）
+2. 对于每个 i，遍历所有 j*j <= i
+3. 更新 `dp[i] = min(dp[i], dp[i - j*j] + 1)`
+
+## 复杂度分析
+
+- **时间复杂度**：O(n * √n)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

@@ -1,0 +1,61 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/threeSum?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# threeSum 三数之和
+
+[LeetCode 15. 三数之和](https://leetcode.cn/problems/3sum/) 是双指针的经典应用题。
+
+## 题目描述
+
+给你一个包含 n 个整数的数组 `nums`，判断 `nums` 中是否存在三个元素 a，b，c，使得 a + b + c = 0。找出所有和为 0 且不重复的三元组。
+
+## 解题思路
+
+### 排序 + 双指针
+
+1. **排序**：先对数组排序
+2. **固定一个数**：遍历数组，固定第一个数
+3. **双指针**：在剩余部分使用双指针找另外两个数
+4. **去重**：跳过重复元素
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### nums
+
+- 类型：`number[]`
+- 描述：整数数组
+
+## 返回值
+
+- 类型：`number[][]`
+- 描述：所有和为 0 的三元组
+
+## 复杂度分析
+
+- **时间复杂度**：O(n²)，排序 O(n log n) + 双指针 O(n²)
+- **空间复杂度**：O(log n)，排序所需空间
+
+## 关键点
+
+1. **排序的作用**：方便去重和双指针移动
+2. **剪枝优化**：当 `nums[i] > 0` 时可以直接退出
+3. **去重处理**：跳过相同的元素避免重复结果
+
+## 相关题目
+
+- [两数之和](https://leetcode.cn/problems/two-sum/)
+- [四数之和](https://leetcode.cn/problems/4sum/)
+- [最接近的三数之和](https://leetcode.cn/problems/3sum-closest/)

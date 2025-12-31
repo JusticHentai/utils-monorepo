@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/searchMatrix?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/searchMatrix/介绍" />
+
+# 搜索二维矩阵 II (LeetCode 240)
+
+## 题目描述
+
+编写一个高效的算法来搜索 `m x n` 矩阵 `matrix` 中的一个目标值 `target`。该矩阵具有以下特性：每行的元素从左到右升序排列，每列的元素从上到下升序排列。
+
+## 核心原理
+
+**Z 字形查找**：
+- 从右上角开始搜索
+- 如果当前值大于目标，向左移动
+- 如果当前值小于目标，向下移动
+
+## 解题思路
+
+1. 从右上角 (0, n-1) 开始
+2. 如果当前值等于目标，返回 true
+3. 如果当前值大于目标，向左移动
+4. 如果当前值小于目标，向下移动
+5. 越界则返回 false
+
+## 复杂度分析
+
+- **时间复杂度**：O(m + n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

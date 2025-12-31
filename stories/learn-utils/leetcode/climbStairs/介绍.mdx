@@ -1,0 +1,71 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/climbStairs?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# climbStairs 爬楼梯
+
+[LeetCode 70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/) 是动态规划的入门题，本质是斐波那契数列。
+
+## 题目描述
+
+假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+
+## 解题思路
+
+### 动态规划
+
+1. **状态定义**：`dp[i]` 表示爬到第 i 阶的方法数
+2. **状态转移**：`dp[i] = dp[i-1] + dp[i-2]`
+3. **初始状态**：`dp[0] = 1, dp[1] = 2`
+
+### 为什么是斐波那契？
+
+- 到达第 i 阶，可以从第 i-1 阶爬 1 步，或从第 i-2 阶爬 2 步
+- 所以方法数是两者之和
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### n
+
+- 类型：`number`
+- 描述：楼梯阶数
+
+## 返回值
+
+- 类型：`number`
+- 描述：爬到楼顶的方法数
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，可优化为 O(1)
+
+## 空间优化版本
+
+```typescript
+function climbStairs(n: number): number {
+  if (n <= 2) return n
+  let prev = 1, curr = 2
+  for (let i = 3; i <= n; i++) {
+    [prev, curr] = [curr, prev + curr]
+  }
+  return curr
+}
+```
+
+## 相关题目
+
+- [使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)
+- [斐波那契数](https://leetcode.cn/problems/fibonacci-number/)

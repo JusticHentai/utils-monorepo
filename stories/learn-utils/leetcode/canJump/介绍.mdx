@@ -1,0 +1,40 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/canJump?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# canJump 跳跃游戏
+
+[LeetCode 55. 跳跃游戏](https://leetcode.cn/problems/jump-game/) 是贪心算法的经典题目。
+
+## 题目描述
+
+给定一个非负整数数组 nums，你最初位于数组的第一个下标。数组中的每个元素代表你在该位置可以跳跃的最大长度。判断你是否能够到达最后一个下标。
+
+## 解题思路
+
+### 贪心算法
+
+1. 维护能到达的最远位置 rightmost
+2. 遍历数组，更新 rightmost
+3. 如果当前位置超过 rightmost，说明无法到达
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 相关题目
+
+- [跳跃游戏 II](https://leetcode.cn/problems/jump-game-ii/)

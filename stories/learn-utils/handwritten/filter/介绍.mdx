@@ -1,0 +1,48 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/filter?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# filter 数组过滤
+
+手写实现 `Array.prototype.filter()` 方法，返回满足条件的元素组成的新数组。
+
+## 核心原理
+
+1. **遍历数组**：使用 `for...of` 配合 `entries()` 获取索引和元素
+2. **条件判断**：对每个元素执行回调函数，返回 `true` 则保留
+3. **返回新数组**：不修改原数组，返回过滤后的新数组
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### arr
+
+- 类型：`any[]`
+- 描述：需要过滤的数组
+
+### cb
+
+- 类型：`(item: any, index: number, arr: any[]) => boolean`
+- 描述：过滤条件回调函数，返回 `true` 表示保留该元素
+
+## 返回值
+
+- 类型：`any[]`
+- 描述：满足条件的元素组成的新数组
+
+## 回调函数参数
+
+- `item`：当前元素
+- `index`：当前索引
+- `arr`：原数组

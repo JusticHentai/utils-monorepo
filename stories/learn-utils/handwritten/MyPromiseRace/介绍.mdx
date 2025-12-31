@@ -1,0 +1,52 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromiseRace?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromiseRace 手写 Promise.race
+
+`Promise.race` 返回最先完成的 Promise 的结果，无论成功还是失败。
+
+## 核心原理
+
+1. **竞速机制**：第一个完成的 Promise 决定最终结果
+2. **遍历绑定**：对每个 Promise 绑定 resolve 和 reject
+3. **状态锁定**：一旦有结果，后续 Promise 的结果被忽略
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### promises
+
+- 类型：`Promise<any>[]`
+- 描述：Promise 数组
+
+## 返回值
+
+- 类型：`Promise<any>`
+- 描述：最先完成的 Promise 的结果
+
+## 应用场景
+
+1. **超时控制**：与超时 Promise 竞速
+2. **多源请求**：从多个源获取数据，取最快的
+3. **性能优化**：多个备选方案，选最快响应的
+
+## 超时控制示例
+
+```typescript
+const timeout = new Promise((_, reject) => 
+  setTimeout(() => reject('timeout'), 5000)
+)
+const result = await Promise.race([fetchData(), timeout])
+```

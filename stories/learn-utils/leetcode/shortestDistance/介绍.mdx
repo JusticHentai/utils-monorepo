@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/shortestDistance?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/shortestDistance/介绍" />
+
+# 最短单词距离 (LeetCode 243)
+
+## 题目描述
+
+给定一个字符串数组 `wordsDict` 和两个已经存在于该数组中的不同的字符串 `word1` 和 `word2`。返回列表中这两个单词之间的最短距离。
+
+## 核心原理
+
+**一次遍历**：
+- 记录两个单词最近出现的位置
+- 每次更新位置时计算距离
+
+## 解题思路
+
+1. 遍历数组，记录 word1 和 word2 的位置
+2. 每次找到其中一个单词时，如果另一个单词已找到，计算距离
+3. 更新最小距离
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

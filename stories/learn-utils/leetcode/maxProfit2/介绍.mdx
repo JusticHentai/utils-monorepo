@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/maxProfit2?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/maxProfit2/介绍" />
+
+# 买卖股票的最佳时机含冷冻期 (LeetCode 309)
+
+## 题目描述
+
+给定一个整数数组 `prices`，其中 `prices[i]` 表示第 `i` 天的股票价格。设计一个算法计算出最大利润。卖出股票后，你无法在第二天买入股票（即冷冻期为 1 天）。
+
+## 核心原理
+
+**状态机 DP**：
+- `hold[i]`：第 i 天持有股票的最大利润
+- `unhold[i]`：第 i 天不持有股票的最大利润
+- 考虑冷冻期的影响
+
+## 解题思路
+
+1. `hold[i] = max(hold[i-1], unhold[i-2] - prices[i])`
+2. `unhold[i] = max(unhold[i-1], hold[i-1] + prices[i])`
+3. 返回 `unhold[n-1]`
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，可优化为 O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

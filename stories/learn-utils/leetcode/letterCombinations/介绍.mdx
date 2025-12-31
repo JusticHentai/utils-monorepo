@@ -1,0 +1,36 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/letterCombinations?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# letterCombinations 电话号码的字母组合
+
+[LeetCode 17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/) 是回溯/BFS 的经典题目。
+
+## 题目描述
+
+给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
+
+## 解题思路
+
+### BFS 队列法
+
+1. 建立数字到字母的映射
+2. 使用队列逐层扩展
+3. 每层处理一个数字的所有字母
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(3^m × 4^n)
+- **空间复杂度**：O(3^m × 4^n)

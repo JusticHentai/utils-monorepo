@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/mergeKLists?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/mergeKLists/介绍" />
+
+# 合并K个升序链表 (LeetCode 23)
+
+## 题目描述
+
+给你一个链表数组，每个链表都已经按升序排列。请你将所有链表合并到一个升序链表中，返回合并后的链表。
+
+## 核心原理
+
+**分治法**：
+- 将 k 个链表两两合并
+- 递归地将问题规模减半
+- 最终合并成一个链表
+
+## 解题思路
+
+1. 使用分治法，将链表数组分成两半
+2. 递归合并左半部分和右半部分
+3. 将两个合并后的链表再合并
+4. 基本情况：只有一个链表时直接返回
+
+## 复杂度分析
+
+- **时间复杂度**：O(n * log k)，n 为所有节点总数，k 为链表数
+- **空间复杂度**：O(log k)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

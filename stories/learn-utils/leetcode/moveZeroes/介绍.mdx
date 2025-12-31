@@ -1,0 +1,36 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/moveZeroes?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# moveZeroes 移动零
+
+[LeetCode 283. 移动零](https://leetcode.cn/problems/move-zeroes/) 是双指针的简单题。
+
+## 题目描述
+
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+
+## 解题思路
+
+### 双指针
+
+1. left 指向下一个非零元素应该放置的位置
+2. right 遍历数组
+3. 遇到非零元素就与 left 位置交换
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)

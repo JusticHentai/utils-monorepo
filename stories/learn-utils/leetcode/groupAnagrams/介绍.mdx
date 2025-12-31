@@ -1,0 +1,36 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/groupAnagrams?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# groupAnagrams 字母异位词分组
+
+[LeetCode 49. 字母异位词分组](https://leetcode.cn/problems/group-anagrams/) 是哈希表的经典题目。
+
+## 题目描述
+
+给你一个字符串数组，请你将字母异位词组合在一起。字母异位词是由重新排列源单词的字母得到的一个新单词。
+
+## 解题思路
+
+### 计数数组作为键
+
+1. 统计每个字符串的字母频率
+2. 将频率数组作为哈希表的键
+3. 相同键的字符串分到一组
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n × k)，k 为字符串最大长度
+- **空间复杂度**：O(n × k)

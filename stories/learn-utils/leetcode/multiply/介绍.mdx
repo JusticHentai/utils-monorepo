@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/multiply?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/multiply/介绍" />
+
+# 字符串相乘 (LeetCode 43)
+
+## 题目描述
+
+给定两个以字符串形式表示的非负整数 `num1` 和 `num2`，返回 `num1` 和 `num2` 的乘积，它们的乘积也表示为字符串形式。不能使用任何内置的大整数库或直接将输入转换为整数。
+
+## 核心原理
+
+**模拟竖式乘法**：
+- 两个数相乘，结果最多有 m + n 位
+- `num1[i] * num2[j]` 的结果放在 `pos[i+j]` 和 `pos[i+j+1]`
+
+## 解题思路
+
+1. 创建结果数组，长度为 len1 + len2
+2. 从后往前遍历两个数的每一位
+3. 计算乘积，处理进位
+4. 去除前导零，返回结果
+
+## 复杂度分析
+
+- **时间复杂度**：O(m * n)
+- **空间复杂度**：O(m + n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

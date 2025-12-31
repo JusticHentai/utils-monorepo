@@ -1,0 +1,41 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/topKFrequent?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# topKFrequent 前 K 个高频元素
+
+[LeetCode 347. 前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/) 是哈希表 + 排序的经典题目。
+
+## 题目描述
+
+给你一个整数数组 nums 和一个整数 k，请你返回其中出现频率前 k 高的元素。
+
+## 解题思路
+
+### 桶排序
+
+1. 统计每个元素的频率
+2. 按频率分桶
+3. 从高频桶开始取 k 个元素
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)
+
+## 其他解法
+
+1. **小顶堆**：O(n log k)
+2. **快速选择**：O(n) 平均

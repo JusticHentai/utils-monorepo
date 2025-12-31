@@ -1,0 +1,36 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/invertTree?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# invertTree 翻转二叉树
+
+[LeetCode 226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/) 是递归的入门题。
+
+## 题目描述
+
+给你一棵二叉树的根节点 root，翻转这棵二叉树，并返回其根节点。
+
+## 解题思路
+
+### 递归
+
+1. 递归翻转左子树
+2. 递归翻转右子树
+3. 交换左右子树
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，递归栈深度

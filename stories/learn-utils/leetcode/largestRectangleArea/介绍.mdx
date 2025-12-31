@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/largestRectangleArea?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/largestRectangleArea/介绍" />
+
+# 柱状图中最大的矩形 (LeetCode 84)
+
+## 题目描述
+
+给定 n 个非负整数，用来表示柱状图中各个柱子的高度。每个柱子彼此相邻，且宽度为 1。求在该柱状图中，能够勾勒出来的矩形的最大面积。
+
+## 核心原理
+
+**单调栈**：
+- 维护一个单调递增的栈
+- 当遇到比栈顶小的元素时，弹出栈顶并计算面积
+
+## 解题思路
+
+1. 在数组两端添加 0，简化边界处理
+2. 遍历数组，维护单调递增栈
+3. 当当前高度小于栈顶高度时，弹出栈顶并计算面积
+4. 更新最大面积
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

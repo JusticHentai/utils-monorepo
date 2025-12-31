@@ -1,0 +1,60 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/Scheduler?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Scheduler 并发调度器
+
+实现一个带有最大并发数限制的异步任务调度器，是前端面试的经典题目。
+
+## 核心原理
+
+1. **并发控制**：使用计数器记录当前执行中的任务数
+2. **任务队列**：超过最大并发数时，将任务加入等待队列
+3. **自动调度**：任务完成后自动从队列中取出下一个任务执行
+
+## 实现要点
+
+- 使用 `count` 记录当前执行中的任务数
+- 使用 `queue` 存储等待执行的任务
+- 任务完成后 `count--`，并从队列中取出下一个任务
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### max
+
+- 类型：`number`
+- 描述：最大并发数
+
+## 方法
+
+### add(fn)
+
+- 参数：`fn: () => Promise<any>` - 异步任务函数
+- 返回：`Promise<any>` - 任务执行结果
+
+## 执行流程
+
+```
+任务1 ─────────────────────> 完成
+任务2 ──────────> 完成
+           任务3 ────> 完成
+                 任务4 ─────> 完成
+```
+
+## 应用场景
+
+1. **批量请求**：控制并发请求数，避免服务器压力
+2. **文件上传**：限制同时上传的文件数
+3. **爬虫控制**：控制爬取速度

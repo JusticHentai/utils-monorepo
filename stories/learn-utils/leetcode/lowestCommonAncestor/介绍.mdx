@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/lowestCommonAncestor?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/lowestCommonAncestor/介绍" />
+
+# 二叉树的最近公共祖先 (LeetCode 236)
+
+## 题目描述
+
+给定一个二叉树，找到该树中两个指定节点的最近公共祖先。
+
+## 核心原理
+
+**递归 DFS**：
+- 如果当前节点是 p 或 q，返回当前节点
+- 递归搜索左右子树
+- 如果左右子树都找到了目标节点，当前节点就是 LCA
+
+## 解题思路
+
+1. 如果当前节点为空，返回 null
+2. 如果当前节点是 p 或 q，返回当前节点
+3. 递归搜索左右子树
+4. 如果左右子树都返回非空，当前节点是 LCA
+5. 否则返回非空的那个
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

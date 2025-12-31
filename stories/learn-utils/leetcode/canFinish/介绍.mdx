@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/canFinish?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/canFinish/介绍" />
+
+# 课程表 (LeetCode 207)
+
+## 题目描述
+
+你这个学期必须选修 `numCourses` 门课程，记为 `0` 到 `numCourses - 1`。在选修某些课程之前需要一些先修课程。判断是否可能完成所有课程的学习。
+
+## 核心原理
+
+**拓扑排序 + BFS**：
+- 将课程依赖关系建模为有向图
+- 使用入度数组记录每门课程的先修课程数
+- 使用 BFS 从入度为 0 的课程开始，逐步删除已完成的课程
+
+## 解题思路
+
+1. 构建邻接表和入度数组
+2. 将所有入度为 0 的节点入队
+3. BFS 遍历，每次出队一个节点，将其邻接节点入度减 1
+4. 如果邻接节点入度变为 0，则入队
+5. 最终检查是否所有课程都被访问
+
+## 复杂度分析
+
+- **时间复杂度**：O(n + m)，n 为课程数，m 为先修关系数
+- **空间复杂度**：O(n + m)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

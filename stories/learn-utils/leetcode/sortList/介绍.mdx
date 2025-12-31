@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/sortList?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/sortList/介绍" />
+
+# 排序链表 (LeetCode 148)
+
+## 题目描述
+
+给你链表的头结点 `head`，请将其按升序排列并返回排序后的链表。
+
+## 核心原理
+
+**归并排序**：
+- 使用快慢指针找到链表中点
+- 递归排序左右两半
+- 合并两个有序链表
+
+## 解题思路
+
+1. 使用快慢指针找到链表中点
+2. 断开链表，递归排序左右两半
+3. 合并两个有序链表
+
+## 复杂度分析
+
+- **时间复杂度**：O(n log n)
+- **空间复杂度**：O(log n)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

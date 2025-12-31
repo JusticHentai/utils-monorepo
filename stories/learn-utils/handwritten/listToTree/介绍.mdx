@@ -1,0 +1,55 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/listToTree?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# listToTree 扁平数组转树形结构
+
+将扁平的数组数据转换为树形结构，是前端开发中常见的数据处理需求。
+
+## 核心原理
+
+1. **哈希映射**：第一次遍历建立 id 到节点的映射
+2. **建立关系**：第二次遍历根据 pid 找到父节点，建立父子关系
+3. **收集根节点**：没有父节点的节点作为根节点
+
+## 应用场景
+
+- 菜单树渲染
+- 组织架构展示
+- 文件目录结构
+- 评论嵌套展示
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### list
+
+- 类型：`Array<{ id: string, pid: string, [key: string]: any }>`
+- 描述：扁平数组，每个元素包含 `id` 和 `pid`（父节点 id）
+
+## 返回值
+
+- 类型：`Array`
+- 描述：树形结构数组，每个节点包含 `children` 属性
+
+## 时间复杂度
+
+- **时间复杂度**：O(n)，两次遍历
+- **空间复杂度**：O(n)，哈希表存储
+
+## 注意事项
+
+1. 确保 `id` 唯一
+2. 根节点的 `pid` 为空或不存在于列表中
+3. 原数组会被修改（添加 children 属性）

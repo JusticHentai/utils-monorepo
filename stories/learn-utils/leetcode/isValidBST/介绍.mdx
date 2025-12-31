@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/isValidBST?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/isValidBST/介绍" />
+
+# 验证二叉搜索树 (LeetCode 98)
+
+## 题目描述
+
+给你一个二叉树的根节点 `root`，判断其是否是一个有效的二叉搜索树。
+
+## 核心原理
+
+**递归 + 范围限制**：
+- BST 的每个节点值必须在一个有效范围内
+- 左子树的所有节点值必须小于当前节点值
+- 右子树的所有节点值必须大于当前节点值
+
+## 解题思路
+
+1. 定义递归函数，传入当前节点和有效范围 (lower, upper)
+2. 如果节点为空，返回 true
+3. 如果节点值不在有效范围内，返回 false
+4. 递归验证左子树（上界为当前节点值）和右子树（下界为当前节点值）
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

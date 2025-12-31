@@ -1,0 +1,48 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromiseAllSettled?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromiseAllSettled 手写 Promise.allSettled
+
+`Promise.allSettled` 等待所有 Promise 完成（无论成功失败），返回每个 Promise 的状态和结果。
+
+## 核心原理
+
+1. **等待全部**：不会因为某个 Promise 失败而提前结束
+2. **状态记录**：记录每个 Promise 的状态（fulfilled/rejected）和值
+3. **顺序保持**：结果数组顺序与输入顺序一致
+
+## 与 Promise.all 的区别
+
+- `all`：任一失败就 reject
+- `allSettled`：等待全部完成，返回所有结果
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### promise
+
+- 类型：`Promise<any>[]`
+- 描述：Promise 数组
+
+## 返回值
+
+- 类型：`Promise<Array<{ status: 'fulfilled' | 'rejected', value: any }>>`
+- 描述：包含每个 Promise 状态和结果的数组
+
+## 应用场景
+
+1. **批量请求**：需要知道每个请求的结果
+2. **并行任务**：允许部分失败的场景
+3. **日志记录**：记录所有操作的结果

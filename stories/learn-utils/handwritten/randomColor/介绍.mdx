@@ -1,0 +1,52 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/randomColor?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# randomColor 随机颜色生成
+
+生成随机的十六进制颜色值，是前端开发中常见的小工具函数。
+
+## 核心原理
+
+1. **颜色范围**：十六进制颜色范围是 `#000000` 到 `#FFFFFF`
+2. **随机数生成**：生成 0 到 16777215（16^6 - 1）的随机整数
+3. **进制转换**：将数字转为十六进制字符串
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 返回值
+
+- 类型：`string`
+- 描述：十六进制颜色值，如 `#a3f2c1`
+
+## 注意事项
+
+1. 生成的颜色可能不足6位，需要补零
+2. 可以扩展为生成 RGB 或 HSL 格式
+
+## 其他实现方式
+
+```typescript
+// 补零版本
+function randomColor() {
+  return '#' + Math.random().toString(16).slice(2, 8).padEnd(6, '0')
+}
+
+// RGB 格式
+function randomRGB() {
+  const r = Math.floor(Math.random() * 256)
+  const g = Math.floor(Math.random() * 256)
+  const b = Math.floor(Math.random() * 256)
+  return `rgb(${r}, ${g}, ${b})`
+}
+```

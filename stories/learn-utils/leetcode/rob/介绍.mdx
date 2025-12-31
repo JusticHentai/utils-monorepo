@@ -1,0 +1,41 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/rob?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# rob 打家劫舍
+
+[LeetCode 198. 打家劫舍](https://leetcode.cn/problems/house-robber/) 是动态规划的经典题目。
+
+## 题目描述
+
+你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。
+
+## 解题思路
+
+### 动态规划
+
+1. **状态定义**：`dp[i]` 表示偷到第 i 间房的最大金额
+2. **状态转移**：`dp[i] = max(dp[i-1], dp[i-2] + nums[i])`
+3. 选择偷或不偷当前房屋
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，可优化为 O(1)
+
+## 相关题目
+
+- [打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/)（环形）
+- [打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/)（树形）

@@ -1,0 +1,66 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/dfs?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# DFS 深度优先搜索
+
+深度优先搜索（Depth-First Search）是一种图/树的遍历算法，沿着一条路径尽可能深入，然后回溯。
+
+## 核心原理
+
+1. **递归实现**：利用函数调用栈实现深度优先
+2. **回溯思想**：探索完一条路径后回退，继续探索其他路径
+3. **剪枝优化**：在满足条件时提前终止搜索
+
+## 应用场景
+
+- 树的前序/中序/后序遍历
+- 路径搜索问题
+- 排列组合问题
+- 图的连通性判断
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 函数说明
+
+### dfs1
+
+- 计算嵌套数组的最大深度
+- 递归遍历数组，返回最大嵌套层数
+
+### dfs2
+
+- 组合求和问题
+- 找出数组中和为目标值的所有组合
+- 使用回溯法，避免重复
+
+## 时间复杂度
+
+- **时间复杂度**：O(n)，n 为节点数量
+- **空间复杂度**：O(h)，h 为树的高度（递归栈深度）
+
+## 回溯模板
+
+```typescript
+function backtrack(path, choices) {
+  if (满足结束条件) {
+    result.push([...path])
+    return
+  }
+  for (const choice of choices) {
+    path.push(choice)      // 做选择
+    backtrack(path, choices) // 递归
+    path.pop()             // 撤销选择
+  }
+}
+```

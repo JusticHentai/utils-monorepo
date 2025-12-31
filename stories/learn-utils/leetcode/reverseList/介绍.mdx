@@ -1,0 +1,74 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/reverseList?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# reverseList 反转链表
+
+[LeetCode 206. 反转链表](https://leetcode.cn/problems/reverse-linked-list/) 是链表操作的基础题，面试必考。
+
+## 题目描述
+
+给你单链表的头节点 `head`，请你反转链表，并返回反转后的链表。
+
+## 解题思路
+
+### 迭代法
+
+1. 使用三个指针：`prev`（前一个节点）、`curr`（当前节点）、`next`（下一个节点）
+2. 遍历链表，依次改变每个节点的 `next` 指向
+3. 最后返回 `prev`
+
+### 递归法
+
+1. 递归到链表末尾
+2. 回溯时改变指针方向
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### head
+
+- 类型：`ListNode | null`
+- 描述：链表头节点
+
+## 返回值
+
+- 类型：`ListNode | null`
+- 描述：反转后的链表头节点
+
+## 复杂度分析
+
+| 方法 | 时间复杂度 | 空间复杂度 |
+|------|-----------|-----------|
+| 迭代 | O(n) | O(1) |
+| 递归 | O(n) | O(n) |
+
+## 图解过程
+
+```
+原始: 1 -> 2 -> 3 -> 4 -> 5 -> null
+
+步骤1: null <- 1    2 -> 3 -> 4 -> 5
+步骤2: null <- 1 <- 2    3 -> 4 -> 5
+步骤3: null <- 1 <- 2 <- 3    4 -> 5
+步骤4: null <- 1 <- 2 <- 3 <- 4    5
+步骤5: null <- 1 <- 2 <- 3 <- 4 <- 5
+
+结果: 5 -> 4 -> 3 -> 2 -> 1 -> null
+```
+
+## 相关题目
+
+- [反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
+- [K 个一组翻转链表](https://leetcode.cn/problems/reverse-nodes-in-k-group/)

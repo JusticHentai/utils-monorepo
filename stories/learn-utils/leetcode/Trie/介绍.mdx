@@ -1,0 +1,48 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/Trie?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Trie 前缀树
+
+[LeetCode 208. 实现 Trie (前缀树)](https://leetcode.cn/problems/implement-trie-prefix-tree/) 是重要的数据结构题。
+
+## 题目描述
+
+实现一个 Trie，包含 `insert`、`search` 和 `startsWith` 方法。
+
+## 解题思路
+
+### 字典树结构
+
+1. **节点结构**：每个节点包含子节点映射和结束标记
+2. **插入**：逐字符创建/遍历节点
+3. **搜索**：遍历节点，检查结束标记
+4. **前缀匹配**：遍历节点，无需检查结束标记
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 复杂度分析
+
+| 操作 | 时间复杂度 |
+|------|-----------|
+| insert | O(m) |
+| search | O(m) |
+| startsWith | O(m) |
+
+m 为字符串长度
+
+## 应用场景
+
+1. **自动补全**
+2. **拼写检查**
+3. **IP 路由**

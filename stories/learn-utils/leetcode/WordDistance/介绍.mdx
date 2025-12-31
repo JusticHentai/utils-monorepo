@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/WordDistance?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/WordDistance/介绍" />
+
+# 最短单词距离 II (LeetCode 244)
+
+## 题目描述
+
+设计一个类，接收一个字符串数组，并多次调用 `shortest` 方法来查询两个单词之间的最短距离。
+
+## 核心原理
+
+**哈希表预处理 + 双指针**：
+- 构造时用哈希表存储每个单词出现的所有位置
+- 查询时使用双指针遍历两个位置数组
+
+## 解题思路
+
+1. 构造时，将每个单词的所有出现位置存入哈希表
+2. 查询时，获取两个单词的位置数组
+3. 使用双指针遍历，找最小距离
+
+## 复杂度分析
+
+- **构造时间复杂度**：O(n)
+- **查询时间复杂度**：O(m + k)，m 和 k 为两个单词的出现次数
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

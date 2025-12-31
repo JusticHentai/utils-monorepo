@@ -1,0 +1,44 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/MinStack?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MinStack 最小栈
+
+[LeetCode 155. 最小栈](https://leetcode.cn/problems/min-stack/) 设计一个支持 O(1) 获取最小值的栈。
+
+## 题目描述
+
+设计一个支持 `push`、`pop`、`top` 操作，并能在常数时间内检索到最小元素的栈。
+
+## 解题思路
+
+### 辅助栈
+
+1. **数据栈**：存储所有元素
+2. **最小栈**：同步存储当前最小值
+3. **同步操作**：push/pop 时两个栈同步操作
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 方法说明
+
+| 方法 | 时间复杂度 | 描述 |
+|------|-----------|------|
+| push | O(1) | 入栈 |
+| pop | O(1) | 出栈 |
+| top | O(1) | 获取栈顶 |
+| getMin | O(1) | 获取最小值 |
+
+## 空间复杂度
+
+O(n)，需要额外的辅助栈

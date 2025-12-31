@@ -1,0 +1,60 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/bfs?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# BFS 广度优先搜索
+
+广度优先搜索（Breadth-First Search）是一种图/树的遍历算法，按层级顺序访问节点。
+
+## 核心原理
+
+1. **使用队列**：利用队列的先进先出特性，保证按层级顺序访问
+2. **逐层遍历**：每次处理当前层的所有节点，再处理下一层
+3. **去重处理**：使用 Map 记录已访问节点，避免重复访问
+
+## 应用场景
+
+- 树的层序遍历
+- 最短路径问题
+- 社交网络中的好友推荐（N度关系）
+- DOM 树遍历
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 函数说明
+
+### bfs1
+
+- 基础 BFS，返回每层节点数量
+
+### bfs2
+
+- 带去重的 BFS，使用 Map 避免重复访问
+
+### bfs3
+
+- 根据 id 查找节点，返回节点名称
+
+## 时间复杂度
+
+- **时间复杂度**：O(n)，n 为节点数量
+- **空间复杂度**：O(n)，队列最多存储一层的节点
+
+## BFS vs DFS
+
+| 特性 | BFS | DFS |
+|------|-----|-----|
+| 数据结构 | 队列 | 栈/递归 |
+| 遍历顺序 | 按层级 | 按深度 |
+| 最短路径 | 适合 | 不适合 |
+| 空间复杂度 | 较高 | 较低 |

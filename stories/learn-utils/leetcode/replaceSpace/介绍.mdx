@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/replaceSpace?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/replaceSpace/介绍" />
+
+# 替换空格 (剑指 Offer 05)
+
+## 题目描述
+
+请实现一个函数，把字符串 `s` 中的每个空格替换成 "%20"。
+
+## 核心原理
+
+**双指针（从后往前）**：
+- 先统计空格数量，扩展数组长度
+- 从后往前填充，避免覆盖
+
+## 解题思路
+
+1. 统计空格数量
+2. 扩展数组长度（每个空格需要额外 2 个位置）
+3. 从后往前遍历，遇到空格填充 "%20"
+4. 非空格字符直接复制
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

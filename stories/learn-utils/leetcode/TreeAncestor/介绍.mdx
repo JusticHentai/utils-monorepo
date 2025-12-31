@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/TreeAncestor?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/TreeAncestor/介绍" />
+
+# 树节点的第 K 个祖先 (LeetCode 1483)
+
+## 题目描述
+
+给你一棵树，树上有 `n` 个节点，按从 `0` 到 `n-1` 编号。树以父节点数组的形式给出，其中 `parent[i]` 是节点 `i` 的父节点。树的根节点是编号为 `0` 的节点。设计一个数据结构，能够高效地查询某个节点的第 `k` 个祖先。
+
+## 核心原理
+
+**倍增法（Binary Lifting）**：
+- 预处理每个节点的第 2^j 个祖先
+- 查询时将 k 分解为二进制，逐位跳跃
+
+## 解题思路
+
+1. 构造时预处理 `dp[i][j]` = 节点 i 的第 2^j 个祖先
+2. 查询时将 k 分解为二进制
+3. 对于 k 的每个二进制位，如果为 1，则跳跃 2^j 步
+
+## 复杂度分析
+
+- **构造时间复杂度**：O(n log n)
+- **查询时间复杂度**：O(log k)
+- **空间复杂度**：O(n log n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

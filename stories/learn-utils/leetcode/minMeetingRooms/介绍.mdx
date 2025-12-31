@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/minMeetingRooms?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/minMeetingRooms/介绍" />
+
+# 会议室 II (LeetCode 253)
+
+## 题目描述
+
+给你一个会议时间安排的数组 `intervals`，每个会议时间都会包括开始和结束的时间 `[start, end]`，返回所需会议室的最小数量。
+
+## 核心原理
+
+**排序 + 双指针**：
+- 将开始时间和结束时间分别排序
+- 使用双指针遍历，统计同时进行的会议数
+
+## 解题思路
+
+1. 分离开始时间和结束时间，分别排序
+2. 双指针遍历，如果开始时间 < 结束时间，需要新会议室
+3. 否则可以复用已结束的会议室
+
+## 复杂度分析
+
+- **时间复杂度**：O(n log n)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

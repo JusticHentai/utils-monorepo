@@ -1,0 +1,42 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/detectCycle?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/detectCycle/介绍" />
+
+# 环形链表 II (LeetCode 142)
+
+## 题目描述
+
+给定一个链表的头节点 `head`，返回链表开始入环的第一个节点。如果链表无环，则返回 `null`。
+
+## 核心原理
+
+**快慢指针（Floyd 判圈算法）**：
+1. 快指针每次走 2 步，慢指针每次走 1 步
+2. 如果有环，快慢指针必定相遇
+3. 相遇后，将一个指针移到头部，两指针同速前进，再次相遇点即为环入口
+
+## 解题思路
+
+1. 使用快慢指针检测是否有环
+2. 如果相遇，将一个指针重置到头部
+3. 两指针同时每次走一步，相遇点即为环入口
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

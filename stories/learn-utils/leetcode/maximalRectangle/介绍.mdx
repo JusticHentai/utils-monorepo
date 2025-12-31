@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/maximalRectangle?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/maximalRectangle/介绍" />
+
+# 最大矩形 (LeetCode 85)
+
+## 题目描述
+
+给定一个仅包含 `0` 和 `1`、大小为 `rows x cols` 的二维二进制矩阵，找出只包含 `1` 的最大矩形，并返回其面积。
+
+## 核心原理
+
+**单调栈 + 柱状图**：
+- 将问题转化为多个「柱状图中最大矩形」问题
+- 逐行计算以当前行为底的柱状图高度
+- 对每行应用单调栈求解最大矩形
+
+## 解题思路
+
+1. 预处理每个位置向上连续 1 的个数（高度）
+2. 对每一行，将高度数组视为柱状图
+3. 使用单调栈求解柱状图中的最大矩形
+4. 取所有行的最大值
+
+## 复杂度分析
+
+- **时间复杂度**：O(m * n)
+- **空间复杂度**：O(n)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

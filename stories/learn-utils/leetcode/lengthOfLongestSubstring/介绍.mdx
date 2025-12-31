@@ -1,0 +1,71 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/lengthOfLongestSubstring?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# lengthOfLongestSubstring 无重复字符的最长子串
+
+[LeetCode 3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/) 是滑动窗口的经典题目。
+
+## 题目描述
+
+给定一个字符串 `s`，请你找出其中不含有重复字符的最长子串的长度。
+
+## 解题思路
+
+### 滑动窗口 + 哈希集合
+
+1. **维护窗口**：使用左右指针维护一个无重复字符的窗口
+2. **右指针扩展**：不断向右扩展，将字符加入集合
+3. **左指针收缩**：遇到重复字符时，左指针右移，删除对应字符
+4. **记录最大值**：每次更新窗口大小的最大值
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### s
+
+- 类型：`string`
+- 描述：输入字符串
+
+## 返回值
+
+- 类型：`number`
+- 描述：最长无重复子串的长度
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)，左右指针各遍历一次
+- **空间复杂度**：O(∣Σ∣)，字符集大小
+
+## 滑动窗口模板
+
+```typescript
+let left = 0, right = 0
+while (right < s.length) {
+  // 扩大窗口
+  window.add(s[right])
+  right++
+  
+  while (需要收缩) {
+    // 收缩窗口
+    window.delete(s[left])
+    left++
+  }
+}
+```
+
+## 相关题目
+
+- [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+- [找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)

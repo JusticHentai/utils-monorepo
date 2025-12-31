@@ -1,0 +1,43 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/nextPermutation?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/nextPermutation/介绍" />
+
+# 下一个排列 (LeetCode 31)
+
+## 题目描述
+
+整数数组的下一个排列是指其整数的下一个字典序更大的排列。必须原地修改，只允许使用额外常数空间。
+
+## 核心原理
+
+**两遍扫描**：
+1. 从后往前找第一个升序对 (i, i+1)
+2. 从后往前找第一个大于 nums[i] 的数，交换
+3. 反转 i+1 之后的部分
+
+## 解题思路
+
+1. 从后往前找第一个 `nums[i] < nums[i+1]` 的位置
+2. 从后往前找第一个 `nums[j] > nums[i]` 的位置
+3. 交换 `nums[i]` 和 `nums[j]`
+4. 反转 `i+1` 之后的部分
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(1)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

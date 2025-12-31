@@ -1,0 +1,67 @@
+import normalDemo from './normalDemo?raw'
+import circularDemo from './circularDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/deepClone?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# deepClone 深拷贝
+
+深拷贝是前端面试中的高频考点，用于创建一个对象的完整副本，新旧对象完全独立，互不影响。
+
+## 核心原理
+
+1. **递归遍历**：深拷贝需要递归遍历对象的所有属性，对于引用类型的属性继续进行深拷贝
+2. **循环引用处理**：使用 `WeakMap` 缓存已拷贝的对象，避免无限递归
+3. **特殊对象处理**：对 `Date`、`RegExp` 等特殊对象进行特殊处理
+
+## 实现要点
+
+- 使用 `Object.getPrototypeOf` 和 `Object.getOwnPropertyDescriptors` 保留原型链和属性描述符
+- 使用 `Reflect.ownKeys` 获取所有属性（包括 Symbol 属性）
+- 使用 `WeakMap` 解决循环引用问题
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 普通对象深拷贝示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 循环引用处理示例
+
+<CodeOrSourceMdx language="typescript">
+  {circularDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### obj
+
+- 类型：`any`
+- 描述：需要深拷贝的对象
+
+### hash
+
+- 类型：`WeakMap<any, any>`
+- 描述：用于缓存已拷贝对象的 WeakMap，解决循环引用问题
+
+## 返回值
+
+- 类型：`any`
+- 描述：深拷贝后的新对象
+
+## 常见面试追问
+
+1. **为什么不能用 `JSON.parse(JSON.stringify())`？**
+   - 无法处理循环引用
+   - 无法拷贝函数、Symbol、undefined
+   - Date 对象会变成字符串
+   - RegExp 对象会变成空对象
+
+2. **为什么使用 WeakMap 而不是 Map？**
+   - WeakMap 的键是弱引用，不会阻止垃圾回收
+   - 当原对象被回收时，WeakMap 中的引用也会自动清除

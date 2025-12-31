@@ -1,0 +1,41 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/reversePrint?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/reversePrint/介绍" />
+
+# 从尾到头打印链表 (剑指 Offer 06)
+
+## 题目描述
+
+输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+
+## 核心原理
+
+**递归**：
+- 利用递归的回溯特性
+- 先递归到链表末尾，再依次将值加入结果数组
+
+## 解题思路
+
+1. 如果当前节点为空，返回空数组
+2. 递归处理下一个节点
+3. 将当前节点值追加到递归结果后面
+
+## 复杂度分析
+
+- **时间复杂度**：O(n)
+- **空间复杂度**：O(n)，递归栈空间
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```

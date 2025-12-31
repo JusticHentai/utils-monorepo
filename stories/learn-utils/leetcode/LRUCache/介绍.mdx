@@ -1,0 +1,71 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/LRUCache?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# LRUCache LRU 缓存
+
+[LeetCode 146. LRU 缓存](https://leetcode.cn/problems/lru-cache/) 是面试高频题，考察数据结构设计能力。
+
+## 题目描述
+
+设计和实现一个 LRU (最近最少使用) 缓存机制。实现 `LRUCache` 类：
+
+- `LRUCache(int capacity)` 以正整数作为容量初始化 LRU 缓存
+- `int get(int key)` 如果关键字存在于缓存中，则返回关键字的值，否则返回 -1
+- `void put(int key, int value)` 如果关键字已经存在，则变更其值；如果不存在，则插入该组「关键字-值」。当缓存容量达到上限时，删除最久未使用的数据
+
+## 解题思路
+
+### 利用 Map 的有序性
+
+JavaScript 的 `Map` 保持插入顺序，可以利用这个特性：
+
+1. **get 操作**：获取值后删除再重新插入，保持最新
+2. **put 操作**：如果存在先删除，再插入；超容量时删除第一个（最旧的）
+
+### 双向链表 + 哈希表（经典实现）
+
+1. 哈希表提供 O(1) 查找
+2. 双向链表维护访问顺序
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 方法说明
+
+### constructor(capacity)
+
+- 参数：`capacity: number` - 缓存容量
+- 描述：初始化 LRU 缓存
+
+### get(key)
+
+- 参数：`key: number` - 键
+- 返回：`number` - 值或 -1
+
+### put(key, value)
+
+- 参数：`key: number, value: number` - 键值对
+- 描述：插入或更新缓存
+
+## 复杂度分析
+
+| 操作 | 时间复杂度 | 空间复杂度 |
+|------|-----------|-----------|
+| get | O(1) | O(capacity) |
+| put | O(1) | O(capacity) |
+
+## 应用场景
+
+1. **浏览器缓存**：缓存最近访问的页面
+2. **数据库缓存**：缓存热点数据
+3. **操作系统**：页面置换算法

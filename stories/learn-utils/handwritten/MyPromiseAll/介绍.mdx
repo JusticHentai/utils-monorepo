@@ -1,0 +1,51 @@
+import normalDemo from './normalDemo?raw'
+import errorDemo from './errorDemo?raw'
+import sourceCode from '../../../../packages/learn-utils/src/handwritten/MyPromiseAll?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# MyPromiseAll 手写 Promise.all
+
+`Promise.all` 接收一个 Promise 数组，当所有 Promise 都成功时返回结果数组，任一失败则立即 reject。
+
+## 核心原理
+
+1. **返回新 Promise**：包装所有输入的 Promise
+2. **计数器**：记录已完成的 Promise 数量
+3. **结果数组**：按顺序存储每个 Promise 的结果
+4. **快速失败**：任一 Promise reject 则整体 reject
+
+## 源码实现
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 全部成功示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 有失败示例
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### promises
+
+- 类型：`Promise<any>[]`
+- 描述：Promise 数组
+
+## 返回值
+
+- 类型：`Promise<any[]>`
+- 描述：所有 Promise 结果组成的数组（按输入顺序）
+
+## 注意事项
+
+1. 结果数组顺序与输入顺序一致，不是完成顺序
+2. 使用 `Promise.resolve` 包装非 Promise 值
+3. 空数组会立即 resolve 为空数组

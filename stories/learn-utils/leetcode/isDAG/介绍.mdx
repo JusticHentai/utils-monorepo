@@ -1,0 +1,44 @@
+{/* @jsxImportSource react */}
+import { Meta } from '@storybook/blocks'
+import sourceCode from '@jqxon/learn-utils/leetcode/isDAG?raw'
+import demoCode from './normalDemo?raw'
+
+<Meta title="learn-utils/leetcode/isDAG/介绍" />
+
+# 判断有向无环图 (DAG)
+
+## 题目描述
+
+给定一个有向图的边集合，判断该图是否为有向无环图（DAG）。
+
+## 核心原理
+
+**拓扑排序**：
+- 使用 BFS 进行拓扑排序
+- 如果所有节点都能被访问，则为 DAG
+- 否则存在环
+
+## 解题思路
+
+1. 构建邻接表和入度表
+2. 将所有入度为 0 的节点入队
+3. BFS 遍历，每次出队一个节点，将其邻接节点入度减 1
+4. 如果邻接节点入度变为 0，则入队
+5. 最终检查访问的节点数是否等于总节点数
+
+## 复杂度分析
+
+- **时间复杂度**：O(V + E)，V 为顶点数，E 为边数
+- **空间复杂度**：O(V + E)
+
+## 源码实现
+
+```typescript
+{sourceCode}
+```
+
+## 示例代码
+
+```typescript
+{demoCode}
+```
