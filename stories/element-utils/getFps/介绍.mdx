@@ -1,0 +1,24 @@
+import sourceCode from '../../../packages/element-utils/src/getFps.ts/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getFps
+
+getFps 是一个用于获取当前浏览器帧率（FPS）的异步函数。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 返回值
+
+- 类型：`Promise<number>`
+- 描述：返回 1 秒内的帧数（FPS）
+
+## 特点
+
+- 使用 requestAnimationFrame 计算帧率
+- 异步函数，等待 1 秒后返回结果
+- 可用于性能监控和调试
+- 帮助判断是否需要降级动画效果

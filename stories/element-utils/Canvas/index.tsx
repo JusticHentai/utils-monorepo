@@ -2,20 +2,20 @@ import { action } from 'storybook/actions'
 import '../../.css/index.css'
 import basicDemo from './basicDemo'
 
-const FrameAnimationDemo = () => {
+const CanvasDemo = () => {
   return (
     <div>
       <div
         className="storybook-button storybook-button-gap"
         onClick={() => {
           const res = basicDemo()
-          action('创建 FrameAnimation 实例')(res)
+          action('Canvas 类用法')(res)
         }}
       >
-        创建 FrameAnimation 实例
+        查看 Canvas 类用法
       </div>
     </div>
   )
 }
 
-export default FrameAnimationDemo
+export default CanvasDemo

@@ -1,0 +1,75 @@
+import startDemo from './startDemo?raw'
+import pauseDemo from './pauseDemo?raw'
+import resumeDemo from './resumeDemo?raw'
+import restartDemo from './restartDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useCountDown
+
+useCountDown 是一个 React 自定义 Hook，用于实现倒计时功能，支持暂停、恢复和重置操作。
+
+## 启动倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {startDemo}
+</CodeOrSourceMdx>
+
+## 暂停倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {pauseDemo}
+</CodeOrSourceMdx>
+
+## 恢复倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {resumeDemo}
+</CodeOrSourceMdx>
+
+## 重新开始倒计时示例
+
+<CodeOrSourceMdx language="typescript">
+  {restartDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### initialSeconds
+
+- 类型：`number`
+- 描述：初始倒计时秒数
+
+### 返回值
+
+返回一个对象，包含以下属性：
+
+#### remainingSeconds
+
+- 类型：`number`
+- 描述：当前剩余秒数
+
+#### startCountdown
+
+- 类型：`() => void`
+- 描述：启动倒计时，如果倒计时已在运行则不执行任何操作
+
+#### pauseCountdown
+
+- 类型：`() => void`
+- 描述：暂停倒计时，保留当前剩余时间
+
+#### resumeCountdown
+
+- 类型：`() => void`
+- 描述：恢复暂停的倒计时，从断点继续
+
+#### restartCountdown
+
+- 类型：`() => void`
+- 描述：重新开始倒计时，重置为初始秒数并立即开始
+
+## 特性
+
+- **精确计时**：使用 100ms 间隔配合时间差计算，避免 setInterval 漂移问题
+- **避免闭包问题**：使用 useRef 存储状态，控制函数可直接绑定到事件处理器
+- **自动清理**：组件卸载时自动清除定时器，防止内存泄漏

@@ -1,0 +1,56 @@
+import sourceCode from '../../../packages/element-utils/src/resize/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# resize
+
+resize 是一个用于实现响应式适配的函数，基于 rem 模式自动调整页面缩放。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+- 类型：`Options`
+- 描述：配置对象
+
+#### options.preset
+
+- 类型：`{ width?: number; height?: number }`
+- 默认值：`{ width: 1920, height: 1080 }`
+- 描述：预设的设计稿尺寸
+
+#### options.type
+
+- 类型：`RESIZE_TYPE`
+- 默认值：`RESIZE_TYPE.BOTH`
+- 描述：适配类型
+  - `WIDTH`：仅根据宽度适配
+  - `HEIGHT`：仅根据高度适配
+  - `BOTH`：同时根据宽高适配
+
+#### options.cb
+
+- 类型：`(ctx: Options & { ratio: number }) => any`
+- 描述：resize 时的回调函数，参数包含当前配置和计算出的比例
+
+#### options.debounce
+
+- 类型：`number`
+- 描述：防抖时间（毫秒）
+
+#### options.fullScreen
+
+- 类型：`boolean`
+- 描述：body 是否设置全屏高度
+
+## 特点
+
+- 基于 rem 实现响应式适配
+- 支持多种适配模式
+- 初始化时自动执行一次
+- 自动监听 resize 事件

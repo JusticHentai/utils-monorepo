@@ -1,0 +1,45 @@
+import sourceCode from '../../../packages/element-utils/src/canvas/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Canvas
+
+Canvas 是一个简化 Canvas 操作的工具类，提供添加图片、文字等常用功能。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 构造函数参数
+
+### options
+
+- 类型：`InitCanvasOptions`
+- 描述：Canvas 初始化配置
+
+## 方法
+
+### addImage
+
+- 参数：`options: Omit<AddImageOptions, 'ctx'>`
+- 描述：在 Canvas 上添加图片
+- 返回：添加结果
+
+### addText
+
+- 参数：`options: Omit<AddTextOptions, 'ctx'>`
+- 描述：在 Canvas 上添加文字
+- 返回：添加结果
+
+### createBase64
+
+- 描述：将 Canvas 内容导出为 Base64 格式的 PNG 图片
+- 返回：`string`
+
+## 特点
+
+- 封装常用 Canvas 操作
+- 自动获取 2D 上下文
+- 支持导出 Base64 图片
+- 简化图片和文字绑定

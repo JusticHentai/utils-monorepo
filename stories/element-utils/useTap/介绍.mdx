@@ -1,0 +1,38 @@
+import sourceCode from '../../../packages/element-utils/src/useTap/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useTap
+
+useTap 是一个 React Hook，用于统计一定时间内的点击次数。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### Props
+
+#### duration
+
+- 类型：`number`
+- 描述：点击持续时间（毫秒），首次点击开始计时
+
+#### cb
+
+- 类型：`(count: number) => any`
+- 描述：回调函数，在 duration 时间结束后调用，参数为点击次数
+
+### 返回值
+
+- 类型：`() => void`
+- 描述：返回点击处理函数
+
+## 特点
+
+- 首次点击开始计时
+- duration 时间内的点击次数会被统计
+- 计时结束后通过回调返回点击次数
+- 适用于双击、三击等多次点击检测场景

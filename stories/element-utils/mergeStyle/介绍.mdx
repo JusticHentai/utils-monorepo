@@ -1,0 +1,34 @@
+import basicDemo from '../../../packages/element-utils/src/mergeStyle/demo.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# mergeStyle
+
+mergeStyle 是一个用于合并多个 React CSSProperties 样式对象的函数。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### args
+
+- 类型：`Args[]`
+- 描述：可接受多种类型的参数
+  - `CSSProperties`：样式对象
+  - `CSSProperties[]`：样式对象数组
+  - `null | undefined | false`：会被过滤掉
+
+### 返回值
+
+- 类型：`CSSProperties`
+- 描述：合并后的样式对象，后面的样式会覆盖前面的同名属性
+
+## 特点
+
+- 支持多种参数类型
+- 自动过滤 falsy 值
+- 支持数组嵌套
+- 后面的样式覆盖前面的同名属性

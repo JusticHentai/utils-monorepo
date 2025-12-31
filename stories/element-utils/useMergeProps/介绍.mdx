@@ -1,0 +1,36 @@
+import basicDemo from '../../../packages/element-utils/src/useMergeProps/demo.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useMergeProps
+
+useMergeProps 是一个 React Hook，用于合并默认属性和传入属性。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### defaultProps
+
+- 类型：`D extends Partial<P>`
+- 描述：默认属性对象
+
+### props
+
+- 类型：`P`
+- 描述：传入的属性对象
+
+### 返回值
+
+- 类型：`P & D`
+- 描述：合并后的属性对象，传入的属性会覆盖默认属性
+
+## 特点
+
+- 使用 useMemo 优化性能
+- 支持 TypeScript 类型推断
+- 传入属性优先级高于默认属性
+- 适用于组件默认值处理

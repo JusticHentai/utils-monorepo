@@ -1,0 +1,34 @@
+import basicDemo from '../../../packages/element-utils/src/mergeClass/demo.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# mergeClass
+
+mergeClass 是一个用于合并多种类型 class 名称的函数，支持字符串、数组、对象等多种格式。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### args
+
+- 类型：`Arg[]`
+- 描述：可接受多种类型的参数
+  - `string`：直接作为 class 名称
+  - `string[]`：数组中的每个元素作为 class 名称
+  - `Record<string, boolean>`：键名作为 class 名称，值为 true 时保留
+
+### 返回值
+
+- 类型：`string`
+- 描述：合并去重后的 class 字符串
+
+## 特点
+
+- 支持多种参数类型
+- 自动去重
+- 过滤 falsy 值（null、undefined、false 等）
+- 对象类型支持条件判断

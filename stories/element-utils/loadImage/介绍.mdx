@@ -1,0 +1,32 @@
+import basicDemo from '../../../packages/element-utils/src/loadImage/demo.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# loadImage
+
+loadImage 是一个用于异步加载图片的函数，返回加载结果。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### url
+
+- 类型：`string`
+- 描述：图片地址
+
+### 返回值
+
+- 类型：`Promise<[HTMLImageElement | undefined, Error | undefined]>`
+- 描述：返回一个元组
+  - 第一个元素：加载成功时返回 HTMLImageElement，失败时为 undefined
+  - 第二个元素：加载失败时返回 Error，成功时为 undefined
+
+## 特点
+
+- 自动设置 crossOrigin 为 'anonymous'，支持跨域图片
+- 使用 Promise 封装，便于异步处理
+- 返回元组格式，便于错误处理

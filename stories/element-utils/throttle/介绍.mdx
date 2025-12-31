@@ -1,0 +1,41 @@
+import basicDemo from '../../../packages/element-utils/src/throttle/demo.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# throttle
+
+throttle 是一个节流函数，用于限制函数在一定时间内只能执行一次。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+- 类型：`Options`
+- 描述：配置对象
+
+#### options.cb
+
+- 类型：`(...params: any[]) => any`
+- 描述：需要节流的回调函数
+
+#### options.duration
+
+- 类型：`number`
+- 描述：节流时间间隔（毫秒）
+
+#### options.immediate
+
+- 类型：`boolean`
+- 描述：是否立即执行
+  - `true`：立即执行回调，然后开始计时，duration 后才能再次执行
+  - `false`：不会立即执行回调，直到 duration 后才能执行
+
+### 返回值
+
+- 类型：`(...params: any[]) => void`
+- 描述：返回节流后的函数

@@ -2,20 +2,20 @@ import { action } from 'storybook/actions'
 import '../../.css/index.css'
 import basicDemo from './basicDemo'
 
-const FrameAnimationDemo = () => {
+const LoadFontDemo = () => {
   return (
     <div>
       <div
         className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = basicDemo()
-          action('创建 FrameAnimation 实例')(res)
+        onClick={async () => {
+          const res = await basicDemo()
+          action('加载字体')(res)
         }}
       >
-        创建 FrameAnimation 实例
+        加载 Roboto 字体
       </div>
     </div>
   )
 }
 
-export default FrameAnimationDemo
+export default LoadFontDemo

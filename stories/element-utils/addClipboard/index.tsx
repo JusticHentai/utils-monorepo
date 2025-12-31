@@ -2,20 +2,20 @@ import { action } from 'storybook/actions'
 import '../../.css/index.css'
 import basicDemo from './basicDemo'
 
-const FrameAnimationDemo = () => {
+const AddClipboardDemo = () => {
   return (
     <div>
       <div
         className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = basicDemo()
-          action('创建 FrameAnimation 实例')(res)
+        onClick={async () => {
+          const res = await basicDemo()
+          action('复制文本到剪贴板')(res)
         }}
       >
-        创建 FrameAnimation 实例
+        复制 "Hello World" 到剪贴板
       </div>
     </div>
   )
 }
 
-export default FrameAnimationDemo
+export default AddClipboardDemo

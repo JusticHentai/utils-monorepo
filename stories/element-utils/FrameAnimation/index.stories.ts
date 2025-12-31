@@ -1,9 +1,8 @@
-import FrameAnimation from './index'
+import FrameAnimationDemo from './index'
 
 export default {
   title: 'element-utils/FrameAnimation',
-  component: FrameAnimation,
-  tags: ['autodocs'],
+  component: FrameAnimationDemo,
   parameters: {
     layout: 'centered',
   },

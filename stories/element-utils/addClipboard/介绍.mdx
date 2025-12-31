@@ -1,0 +1,26 @@
+import basicDemo from '../../../packages/element-utils/src/addClipboard/demo.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# addClipboard
+
+addClipboard 是一个用于将文本复制到剪贴板的异步函数。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### text
+
+- 类型：`string`
+- 描述：要复制到剪贴板的文本内容
+
+### 返回值
+
+- 类型：`Promise<[boolean, any | undefined]>`
+- 描述：返回一个元组
+  - 第一个元素：复制是否成功
+  - 第二个元素：如果失败，返回错误信息

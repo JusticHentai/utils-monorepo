@@ -1,0 +1,45 @@
+import basicDemo from '../../../packages/element-utils/src/combo/demo.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# combo
+
+combo 是一个用于实现连击效果的函数，常用于游戏或交互场景。
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+- 类型：`ComboOptions`
+- 描述：配置对象
+
+#### options.onCombo
+
+- 类型：`(combo: number) => void`
+- 描述：每次连击时触发的回调，参数为当前连击次数
+
+#### options.onClose
+
+- 类型：`() => void`
+- 描述：连击结束时触发的回调
+
+#### options.duration
+
+- 类型：`number`
+- 描述：连击间隔时间（毫秒），超过此时间未触发则连击结束
+
+### 返回值
+
+- 类型：`() => void`
+- 描述：返回触发连击的函数
+
+## 特点
+
+- 支持自定义连击间隔
+- 自动重置连击计数
+- 适用于游戏连击、快速点击等场景

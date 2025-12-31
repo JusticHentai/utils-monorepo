@@ -1,0 +1,59 @@
+import sourceCode from '../../../packages/element-utils/src/FrameAnimation/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# FrameAnimation
+
+FrameAnimation 是一个用于实现精灵图帧动画的类，支持离屏渲染和高性能动画播放。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### Options
+
+#### imageUrl
+
+- 类型：`string`
+- 描述：精灵图的 URL 地址
+
+#### frameCount
+
+- 类型：`number`
+- 描述：动画总帧数
+
+#### duration
+
+- 类型：`number`
+- 描述：动画持续时间（毫秒）
+
+#### rowCount
+
+- 类型：`number`
+- 描述：精灵图的行数
+
+## 方法
+
+### preRender
+
+- 描述：离屏渲染，下载图片并创建可复用的帧 Canvas，提高性能
+
+### createInstance
+
+- 参数：`el: HTMLDivElement`
+- 描述：创建动画实例并挂载到指定元素上
+- 返回：`Animation` 实例
+
+### loadImage
+
+- 描述：加载图片，可用于预加载
+
+## 特点
+
+- 离屏渲染优化性能
+- 支持精灵图动画
+- 自动适配容器大小
+- 提供完整的生命周期回调

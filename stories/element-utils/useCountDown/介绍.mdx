@@ -1,0 +1,68 @@
+import sourceCode from '../../../packages/element-utils/src/useCountDown/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useCountDown
+
+useCountDown 是一个 React Hook，用于实现倒计时功能，支持开始、暂停、恢复、重启等操作。
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### UseCountDownProps
+
+#### initialSeconds
+
+- 类型：`number`
+- 描述：初始倒计时秒数
+
+## 返回值
+
+### remainingSeconds
+
+- 类型：`number`
+- 描述：剩余秒数
+
+### countDownStatus
+
+- 类型：`COUNT_DOWN_STATUS`
+- 描述：当前计时状态
+  - `IDLE`：空闲状态
+  - `RUNNING`：运行中
+  - `PAUSED`：已暂停
+
+### startCountdown
+
+- 类型：`() => void`
+- 描述：启动倒计时
+
+### pauseCountdown
+
+- 类型：`() => void`
+- 描述：暂停倒计时
+
+### resumeCountdown
+
+- 类型：`() => void`
+- 描述：恢复倒计时
+
+### restartCountdown
+
+- 类型：`() => void`
+- 描述：重新开始倒计时
+
+### endCountdown
+
+- 类型：`() => void`
+- 描述：结束倒计时
+
+## 特点
+
+- 支持暂停和恢复
+- 使用 ref 避免闭包问题
+- 组件卸载时自动清除定时器
+- 精确计时，基于时间差计算
