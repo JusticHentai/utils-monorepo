@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { dropRightWhile } from '../../../packages/js-utils/src/drop'
+import dropRightWhile from '../../../packages/js-utils/src/dropRightWhile'
 
 const dropRightWhileDemo = () => {
   const users = [

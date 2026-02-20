@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { delay } from '../../../packages/js-utils/src/defer'
+import delay from '../../../packages/js-utils/src/delay'
 
 const delayDemo = () => {
   action('delay - 立即输出')('开始计时')

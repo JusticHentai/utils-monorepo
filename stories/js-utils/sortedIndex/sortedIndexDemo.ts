@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import sortedIndex from '../../../packages/js-utils/src/sortedIndex'
-import { sortedLastIndex } from '../../../packages/js-utils/src/sortedIndex'
+import sortedLastIndex from '../../../packages/js-utils/src/sortedLastIndex'
 
 const sortedIndexDemo = () => {
   const arr = [10, 20, 30, 30, 40, 50]

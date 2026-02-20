@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import SetOptional from '../../../packages/js-utils/src/SetOptional'
+import type SetOptional from '../../../packages/js-utils/src/SetOptional'
 
 interface User {
   id: number

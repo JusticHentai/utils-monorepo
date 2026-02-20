@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { findLastIndex } from '../../../packages/js-utils/src/findIndex'
+import findLastIndex from '../../../packages/js-utils/src/findLastIndex'
 
 const findLastIndexDemo = () => {
   const users = [

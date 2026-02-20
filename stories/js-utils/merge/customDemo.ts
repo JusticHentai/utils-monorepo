@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import merge from '../../../packages/js-utils/src/merge'
-import { mergeWith } from '../../../packages/js-utils/src/merge'
+import mergeWith from '../../../packages/js-utils/src/mergeWith'
 
 const customDemo = () => {
   // mergeWith: 自定义数组合并

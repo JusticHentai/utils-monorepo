@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import getNavigationType from '../../../packages/element-utils/src/getNavigationType'
-import { NavigationType } from '../../../packages/element-utils/src/getNavigationType/interface'
+import { NAVIGATION_TYPE } from '../../../packages/element-utils/src/getNavigationType/interface'
 
 const basicDemo = () => {
   const navigationType = getNavigationType()
@@ -8,13 +8,13 @@ const basicDemo = () => {
   action('当前导航类型')(navigationType)
 
   // 枚举值比较示例
-  if (navigationType === NavigationType.Navigate) {
+  if (navigationType === NAVIGATION_TYPE.NAVIGATE) {
     action('这是一次常规导航')('用户通过链接或地址栏进入')
-  } else if (navigationType === NavigationType.Reload) {
+  } else if (navigationType === NAVIGATION_TYPE.RELOAD) {
     action('这是一次页面刷新')('用户按了 F5 或刷新按钮')
-  } else if (navigationType === NavigationType.BackForward) {
+  } else if (navigationType === NAVIGATION_TYPE.BACK_FORWARD) {
     action('这是前进/后退导航')('用户使用了浏览器导航按钮')
-  } else if (navigationType === NavigationType.BackForwardCache) {
+  } else if (navigationType === NAVIGATION_TYPE.BACK_FORWARD_CACHE) {
     action('从 BFCache 恢复')('页面从缓存中快速恢复')
   }
 

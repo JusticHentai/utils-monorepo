@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import Point from '../../../packages/js-utils/src/Point'
+import type Point from '../../../packages/js-utils/src/Point'
 
 const normalDemo = () => {
   const point: Point = { x: 10, y: 20 }

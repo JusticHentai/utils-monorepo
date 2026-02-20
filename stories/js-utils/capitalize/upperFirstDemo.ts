@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { upperFirst, lowerFirst } from '../../../packages/js-utils/src/capitalize'
+import upperFirst from '../../../packages/js-utils/src/upperFirst'
+import lowerFirst from '../../../packages/js-utils/src/lowerFirst'
 
 const upperFirstDemo = () => {
   action('upperFirst - 仅首字母大写，其余不变')({

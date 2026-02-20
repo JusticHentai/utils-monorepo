@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { omitBy } from '../../../packages/js-utils/src/omit'
+import omitBy from '../../../packages/js-utils/src/omitBy'
 
 const omitByDemo = () => {
   // lodash 测试: 根据谓词排除

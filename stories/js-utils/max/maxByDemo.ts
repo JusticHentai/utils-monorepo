@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { maxBy, minBy } from '../../../packages/js-utils/src/max'
+import maxBy from '../../../packages/js-utils/src/maxBy'
+import minBy from '../../../packages/js-utils/src/minBy'
 
 const maxByDemo = () => {
   const users = [

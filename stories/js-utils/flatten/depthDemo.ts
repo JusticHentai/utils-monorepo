@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { flattenDepth } from '../../../packages/js-utils/src/flatten'
+import flattenDepth from '../../../packages/js-utils/src/flattenDepth'
 
 const depthDemo = () => {
   action('flattenDepth - 展开 2 层')({

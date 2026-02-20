@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import toPairs from '../../../packages/js-utils/src/toPairs'
-import { toPairsIn } from '../../../packages/js-utils/src/toPairs'
+import toPairsIn from '../../../packages/js-utils/src/toPairsIn'
 
 const toPairsDemo = () => {
   // 基础：对象转键值对

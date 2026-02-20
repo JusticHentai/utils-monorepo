@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { reduceRight } from '../../../packages/js-utils/src/reduce'
+import reduceRight from '../../../packages/js-utils/src/reduceRight'
 
 const reduceRightDemo = () => {
   // 从右到左拼接 (lodash: reduceRight(['a','b','c'], (acc,v) => acc+v, '') => 'cba')

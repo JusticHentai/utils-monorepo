@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import take from '../../../packages/js-utils/src/take'
-import { takeRight } from '../../../packages/js-utils/src/take'
+import takeRight from '../../../packages/js-utils/src/takeRight'
 
 const takeDemo = () => {
   const arr = [1, 2, 3]

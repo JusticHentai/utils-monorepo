@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { takeWhile, takeRightWhile } from '../../../packages/js-utils/src/take'
+import takeWhile from '../../../packages/js-utils/src/takeWhile'
+import takeRightWhile from '../../../packages/js-utils/src/takeRightWhile'
 
 const takeWhileDemo = () => {
   const arr = [1, 2, 3, 4]

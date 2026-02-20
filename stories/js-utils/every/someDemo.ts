@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { some } from '../../../packages/js-utils/src/every'
+import some from '../../../packages/js-utils/src/some'
 
 const someDemo = () => {
   action('some')({

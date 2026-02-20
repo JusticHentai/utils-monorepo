@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { startsWith } from '../../../packages/js-utils/src/endsWith'
+import startsWith from '../../../packages/js-utils/src/startsWith'
 
 const startsWithDemo = () => {
   action('startsWith')({

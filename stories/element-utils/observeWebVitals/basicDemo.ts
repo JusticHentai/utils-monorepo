@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeWebVitals from '../../../packages/element-utils/src/observeWebVitals'
+import observeWebVitals from '../../../packages/element-utils/src/WebVitalsMonitor'
 
 export const createBasicDemo = (
   getStopFn: () => (() => void) | null,

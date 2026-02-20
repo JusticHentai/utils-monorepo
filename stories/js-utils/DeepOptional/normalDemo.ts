@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import DeepOptional from '../../../packages/js-utils/src/DeepOptional'
+import type DeepOptional from '../../../packages/js-utils/src/DeepOptional'
 
 interface User {
   name: string

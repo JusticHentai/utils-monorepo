@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import WrappedFunction from '../../../packages/js-utils/src/WrappedFunction'
+import type WrappedFunction from '../../../packages/js-utils/src/WrappedFunction'
 
 // 创建一个简单的日志包装函数
 const createLoggedFunction = <Fn extends (...args: any[]) => Promise<any>>(

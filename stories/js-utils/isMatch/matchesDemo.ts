@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { matches } from '../../../packages/js-utils/src/isMatch'
+import matches from '../../../packages/js-utils/src/matches'
 
 const matchesDemo = () => {
   const users = [

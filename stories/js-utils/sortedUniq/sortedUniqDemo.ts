@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import sortedUniq from '../../../packages/js-utils/src/sortedUniq'
-import { sortedUniqBy } from '../../../packages/js-utils/src/sortedUniq'
+import sortedUniqBy from '../../../packages/js-utils/src/sortedUniqBy'
 
 const sortedUniqDemo = () => {
   // 基础：各种排序数组去重结果均为 [1, 2, 3]

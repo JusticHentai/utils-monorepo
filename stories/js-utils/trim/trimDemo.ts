@@ -1,6 +1,7 @@
 import { action } from 'storybook/actions'
 import trim from '../../../packages/js-utils/src/trim'
-import { trimStart, trimEnd } from '../../../packages/js-utils/src/trim'
+import trimStart from '../../../packages/js-utils/src/trimStart'
+import trimEnd from '../../../packages/js-utils/src/trimEnd'
 
 const trimDemo = () => {
   action('trim - 默认空白')(trim('  hello  '))

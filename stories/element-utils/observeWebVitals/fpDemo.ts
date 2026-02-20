@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
-import observeWebVitals from '../../../packages/element-utils/src/observeWebVitals'
-import { METRIC_NAME } from '../../../packages/element-utils/src/observeWebVitals/interface'
+import observeWebVitals from '../../../packages/element-utils/src/WebVitalsMonitor'
+import { METRIC_NAME } from '../../../packages/element-utils/src/WebVitalsMonitor/interface'
 
 export const createFpDemo = (
   getStopFn: () => (() => void) | null,

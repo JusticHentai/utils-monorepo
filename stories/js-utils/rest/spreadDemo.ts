@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { spread } from '../../../packages/js-utils/src/rest'
+import spread from '../../../packages/js-utils/src/spread'
 
 const spreadDemo = () => {
   // 展开数组参数

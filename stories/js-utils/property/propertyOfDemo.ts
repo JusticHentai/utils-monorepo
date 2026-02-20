@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { propertyOf } from '../../../packages/js-utils/src/property'
+import propertyOf from '../../../packages/js-utils/src/propertyOf'
 
 const propertyOfDemo = () => {
   // 基本使用 (lodash: propertyOf({a:1})('a') => 1)

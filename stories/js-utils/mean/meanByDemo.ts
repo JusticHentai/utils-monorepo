@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { meanBy } from '../../../packages/js-utils/src/mean'
+import meanBy from '../../../packages/js-utils/src/meanBy'
 
 const meanByDemo = () => {
   const scores = [

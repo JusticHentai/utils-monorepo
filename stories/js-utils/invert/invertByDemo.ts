@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { invertBy } from '../../../packages/js-utils/src/invert'
+import invertBy from '../../../packages/js-utils/src/invertBy'
 
 const invertByDemo = () => {
   const obj = { a: 1, b: 2, c: 1 }

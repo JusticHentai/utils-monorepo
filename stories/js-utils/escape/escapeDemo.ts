@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import escape, { unescape } from '../../../packages/js-utils/src/escape'
+import escape from '../../../packages/js-utils/src/escape'
+import unescape from '../../../packages/js-utils/src/unescape'
 
 const escapeDemo = () => {
   const unescapedChars = '&<>"\'/'

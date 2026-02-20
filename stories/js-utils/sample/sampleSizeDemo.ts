@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { sampleSize } from '../../../packages/js-utils/src/sample'
+import sampleSize from '../../../packages/js-utils/src/sampleSize'
 
 const sampleSizeDemo = () => {
   const arr = [1, 2, 3, 4, 5]

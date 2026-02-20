@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { padStart, padEnd } from '../../../packages/js-utils/src/pad'
+import padStart from '../../../packages/js-utils/src/padStart'
+import padEnd from '../../../packages/js-utils/src/padEnd'
 
 const padStartEndDemo = () => {
   // padStart: 左侧填充 (lodash: padStart('abc', 6) => '   abc')

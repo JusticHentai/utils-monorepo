@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { xorBy, xorWith } from '../../../packages/js-utils/src/xor'
+import xorBy from '../../../packages/js-utils/src/xorBy'
+import xorWith from '../../../packages/js-utils/src/xorWith'
 
 const xorByDemo = () => {
   action('xorBy - 取整')(

@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import isUrl from '../../../packages/js-utils/src/isUrl'
+import isUrl from '../../../packages/element-utils/src/isUrl'
 
 const isUrlDemo = () => {
   action('isUrl - https')(isUrl('https://example.com'))

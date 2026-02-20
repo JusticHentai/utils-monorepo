@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { flowRight } from '../../../packages/js-utils/src/flow'
+import flowRight from '../../../packages/js-utils/src/flowRight'
 
 const flowRightDemo = () => {
   const add10 = (n: number) => n + 10

@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import forEach, { each } from '../../../packages/js-utils/src/forEach'
+import forEach from '../../../packages/js-utils/src/forEach'
 
 const forEachDemo = () => {
   // 基础遍历
@@ -7,7 +7,8 @@ const forEachDemo = () => {
   forEach([1, 2, 3], (n) => { result.push('item-' + n) })
   action('forEach - 遍历数组')(result)
 
-  // each 是 forEach 的别名
+  // forEach 别名演示
+  const each = forEach
   action('forEach === each')(forEach === each)
 
   // 返回 false 中断遍历

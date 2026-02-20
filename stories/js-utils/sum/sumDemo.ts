@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import sum from '../../../packages/js-utils/src/sum'
-import { sumBy } from '../../../packages/js-utils/src/sum'
+import sumBy from '../../../packages/js-utils/src/sumBy'
 
 const sumDemo = () => {
   action('sum - 基础')(sum([4, 2, 8, 6]))

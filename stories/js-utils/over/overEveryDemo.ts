@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { overEvery, overSome } from '../../../packages/js-utils/src/over'
+import overEvery from '../../../packages/js-utils/src/overEvery'
+import overSome from '../../../packages/js-utils/src/overSome'
 
 const overEveryDemo = () => {
   const isPositiveEven = overEvery([(n: number) => n > 0, (n: number) => n % 2 === 0])

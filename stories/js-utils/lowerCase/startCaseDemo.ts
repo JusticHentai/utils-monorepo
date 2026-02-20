@@ -1,5 +1,7 @@
 import { action } from 'storybook/actions'
-import { startCase, toLower, toUpper } from '../../../packages/js-utils/src/lowerCase'
+import startCase from '../../../packages/js-utils/src/startCase'
+import toLower from '../../../packages/js-utils/src/toLower'
+import toUpper from '../../../packages/js-utils/src/toUpper'
 
 const startCaseDemo = () => {
   action('startCase')({

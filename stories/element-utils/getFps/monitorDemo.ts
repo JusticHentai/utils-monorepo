@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { createFpsMonitor } from '../../../packages/element-utils/src/getFps'
+import { createFpsMonitor } from '../../../packages/element-utils/src/FpsMonitor'
 
 let stopFn: (() => void) | null = null
 

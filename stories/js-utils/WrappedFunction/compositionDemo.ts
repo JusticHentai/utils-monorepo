@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import WrappedFunction from '../../../packages/js-utils/src/WrappedFunction'
+import type WrappedFunction from '../../../packages/js-utils/src/WrappedFunction'
 
 // 性能监控包装器
 const createPerformanceWrapper = <Fn extends (...args: any[]) => Promise<any>>(

@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import findKey, { findLastKey } from '../../../packages/js-utils/src/findKey'
+import findKey from '../../../packages/js-utils/src/findKey'
+import findLastKey from '../../../packages/js-utils/src/findLastKey'
 
 const basicDemo = () => {
   const objects = {

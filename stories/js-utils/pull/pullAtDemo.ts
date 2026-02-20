@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { pullAt } from '../../../packages/js-utils/src/pull'
+import pullAt from '../../../packages/js-utils/src/pullAt'
 
 const pullAtDemo = () => {
   const arr = ['a', 'b', 'c', 'd']

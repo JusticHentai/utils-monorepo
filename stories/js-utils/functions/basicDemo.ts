@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import functions, { functionsIn } from '../../../packages/js-utils/src/functions'
+import functions from '../../../packages/js-utils/src/functions'
+import functionsIn from '../../../packages/js-utils/src/functionsIn'
 
 const basicDemo = () => {
   // 只返回函数属性名

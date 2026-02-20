@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { dropRight } from '../../../packages/js-utils/src/drop'
+import dropRight from '../../../packages/js-utils/src/dropRight'
 
 const dropRightDemo = () => {
   const array = [1, 2, 3]

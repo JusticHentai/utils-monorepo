@@ -1,5 +1,7 @@
 import { action } from 'storybook/actions'
-import { zipObject, zipObjectDeep, zipWith } from '../../../packages/js-utils/src/zip'
+import zipObject from '../../../packages/js-utils/src/zipObject'
+import zipObjectDeep from '../../../packages/js-utils/src/zipObjectDeep'
+import zipWith from '../../../packages/js-utils/src/zipWith'
 
 const zipObjectDemo = () => {
   // zipObject - 键值数组合并为对象

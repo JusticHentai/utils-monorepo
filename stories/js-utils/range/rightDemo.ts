@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { rangeRight } from '../../../packages/js-utils/src/range'
+import rangeRight from '../../../packages/js-utils/src/rangeRight'
 
 const rightDemo = () => {
   action('rangeRight(4)')({

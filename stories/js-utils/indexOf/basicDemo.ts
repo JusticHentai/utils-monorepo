@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import indexOf, { lastIndexOf } from '../../../packages/js-utils/src/indexOf'
+import indexOf from '../../../packages/js-utils/src/indexOf'
+import lastIndexOf from '../../../packages/js-utils/src/lastIndexOf'
 
 const basicDemo = () => {
   const array = [1, 2, 1, 2]

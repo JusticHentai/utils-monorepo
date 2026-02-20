@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { sortedIndexBy } from '../../../packages/js-utils/src/sortedIndex'
+import sortedIndexBy from '../../../packages/js-utils/src/sortedIndexBy'
 
 const sortedIndexByDemo = () => {
   const users = [

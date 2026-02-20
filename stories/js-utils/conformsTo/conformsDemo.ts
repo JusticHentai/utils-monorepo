@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { conforms } from '../../../packages/js-utils/src/conformsTo'
+import conforms from '../../../packages/js-utils/src/conforms'
 
 const conformsDemo = () => {
   const isAdult = conforms({

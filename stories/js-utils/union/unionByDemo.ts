@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { unionBy, unionWith } from '../../../packages/js-utils/src/union'
+import unionBy from '../../../packages/js-utils/src/unionBy'
+import unionWith from '../../../packages/js-utils/src/unionWith'
 
 const unionByDemo = () => {
   action('unionBy - 取整去重')(

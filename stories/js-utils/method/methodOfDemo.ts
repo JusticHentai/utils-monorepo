@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { methodOf } from '../../../packages/js-utils/src/method'
+import methodOf from '../../../packages/js-utils/src/methodOf'
 
 const methodOfDemo = () => {
   const obj = {

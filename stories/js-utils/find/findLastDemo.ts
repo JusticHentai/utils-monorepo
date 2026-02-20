@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { findLast } from '../../../packages/js-utils/src/find'
+import findLast from '../../../packages/js-utils/src/findLast'
 
 const findLastDemo = () => {
   const nums = [1, 2, 3, 4, 5]

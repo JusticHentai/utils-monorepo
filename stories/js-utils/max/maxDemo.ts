@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import max from '../../../packages/js-utils/src/max'
-import { min } from '../../../packages/js-utils/src/max'
+import min from '../../../packages/js-utils/src/min'
 
 const maxDemo = () => {
   // lodash 测试: 返回最大值

@@ -1,7 +1,7 @@
 import { action } from 'storybook/actions'
 import uniq from '../../../packages/js-utils/src/uniq'
-import { uniqBy } from '../../../packages/js-utils/src/uniq'
-import { uniqWith } from '../../../packages/js-utils/src/uniq'
+import uniqBy from '../../../packages/js-utils/src/uniqBy'
+import uniqWith from '../../../packages/js-utils/src/uniqWith'
 import isEqual from '../../../packages/js-utils/src/isEqual'
 
 const uniqDemo = () => {

@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import onJank from '../../../packages/element-utils/src/onJank'
+import onJank from '../../../packages/element-utils/src/JankMonitor'
 
 export const createStartDemo = (
   getStopFn: () => (() => void) | null,

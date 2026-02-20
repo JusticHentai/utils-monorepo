@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { forOwn } from '../../../packages/js-utils/src/forIn'
+import forOwn from '../../../packages/js-utils/src/forOwn'
 
 const forOwnDemo = () => {
   const result: string[] = []

@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { defaultsDeep } from '../../../packages/js-utils/src/defaults'
+import defaultsDeep from '../../../packages/js-utils/src/defaultsDeep'
 
 const defaultsDeepDemo = () => {
   // 深层合并：不覆盖已有嵌套属性

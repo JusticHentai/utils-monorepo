@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { reject } from '../../../packages/js-utils/src/filter'
+import reject from '../../../packages/js-utils/src/reject'
 
 const rejectDemo = () => {
   const users = [

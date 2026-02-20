@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { escapeRegExp } from '../../../packages/js-utils/src/escape'
+import escapeRegExp from '../../../packages/js-utils/src/escapeRegExp'
 
 const escapeRegExpDemo = () => {
   action('escapeRegExp')({

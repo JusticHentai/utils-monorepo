@@ -1,5 +1,6 @@
 import { action } from 'storybook/actions'
-import { values, valuesIn } from '../../../packages/js-utils/src/keys'
+import values from '../../../packages/js-utils/src/values'
+import valuesIn from '../../../packages/js-utils/src/valuesIn'
 
 const valuesDemo = () => {
   const obj = { a: 1, b: 'hello', c: true }

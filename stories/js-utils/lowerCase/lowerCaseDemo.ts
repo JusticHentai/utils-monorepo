@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import lowerCase from '../../../packages/js-utils/src/lowerCase'
-import { upperCase } from '../../../packages/js-utils/src/lowerCase'
+import upperCase from '../../../packages/js-utils/src/upperCase'
 
 const lowerCaseDemo = () => {
   // lodash 测试: 各种分隔符形式转为空格分隔小写

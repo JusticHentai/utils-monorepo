@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { mapValues } from '../../../packages/js-utils/src/mapKeys'
+import mapValues from '../../../packages/js-utils/src/mapValues'
 
 const mapValuesDemo = () => {
   // lodash 测试: 使用 String 转换值

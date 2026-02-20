@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import BaseFunction from '../../../packages/js-utils/src/BaseFunction'
+import type BaseFunction from '../../../packages/js-utils/src/BaseFunction'
 
 const normalDemo = () => {
   const add: BaseFunction<[number, number], number> = (a, b) => {

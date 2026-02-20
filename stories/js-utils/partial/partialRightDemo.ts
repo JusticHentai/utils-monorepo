@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { partialRight } from '../../../packages/js-utils/src/partial'
+import partialRight from '../../../packages/js-utils/src/partialRight'
 
 const partialRightDemo = () => {
   const greet = (greeting: string, name: string) => greeting + ', ' + name + '!'

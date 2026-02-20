@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { flattenDeep } from '../../../packages/js-utils/src/flatten'
+import flattenDeep from '../../../packages/js-utils/src/flattenDeep'
 
 const deepDemo = () => {
   action('flattenDeep - 完全展开')({

@@ -1,6 +1,7 @@
 import { action } from 'storybook/actions'
 import ceil from '../../../packages/js-utils/src/round'
-import { floor, round } from '../../../packages/js-utils/src/round'
+import floor from '../../../packages/js-utils/src/floor'
+import round from '../../../packages/js-utils/src/round'
 
 const roundDemo = () => {
   action('ceil - 向上舍入')({

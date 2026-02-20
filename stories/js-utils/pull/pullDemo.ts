@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import pull from '../../../packages/js-utils/src/pull'
-import { pullAll } from '../../../packages/js-utils/src/pull'
+import pullAll from '../../../packages/js-utils/src/pullAll'
 
 const pullDemo = () => {
   const arr1 = ['a', 'b', 'c', 'a', 'b']

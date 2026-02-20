@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
 import unzip from '../../../packages/js-utils/src/unzip'
-import { unzipWith } from '../../../packages/js-utils/src/unzip'
+import unzipWith from '../../../packages/js-utils/src/unzipWith'
 
 const unzipDemo = () => {
   // 基础：2-tuples

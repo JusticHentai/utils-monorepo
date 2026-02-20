@@ -1,10 +1,15 @@
 import { action } from 'storybook/actions'
-import DeepOptional from '../../../packages/js-utils/src/DeepOptional'
+import type DeepOptional from '../../../packages/js-utils/src/DeepOptional'
 
 const edgeCaseDemo = () => {
+  // DeepOptional 是类型工具，不是运行时函数
+  // 验证空对象场景
+  type EmptyDeep = DeepOptional<{}, never>
+  const empty: EmptyDeep = {}
+
   action('DeepOptional - 边界情况')({
-    说明: '验证 DeepOptional 的边界情况',
-    空值测试: (() => { try { return DeepOptional() } catch(e) { return e.message } })(),
+    说明: 'DeepOptional 是纯类型工具，编译时生效',
+    空对象: empty,
   })
 }
 
