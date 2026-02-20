@@ -32,11 +32,7 @@ jobs:
         run: |
           pnpm install
 
-      # 先构建 js-utils（element-utils 源码依赖它，Storybook 打包时会解析）
-      - name: Build js-utils
-        run: pnpm --filter @justichentai/js-utils build
-
-      # 构建 Storybook
+      # 构建 Storybook（js-utils 通过 alias 指到源码，由 Vite 直接转译）
       - name: Build Storybook
         run: pnpm md:build
 
