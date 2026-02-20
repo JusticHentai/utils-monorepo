@@ -30,7 +30,11 @@ jobs:
       # 安装依赖
       - name: Install dependencies
         run: |
-         pnpm install
+          pnpm install
+
+      # 先构建 js-utils（element-utils 源码依赖它，Storybook 打包时会解析）
+      - name: Build js-utils
+        run: pnpm --filter @justichentai/js-utils build
 
       # 构建 Storybook
       - name: Build Storybook
