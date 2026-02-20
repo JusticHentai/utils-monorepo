@@ -1,0 +1,97 @@
+import basicDemo from './basicDemo?raw'
+import maxLinesDemo from './maxLinesDemo?raw'
+import emptyStackDemo from './emptyStackDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# formatStack
+
+格式化错误堆栈信息，支持限制行数和去除多余空格。
+
+## 详细介绍
+
+`formatStack` 是一个用于处理 JavaScript 错误堆栈字符串的工具函数。
+
+**核心功能：**
+- 限制堆栈输出行数，避免日志过长
+- 去除每行首尾空格，统一格式
+- 安全处理空值或 undefined 输入
+
+**应用场景：**
+- 前端错误监控上报时，需要精简堆栈信息
+- 日志系统中需要统一堆栈格式
+- 错误分析工具中展示关键调用链
+
+## 基础格式化
+
+将原始堆栈进行格式化，去除每行多余的空格，输出整洁的堆栈信息。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 限制最大行数
+
+通过 `maxLines` 选项限制输出的堆栈行数，通常只需要前几行就能定位问题。
+
+<CodeOrSourceMdx language="typescript">
+  {maxLinesDemo}
+</CodeOrSourceMdx>
+
+## 处理空堆栈
+
+安全处理 `undefined` 或空字符串输入，返回空字符串避免程序出错。
+
+<CodeOrSourceMdx language="typescript">
+  {emptyStackDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>stack</td>
+      <td><code>string | undefined</code></td>
+      <td>原始堆栈字符串</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>FormatStackOptions</code></td>
+      <td>配置选项</td>
+    </tr>
+    <tr>
+      <td>options.maxLines</td>
+      <td><code>number</code></td>
+      <td>最大行数，默认 10</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>string</code></td>
+      <td>格式化后的堆栈字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件职责：**
+- `index.ts`: 主函数，实现堆栈格式化逻辑
+- `interface.ts`: 类型定义，配置选项接口
+
+**核心流程：**
+1. 检查输入是否为空，空值直接返回空字符串
+2. 使用 `split('\n')` 将堆栈按行分割为数组
+3. 使用 `slice(0, maxLines)` 截取指定行数
+4. 使用 `map(line => line.trim())` 去除每行首尾空格
+5. 使用 `join('\n')` 重新组合为字符串
+
+**关键技术点：**
+- 使用链式调用使代码简洁易读
+- 默认参数处理避免 undefined 错误

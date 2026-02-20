@@ -6,13 +6,13 @@ const topKFrequentDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('前K个高频元素')(res)
+          action('normal')(res)
         }}
       >
-        前K个高频元素
+        normal
       </div>
     </div>
   )

@@ -1,0 +1,221 @@
+import parseUrlDemo from './parseUrlDemo?raw'
+import buildUrlDemo from './buildUrlDemo?raw'
+import queryParamDemo from './queryParamDemo?raw'
+import isValidUrlDemo from './isValidUrlDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# parseUrl
+
+URL 解析与构建工具集，提供 URL 解析、构建、查询参数操作等功能。
+
+## 实现原理
+
+### parseUrl 核心实现
+
+1. **URL 解析策略**：基于原生 `URL` API 进行解析，如果解析失败会自动尝试添加 `https://` 协议后重新解析
+2. **查询参数处理**：使用 `URLSearchParams` 遍历参数，支持 `decode` 解码和 `arrayFormat` 数组格式（同名参数合并为数组）
+3. **路径片段解析**：通过 `split('/')` 分割路径，过滤空字符串，支持 URL 解码
+
+### buildUrl 核心实现
+
+1. **路径拼接**：移除 baseUrl 末尾斜杠后拼接 pathname
+2. **路径片段编码**：使用 `encodeURIComponent` 对每个片段进行编码后用 `/` 连接
+3. **查询参数构建**：使用 `URLSearchParams` 构建，支持数组值（同一 key 多次 append）
+4. **哈希编码**：对 hash 值进行 `encodeURIComponent` 编码
+
+### 工具函数实现
+
+- **getQueryParam / getQueryParams**：基于 parseUrl 获取解析结果后提取指定 key 的值
+- **setQueryParam / removeQueryParam**：基于原生 `URL` 对象的 `searchParams.set()` / `delete()` 方法
+- **isValidUrl**：通过 `new URL()` 构造函数是否抛出异常来判断
+
+## 解析 URL
+
+<CodeOrSourceMdx language="typescript">
+  {parseUrlDemo}
+</CodeOrSourceMdx>
+
+## 构建 URL
+
+<CodeOrSourceMdx language="typescript">
+  {buildUrlDemo}
+</CodeOrSourceMdx>
+
+## 查询参数操作
+
+<CodeOrSourceMdx language="typescript">
+  {queryParamDemo}
+</CodeOrSourceMdx>
+
+## 验证 URL
+
+<CodeOrSourceMdx language="typescript">
+  {isValidUrlDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### parseUrl
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>url</td>
+      <td><code>string</code></td>
+      <td>需要解析的 URL 字符串</td>
+    </tr>
+    <tr>
+      <td>options.decode</td>
+      <td><code>boolean</code></td>
+      <td>是否解码 URL 组件，默认 true</td>
+    </tr>
+    <tr>
+      <td>options.arrayFormat</td>
+      <td><code>boolean</code></td>
+      <td>是否将重复的查询参数合并为数组，默认 true</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值 ParsedUrl
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>href</td>
+      <td><code>string</code></td>
+      <td>完整 URL</td>
+    </tr>
+    <tr>
+      <td>protocol</td>
+      <td><code>string</code></td>
+      <td>协议 (http, https)</td>
+    </tr>
+    <tr>
+      <td>hostname</td>
+      <td><code>string</code></td>
+      <td>主机名</td>
+    </tr>
+    <tr>
+      <td>port</td>
+      <td><code>string</code></td>
+      <td>端口号</td>
+    </tr>
+    <tr>
+      <td>pathname</td>
+      <td><code>string</code></td>
+      <td>路径</td>
+    </tr>
+    <tr>
+      <td>pathSegments</td>
+      <td><code>string[]</code></td>
+      <td>路径片段数组</td>
+    </tr>
+    <tr>
+      <td>query</td>
+      <td><code>Record&lt;string, string | string[]&gt;</code></td>
+      <td>查询参数对象</td>
+    </tr>
+    <tr>
+      <td>hash</td>
+      <td><code>string</code></td>
+      <td>哈希值 (包含 #)</td>
+    </tr>
+    <tr>
+      <td>hashValue</td>
+      <td><code>string</code></td>
+      <td>哈希值 (不包含 #)</td>
+    </tr>
+    <tr>
+      <td>origin</td>
+      <td><code>string</code></td>
+      <td>来源 (protocol://host)</td>
+    </tr>
+  </tbody>
+</table>
+
+### buildUrl
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>baseUrl</td>
+      <td><code>string</code></td>
+      <td>基础 URL</td>
+    </tr>
+    <tr>
+      <td>pathname</td>
+      <td><code>string</code></td>
+      <td>路径</td>
+    </tr>
+    <tr>
+      <td>pathSegments</td>
+      <td><code>string[]</code></td>
+      <td>路径片段</td>
+    </tr>
+    <tr>
+      <td>query</td>
+      <td><code>Record&lt;string, string | number | boolean | array&gt;</code></td>
+      <td>查询参数</td>
+    </tr>
+    <tr>
+      <td>hash</td>
+      <td><code>string</code></td>
+      <td>哈希值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 其他工具函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>getQueryParam(url, key)</code></td>
+      <td>获取单个查询参数</td>
+    </tr>
+    <tr>
+      <td><code>getQueryParams(url, key)</code></td>
+      <td>获取所有同名查询参数（返回数组）</td>
+    </tr>
+    <tr>
+      <td><code>setQueryParam(url, key, value)</code></td>
+      <td>设置查询参数</td>
+    </tr>
+    <tr>
+      <td><code>removeQueryParam(url, key)</code></td>
+      <td>删除查询参数</td>
+    </tr>
+    <tr>
+      <td><code>isValidUrl(url)</code></td>
+      <td>检查 URL 是否有效</td>
+    </tr>
+  </tbody>
+</table>

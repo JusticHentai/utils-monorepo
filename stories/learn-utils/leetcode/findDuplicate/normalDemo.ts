@@ -1,4 +1,4 @@
-import findDuplicate from '@jqxon/learn-utils/leetcode/findDuplicate'
+import findDuplicate from '../../../../packages/learn-utils/src/leetcode/findDuplicate'
 
 export default () => {
   const nums = [1, 3, 4, 2, 2]

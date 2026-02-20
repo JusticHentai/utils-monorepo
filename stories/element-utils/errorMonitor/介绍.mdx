@@ -1,0 +1,186 @@
+import initDemo from './initDemo?raw'
+import resourceErrorDemo from './resourceErrorDemo?raw'
+import consoleErrorDemo from './consoleErrorDemo?raw'
+import errorFilterDemo from './errorFilterDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import preCollectDemo from './preCollectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# ErrorMonitor
+
+统一监控页面中的 JS 运行时错误、资源加载错误、Promise 未捕获拒绝和 console.error 调用。
+
+## 详细介绍
+
+`ErrorMonitor` 是一个前端错误监控类，将四种常见的错误捕获方式封装为统一的回调接口。通过 `new ErrorMonitor(options)` 创建实例，调用 `observe(callback)` 开始监听，返回一个停止函数用于清理所有事件监听器。
+
+底层分别通过以下机制捕获不同类型的错误：
+
+- **JS 错误**：`window.addEventListener('error')` — 捕获运行时异常
+- **资源错误**：`window.addEventListener('error', handler, true)` — 在捕获阶段拦截资源加载失败（`<script>`、`<link>`、`<img>` 等）
+
+> 资源加载错误本质上也是 `error` 事件的一种，和 JS 运行时错误触发的是同一个事件类型。区别在于：JS 错误的 `error` 事件会冒泡到 `window`，而资源加载错误**不会冒泡**，只能在捕获阶段拦截。因此 `observeResourceError` 使用 `addEventListener('error', handler, true)` 第三个参数 `true` 启用捕获模式，并通过判断 `event.target.tagName` 是否属于资源标签（SCRIPT/LINK/IMG/VIDEO/AUDIO）来区分两者。
+- **Promise 错误**：`window.addEventListener('unhandledrejection')` — 捕获未处理的 Promise 拒绝
+- **Console 错误**：劫持 `console.error` 方法 — 拦截控制台错误输出
+
+常见使用场景：前端异常监控上报、错误日志收集、生产环境质量监控。
+
+## 基础监听
+
+通过 `new ErrorMonitor()` 创建实例，调用 `observe(callback)` 即可开始监听，默认启用 JS / Resource / Promise 三种错误监控。返回的清理函数用于停止所有监听。
+
+<CodeOrSourceMdx language="typescript">
+  {initDemo}
+</CodeOrSourceMdx>
+
+## 资源加载错误监听
+
+通过动态创建一个指向不存在地址的 `<img>` 标签来模拟资源加载失败。`observeResourceError` 在捕获阶段监听 `error` 事件，通过 `event.target.tagName` 判断是否为资源标签（SCRIPT/LINK/IMG/VIDEO/AUDIO），从而区分资源错误和 JS 运行时错误。
+
+<CodeOrSourceMdx language="typescript">
+  {resourceErrorDemo}
+</CodeOrSourceMdx>
+
+## Console 错误监听
+
+通过 `consoleError: true` 开启 console.error 监控。可以单独开启某一类错误，关闭其他类型。
+
+<CodeOrSourceMdx language="typescript">
+  {consoleErrorDemo}
+</CodeOrSourceMdx>
+
+## 错误过滤
+
+通过 `errorFilter` 可以对捕获的错误进行过滤，返回 `false` 则忽略该错误。`errorFilter` 接收完整的 `ErrorInfo` 对象，可以基于错误类型、消息内容、页面 URL 等任意字段进行判断。
+
+<CodeOrSourceMdx language="typescript">
+  {errorFilterDemo}
+</CodeOrSourceMdx>
+
+## 停止监听
+
+调用 `observe()` 返回的清理函数即可停止所有错误监控，移除事件监听器并恢复被劫持的 `console.error`。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 提前收集错误
+
+在实际场景中，业务 script 可能体积较大，加载需要一定时间。而在 script 加载完成之前，页面就可能已经产生了错误（如其他 script 报错、资源加载失败等）。这些错误如果没有提前捕获，就会丢失。
+
+`preCollectErrors` 就是用来解决这个问题的：将 `core/preCollectErrors.ts` 中的代码**直接复制内联到 HTML 的 `<head>` 中**，在所有业务 script 之前执行。它是一个纯 ES5 的 IIFE（立即执行函数），不依赖任何模块系统，复制即可用。
+
+**工作原理：**
+
+1. 立即挂载轻量级的 `error`（捕获阶段）和 `unhandledrejection` 监听
+2. 将捕获的错误暂存到 `window.__PRE_COLLECTED_ERRORS__` 数组中
+3. 同时覆盖三种错误类型：JS 运行时错误、资源加载错误（SCRIPT/LINK/IMG/VIDEO/AUDIO）、Promise 未捕获拒绝
+
+> **为什么用捕获阶段 + `target !== window` 区分错误类型？**
+>
+> 因为使用 `addEventListener('error', handler, true)` 捕获模式后，JS 运行时错误和资源加载错误都会进入同一个 handler。两者的区别在于：JS 运行时错误的 `event.target` 是 `window`，而资源加载错误的 `event.target` 是触发错误的具体 DOM 元素（如 `<script>`、`<img>`）。因此通过 `target !== window` 判断即可将两者区分开来，避免把 JS 错误误判为资源错误。
+
+**暴露的全局变量：**
+
+- `window.__PRE_COLLECTED_ERRORS__`：错误暂存数组，主 script 加载后从中读取
+- `window.__STOP_PRE_COLLECT__()`：停止预收集的函数，切换到正式监控后调用
+
+**使用步骤：**
+
+1. 将 `core/preCollectErrors.ts` 中的代码复制内联到 `<head>` 中（在业务 script 之前）
+2. 主 script 加载后，从 `window.__PRE_COLLECTED_ERRORS__` 取出错误进行上报
+3. 调用 `window.__STOP_PRE_COLLECT__()` 停止预收集，清空数组，切换到 `ErrorMonitor` 正式监控
+
+<CodeOrSourceMdx language="typescript">
+  {preCollectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### ErrorMonitorOptions（构造参数）
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>jsError</td>
+      <td><code>boolean</code></td>
+      <td>是否监控 JS 运行时错误，默认 <code>true</code></td>
+    </tr>
+    <tr>
+      <td>resourceError</td>
+      <td><code>boolean</code></td>
+      <td>是否监控资源加载错误，默认 <code>true</code></td>
+    </tr>
+    <tr>
+      <td>promiseError</td>
+      <td><code>boolean</code></td>
+      <td>是否监控 Promise 未捕获拒绝，默认 <code>true</code></td>
+    </tr>
+    <tr>
+      <td>consoleError</td>
+      <td><code>boolean</code></td>
+      <td>是否监控 console.error，默认 <code>false</code></td>
+    </tr>
+    <tr>
+      <td>errorFilter</td>
+      <td><code>(error: ErrorInfo) =&gt; boolean</code></td>
+      <td>错误过滤器，返回 <code>false</code> 则忽略该错误</td>
+    </tr>
+  </tbody>
+</table>
+
+### 实例方法
+
+<table>
+  <thead>
+    <tr>
+      <th>方法名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>observe(callback)</td>
+      <td><code>(callback: ErrorCallback) =&gt; StopListening</code></td>
+      <td>开始监控所有错误，返回停止函数</td>
+    </tr>
+    <tr>
+      <td>stop()</td>
+      <td><code>() =&gt; void</code></td>
+      <td>停止所有监听</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**：
+   - `index.ts`：ErrorMonitor 类，接收配置，按配置启动各类监听，返回统一的停止函数
+   - `interface.ts`：类型定义，包含 `ErrorInfo`、`JSErrorInfo`、`ResourceErrorInfo`、`PromiseErrorInfo`、`ConsoleErrorInfo` 及配置项
+   - `core/observeJSError.ts`：通过 `window error` 事件捕获 JS 运行时错误
+   - `core/observeResourceError.ts`：通过捕获阶段的 `error` 事件监听资源加载失败
+   - `core/observePromiseError.ts`：通过 `unhandledrejection` 事件捕获 Promise 错误
+   - `core/observeConsoleError.ts`：通过劫持 `console.error` 拦截控制台错误
+   - `core/preCollectErrors.ts`：在 script 加载前提前收集错误，暂存到 `window.__PRE_COLLECTED_ERRORS__`，待主 script 加载后取出上报
+
+2. **核心流程**：
+   - 构造函数接收 `ErrorMonitorOptions` 配置
+   - `observe(callback)` 解构配置项，根据开关决定启动哪些 observe 函数
+   - 用 `wrappedCallback` 包装回调，插入 `errorFilter` 过滤逻辑
+   - 每个 observe 函数返回各自的 `StopListening`，统一收集到 `stoppers` 数组
+   - 返回的清理函数遍历调用所有 stopper
+
+3. **关键技术点**：
+   - 资源加载错误不冒泡，必须在**捕获阶段**（`addEventListener` 第三个参数 `true`）监听
+   - `console.error` 监控通过劫持原始方法实现，清理时恢复原方法引用
+   - Promise 错误通过类型守卫区分 `reason` 类型，提取不同格式的错误信息
+   - 所有错误信息统一包含 `type`、`message`、`timestamp`、`pageUrl`、`userAgent` 基础字段

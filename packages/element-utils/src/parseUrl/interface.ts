@@ -53,7 +53,10 @@ export interface BuildUrlOptions {
   /** 路径片段 */
   pathSegments?: string[]
   /** 查询参数 */
-  query?: Record<string, string | number | boolean | (string | number | boolean)[]>
+  query?: Record<
+    string,
+    string | number | boolean | (string | number | boolean)[]
+  >
   /** 哈希值 */
   hash?: string
 }

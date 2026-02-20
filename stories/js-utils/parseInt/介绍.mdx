@@ -1,0 +1,59 @@
+import parseIntDemo from './parseIntDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# parseInt
+
+将字符串解析为指定基数的整数。
+
+## 详细介绍
+
+`parseInt` 将字符串解析为指定基数的整数，默认基数为 10，自动检测十六进制前缀。
+
+**常用场景**：
+- 字符串转数字
+- 不同进制数的解析
+- 用户输入处理
+
+## 整数解析
+
+使用 `parseInt` 将字符串解析为整数，支持不同进制。
+
+<CodeOrSourceMdx language="typescript">
+  {parseIntDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要解析的字符串</td>
+    </tr>
+    <tr>
+      <td>radix</td>
+      <td><code>number</code></td>
+      <td>基数，默认 10</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：解析后的整数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 封装整数解析功能
+2. **核心流程**: 去除空白 → 检测进制前缀 → 调用原生 parseInt
+3. **关键技术点**: 自动检测 0x/0X 前缀，默认基数 10
+4. **数据流向**: 字符串 + 基数 → 预处理 → 原生 parseInt → 返回数值

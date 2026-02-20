@@ -1,0 +1,89 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useDebounceEffect
+
+为 useEffect 增加防抖能力。
+
+## 详细介绍
+
+`useDebounceEffect` 是一个带防抖功能的 effect hook，只有在依赖停止变化一段时间后才会执行 effect。它在 `useEffect` 的基础上封装了 `useDebounce`，使得依赖变化时不会立即触发 effect，而是等到依赖停止变化达到指定延迟时间后才执行。
+
+常用场景：
+- **搜索输入框**：用户停止输入后才发起搜索请求，避免每次按键都请求接口
+- **表单自动保存**：表单字段频繁变化时，延迟保存，减少不必要的写操作
+- **频繁状态处理**：依赖值高频变化时，控制 effect 执行频率，提升性能
+
+相比直接在 `useEffect` 内部手动写 `setTimeout`，`useDebounceEffect` 自动管理定时器的创建和清理，避免内存泄漏和竞态问题。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>effect</td>
+      <td><code>EffectCallback</code></td>
+      <td>-</td>
+      <td>防抖后执行的副作用函数，支持返回清理函数</td>
+    </tr>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>-</td>
+      <td>依赖数组，依赖变化时触发防抖计时</td>
+    </tr>
+    <tr>
+      <td>options.delay</td>
+      <td><code>number</code></td>
+      <td><code>1000</code></td>
+      <td>防抖延迟时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options.immediate</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否在首次触发时立即执行</td>
+    </tr>
+    <tr>
+      <td>options.maxWait</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最大等待时间（毫秒），超过此时间强制执行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**:
+   - `useDebounceEffect/index.ts`：核心入口，组合 `useDebounce` 和 `useUpdateEffectHook` 实现防抖 effect
+   - `useDebounce/index.ts`：底层防抖 hook，提供 `run`、`cancel`、`flush`、`isPending` 方法
+   - `useUpdateEffectHook/index.ts`：跳过首次渲染的 effect hook，只在依赖真正更新时执行
+
+2. **核心流程**:
+   - 内部维护一个 `flag` 状态对象（`useState({})`）
+   - 当 `deps` 变化时，通过 `useEffect` 调用 `useDebounce` 返回的 `run` 方法
+   - `run` 启动防抖定时器，延迟结束后调用 `setFlag({})` 生成新的对象引用
+   - `flag` 变化触发 `useUpdateEffectHook`，最终执行用户传入的 `effect`
+
+3. **关键技术点**:
+   - 使用 `useState({})` 创建引用类型 flag，每次 `setFlag({})` 都会生成新对象，确保触发重渲染
+   - 使用 `useUpdateEffectHook`（基于 `createUpdateEffect`）跳过首次渲染，避免组件挂载时就执行 effect
+   - `useDebounce` 内部通过 `useRef` 存储最新回调，解决闭包陈旧问题
+
+4. **数据流向**:
+   - `deps 变化` → `useEffect` 触发 → 调用 `run()` 启动防抖 → 延迟到期后 `setFlag({})` → `flag 变化` → `useUpdateEffectHook` 执行 `effect`

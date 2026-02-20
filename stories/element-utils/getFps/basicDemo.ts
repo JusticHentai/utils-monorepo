@@ -1,8 +1,8 @@
-import getFps from '../../../packages/element-utils/src/getFps.ts'
+import { action } from 'storybook/actions'
+import getFps from '../../../packages/element-utils/src/getFps'
 
-const basicDemo = async () => {
+export const runBasicDemo = async () => {
+  action('正在检测帧率')('请等待约 1 秒...')
   const fps = await getFps()
-  return { fps, message: `当前帧率: ${fps} FPS` }
+  action('帧率检测结果')(`当前帧率: ${fps} FPS`)
 }
-
-export default basicDemo

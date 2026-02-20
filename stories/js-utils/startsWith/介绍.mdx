@@ -1,0 +1,73 @@
+import startsWithDemo from './startsWithDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# startsWith
+
+检查字符串 string 是否以给定的目标字符串开头
+
+## 详细介绍
+
+`startsWith` 检查字符串 string 是否以给定的目标字符串开头。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `startsWith` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {startsWithDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>unknown</code></td>
+      <td>要检查的字符串</td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td><code>unknown</code></td>
+      <td>目标字符串</td>
+    </tr>
+    <tr>
+      <td>position</td>
+      <td><code>unknown</code></td>
+      <td>搜索的起始位置，默认为 0</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：如果以目标字符串开头，返回 true
+
+## 具体实现原理
+
+1. **文件职责**: `startsWith/index.ts` 导出 startsWith 函数
+2. **核心流程**: 检查字符串 string 是否以给定的目标字符串开头
+3. **关键技术点**: 使用 Math 内置方法
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

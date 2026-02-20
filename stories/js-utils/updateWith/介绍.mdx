@@ -1,0 +1,78 @@
+import updateWithDemo from './updateWithDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# updateWith
+
+类似于 update，但可以自定义路径上创建的值
+
+## 详细介绍
+
+`updateWith` 类似于 update，但可以自定义路径上创建的值。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `updateWith` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {updateWithDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>要修改的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>unknown</code></td>
+      <td>要更新的属性路径</td>
+    </tr>
+    <tr>
+      <td>updater</td>
+      <td><code>unknown</code></td>
+      <td>更新函数</td>
+    </tr>
+    <tr>
+      <td>customizer</td>
+      <td><code>unknown</code></td>
+      <td>自定义创建路径的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string[]`
+- 描述：返回修改后的对象
+
+## 具体实现原理
+
+1. **文件职责**: `updateWith/index.ts` 导出 updateWith 函数
+2. **核心流程**: 类似于 update，但可以自定义路径上创建的值
+3. **关键技术点**: 使用 typeof 运算符进行类型检查
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

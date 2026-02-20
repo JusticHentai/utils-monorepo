@@ -1,0 +1,65 @@
+import curryDemo from './curryDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# curry
+
+创建柯里化函数，可逐步传入参数。
+
+## 详细介绍
+
+`curry` 将一个多参数函数转换为可逐步传参的函数链。当累计传入的参数数量达到原函数的参数数量（或指定的 `arity`）时执行原函数。
+
+柯里化是函数式编程的核心技术，常用于创建可复用的部分应用函数。
+
+## 基础用法
+
+点击按钮查看 `curry` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {curryDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>T extends (...args: any[]) =&gt; any</code></td>
+      <td>要柯里化的函数</td>
+    </tr>
+    <tr>
+      <td>arity</td>
+      <td><code>number</code></td>
+      <td>参数数量，默认为 func.length</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => unknown`
+- 描述：柯里化后的函数
+
+## 具体实现原理
+
+1. **文件职责**: `curry/index.ts` 导出 curry 函数
+2. **核心流程**: 返回新函数，每次调用收集参数，参数不足时返回新的柯里化函数，参数足够时执行原函数
+3. **关键技术点**: 递归闭包收集参数，`Function.length` 获取默认 arity
+4. **数据流向**: 逐步传入参数 → 累积到闭包 → 参数数量 ≥ arity 时调用原函数

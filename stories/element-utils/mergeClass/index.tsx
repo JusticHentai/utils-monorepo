@@ -1,4 +1,3 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
 import basicDemo from './basicDemo'
 import falsyDemo from './falsyDemo'
@@ -6,22 +5,10 @@ import falsyDemo from './falsyDemo'
 const MergeClassDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = basicDemo()
-          action('合并多种类型 class')(res)
-        }}
-      >
+      <div className="button" onClick={basicDemo}>
         合并多种类型 class
       </div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = falsyDemo()
-          action('过滤 falsy 值')(res)
-        }}
-      >
+      <div className="button" onClick={falsyDemo}>
         过滤 falsy 值
       </div>
     </div>

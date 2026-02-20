@@ -1,19 +1,15 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
+import edgeCaseDemo from './edgeCaseDemo'
 import normalDemo from './normalDemo'
 
 const walkDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button"
-        onClick={async () => {
-          const res = await normalDemo()
-
-          action('遍历对象并处理值')(res)
-        }}
-      >
+      <div className="button" onClick={normalDemo}>
         遍历对象并处理值
+      </div>
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )

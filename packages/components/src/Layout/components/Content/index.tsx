@@ -14,7 +14,7 @@ const Content = forwardRef<HTMLDivElement, ContentProps>((baseProps, ref) => {
   const { children, ...rest } = useMergeProps<ContentProps>(baseProps, {}, {})
 
   return (
-    <ContentStyle ref={ref} {...rest}>
+    <ContentStyle ref={ref} {...(rest as any)}>
       {children}
     </ContentStyle>
   )

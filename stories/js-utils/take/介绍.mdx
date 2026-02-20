@@ -1,0 +1,73 @@
+import takeDemo from './takeDemo?raw'
+import takeWhileDemo from './takeWhileDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# take
+
+提取数组前 n 个元素。
+
+## 详细介绍
+
+`take` 提取数组前 n 个元素。还有 `takeRight`（从末尾取）、`takeWhile`/`takeRightWhile`（按条件取）。
+
+**常用场景**：
+- 获取前 N 条数据
+- 分页数据截取
+- 条件截取
+
+## 提取元素
+
+使用 `take` 和 `takeRight` 从数组前后提取元素。
+
+<CodeOrSourceMdx language="typescript">
+  {takeDemo}
+</CodeOrSourceMdx>
+
+## 按条件提取
+
+使用 `takeWhile` 和 `takeRightWhile` 按条件从数组前后提取元素。
+
+<CodeOrSourceMdx language="typescript">
+  {takeWhileDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>提取数量，默认 1</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value, index, array) => boolean</code></td>
+      <td>断言函数（While 变体使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：提取的元素数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 take、takeRight、takeWhile、takeRightWhile
+2. **核心流程**: take 用 slice(0, n)；takeWhile 从头遍历直到条件不满足
+3. **关键技术点**: slice 截取，while 循环条件检查
+4. **数据流向**: 数组 + 数量/条件 → 截取 → 返回子数组

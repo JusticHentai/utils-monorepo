@@ -1,0 +1,66 @@
+import basicDemo from './basicDemo?raw'
+import customDemo from './customDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# merge
+
+递归合并源对象的属性到目标对象。
+
+## 详细介绍
+
+`merge` 函数用于深度合并多个对象，与 `Object.assign` 不同，它会递归合并嵌套对象。
+
+**与 assign 的区别**：
+- `assign`：浅合并，直接覆盖嵌套对象
+- `merge`：深合并，递归合并嵌套对象
+
+**常用场景**：
+- 合并配置对象
+- 深度更新嵌套状态
+- 合并默认值和用户设置
+
+## merge - 递归合并
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## mergeWith - 自定义合并
+
+<CodeOrSourceMdx language="typescript">
+  {customDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>object</code></td>
+      <td>目标对象</td>
+    </tr>
+    <tr>
+      <td>...sources</td>
+      <td><code>object[]</code></td>
+      <td>源对象</td>
+    </tr>
+    <tr>
+      <td>customizer</td>
+      <td><code>Function</code></td>
+      <td>自定义合并函数（mergeWith）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`object`
+- 描述：合并后的目标对象（会修改原对象）

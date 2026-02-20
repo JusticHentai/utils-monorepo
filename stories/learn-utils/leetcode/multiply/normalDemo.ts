@@ -1,4 +1,4 @@
-import multiply from '@jqxon/learn-utils/leetcode/multiply'
+import multiply from '../../../../packages/learn-utils/src/leetcode/multiply'
 
 export default () => {
   const num1 = '123'

@@ -1,9 +1,33 @@
-import basicDemo from '../../../packages/element-utils/src/scrollBottom/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import thresholdDemo from './thresholdDemo?raw'
+import throttleDemo from './throttleDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # scrollBottom
 
-scrollBottom 是一个用于监听元素滚动到底部事件的函数。
+监听元素滚动到底部事件。
+
+## 详细介绍
+
+scrollBottom 是一个滚动监听函数，核心作用是：**监听指定元素滚动到底部时触发回调**。
+
+**涉及的知识点**：
+- scroll 事件：监听滚动位置变化
+- scrollTop/scrollHeight/clientHeight：滚动位置计算
+- 阈值判断：提前触发（距离底部还有 N 像素时触发）
+- 节流优化：减少滚动事件频繁触发
+
+**常用场景**：
+- 无限滚动：滚动到底部加载更多数据
+- 懒加载：滚动到底部加载下一页内容
+- 阅读进度：检测用户是否阅读完全文
+- 表格滚动：固定表头的表格加载更多
+
+**优势**：
+- 支持自定义阈值，可提前触发
+- 支持节流，优化高频滚动性能
+- 返回清理函数，便于组件卸载时移除监听
+- 内部复用 onScroll 工具，自动获得 passive 事件优化
 
 ## 基础示例
 
@@ -11,31 +35,114 @@ scrollBottom 是一个用于监听元素滚动到底部事件的函数。
   {basicDemo}
 </CodeOrSourceMdx>
 
+## 带阈值监听
+
+<CodeOrSourceMdx language="typescript">
+  {thresholdDemo}
+</CodeOrSourceMdx>
+
+## 带节流监听
+
+<CodeOrSourceMdx language="typescript">
+  {throttleDemo}
+</CodeOrSourceMdx>
+
 ## 参数介绍
 
-### element
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>element</td>
+      <td><code>HTMLElement</code></td>
+      <td>需要监听的 DOM 元素</td>
+    </tr>
+    <tr>
+      <td>cb</td>
+      <td><code>ScrollBottomCallback</code></td>
+      <td>滚动到底部时触发的回调函数</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>ScrollBottomOptions</code></td>
+      <td>配置选项（可选）</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`HTMLElement`
-- 描述：需要监听的 DOM 元素
+### ScrollBottomOptions
 
-### cb
-
-- 类型：`(...params: any[]) => any`
-- 描述：滚动到底部时触发的回调函数
-
-### threshold
-
-- 类型：`number`
-- 默认值：`0`
-- 描述：滚动到底部的阈值（像素），默认 0 表示严格底部
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>threshold</td>
+      <td><code>number</code></td>
+      <td>0</td>
+      <td>滚动到底部的阈值（像素），0 表示严格底部</td>
+    </tr>
+    <tr>
+      <td>throttle</td>
+      <td><code>number</code></td>
+      <td>0</td>
+      <td>节流时间（毫秒），0 表示不节流</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
-- 类型：`() => void`
-- 描述：移除事件监听的清理函数，用于防止内存泄漏
+- 类型：`ScrollBottomCleanup`（即 `() => void`）
+- 描述：移除事件监听的清理函数
 
-## 特点
+## 具体实现原理
 
-- 支持自定义阈值，可在接近底部时提前触发
-- 返回清理函数，便于组件卸载时移除监听
-- 适用于无限滚动、加载更多等场景
+### 文件结构
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>index.ts</code></td>
+      <td>主入口，scrollBottom 函数实现</td>
+    </tr>
+    <tr>
+      <td><code>interface.ts</code></td>
+      <td>类型定义，包含 ScrollBottomCallback、ScrollBottomOptions、ScrollBottomCleanup</td>
+    </tr>
+  </tbody>
+</table>
+
+### 核心流程
+
+1. 内部调用 onScroll 工具绑定滚动监听
+2. 每次滚动时计算：`scrollTop + clientHeight >= scrollHeight - threshold`
+3. 满足条件则触发回调
+4. 返回 onScroll 的清理函数
+
+### 关键技术点
+
+- 判断公式：`scrollTop >= scrollHeight - clientHeight - threshold`
+- `scrollTop`：已滚动的距离
+- `scrollHeight`：内容总高度
+- `clientHeight`：可视区域高度
+- threshold 为正数时提前触发，为 0 时到达底部触发
+- 复用 onScroll 工具，自动支持 passive 事件和节流

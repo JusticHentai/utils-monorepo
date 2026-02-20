@@ -1,0 +1,75 @@
+import PreviewTs from '../../.storybook/preview.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# preview.ts
+
+- Storybook 预览配置文件
+
+## 配置
+
+<CodeOrSourceMdx language="typescript">
+  {PreviewTs}
+</CodeOrSourceMdx>
+
+## 配置详解
+
+### 类型导入
+
+#### `import type { Preview } from '@storybook/react-vite'`
+- **作用**：导入 Preview 类型
+- **说明**：
+  - 使用 `type` 关键字仅导入类型，不会在运行时引入模块
+  - 为配置对象提供类型提示和类型检查
+
+### 配置对象
+
+#### `parameters: { ... }`
+- **作用**：配置 Storybook 的全局参数
+- **说明**：影响所有故事的默认行为
+
+##### `options: { ... }`
+- **作用**：配置 Storybook UI 选项
+- **说明**：控制侧边栏、工具栏等 UI 行为
+
+###### `storySort: (a, b) => { ... }`
+- **作用**：自定义故事排序规则
+- **说明**：
+  - 接收两个故事对象 `a` 和 `b`
+  - 返回负数表示 `a` 排在 `b` 前面
+  - 返回正数表示 `b` 排在 `a` 前面
+  - 返回 0 表示顺序不变
+
+##### `a.id.localeCompare(b.id, undefined, { numeric: true })`
+- **作用**：按文件路径排序
+- **说明**：
+  - `localeCompare`：使用本地化字符串比较
+  - `undefined`：使用默认语言环境
+  - `{ numeric: true }`：启用数字排序，使 "2" 排在 "10" 前面
+- **效果**：与 IDE 文件排序保持一致
+
+### 导出配置
+
+#### `export default preview`
+- **作用**：导出预览配置
+- **说明**：Storybook 会自动读取此文件作为预览配置
+
+### 配置文件位置
+
+- **路径**：`.storybook/preview.ts`
+- **说明**：Storybook 默认读取此文件作为预览配置文件
+- **格式**：TypeScript 文件（`.ts`），也可以使用 JavaScript（`.js`）
+
+### 与 main.ts 的区别
+
+- **main.ts**：配置 Storybook 的构建和加载行为（故事文件路径、插件、框架等）
+- **preview.ts**：配置 Storybook 的预览和渲染行为（全局参数、装饰器、排序等）
+
+### 其他常用配置
+
+#### decorators
+- **作用**：全局装饰器，包裹所有故事
+- **示例**：添加全局样式、Provider 等
+
+#### globalTypes
+- **作用**：定义全局工具栏控件
+- **示例**：主题切换、语言切换等

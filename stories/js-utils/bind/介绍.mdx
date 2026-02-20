@@ -1,0 +1,75 @@
+import bindDemo from './bindDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# bind
+
+创建一个绑定到指定对象的函数，支持预设参数。
+
+## 详细介绍
+
+`bind(func, thisArg, ...partials)` 创建一个新函数，将 `func` 的 `this` 绑定到 `thisArg`，同时可以预设部分参数（partial application）。
+
+调用绑定函数时，预设参数排在前面，新传入的参数排在后面，合并后通过 `apply` 调用原函数。
+
+**常用场景**：
+- 将函数的 `this` 绑定到特定对象
+- 创建偏函数（partial application），预设部分参数简化后续调用
+- 事件处理函数需要固定上下文时
+
+## 基础用法
+
+点击按钮查看 `bind` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {bindDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>Function</code></td>
+      <td>要绑定的函数</td>
+    </tr>
+    <tr>
+      <td>thisArg</td>
+      <td><code>any</code></td>
+      <td>绑定的 this 值</td>
+    </tr>
+    <tr>
+      <td>...partials</td>
+      <td><code>any[]</code></td>
+      <td>预设的参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Function`
+- 描述：绑定了 this 和预设参数的新函数
+
+## 具体实现原理
+
+1. **文件职责**: `bind/index.ts` 导出 bind 函数
+2. **核心流程**: 通过闭包保存 `thisArg` 和预设参数 `partials`，返回新函数；调用时合并 `[...partials, ...args]` 并通过 `apply` 绑定 `this` 调用原函数
+3. **关键技术点**: `Function.prototype.apply` 绑定 this，展开运算符合并参数
+4. **与原生 `Function.prototype.bind` 的区别**: 功能类似，但实现更简洁，不处理 `new` 调用场景

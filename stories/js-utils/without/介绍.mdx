@@ -1,0 +1,59 @@
+import withoutDemo from './withoutDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# without
+
+创建排除指定值的新数组。
+
+## 详细介绍
+
+`without` 创建一个新数组，排除所有给定值（不修改原数组）。
+
+**常用场景**：
+- 从数组中移除特定值
+- 数据过滤
+- 不可变数组操作
+
+## 排除指定值
+
+使用 `without` 创建排除指定值的新数组。
+
+<CodeOrSourceMdx language="typescript">
+  {withoutDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>...values</td>
+      <td><code>T[]</code></td>
+      <td>要排除的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：排除指定值后的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现数组值排除
+2. **核心流程**: 遍历数组 → 排除与给定值相等的元素
+3. **关键技术点**: filter + includes，不修改原数组
+4. **数据流向**: 数组 + 排除值列表 → 过滤 → 返回新数组

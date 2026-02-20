@@ -1,0 +1,63 @@
+import overDemo from './overDemo?raw'
+import overEveryDemo from './overEveryDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# over
+
+创建调用函数数组并返回结果的函数。
+
+## 详细介绍
+
+`over` 创建一个函数，调用函数数组中的每个函数并返回结果数组。`overEvery` 是逻辑 AND，`overSome` 是逻辑 OR。
+
+**常用场景**：
+- 同时应用多个转换
+- 组合多个验证条件
+- 并行函数执行
+
+## over 批量调用
+
+使用 `over` 创建一个函数，同时调用多个函数并返回结果数组。
+
+<CodeOrSourceMdx language="typescript">
+  {overDemo}
+</CodeOrSourceMdx>
+
+## 逻辑组合
+
+使用 `overEvery`（全部通过）和 `overSome`（任一通过）组合多个谓词。
+
+<CodeOrSourceMdx language="typescript">
+  {overEveryDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>iteratees</td>
+      <td><code>Function[]</code></td>
+      <td>要调用的函数数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => unknown[]` / `(...args) => boolean`
+- 描述：over 返回结果数组，overEvery/overSome 返回布尔值
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 over、overEvery、overSome 三个函数
+2. **核心流程**: 接收函数数组 → 创建包装函数 → 调用时遍历执行
+3. **关键技术点**: over 收集结果数组，overEvery 用 every 逻辑，overSome 用 some 逻辑
+4. **数据流向**: 函数数组 → 创建包装 → 调用时遍历执行 → 聚合结果

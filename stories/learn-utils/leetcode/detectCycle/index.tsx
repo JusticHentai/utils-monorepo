@@ -1,11 +1,21 @@
-import { DemoBlock } from '@jqxon/storybook-utils'
+import { action } from 'storybook/actions'
+import '../../../.css/index.css'
 import normalDemo from './normalDemo'
 
-export default function DetectCycleDemo() {
+const detectCycleDemo = () => {
   return (
-    <DemoBlock
-      title="环形链表 II"
-      demos={[{ title: '基础示例', fn: normalDemo }]}
-    />
+    <div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
+      </div>
+    </div>
   )
 }
+
+export default detectCycleDemo

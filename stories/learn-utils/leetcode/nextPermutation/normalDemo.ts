@@ -1,4 +1,4 @@
-import nextPermutation from '@jqxon/learn-utils/leetcode/nextPermutation'
+import nextPermutation from '../../../../packages/learn-utils/src/leetcode/nextPermutation'
 
 export default () => {
   const nums = [1, 2, 3]

@@ -1,0 +1,109 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getNavigationMetrics
+
+获取导航基础性能信息。
+
+## 详细介绍
+
+`getNavigationMetrics` 基于 Navigation Timing API 计算页面导航各阶段耗时，返回包含 DNS、TCP、TLS、TTFB、DOM 解析等关键性能指标的对象。
+
+适用于页面加载完成后采集一次性的导航性能数据，配合 `onWindowLoaded` 使用效果最佳。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+无参数。
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>unload</td>
+      <td><code>number</code></td>
+      <td>卸载耗时</td>
+    </tr>
+    <tr>
+      <td>dnsCache</td>
+      <td><code>number</code></td>
+      <td>DNS 缓存耗时</td>
+    </tr>
+    <tr>
+      <td>dns</td>
+      <td><code>number</code></td>
+      <td>DNS 查询耗时</td>
+    </tr>
+    <tr>
+      <td>tcp</td>
+      <td><code>number</code></td>
+      <td>TCP 连接耗时</td>
+    </tr>
+    <tr>
+      <td>tls</td>
+      <td><code>number</code></td>
+      <td>TLS 握手耗时</td>
+    </tr>
+    <tr>
+      <td>ttfb</td>
+      <td><code>number</code></td>
+      <td>首字节时间</td>
+    </tr>
+    <tr>
+      <td>trans</td>
+      <td><code>number</code></td>
+      <td>内容传输耗时</td>
+    </tr>
+    <tr>
+      <td>domParse</td>
+      <td><code>number</code></td>
+      <td>DOM 解析耗时</td>
+    </tr>
+    <tr>
+      <td>domComplete</td>
+      <td><code>number</code></td>
+      <td>DOM 完成耗时</td>
+    </tr>
+    <tr>
+      <td>loadEvent</td>
+      <td><code>number</code></td>
+      <td>Load 事件耗时</td>
+    </tr>
+    <tr>
+      <td>redirect</td>
+      <td><code>number</code></td>
+      <td>重定向耗时</td>
+    </tr>
+    <tr>
+      <td>domReady</td>
+      <td><code>number</code></td>
+      <td>DOM Ready 时间</td>
+    </tr>
+    <tr>
+      <td>pageLoad</td>
+      <td><code>number</code></td>
+      <td>页面完全加载时间</td>
+    </tr>
+  </tbody>
+</table>
+
+如果 Performance API 不可用则返回 `undefined`。
+
+## 具体实现原理
+
+1. **文件职责**：`index.ts` 从 `performance.getEntriesByType('navigation')` 获取 `PerformanceNavigationTiming`
+2. **核心流程**：通过各时间戳之差计算各阶段耗时
+3. **关键技术点**：TLS 耗时仅在 `secureConnectionStart > 0` 时计算（HTTPS 连接）

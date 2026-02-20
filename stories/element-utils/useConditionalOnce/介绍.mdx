@@ -1,0 +1,115 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useConditionalOnce
+
+当条件为 true 时只执行一次的 Hook。
+
+## 详细介绍
+
+useConditionalOnce 是一个条件执行 Hook，当指定条件首次满足时执行回调函数，之后即使条件持续满足也不会重复执行。支持返回清理函数和手动重置状态。
+
+### 核心特性
+
+- **条件触发**：只有当条件为 true 时才执行
+- **执行一次**：条件满足后只执行一次，不会重复触发
+- **清理函数**：支持返回清理函数，在组件卸载或重置时调用
+- **手动重置**：提供 reset 方法，允许再次执行
+
+### 使用场景
+
+- **数据加载完成时上报**：当数据首次加载完成时发送埋点
+- **用户首次登录引导**：首次登录时显示欢迎弹窗
+- **一次性初始化**：某些条件满足时执行初始化逻辑
+- **首次进入视口**：元素首次可见时触发动画或加载
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>condition</td>
+      <td><code>boolean</code></td>
+      <td>触发条件，为 true 时执行回调</td>
+    </tr>
+    <tr>
+      <td>execute</td>
+      <td><code>() =&gt; void | (() =&gt; void)</code></td>
+      <td>要执行的函数，可返回清理函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>executed</td>
+      <td><code>boolean</code></td>
+      <td>是否已执行</td>
+    </tr>
+    <tr>
+      <td>reset</td>
+      <td><code>() =&gt; void</code></td>
+      <td>重置执行状态，允许再次执行。会先调用清理函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：Hook 主逻辑，管理执行状态和清理函数
+- `interface.ts`：类型定义，包括 ExecuteFn 和返回值类型
+
+### 文件职责
+
+- `index.ts`：Hook 主逻辑，管理执行状态和清理函数
+- `interface.ts`：类型定义，包括 ExecuteFn 和 UseConditionalOnceReturn
+
+### 核心流程
+
+1. 使用 `useState` 管理执行状态 `executed`，使用 `useRef`（cleanupRef）存储清理函数
+2. 在 `useEffect` 中判断：如果已执行过或条件不满足，直接返回
+3. 条件满足时，调用 `setExecuted(true)` 标记已执行，执行回调并保存清理函数
+4. 组件卸载时，如果有清理函数则调用
+5. `reset` 方法：先调用清理函数，再 `setExecuted(false)` 重置执行状态
+
+### 关键技术点
+
+- **useState 管理执行状态**：使用 `useState(false)` 管理 `executed` 状态，状态变化会触发组件重渲染，让外部感知执行状态
+- **useRef 管理清理函数**：使用 `useRef` 存储清理函数引用，不触发重渲染
+- **useCallback 包装 reset**：确保 reset 引用稳定，避免不必要的重渲染
+- **依赖数组**：effect 依赖 condition 和 execute，条件变化时重新评估
+
+### 数据流向
+
+```
+condition 变化 → useEffect 触发 → 检查 executed 状态
+  ↓
+条件满足且未执行 → setExecuted(true) → 执行 execute → 保存清理函数到 cleanupRef
+  ↓
+reset 调用 → 执行 cleanupRef.current() → setExecuted(false) → 允许再次执行
+```

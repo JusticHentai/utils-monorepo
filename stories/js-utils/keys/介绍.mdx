@@ -1,0 +1,63 @@
+import keysDemo from './keysDemo?raw'
+import valuesDemo from './valuesDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# keys
+
+获取对象自有可枚举属性的键名。
+
+## 详细介绍
+
+`keys` 返回对象自有可枚举属性的键名数组。还提供 `keysIn`（包含继承属性）、`values`、`valuesIn`。
+
+**常用场景**：
+- 遍历对象属性
+- 获取对象大小
+- 对象属性列表展示
+
+## 获取对象键名
+
+使用 `keys` 获取对象自有可枚举属性的键名数组。
+
+<CodeOrSourceMdx language="typescript">
+  {keysDemo}
+</CodeOrSourceMdx>
+
+## 获取对象值
+
+使用 `values` 获取对象自有可枚举属性的值数组。
+
+<CodeOrSourceMdx language="typescript">
+  {valuesDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要获取键名的对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string[]`
+- 描述：对象自有可枚举属性的键名数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 keys、keysIn、values、valuesIn 四个函数
+2. **核心流程**: 使用 Object.keys/for...in 获取属性键名或值
+3. **关键技术点**: 区分自有属性和继承属性，hasOwnProperty 过滤
+4. **数据流向**: 输入对象 → 属性遍历 → 过滤/收集 → 返回数组

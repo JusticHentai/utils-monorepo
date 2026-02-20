@@ -6,13 +6,13 @@ const climbStairsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('爬楼梯')(res)
+          action('normal')(res)
         }}
       >
-        爬楼梯测试
+        normal
       </div>
     </div>
   )

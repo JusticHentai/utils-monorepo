@@ -1,0 +1,68 @@
+import restDemo from './restDemo?raw'
+import spreadDemo from './spreadDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# rest
+
+创建收集剩余参数的函数。
+
+## 详细介绍
+
+`rest` 创建一个函数，将指定位置之后的参数收集到数组中传入。`spread` 是反向操作，将数组展开为参数。
+
+**常用场景**：
+- 可变参数函数封装
+- 参数收集和展开
+- API 适配
+
+## rest 收集剩余参数
+
+使用 `rest` 将多余参数收集为数组。
+
+<CodeOrSourceMdx language="typescript">
+  {restDemo}
+</CodeOrSourceMdx>
+
+## spread 展开数组参数
+
+使用 `spread` 将数组参数展开传入函数。
+
+<CodeOrSourceMdx language="typescript">
+  {spreadDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>(...args) => unknown</code></td>
+      <td>要包装的函数</td>
+    </tr>
+    <tr>
+      <td>start</td>
+      <td><code>number</code></td>
+      <td>收集起始位置，默认 func.length - 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T>`
+- 描述：参数收集/展开后的包装函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 rest 和 spread 两个函数
+2. **核心流程**: rest 在调用时将 start 之后的参数收集为数组；spread 将数组参数展开
+3. **关键技术点**: Array.prototype.slice 收集参数，Function.prototype.apply 展开
+4. **数据流向**: 参数列表 → 收集/展开 → 调用原函数 → 返回结果

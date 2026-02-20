@@ -1,30 +1,23 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
 import addDemo from './addDemo'
 import addImmediatelyDemo from './addImmediatelyDemo'
+import autoProcessDemo from './autoProcessDemo'
+import priorityDemo from './priorityDemo'
 
 const ResourceControllerDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await addDemo()
-
-          action('添加资源并加载')(res)
-        }}
-      >
-        添加资源并加载
+      <div className="button" onClick={addDemo}>
+        基础用法演示
       </div>
-      <div
-        className="storybook-button"
-        onClick={async () => {
-          const res = await addImmediatelyDemo()
-
-          action('立即添加并加载资源')(res)
-        }}
-      >
-        立即添加并加载资源
+      <div className="button" onClick={addImmediatelyDemo}>
+        立即加载演示
+      </div>
+      <div className="button" onClick={priorityDemo}>
+        优先级队列演示
+      </div>
+      <div className="button" onClick={autoProcessDemo}>
+        自动处理模式演示
       </div>
     </div>
   )

@@ -1,0 +1,82 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useEventListener
+
+优雅地使用 addEventListener 的 Hook。
+
+## 详细介绍
+
+useEventListener 封装了 DOM 事件监听的逻辑，自动处理事件的绑定和解绑，支持指定目标元素和各种事件选项。
+
+### 使用场景
+
+- 监听 window/document 事件
+- 监听特定元素的事件
+- 需要在组件卸载时自动清理事件监听
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>eventName</td>
+      <td><code>string</code></td>
+      <td>-</td>
+      <td>事件名称</td>
+    </tr>
+    <tr>
+      <td>handler</td>
+      <td><code>(event: Event) =&gt; void</code></td>
+      <td>-</td>
+      <td>事件处理函数</td>
+    </tr>
+    <tr>
+      <td>options.target</td>
+      <td><code>BasicTarget</code></td>
+      <td><code>window</code></td>
+      <td>目标元素</td>
+    </tr>
+    <tr>
+      <td>options.capture</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否在捕获阶段触发</td>
+    </tr>
+    <tr>
+      <td>options.once</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否只触发一次</td>
+    </tr>
+    <tr>
+      <td>options.passive</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否为被动监听器</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useLatest 保存最新的 handler 引用
+2. 在 useEffect 中添加事件监听
+3. 组件卸载或依赖变化时移除事件监听
+4. 支持 window、document 和 DOM 元素作为目标

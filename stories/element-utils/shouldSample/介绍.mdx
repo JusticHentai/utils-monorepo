@@ -1,0 +1,46 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# shouldSample
+
+根据采样率判断是否需要采集。
+
+## 详细介绍
+
+`shouldSample` 是一个简单的采样率判断函数，根据传入的采样率（0~1）返回是否命中采样。采样率为 1 时总是返回 `true`，为 0 时总是返回 `false`，其他值通过 `Math.random()` 进行概率判断。
+
+常用于监控 SDK 中控制数据采集量，避免全量采集对性能的影响。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>sampleRate</td>
+      <td><code>number</code></td>
+      <td>采样率，范围 0~1，默认为 1（全量采集）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回 `boolean`，`true` 表示命中采样。
+
+## 具体实现原理
+
+1. **核心逻辑**：`sampleRate >= 1` 直接返回 `true`，`sampleRate <= 0` 直接返回 `false`，其他通过 `Math.random() < sampleRate` 判断
+2. **关键技术点**：边界值处理保证了 0 和 1 的确定性结果

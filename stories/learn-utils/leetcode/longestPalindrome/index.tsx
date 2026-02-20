@@ -6,13 +6,13 @@ const longestPalindromeDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('最长回文子串')(res)
+          action('normal')(res)
         }}
       >
-        最长回文子串
+        normal
       </div>
     </div>
   )

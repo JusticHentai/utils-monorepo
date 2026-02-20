@@ -15,7 +15,7 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>((baseProps, ref) => {
   )
 
   return (
-    <LayoutStyle ref={ref} {...rest} $row={row}>
+    <LayoutStyle ref={ref} {...(rest as any)} $row={row}>
       {children}
     </LayoutStyle>
   )

@@ -1,0 +1,68 @@
+import rejectDemo from './rejectDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# reject
+
+与 filter 相反，返回所有不满足谓词函数的元素
+
+## 详细介绍
+
+`reject` 与 filter 相反，返回所有不满足谓词函数的元素。
+
+**常用场景**：
+- 数据转换和过滤
+- 集合查询和检索
+- 条件聚合计算
+
+## 基础用法
+
+点击按钮查看 `reject` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {rejectDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>unknown</code></td>
+      <td>要迭代的集合</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>unknown</code></td>
+      <td>每次迭代调用的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回过滤后的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `reject/index.ts` 导出 reject 函数
+2. **核心流程**: 与 filter 相反，返回所有不满足谓词函数的元素
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

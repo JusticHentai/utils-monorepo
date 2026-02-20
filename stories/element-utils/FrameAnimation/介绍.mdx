@@ -1,45 +1,107 @@
-import sourceCode from '../../../packages/element-utils/src/FrameAnimation/index.ts?raw'
+import createDemo from './createDemo?raw'
+import startDemo from './startDemo?raw'
+import startOnceDemo from './startOnceDemo?raw'
+import pauseDemo from './pauseDemo?raw'
+import resumeDemo from './resumeDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # FrameAnimation
 
 FrameAnimation 是一个用于实现精灵图帧动画的类，支持离屏渲染和高性能动画播放。
 
-## 源码
+## 详细介绍
+
+`FrameAnimation` 是一个用于处理精灵图帧动画的工具类。
+
+**涉及的知识点**：
+- 精灵图（Sprite Sheet）：将多帧动画图片合并到一张图中
+- ImageBitmap：高性能的位图对象，支持硬件加速
+- 离屏渲染：预先裁剪帧，避免运行时性能开销
+
+**常用场景**：
+- 游戏角色动画
+- 加载动画
+- 序列帧特效
+- 表情动画
+
+**优势**：
+- 使用 `ImageBitmap` 裁剪帧，比 Canvas drawImage 性能更好
+- 离屏渲染优化性能
+- 支持精灵图动画
+- 自动适配容器大小
+- 提供完整的生命周期回调
+
+## 创建实例
 
 <CodeOrSourceMdx language="typescript">
-  {sourceCode}
+  {createDemo}
+</CodeOrSourceMdx>
+
+## 循环播放
+
+<CodeOrSourceMdx language="typescript">
+  {startDemo}
+</CodeOrSourceMdx>
+
+## 播放一次
+
+<CodeOrSourceMdx language="typescript">
+  {startOnceDemo}
+</CodeOrSourceMdx>
+
+## 暂停播放
+
+<CodeOrSourceMdx language="typescript">
+  {pauseDemo}
+</CodeOrSourceMdx>
+
+## 继续播放
+
+<CodeOrSourceMdx language="typescript">
+  {resumeDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
 ### Options
 
-#### imageUrl
-
-- 类型：`string`
-- 描述：精灵图的 URL 地址
-
-#### frameCount
-
-- 类型：`number`
-- 描述：动画总帧数
-
-#### duration
-
-- 类型：`number`
-- 描述：动画持续时间（毫秒）
-
-#### rowCount
-
-- 类型：`number`
-- 描述：精灵图的行数
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>imageUrl</td>
+      <td><code>string</code></td>
+      <td>精灵图的 URL 地址</td>
+    </tr>
+    <tr>
+      <td>frameCount</td>
+      <td><code>number</code></td>
+      <td>动画总帧数</td>
+    </tr>
+    <tr>
+      <td>duration</td>
+      <td><code>number</code></td>
+      <td>动画持续时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>rowCount</td>
+      <td><code>number</code></td>
+      <td>精灵图的行数</td>
+    </tr>
+  </tbody>
+</table>
 
 ## 方法
 
 ### preRender
 
-- 描述：离屏渲染，下载图片并创建可复用的帧 Canvas，提高性能
+- 描述：离屏渲染，下载图片并使用 `ImageBitmap` 裁剪创建可复用的帧，提高性能
 
 ### createInstance
 
@@ -51,9 +113,17 @@ FrameAnimation 是一个用于实现精灵图帧动画的类，支持离屏渲�
 
 - 描述：加载图片，可用于预加载
 
-## 特点
+## 具体实现原理
 
-- 离屏渲染优化性能
-- 支持精灵图动画
-- 自动适配容器大小
-- 提供完整的生命周期回调
+### 核心流程
+
+1. 加载精灵图图片
+2. 使用 `createImageBitmap` 将图片裁剪为多帧
+3. 创建 Canvas 并挂载到容器
+4. 使用 `requestAnimationFrame` 循环绘制帧
+
+### 关键技术点
+
+- `ImageBitmap` 支持硬件加速，性能优于直接绘制
+- 离屏渲染避免运行时裁剪开销
+- 帧率自适应，保证动画流畅

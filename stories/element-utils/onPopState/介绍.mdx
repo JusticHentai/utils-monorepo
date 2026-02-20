@@ -1,0 +1,46 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onPopState
+
+监听浏览器 popstate 事件（前进/后退）。
+
+## 详细介绍
+
+`onPopState` 监听 `window` 上的 `popstate` 事件，当用户点击浏览器前进/后退按钮或调用 `history.back()`/`history.forward()` 时触发。注意 `pushState`/`replaceState` 不会触发此事件。
+
+常用于 SPA 路由监控和行为追踪。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>(e: PopStateEvent) =&gt; void</code></td>
+      <td>popstate 触发时的回调，<code>e.state</code> 包含历史记录状态</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回 `() => void` 清理函数。
+
+## 具体实现原理
+
+1. **文件职责**：`index.ts` 封装 `createEventListener(window, 'popstate', callback)`
+2. **关键技术点**：仅浏览器导航（前进/后退）触发，`pushState`/`replaceState` 不触发

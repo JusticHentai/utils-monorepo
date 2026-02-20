@@ -1,4 +1,4 @@
-import exist from '@jqxon/learn-utils/leetcode/exist'
+import exist from '../../../../packages/learn-utils/src/leetcode/exist'
 
 export default () => {
   const board = [

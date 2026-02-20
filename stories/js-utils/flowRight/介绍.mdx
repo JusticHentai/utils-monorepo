@@ -1,0 +1,63 @@
+import flowRightDemo from './flowRightDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flowRight
+
+创建一个函数，从右到左依次调用函数数组中的函数（类似函数组合 compose）
+
+## 详细介绍
+
+`flowRight` 创建一个函数，从右到左依次调用函数数组中的函数（类似函数组合 compose）。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `flowRight` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {flowRightDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>funcs</td>
+      <td><code>unknown</code></td>
+      <td>要组合的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回组合后的新函数
+
+## 具体实现原理
+
+1. **文件职责**: `flowRight/index.ts` 导出 flowRight 函数
+2. **核心流程**: 创建一个函数，从右到左依次调用函数数组中的函数（类似函数组合 compose）
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

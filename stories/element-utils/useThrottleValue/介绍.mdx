@@ -1,0 +1,117 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useThrottleValue
+
+用来处理值节流的 Hook。
+
+## 详细介绍
+
+`useThrottleValue` 用于对高频变化的值进行节流处理，限制值更新的频率。
+
+**涉及的知识点**：
+- 节流（throttle）：固定频率执行
+- React 状态管理
+
+**常用场景**：
+- 高频变化的值需要节流处理
+- 鼠标位置、滚动位置等频繁更新的状态
+- 需要限制渲染频率的场景
+
+**优势**：
+- 限制状态更新频率
+- 提供持续反馈
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>-</td>
+      <td>需要节流的值</td>
+    </tr>
+    <tr>
+      <td>options.wait</td>
+      <td><code>number</code></td>
+      <td><code>1000</code></td>
+      <td>等待时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options.leading</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在延迟开始前执行</td>
+    </tr>
+    <tr>
+      <td>options.trailing</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在延迟结束后执行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>T</code></td>
+      <td>节流后的值</td>
+    </tr>
+  </tbody>
+</table>
+
+## 与 useDebounceValue 对比
+
+<table>
+  <thead>
+    <tr>
+      <th>Hook</th>
+      <th>行为</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>useThrottleValue</code></td>
+      <td>固定频率更新</td>
+      <td>需要持续反馈的场景（如拖拽）</td>
+    </tr>
+    <tr>
+      <td><code>useDebounceValue</code></td>
+      <td>停止变化后更新</td>
+      <td>需要最终值的场景（如搜索）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useThrottleFn 创建节流函数
+2. 在 value 变化时触发节流更新
+3. 返回节流后的状态值

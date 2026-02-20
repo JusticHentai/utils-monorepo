@@ -1,0 +1,35 @@
+import StorybookCreator from '../../skills/storybook-creator/SKILL.md?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# storybook-creator
+
+- Storybook 文档创建规范
+
+## SKILL.md
+
+<details>
+<summary>点击展开 SKILL.md 源码</summary>
+
+<CodeOrSourceMdx language="markdown">
+  {StorybookCreator}
+</CodeOrSourceMdx>
+
+</details>
+
+## 技能详解
+
+### 概述
+
+为 `packages/{packageName}/src/{toolName}` 下的工具函数创建完整的 Storybook 演示和文档时使用此技能。
+
+### 核心功能
+
+- **自动生成 Story**：根据工具函数的类型签名和导出，自动创建对应的 `.mdx` 文档和 `.stories.tsx` 演示
+- **统一文档格式**：确保所有工具的 Storybook 文档遵循相同的结构和风格
+- **演示代码生成**：为每个工具函数生成可交互的演示组件
+
+### 使用场景
+
+- 为新开发的工具函数创建 Storybook story
+- 编写工具函数的演示代码
+- 生成工具函数的文档页面

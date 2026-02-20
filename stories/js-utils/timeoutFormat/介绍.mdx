@@ -1,0 +1,88 @@
+import successDemo from './successDemo?raw'
+import timeoutDemo from './timeoutDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# timeoutFormat
+
+timeoutFormat 是一个用于将已经返回 `[res, err]` 形式的函数转换为带有超时能力的新函数。当包装后的函数执行时会与超时竞速，如果异步函数先完成则返回 `[result, undefined]`，如果超时先完成则返回 `[undefined, TimeoutError]`。
+
+## 异步函数先完成
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 超时先完成
+
+<CodeOrSourceMdx language="typescript">
+  {timeoutDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- `Fn` - 被包装函数的类型
+
+### options
+
+- 类型：`TimeoutFormatOption<Fn>`
+- 描述：超时选项
+  - `fn`：需要包装的函数，类型为 `WrappedFunction<Fn>`
+  - `timeout`：超时时间（毫秒）
+
+### 返回值
+
+- 类型：`WrappedFunction<Fn, TimeoutError>`
+- 描述：返回一个包装后的函数，调用时返回 `Promise<[Awaited<ReturnType<Fn>>, undefined] | [undefined, TimeoutError]>`
+
+## TimeoutError 接口
+
+```typescript
+enum ERROR_TYPE {
+  TIMEOUT,
+  NORMAL_ERROR,
+}
+
+interface TimeoutError {
+  errorType: ERROR_TYPE
+  error: any
+}
+```
+
+### 字段说明
+
+- `errorType`: 错误类型，`ERROR_TYPE.TIMEOUT` 表示超时错误，`ERROR_TYPE.NORMAL_ERROR` 表示普通错误
+- `error`: 原始错误对象
+
+## 使用示例
+
+```typescript
+import asyncFormat from '@your-org/js-utils/asyncFormat'
+import timeoutFormat, { ERROR_TYPE } from '@your-org/js-utils/timeoutFormat'
+
+const fetchData = async (url: string) => {
+  // 模拟网络请求
+  const response = await fetch(url)
+  return response.json()
+}
+
+// 先将函数转为 [res, err] 的形式
+const asyncFormatFn = asyncFormat(fetchData)
+
+// 创建带超时的函数（5秒超时）
+const timeoutFetch = timeoutFormat({ fn: asyncFormatFn, timeout: 5000 })
+
+// 使用
+const [data, error] = await timeoutFetch('https://api.example.com/data')
+
+if (error) {
+  if (error.errorType === ERROR_TYPE.TIMEOUT) {
+    console.log('请求超时')
+  } else {
+    console.log('请求失败:', error.error)
+  }
+} else {
+  console.log('请求成功:', data)
+}
+```

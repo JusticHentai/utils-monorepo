@@ -1,33 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import normalDemo from './normalDemo'
-import shortDemo from './shortDemo'
+import edgeCaseDemo from './edgeCaseDemo'
+import truncateDemo from './truncateDemo'
 
-const truncateDemo = () => {
+const TruncateDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = normalDemo()
-
-          action('截断长字符串')(res)
-        }}
-      >
-        截断长字符串
+      <div className="button" onClick={truncateDemo}>
+        字符串截断
       </div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = shortDemo()
-
-          action('短字符串不截断')(res)
-        }}
-      >
-        短字符串不截断
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )
 }
 
-export default truncateDemo
+export default TruncateDemo

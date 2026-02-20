@@ -1,0 +1,90 @@
+import propertyDemo from './propertyDemo?raw'
+import propertyOfDemo from './propertyOfDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# property
+
+创建返回指定路径值的函数。
+
+## 详细介绍
+
+`property` 创建一个函数，返回给定对象指定路径的值。
+
+**与 `propertyOf` 的区别**：
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>先固定</th>
+      <th>返回的函数接收</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>property</code></td>
+      <td>路径</td>
+      <td>不同对象</td>
+      <td>对多个对象提取同一属性，如 <code>objects.map(property('a.b'))</code></td>
+    </tr>
+    <tr>
+      <td><code>propertyOf</code></td>
+      <td>对象</td>
+      <td>不同路径</td>
+      <td>对同一对象提取多个属性，如 <code>paths.map(propertyOf(obj))</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**常用场景**：
+- 配合 map、sortBy 等提取属性
+- 动态属性访问
+- 配置驱动的数据提取
+
+## property 提取属性值
+
+使用 `property` 创建属性提取函数。
+
+<CodeOrSourceMdx language="typescript">
+  {propertyDemo}
+</CodeOrSourceMdx>
+
+## propertyOf 绑定对象
+
+使用 `propertyOf` 先绑定对象，再通过不同路径访问属性。
+
+<CodeOrSourceMdx language="typescript">
+  {propertyOfDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(object) => unknown`
+- 描述：返回指定路径值的函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 property 和 propertyOf 两个函数
+2. **核心流程**: property 接收路径 → 返回闭包 → 闭包解析对象路径返回值
+3. **关键技术点**: 路径解析、深层属性访问、property/propertyOf 互为反向
+4. **数据流向**: 路径 → 创建闭包 → 接收对象 → 解析路径 → 返回属性值

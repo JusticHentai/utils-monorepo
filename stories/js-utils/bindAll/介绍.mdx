@@ -1,0 +1,68 @@
+import bindAllDemo from './bindAllDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# bindAll
+
+绑定对象上的多个方法到对象自身
+
+## 详细介绍
+
+`bindAll` 绑定对象上的多个方法到对象自身。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `bindAll` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {bindAllDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>要绑定方法的对象</td>
+    </tr>
+    <tr>
+      <td>methodNames</td>
+      <td><code>unknown</code></td>
+      <td>要绑定的方法名数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回绑定后的对象
+
+## 具体实现原理
+
+1. **文件职责**: `bindAll/index.ts` 导出 bindAll 函数
+2. **核心流程**: 绑定对象上的多个方法到对象自身
+3. **关键技术点**: 使用 typeof 运算符进行类型检查
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

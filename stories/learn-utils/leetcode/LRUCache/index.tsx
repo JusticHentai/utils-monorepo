@@ -6,13 +6,13 @@ const LRUCacheDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('LRU 缓存测试')(res)
+          action('normal')(res)
         }}
       >
-        LRU 缓存测试
+        normal
       </div>
     </div>
   )

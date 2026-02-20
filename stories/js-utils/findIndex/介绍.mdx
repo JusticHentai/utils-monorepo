@@ -1,0 +1,66 @@
+import findIndexDemo from './findIndexDemo?raw'
+import findLastIndexDemo from './findLastIndexDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# findIndex
+
+返回数组中第一个满足断言函数的元素的索引。
+
+## 详细介绍
+
+`findIndex` 系列函数用于查找数组中满足条件的元素索引。
+
+**包含的函数**：
+- `findIndex` - 从前向后查找，返回第一个匹配元素的索引
+- `findLastIndex` - 从后向前查找，返回最后一个匹配元素的索引
+
+**常用场景**：
+- 查找特定元素在数组中的位置
+- 判断元素是否存在于数组中
+- 配合 splice 删除特定元素
+
+## findIndex
+
+<CodeOrSourceMdx language="typescript">
+  {findIndexDemo}
+</CodeOrSourceMdx>
+
+## findLastIndex
+
+<CodeOrSourceMdx language="typescript">
+  {findLastIndexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要查找的数组</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>Function | Object | string</code></td>
+      <td>断言函数、匹配对象或属性名</td>
+    </tr>
+    <tr>
+      <td>fromIndex</td>
+      <td><code>number</code></td>
+      <td>开始查找的索引位置</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：匹配元素的索引，未找到返回 -1

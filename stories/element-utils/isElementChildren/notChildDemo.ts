@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import isElementChildren from '../../../packages/element-utils/src/isElementChildren'
 
 const notChildDemo = () => {
@@ -6,7 +7,7 @@ const notChildDemo = () => {
 
   const result = isElementChildren(element1, element2)
 
-  return { isChildren: result }
+  action('不是子元素')({ isChildren: result })
 }
 
 export default notChildDemo

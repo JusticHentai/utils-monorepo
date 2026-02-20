@@ -1,0 +1,59 @@
+import nthDemo from './nthDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# nth
+
+获取数组中指定索引的元素。
+
+## 详细介绍
+
+`nth` 获取数组中第 n 个元素。n 为负数时从末尾计算。
+
+**常用场景**：
+- 安全地获取数组元素
+- 从末尾获取元素（负索引）
+- 函数式数组访问
+
+## 按索引获取元素
+
+使用 `nth` 按索引获取数组元素，支持负数索引。
+
+<CodeOrSourceMdx language="typescript">
+  {nthDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要获取元素的数组</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>索引位置，默认 0，负数从末尾计算</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined`
+- 描述：指定索引处的元素
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现带负索引的数组元素访问
+2. **核心流程**: 处理负数索引 → 转为正索引 → 返回对应元素
+3. **关键技术点**: 负索引转换（length + n）
+4. **数据流向**: 数组 + 索引 → 索引转换 → 访问元素 → 返回值

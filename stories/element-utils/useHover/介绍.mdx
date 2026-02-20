@@ -1,0 +1,82 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useHover
+
+监听 DOM 元素是否有鼠标悬停的 Hook。
+
+## 详细介绍
+
+useHover 通过监听 mouseenter 和 mouseleave 事件来追踪元素的悬停状态，并支持进入、离开和状态变化的回调函数。
+
+### 使用场景
+
+- 悬停显示提示信息
+- 悬停改变元素样式
+- 悬停触发动画效果
+- 下拉菜单的显示/隐藏
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>BasicTarget</code></td>
+      <td>目标元素（ref 或 DOM 元素）</td>
+    </tr>
+    <tr>
+      <td>options.onEnter</td>
+      <td><code>() =&gt; void</code></td>
+      <td>鼠标进入时的回调</td>
+    </tr>
+    <tr>
+      <td>options.onLeave</td>
+      <td><code>() =&gt; void</code></td>
+      <td>鼠标离开时的回调</td>
+    </tr>
+    <tr>
+      <td>options.onChange</td>
+      <td><code>(isHovering: boolean) =&gt; void</code></td>
+      <td>悬停状态改变时的回调</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>boolean</code></td>
+      <td>是否正在悬停</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useState 管理悬停状态
+2. 使用 useEventListener 监听 mouseenter 和 mouseleave 事件
+3. 事件触发时更新状态并调用相应的回调函数

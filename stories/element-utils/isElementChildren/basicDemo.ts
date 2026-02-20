@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import isElementChildren from '../../../packages/element-utils/src/isElementChildren'
 
 const basicDemo = () => {
@@ -9,7 +10,7 @@ const basicDemo = () => {
 
   parent.removeChild(child)
 
-  return { isChildren: result }
+  action('是子元素')({ isChildren: result })
 }
 
 export default basicDemo

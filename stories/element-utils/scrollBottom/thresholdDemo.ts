@@ -1,20 +1,30 @@
+import { action } from 'storybook/actions'
 import scrollBottom from '../../../packages/element-utils/src/scrollBottom'
 
-const thresholdDemo = () => {
-  const element = document.createElement('div')
-  element.style.height = '100px'
-  element.style.overflow = 'auto'
-  element.innerHTML = '<div style="height: 300px;">滚动内容</div>'
+let cleanup: (() => void) | null = null
 
-  const removeListener = scrollBottom(
+export const initThresholdDemo = (element: HTMLElement) => {
+  if (cleanup) {
+    cleanup()
+  }
+
+  cleanup = scrollBottom(
     element,
     () => {
-      console.log('接近底部 50px')
+      action('滚动回调')('接近底部 50px')
     },
-    50
+    { threshold: 50 }
   )
 
-  return { message: '已添加滚动监听（阈值 50px）', removeListener }
+  action('添加滚动监听（带阈值）')('已添加滚动监听（阈值 50px）')
 }
 
-export default thresholdDemo
+export const removeThresholdDemo = () => {
+  if (cleanup) {
+    cleanup()
+    cleanup = null
+    action('移除滚动监听')('已移除阈值滚动监听')
+  } else {
+    action('提示')('未添加监听')
+  }
+}

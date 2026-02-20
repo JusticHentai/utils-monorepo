@@ -1,0 +1,57 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# inRange
+
+检查数值是否在指定范围内。
+
+## 详细介绍
+
+`inRange` 检查数字是否在 [start, end) 范围内。如果只传两个参数，则范围为 [0, end)。如果 start > end，参数会自动交换。
+
+## 范围检查
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>number</td>
+      <td><code>number</code></td>
+      <td>要检查的数字</td>
+    </tr>
+    <tr>
+      <td>start</td>
+      <td><code>number</code></td>
+      <td>范围起点（默认0）</td>
+    </tr>
+    <tr>
+      <td>end</td>
+      <td><code>number</code></td>
+      <td>范围终点</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否在范围内
+
+## 具体实现原理
+
+1. **文件职责**: `inRange/index.ts` 导出 `inRange` 函数
+2. **核心流程**: 标准化参数（处理两参数和参数交换情况），检查 number >= start && number < end
+3. **关键技术点**: 参数重载处理
+4. **数据流向**: number + start + end → 标准化 → 范围检查 → 返回布尔值

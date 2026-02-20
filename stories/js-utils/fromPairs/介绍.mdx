@@ -1,0 +1,47 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# fromPairs
+
+将键值对数组转换为对象。
+
+## 详细介绍
+
+`fromPairs` 接收一个 `[key, value]` 键值对数组，返回由这些键值对组成的对象。是 `toPairs` 的逆操作。常用于将 Map 或 entries 转换为普通对象。
+
+## 将键值对转为对象
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>pairs</td>
+      <td><code>[K, V][]</code></td>
+      <td>键值对数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Record<K, V>`
+- 描述：生成的对象
+
+## 具体实现原理
+
+1. **文件职责**: `fromPairs/index.ts` 导出 `fromPairs` 函数
+2. **核心流程**: 遍历键值对数组，将每对的 key 和 value 设置到结果对象
+3. **关键技术点**: reduce 累积构建对象
+4. **数据流向**: 键值对数组 → 遍历 → 设置到对象 → 返回对象

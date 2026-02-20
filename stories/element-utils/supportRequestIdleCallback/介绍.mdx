@@ -1,0 +1,235 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportRequestIdleCallback
+
+检测浏览器是否支持 requestIdleCallback API。requestIdleCallback 用于在浏览器空闲时执行低优先级任务。
+
+## 什么是 requestIdleCallback？
+
+requestIdleCallback 是一个浏览器原生 API，用于在浏览器主线程空闲时执行回调函数：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    浏览器事件循环                            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  帧开始 ──→ [JS执行] ──→ [样式计算] ──→ [布局] ──→ [绘制]   │
+│     │                                              │        │
+│     │      ┌──────────────────────────────────────┐│        │
+│     │      │         空闲时间 (Idle Time)        ││        │
+│     │      │   requestIdleCallback 在此执行      ││        │
+│     │      └──────────────────────────────────────┘│        │
+│     │                                              │        │
+│     └──────────────── 16.67ms (60fps) ─────────────┘        │
+│                           ↓                                 │
+│                       下一帧开始                             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 requestIdleCallback API，并演示其使用。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 requestIdleCallback API</td>
+    </tr>
+  </tbody>
+</table>
+
+## IdleDeadline 对象
+
+<table>
+  <thead>
+    <tr>
+      <th>属性/方法</th>
+      <th>类型</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>timeRemaining()</td>
+      <td><code>() => number</code></td>
+      <td>返回当前空闲期剩余的毫秒数</td>
+    </tr>
+    <tr>
+      <td>didTimeout</td>
+      <td><code>boolean</code></td>
+      <td>回调是否因为超时而被调用</td>
+    </tr>
+  </tbody>
+</table>
+
+## 主要使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>日志上报</td>
+      <td>在空闲时发送埋点数据</td>
+    </tr>
+    <tr>
+      <td>数据预加载</td>
+      <td>预先加载可能需要的数据</td>
+    </tr>
+    <tr>
+      <td>大量计算</td>
+      <td>分片执行耗时的计算任务</td>
+    </tr>
+    <tr>
+      <td>缓存清理</td>
+      <td>清理过期的缓存数据</td>
+    </tr>
+    <tr>
+      <td>离线数据同步</td>
+      <td>同步 IndexedDB 数据</td>
+    </tr>
+  </tbody>
+</table>
+
+## 原生 API 用法
+
+```typescript
+// 基础使用
+requestIdleCallback((deadline) => {
+  // 检查剩余空闲时间
+  while (deadline.timeRemaining() > 0) {
+    // 执行低优先级任务
+    doBackgroundWork()
+  }
+})
+
+// 设置超时
+requestIdleCallback((deadline) => {
+  if (deadline.didTimeout) {
+    // 超时了，必须执行
+    doUrgentWork()
+  } else {
+    // 还在空闲期
+    doBackgroundWork()
+  }
+}, { timeout: 2000 })
+
+// 取消调度
+const id = requestIdleCallback(callback)
+cancelIdleCallback(id)
+```
+
+## 任务分片示例
+
+```typescript
+import supportRequestIdleCallback from '@justichentai/element-utils/supportRequestIdleCallback'
+
+const tasks = Array.from({ length: 1000 }, (_, i) => () => processItem(i))
+let taskIndex = 0
+
+function processTasks(deadline) {
+  while (taskIndex < tasks.length && deadline.timeRemaining() > 0) {
+    tasks[taskIndex]()
+    taskIndex++
+  }
+  
+  if (taskIndex < tasks.length) {
+    requestIdleCallback(processTasks)
+  }
+}
+
+if (supportRequestIdleCallback()) {
+  requestIdleCallback(processTasks)
+} else {
+  // 降级方案
+  tasks.forEach(task => setTimeout(task, 0))
+}
+```
+
+## Polyfill 实现
+
+```typescript
+if (!('requestIdleCallback' in window)) {
+  window.requestIdleCallback = (callback, options) => {
+    const start = Date.now()
+    return setTimeout(() => {
+      callback({
+        didTimeout: false,
+        timeRemaining: () => Math.max(0, 50 - (Date.now() - start))
+      })
+    }, options?.timeout ?? 1)
+  }
+  
+  window.cancelIdleCallback = (id) => clearTimeout(id)
+}
+```
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>47+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>55+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>❌ 不支持</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>79+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>❌ 不支持</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+import isBrowser from '../isBrowser'
+
+const supportRequestIdleCallback = (): boolean => {
+  return isBrowser() && 'requestIdleCallback' in window
+}
+```
+
+通过检测 `window.requestIdleCallback` 是否存在来判断浏览器支持情况。
+
+## 注意事项
+
+⚠️ **Safari 不支持 requestIdleCallback**，需要使用 polyfill 或降级到 setTimeout。

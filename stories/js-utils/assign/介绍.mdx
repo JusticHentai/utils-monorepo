@@ -1,0 +1,68 @@
+import assignDemo from './assignDemo?raw'
+import nullishDemo from './nullishDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# assign
+
+将源对象的自有可枚举属性分配到目标对象。
+
+## 详细介绍
+
+`assign` 函数将一个或多个源对象的自有可枚举属性复制到目标对象。后续源对象的同名属性会覆盖前面的值。它类似于 `Object.assign`，但提供了更一致的行为。
+
+同时提供了 `assignIn`（包含继承属性）、`assignWith`（支持自定义合并函数）等变体。
+
+**常用场景**：
+- 合并配置对象
+- 浅拷贝对象
+- 扩展默认选项
+
+## 基础合并与覆盖
+
+<CodeOrSourceMdx language="typescript">
+  {assignDemo}
+</CodeOrSourceMdx>
+
+## nullish 值与字符串源
+
+null 和 undefined 作为源值时会正常赋值；字符串源会被当作类数组对象处理。
+
+<CodeOrSourceMdx language="typescript">
+  {nullishDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>object</code></td>
+      <td>目标对象</td>
+    </tr>
+    <tr>
+      <td>...sources</td>
+      <td><code>object[]</code></td>
+      <td>源对象（一个或多个）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`object`
+- 描述：修改后的目标对象
+
+## 具体实现原理
+
+1. **文件职责**: `assign/index.ts` 导出 assign、assignIn、assignWith、assignInWith、extend、extendWith
+2. **核心流程**: 遍历源对象的属性，依次赋值到目标对象
+3. **关键技术点**: `Object.keys`（自有属性）vs `for...in`（含继承属性）
+4. **数据流向**: 目标对象 → 遍历每个源对象 → 复制属性 → 返回修改后的目标对象

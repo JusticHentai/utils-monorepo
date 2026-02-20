@@ -1,0 +1,100 @@
+import invokeDemo from './invokeDemo?raw'
+import thisBindingDemo from './thisBindingDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# invoke
+
+调用对象指定路径上的方法
+
+## 详细介绍
+
+`invoke` 根据路径字符串在对象上查找并调用方法，支持点号分隔和中括号路径语法。
+
+**核心特性**：
+- 通过 `toPathArray` 解析路径，支持 `'a[0].b.c.slice'` 等复杂路径
+- 使用 `method.apply(parent, args)` 调用，确保 `this` 指向方法所在的父对象
+- 路径不存在或目标非函数时安全返回 `undefined`
+
+**常用场景**：
+- 动态调用对象深层方法
+- 配置驱动的方法调用（路径来自配置文件）
+- 调用数组原生方法（如 `slice`、`sort`）
+
+## 基础路径调用
+
+通过字符串路径或数组路径调用对象深层方法，支持传入参数。
+
+<CodeOrSourceMdx language="typescript">
+  {invokeDemo}
+</CodeOrSourceMdx>
+
+## this 绑定验证
+
+`invoke` 内部通过 `method.apply(parent, args)` 调用方法，`this` 指向路径的倒数第二级对象（即方法的直接父对象），而非根对象。
+
+<CodeOrSourceMdx language="typescript">
+  {thisBindingDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证 null 对象、不存在路径、路径指向非函数等边界条件。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>T extends Record&lt;string, unknown&gt;</code></td>
+      <td>要查询的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>方法路径</td>
+    </tr>
+    <tr>
+      <td>...args</td>
+      <td><code>unknown[]</code></td>
+      <td>传递给方法的参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：方法调用的返回值，路径无效或非函数时返回 `undefined`
+
+## 具体实现原理
+
+以 `invoke(object, 'a[0].b.c.slice', 1, 3)` 为例：
+
+```
+第一步：路径解析
+toPathArray('a[0].b.c.slice') => ['a', '0', 'b', 'c', 'slice']
+
+第二步：遍历路径定位父对象（除最后一个 key）
+parent = object → object.a → object.a[0] → .b → .c
+最终 parent = [1, 2, 3, 4]（数组对象）
+
+第三步：获取方法并调用
+methodName = 'slice'
+method = parent['slice']  （即 Array.prototype.slice）
+method.apply(parent, [1, 3])  => [2, 3]
+```
+
+关键点：`apply(parent, args)` 确保 `this` 指向 `parent`（即 `[1, 2, 3, 4]`），所以 `slice` 能正确操作该数组。

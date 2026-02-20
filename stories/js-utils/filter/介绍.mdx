@@ -1,0 +1,59 @@
+import filterDemo from './filterDemo?raw'
+import rejectDemo from './rejectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# filter
+
+返回所有满足谓词函数的元素，同时提供 `reject` 返回不满足的元素。
+
+## 详细介绍
+
+`filter` 遍历集合返回所有使谓词函数返回 true 的元素。`reject` 是 `filter` 的反向操作，返回谓词函数返回 false 的元素。支持函数、对象匹配、属性简写等多种谓词形式。
+
+## filter - 过滤满足条件的
+
+<CodeOrSourceMdx language="typescript">
+  {filterDemo}
+</CodeOrSourceMdx>
+
+## reject - 排除满足条件的
+
+<CodeOrSourceMdx language="typescript">
+  {rejectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要过滤的集合</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value: T) =&gt; boolean</code></td>
+      <td>谓词函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：过滤后的数组
+
+## 具体实现原理
+
+1. **文件职责**: `filter/index.ts` 导出 filter（default）和 reject（named）
+2. **核心流程**: 遍历集合，收集满足（或不满足）谓词的元素
+3. **关键技术点**: 谓词函数标准化、支持多种简写形式
+4. **数据流向**: 集合元素 → 谓词判断 → 满足则收集 → 返回新数组

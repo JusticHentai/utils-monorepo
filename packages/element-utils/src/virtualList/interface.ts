@@ -9,7 +9,7 @@ export interface VirtualListOptions<T = unknown> {
   /** 预估的每项高度（用于初始计算） */
   estimatedItemHeight: number
   /** 额外渲染的缓冲区项数 */
-  overscan?: number
+  overScan?: number
 }
 
 /**

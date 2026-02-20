@@ -14,7 +14,7 @@ const Sider = forwardRef<HTMLDivElement, SiderProps>((baseProps, ref) => {
   const { children, ...rest } = useMergeProps<SiderProps>(baseProps, {}, {})
 
   return (
-    <SiderStyle ref={ref} {...rest}>
+    <SiderStyle ref={ref} {...(rest as any)}>
       {children}
     </SiderStyle>
   )

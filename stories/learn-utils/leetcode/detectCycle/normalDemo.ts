@@ -1,4 +1,4 @@
-import detectCycle from '@jqxon/learn-utils/leetcode/detectCycle'
+import detectCycle from '../../../../packages/learn-utils/src/leetcode/detectCycle'
 
 export default () => {
   // 创建带环的链表: 3 -> 2 -> 0 -> -4 -> 2 (环)

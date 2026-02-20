@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import asyncFormat from '../../../packages/js-utils/src/asyncFormat'
 import sleep from '../../../packages/js-utils/src/sleep'
 
@@ -10,10 +11,10 @@ const fn = async (text: string) => {
 const successDemo = async () => {
   const [res, err] = await asyncFormat<typeof fn>(fn)('成功用例')
 
-  return {
+  action('请求成功用例')({
     res,
     err,
-  }
+  })
 }
 
 export default successDemo

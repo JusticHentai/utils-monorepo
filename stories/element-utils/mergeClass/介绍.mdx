@@ -1,34 +1,88 @@
-import basicDemo from '../../../packages/element-utils/src/mergeClass/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import falsyDemo from './falsyDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # mergeClass
 
-mergeClass 是一个用于合并多种类型 class 名称的函数，支持字符串、数组、对象等多种格式。
+合并多种类型 class 名称，支持字符串、数组、对象等格式。
 
-## 基础示例
+## 详细介绍
+
+mergeClass 是一个 CSS 类名合并函数，核心作用是：**将多种格式的 class 名称合并为一个去重后的字符串**。
+
+**涉及的知识点**：
+- 类型判断：区分字符串、数组、对象
+- Set 去重：避免重复的 class 名称
+- 条件 class：对象格式支持条件开关
+
+**类似库**：
+- clsx：轻量级 class 名称构造工具
+- classnames：React 社区常用的 class 合并库
+
+**常用场景**：
+- 条件样式：根据状态动态添加/移除 class
+- 组件封装：合并用户传入的 class 和内部 class
+- 样式组合：组合多个 CSS 模块的类名
+
+**优势**：
+- 支持多种输入格式，灵活便捷
+- 自动去重，避免重复 class
+- 自动过滤 falsy 值
+
+## 合并多种类型
 
 <CodeOrSourceMdx language="typescript">
   {basicDemo}
 </CodeOrSourceMdx>
 
+## 过滤 falsy 值
+
+<CodeOrSourceMdx language="typescript">
+  {falsyDemo}
+</CodeOrSourceMdx>
+
 ## 参数介绍
 
-### args
-
-- 类型：`Arg[]`
-- 描述：可接受多种类型的参数
-  - `string`：直接作为 class 名称
-  - `string[]`：数组中的每个元素作为 class 名称
-  - `Record<string, boolean>`：键名作为 class 名称，值为 true 时保留
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>...args</td>
+      <td><code>Arg[]</code></td>
+      <td>可变参数，支持 string、string[]、Record&lt;string, boolean&gt;</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
 - 类型：`string`
-- 描述：合并去重后的 class 字符串
+- 描述：合并去重后的 class 字符串，空格分隔
 
-## 特点
+## 具体实现原理
 
-- 支持多种参数类型
-- 自动去重
-- 过滤 falsy 值（null、undefined、false 等）
-- 对象类型支持条件判断
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 mergeClass 函数实现
+
+### 核心流程
+
+1. 创建 Set 存储所有 class 名称
+2. 遍历参数数组，根据类型处理：
+   - 字符串：按空格分割后加入 Set
+   - 数组：遍历每个元素加入 Set
+   - 对象：遍历键，值为 true 的键加入 Set
+3. 过滤 falsy 值
+4. 使用 `Array.from(set).join(' ')` 转为字符串
+
+### 关键技术点
+
+- 使用 Set 自动去重
+- 对象格式：`{ active: true, disabled: false }` → `'active'`
+- 支持字符串中包含多个 class：`'a b c'` → `['a', 'b', 'c']`

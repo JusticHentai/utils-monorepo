@@ -1,0 +1,68 @@
+import basicDemo from './basicDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# chunk
+
+将数组拆分成指定大小的分块。
+
+## 详细介绍
+
+`chunk` 函数将数组按照指定大小分割成多个小数组。如果数组不能被均匀分割，最后一块将包含剩余的元素。
+
+**常用场景**：
+- 分页显示数据
+- 批量处理数据（如批量 API 请求）
+- 将长列表分组展示（如网格布局）
+
+## 基础分块
+
+均匀分块、不均匀分块以及默认 size 为 1 的情况。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 边界情况
+
+浮点数 size 向下取整、空数组处理、size 为 0 或负数的行为。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要分块的数组</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td><code>number</code></td>
+      <td>每个块的长度，默认为 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[][]`
+- 描述：分块后的二维数组
+
+## 具体实现原理
+
+1. **文件职责**: `chunk/index.ts` 导出 chunk 函数
+2. **核心流程**: 计算有效 size → 循环按 size 步长切片 → 收集切片结果
+3. **关键技术点**: `Math.max(Math.floor(size), 1)` 确保 size 至少为 1，`Array.prototype.slice` 截取子数组
+4. **数据流向**: 输入数组 → 按 chunkSize 循环切片 → push 到结果数组 → 返回二维数组

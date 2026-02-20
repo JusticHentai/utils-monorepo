@@ -1,45 +1,1150 @@
-import sourceCode from '../../../packages/element-utils/src/canvas/index.ts?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+import addImageDemo from './addImageDemo?raw'
+import addClipImageDemo from './addClipImageDemo?raw'
+import drawPatternDemo from './drawPatternDemo?raw'
+import addRectDemo from './addRectDemo?raw'
+import addRoundRectDemo from './addRoundRectDemo?raw'
+import addCircleDemo from './addCircleDemo?raw'
+import addLineDemo from './addLineDemo?raw'
+import addArcDemo from './addArcDemo?raw'
+import addEllipseDemo from './addEllipseDemo?raw'
+import addPolygonDemo from './addPolygonDemo?raw'
+import addPathDemo from './addPathDemo?raw'
+import addTextDemo from './addTextDemo?raw'
+import addBezierDemo from './addBezierDemo?raw'
+import addQuadraticDemo from './addQuadraticDemo?raw'
+import addLinearGradientDemo from './addLinearGradientDemo?raw'
+import addRadialGradientDemo from './addRadialGradientDemo?raw'
+import addConicGradientDemo from './addConicGradientDemo?raw'
+import setShadowDemo from './setShadowDemo?raw'
+import setGlobalAlphaDemo from './setGlobalAlphaDemo?raw'
+import setCompositeOperationDemo from './setCompositeOperationDemo?raw'
+import setLineDashDemo from './setLineDashDemo?raw'
+import setLineStyleDemo from './setLineStyleDemo?raw'
+import setFilterDemo from './setFilterDemo?raw'
+import clipDemo from './clipDemo?raw'
+import hitTestDemo from './hitTestDemo?raw'
+import imageDataDemo from './imageDataDemo?raw'
+import imageBitmapDemo from './imageBitmapDemo?raw'
+import simpleTextDemo from './simpleTextDemo?raw'
+import measureTextDemo from './measureTextDemo?raw'
+import clearDemo from './clearDemo?raw'
+import resizeDemo from './resizeDemo?raw'
+import translateDemo from './translateDemo?raw'
+import rotateDemo from './rotateDemo?raw'
+import scaleDemo from './scaleDemo?raw'
+import setTransformDemo from './setTransformDemo?raw'
+import saveRestoreDemo from './saveRestoreDemo?raw'
+import createBase64Demo from './createBase64Demo?raw'
+import toBlobDemo from './toBlobDemo?raw'
+import downloadDemo from './downloadDemo?raw'
 
 # Canvas
 
-Canvas 是一个简化 Canvas 操作的工具类，提供添加图片、文字等常用功能。
+Canvas 是一个简化 Canvas 操作的工具类，提供初始化画布、绑制图形、渐变、变换、导出等常用功能。
 
-## 源码
+## 构造函数
 
-<CodeOrSourceMdx language="typescript">
-  {sourceCode}
-</CodeOrSourceMdx>
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>el</code></td>
+      <td><code>HTMLElement</code></td>
+      <td>可选，挂载的 DOM 元素</td>
+    </tr>
+    <tr>
+      <td><code>width</code></td>
+      <td><code>number</code></td>
+      <td>画布宽度</td>
+    </tr>
+    <tr>
+      <td><code>height</code></td>
+      <td><code>number</code></td>
+      <td>画布高度</td>
+    </tr>
+  </tbody>
+</table>
 
-## 构造函数参数
+---
 
-### options
+## 图像
 
-- 类型：`InitCanvasOptions`
-- 描述：Canvas 初始化配置
-
-## 方法
+Canvas 提供了多种图像绑绑方式，从简单的图片显示到复杂的图案填充。
 
 ### addImage
 
-- 参数：`options: Omit<AddImageOptions, 'ctx'>`
-- 描述：在 Canvas 上添加图片
-- 返回：添加结果
+添加图片到画布，支持整图绘制或源图裁剪绘制。
+
+**参数说明**：
+- `url`: 图片地址
+- `x, y, width, height`: 目标位置和尺寸
+- `sx, sy, sWidth, sHeight`: 可选，源图裁剪参数（从源图的哪个区域取图）
+
+裁剪绘制使用 Canvas 的 9 参数 drawImage 形式，可以实现精灵图（Sprite Sheet）动画、图片局部显示等效果。
+
+<CodeOrSourceMdx language="typescript">
+  {addImageDemo}
+</CodeOrSourceMdx>
+
+### addClipImage
+
+添加裁剪显示的图片，支持圆形或圆角矩形裁剪效果。
+
+常用于：圆形头像、圆角卡片图片等。内部通过设置裁剪区域（clip）实现，不会修改原图。
+
+<CodeOrSourceMdx language="typescript">
+  {addClipImageDemo}
+</CodeOrSourceMdx>
+
+### drawPattern
+
+绘制图案填充（平铺图像），类似 CSS 的 `background-repeat`。
+
+**重复模式**：
+- `'repeat'`: 水平和垂直方向都重复（默认）
+- `'repeat-x'`: 仅水平方向重复
+- `'repeat-y'`: 仅垂直方向重复
+- `'no-repeat'`: 不重复
+
+常用于：纹理背景、网格图案、水印效果等。
+
+<CodeOrSourceMdx language="typescript">
+  {drawPatternDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 基础图形
+
+Canvas 提供了丰富的基础图形绑绑能力，支持填充（fill）和描边（stroke）两种模式。
+
+### addRect
+
+绘制矩形，支持填充色、描边色和线宽设置。矩形是最基础的图形，也是很多 UI 组件的基础。
+
+<CodeOrSourceMdx language="typescript">
+  {addRectDemo}
+</CodeOrSourceMdx>
+
+### addRoundRect
+
+绘制圆角矩形，支持统一圆角或四角独立设置。
+
+**圆角参数**：
+- 单个数字：四角相同圆角
+- 数组 `[tl, tr, br, bl]`：分别设置左上、右上、右下、左下的圆角
+
+常用于：按钮、卡片、输入框等 UI 组件。
+
+<CodeOrSourceMdx language="typescript">
+  {addRoundRectDemo}
+</CodeOrSourceMdx>
+
+### addCircle
+
+绘制圆形。通过圆心坐标和半径定义，支持填充和描边。
+
+<CodeOrSourceMdx language="typescript">
+  {addCircleDemo}
+</CodeOrSourceMdx>
+
+### addLine
+
+绘制直线，支持虚线模式和线帽样式。
+
+**线帽样式（lineCap）**：
+- `'butt'`: 平直端点（默认）
+- `'round'`: 圆形端点
+- `'square'`: 方形端点（会延长线条）
+
+<CodeOrSourceMdx language="typescript">
+  {addLineDemo}
+</CodeOrSourceMdx>
+
+### addArc
+
+绘制弧线或扇形。
+
+**角度说明**：Canvas 使用弧度制，0 为 3 点钟方向，顺时针为正方向。可使用 `degToRad()` 将角度转为弧度。
+
+**扇形模式**：设置 `closePath: true` 会连接圆心形成扇形，适合绑制饼图。
+
+<CodeOrSourceMdx language="typescript">
+  {addArcDemo}
+</CodeOrSourceMdx>
+
+### addEllipse
+
+绘制椭圆，支持旋转角度。
+
+通过两个半径（radiusX、radiusY）定义椭圆形状，可设置 rotation 参数使椭圆旋转。
+
+<CodeOrSourceMdx language="typescript">
+  {addEllipseDemo}
+</CodeOrSourceMdx>
+
+### addPolygon
+
+绘制正多边形（三角形、五边形、六边形等）。
+
+通过 `sides` 参数指定边数：3 为三角形，5 为五边形，6 为六边形...
+`rotation` 参数可旋转多边形的初始角度。
+
+<CodeOrSourceMdx language="typescript">
+  {addPolygonDemo}
+</CodeOrSourceMdx>
+
+### addPath
+
+绘制自由路径，通过命令数组定义复杂形状。
+
+**命令格式**：
+- `{ type: 'M', x, y }`: 移动到（moveTo）
+- `{ type: 'L', x, y }`: 画线到（lineTo）
+- `{ type: 'Z' }`: 闭合路径（closePath）
+
+适合绘制不规则形状、自定义图标等。
+
+<CodeOrSourceMdx language="typescript">
+  {addPathDemo}
+</CodeOrSourceMdx>
 
 ### addText
 
-- 参数：`options: Omit<AddTextOptions, 'ctx'>`
-- 描述：在 Canvas 上添加文字
-- 返回：添加结果
+绘制文字，**支持自动换行**。
+
+指定最大宽度后，超出宽度的文字会自动换到下一行。适合段落文字、多行标签等场景。
+
+<CodeOrSourceMdx language="typescript">
+  {addTextDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 曲线
+
+贝塞尔曲线是计算机图形学中常用的参数曲线，通过控制点定义曲线形状。
+
+### addBezier
+
+绘制三次贝塞尔曲线（Cubic Bezier），由起点、两个控制点和终点定义。
+
+三次贝塞尔曲线可以创建 S 形、波浪线等复杂曲线，是矢量绘图软件中钢笔工具的基础。
+
+<CodeOrSourceMdx language="typescript">
+  {addBezierDemo}
+</CodeOrSourceMdx>
+
+### addQuadratic
+
+绘制二次贝塞尔曲线（Quadratic Bezier），由起点、一个控制点和终点定义。
+
+相比三次贝塞尔曲线更简单，适合绘制简单的弧形连接线、对话气泡尾巴等。
+
+<CodeOrSourceMdx language="typescript">
+  {addQuadraticDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 渐变与样式
+
+Canvas 支持三种渐变类型和丰富的样式设置，可以创建专业级的视觉效果。
+
+### addLinearGradient
+
+创建线性渐变，颜色沿直线方向过渡。
+
+通过起点 (x0, y0) 和终点 (x1, y1) 定义渐变方向：
+- 水平渐变：y0 = y1
+- 垂直渐变：x0 = x1
+- 对角渐变：x0 ≠ x1 且 y0 ≠ y1
+
+<CodeOrSourceMdx language="typescript">
+  {addLinearGradientDemo}
+</CodeOrSourceMdx>
+
+### addRadialGradient
+
+创建径向渐变，颜色从一个圆向另一个圆过渡。
+
+由两个圆定义：内圆 (x0, y0, r0) 和外圆 (x1, y1, r1)。当两圆同心时创建同心圆渐变，两圆不同心可创建聚光灯效果。
+
+<CodeOrSourceMdx language="typescript">
+  {addRadialGradientDemo}
+</CodeOrSourceMdx>
+
+### addConicGradient
+
+创建锥形渐变（圆锥渐变），颜色围绕中心点旋转分布。
+
+常用于：色轮选择器、仪表盘、饼图背景等。`startAngle` 定义渐变的起始角度。
+
+<CodeOrSourceMdx language="typescript">
+  {addConicGradientDemo}
+</CodeOrSourceMdx>
+
+### setShadow / clearShadow
+
+设置和清除阴影效果。
+
+**阴影参数**：
+- `color`: 阴影颜色（支持 rgba 实现半透明）
+- `blur`: 模糊程度（像素）
+- `offsetX/offsetY`: 阴影偏移量
+
+阴影会应用到之后绑绘的所有图形，使用完后应调用 `clearShadow()` 清除。
+
+<CodeOrSourceMdx language="typescript">
+  {setShadowDemo}
+</CodeOrSourceMdx>
+
+### setGlobalAlpha / resetGlobalAlpha
+
+设置和重置全局透明度（0-1）。
+
+全局透明度会应用到之后绘制的所有内容，常用于实现淡入淡出动画效果。
+
+<CodeOrSourceMdx language="typescript">
+  {setGlobalAlphaDemo}
+</CodeOrSourceMdx>
+
+### setCompositeOperation / resetCompositeOperation
+
+设置和重置图形混合模式（globalCompositeOperation）。
+
+**常用混合模式**：
+- `'source-over'`: 默认，新图形覆盖在旧图形上
+- `'destination-out'`: 橡皮擦效果
+- `'multiply'`: 正片叠底
+- `'screen'`: 滤色
+- `'overlay'`: 叠加
+
+混合模式可以实现丰富的图像合成效果。
+
+<CodeOrSourceMdx language="typescript">
+  {setCompositeOperationDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 线条样式
+
+精细控制线条的外观，包括虚线、端点、连接方式等。
+
+### setLineDash / clearLineDash
+
+设置和清除虚线样式。
+
+**虚线模式数组**：交替表示实线和空隙的长度
+- `[5, 5]`: 5px 实线，5px 空隙
+- `[10, 5, 2, 5]`: 点划线效果
+- `[]`: 空数组恢复实线
+
+设置 `offset` 参数可实现蚂蚁线动画效果。
+
+<CodeOrSourceMdx language="typescript">
+  {setLineDashDemo}
+</CodeOrSourceMdx>
+
+### setLineStyle / resetLineStyle
+
+设置和重置线条样式。
+
+**样式属性**：
+- `lineCap`: 线条端点 - `'butt'` | `'round'` | `'square'`
+- `lineJoin`: 线条连接 - `'miter'`（尖角） | `'round'`（圆角） | `'bevel'`（斜角）
+- `miterLimit`: 尖角限制
+- `lineWidth`: 线条宽度
+
+<CodeOrSourceMdx language="typescript">
+  {setLineStyleDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 滤镜
+
+Canvas 支持 CSS 滤镜，可以对绑制内容应用各种视觉效果。
+
+### setFilter / clearFilter
+
+设置和清除 CSS 滤镜效果。
+
+**支持的滤镜**：
+- `blur(px)`: 模糊
+- `brightness(%)`: 亮度
+- `contrast(%)`: 对比度
+- `grayscale(%)`: 灰度
+- `hue-rotate(deg)`: 色相旋转
+- `invert(%)`: 反色
+- `opacity(%)`: 透明度
+- `saturate(%)`: 饱和度
+- `sepia(%)`: 褐色
+- `drop-shadow()`: 投影
+
+可组合多个滤镜：`'blur(5px) brightness(120%)'`
+
+`Canvas.filters` 提供了常用滤镜预设，如 `filters.grayscale()`、`filters.blur(5)` 等。
+
+<CodeOrSourceMdx language="typescript">
+  {setFilterDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 裁剪
+
+裁剪功能可以限制绑绘区域，实现遮罩效果。
+
+### clipRect / clipCircle / clipPath
+
+设置裁剪区域，支持矩形、圆形和自定义路径。
+
+**重要**：裁剪区域一旦设置无法直接撤销，需要使用 `save/restore` 来管理：
+
+```typescript
+instance.save()          // 保存当前状态
+instance.clipCircle(...) // 设置裁剪
+// ... bindbindbindbindbindbindbindbindbindbindbing 绑绘操作 ...bindbing
+instance.restore()       // 恢复，裁剪失效
+```
+
+多次裁剪会取交集，形成更小的裁剪区域。
+
+<CodeOrSourceMdx language="typescript">
+  {clipDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 碰撞检测
+
+Canvas 点击交互的核心功能，用于检测用户点击是否命中某个图形。
+
+### isPointInPath / isPointInStroke
+
+判断点是否在路径填充区域内或描边线上。
+
+**使用场景**：
+- 图形点击选择
+- 拖拽交互
+- 悬停高亮效果
+- 图形编辑器
+
+**坐标转换**：鼠标事件坐标需要转换为 Canvas 坐标：
+```typescript
+const rect = canvas bindgetBoundingClientRect()
+const x = event.bindclientX - rect.bindleft
+const y = event.bindclientY - rect.bindtop
+```
+
+推荐使用 Path2D 对象存储图形路径，便于复用和检测。
+
+<CodeOrSourceMdx language="typescript">
+  {hitTestDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 像素操作
+
+直接操作像素数据，实现自定义滤镜、图像分析等高级功能。
+
+### getImageData / putImageData
+
+获取和写入像素数据（ImageData 对象）。
+
+**ImageData 结构**：
+- `width`: 像素宽度
+- `height`: 像素高度
+- `data`: Uint8ClampedArray，每 4 个元素表示一个像素的 RGBA 值
+
+**应用场景**：
+- 自定义滤镜（模糊、锐化、色彩调整）
+- 图像分析（颜色提取、边缘检测）
+- 像素级动画效果
+
+<CodeOrSourceMdx language="typescript">
+  {imageDataDemo}
+</CodeOrSourceMdx>
+
+### ImageBitmap
+
+ImageBitmap 是一种高性能的位图表示，相比 HTMLImageElement 有以下优势：
+
+- **异步解码**：图像解码在后台线程完成，不阻塞主线程
+- **GPU 加速**：数据可直接传输到 GPU，减少 CPU 到 GPU 的数据拷贝
+- **内存优化**：可在创建时进行裁剪和缩放，减少内存占用
+- **可转移**：支持在 Web Worker 之间转移，适合离屏渲染
+
+适用场景：游戏/动画中频繁绑制同一图像、大量图片批量处理、需要图像预处理的场景。
+
+<CodeOrSourceMdx language="typescript">
+  {imageBitmapDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 文本工具
+
+Canvas 提供两种文本绑绘方式：简单文本和自动换行文本。
+
+### fillText / strokeText
+
+简单文本填充和描边，直接调用 Canvas 原生 API，**不支持自动换行**。
+
+适合单行文字、标签、数字显示等简单场景。如需自动换行请使用 `addText`。
+
+<CodeOrSourceMdx language="typescript">
+  {simpleTextDemo}
+</CodeOrSourceMdx>
+
+### measureText
+
+测量文本宽度（像素），用于文本布局计算。
+
+可指定字体、字号、字重来准确测量。常用于：文本居中、判断是否需要省略号、动态调整字号等。
+
+<CodeOrSourceMdx language="typescript">
+  {measureTextDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 画布操作
+
+画布级别的操作，包括清空、调整大小、坐标变换等。
+
+### clear
+
+清空画布（全部或指定区域）。
+
+**使用场景**：
+- 动画帧之间清空重绘
+- 橡皮擦效果（指定区域清除）
+- 重置画布
+
+<CodeOrSourceMdx language="typescript">
+  {clearDemo}
+</CodeOrSourceMdx>
+
+### resize
+
+调整画布像素尺寸。
+
+**注意**：直接修改画布尺寸会清空内容。设置 `preserveContent: true` 可保留现有内容（通过 ImageData 备份恢复）。
+
+<CodeOrSourceMdx language="typescript">
+  {resizeDemo}
+</CodeOrSourceMdx>
+
+### translate
+
+平移画布坐标系原点。
+
+平移后，所有绘制操作都基于新原点。常用于将图形绘制到指定位置，或实现画布滚动效果。
+
+<CodeOrSourceMdx language="typescript">
+  {translateDemo}
+</CodeOrSourceMdx>
+
+### rotate
+
+旋转画布坐标系（弧度制）。
+
+旋转以当前原点为中心。**围绑图形中心旋转的技巧**：先 translate 到中心，再 rotate，最后绘制时偏移回去。
+
+<CodeOrSourceMdx language="typescript">
+  {rotateDemo}
+</CodeOrSourceMdx>
+
+### scale
+
+缩放画布坐标系。
+
+`scaleX/scaleY > 1` 放大，`< 1` 缩小。使用负值可实现镜像翻转效果。
+
+<CodeOrSourceMdx language="typescript">
+  {scaleDemo}
+</CodeOrSourceMdx>
+
+### setTransform / transform / getTransform
+
+直接操作 2D 变换矩阵，用于复杂变换。
+
+**变换矩阵**：
+```
+[a c e]   a: 水平缩放    c: 水平倾斜    e: 水平平移
+[b d f]   b: 垂直倾斜    d: 垂直缩放    f: 垂直平移
+[0 0 1]
+```
+
+- `setTransform`: 重置并设置新矩阵
+- `transform`: 在当前矩阵上叠加
+- `getTransform`: 获取当前矩阵（DOMMatrix）
+
+<CodeOrSourceMdx language="typescript">
+  {setTransformDemo}
+</CodeOrSourceMdx>
+
+### save / restore
+
+保存和恢复画布状态（状态栈）。
+
+**保存的状态包括**：
+- 变换矩阵
+- 裁剪区域
+- 样式属性（fillStyle、strokeStyle、lineWidth 等）
+- 合成属性（globalAlpha、globalCompositeOperation）
+- 阴影、字体、滤镜等
+
+这是 Canvas 状态管理的核心机制，必须成对使用。
+
+<CodeOrSourceMdx language="typescript">
+  {saveRestoreDemo}
+</CodeOrSourceMdx>
+
+---
+
+## 导出功能
+
+Canvas 支持多种导出格式，满足不同场景需求。
 
 ### createBase64
 
-- 描述：将 Canvas 内容导出为 Base64 格式的 PNG 图片
-- 返回：`string`
+导出为 Base64 字符串（Data URL）。
 
-## 特点
+同步方法，适合小图片、需要直接嵌入 HTML 或存入数据库的场景。大图片建议使用 `toBlob`。
 
-- 封装常用 Canvas 操作
-- 自动获取 2D 上下文
-- 支持导出 Base64 图片
-- 简化图片和文字绑定
+<CodeOrSourceMdx language="typescript">
+  {createBase64Demo}
+</CodeOrSourceMdx>
+
+### toBlob
+
+导出为 Blob 对象（异步）。
+
+**Blob 的优势**：
+- 异步导出，不阻塞主线程
+- 内存效率高（相比 Base64）
+- 可直接用于 FormData 上传、创建 Object URL
+
+**支持的格式**：`'image/png'`（默认）、`'image/jpeg'`、`'image/webp'`
+
+<CodeOrSourceMdx language="typescript">
+  {toBlobDemo}
+</CodeOrSourceMdx>
+
+### download
+
+下载为图片文件（触发浏览器下载）。
+
+内部调用 `toBlob` 并创建下载链接，自动根据导出类型添加正确的文件扩展名。
+
+<CodeOrSourceMdx language="typescript">
+  {downloadDemo}
+</CodeOrSourceMdx>
+
+---
+
+## API 汇总
+
+### 图像
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addImage</code></td>
+      <td><code>url, x, y, width, height, sx?, sy?, sWidth?, sHeight?</code></td>
+      <td>添加图片（支持裁剪）</td>
+    </tr>
+    <tr>
+      <td><code>addClipImage</code></td>
+      <td><code>url, x, y, width, height, clipType, radius?</code></td>
+      <td>添加裁剪图片</td>
+    </tr>
+    <tr>
+      <td><code>drawPattern</code></td>
+      <td><code>image, x, y, width, height, repetition?</code></td>
+      <td>绘制图案填充</td>
+    </tr>
+  </tbody>
+</table>
+
+### 文本
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addText</code></td>
+      <td><code>text, x, y, width, lineHeight, font, fontSize, fontWeight, color</code></td>
+      <td>添加文字（自动换行）</td>
+    </tr>
+    <tr>
+      <td><code>fillText</code></td>
+      <td><code>text, x, y, fontSize?, color?, textAlign?, maxWidth?</code></td>
+      <td>简单文本填充</td>
+    </tr>
+    <tr>
+      <td><code>strokeText</code></td>
+      <td><code>text, x, y, fontSize?, color?, lineWidth?, textAlign?, maxWidth?</code></td>
+      <td>描边文本</td>
+    </tr>
+    <tr>
+      <td><code>measureText</code></td>
+      <td><code>text, fontSize?, font?, fontWeight?</code></td>
+      <td>测量文本宽度</td>
+    </tr>
+  </tbody>
+</table>
+
+### 基础图形
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addRect</code></td>
+      <td><code>x, y, width, height, fillColor?, strokeColor?, lineWidth?</code></td>
+      <td>绘制矩形</td>
+    </tr>
+    <tr>
+      <td><code>addRoundRect</code></td>
+      <td><code>x, y, width, height, radius, fillColor?, strokeColor?, lineWidth?</code></td>
+      <td>绘制圆角矩形</td>
+    </tr>
+    <tr>
+      <td><code>addCircle</code></td>
+      <td><code>x, y, radius, fillColor?, strokeColor?, lineWidth?</code></td>
+      <td>绘制圆形</td>
+    </tr>
+    <tr>
+      <td><code>addLine</code></td>
+      <td><code>startX, startY, endX, endY, strokeColor?, lineWidth?, lineCap?</code></td>
+      <td>绘制直线</td>
+    </tr>
+    <tr>
+      <td><code>addArc</code></td>
+      <td><code>x, y, radius, startAngle, endAngle, ...</code></td>
+      <td>绘制弧线/扇形</td>
+    </tr>
+    <tr>
+      <td><code>addEllipse</code></td>
+      <td><code>x, y, radiusX, radiusY, rotation?, ...</code></td>
+      <td>绘制椭圆</td>
+    </tr>
+    <tr>
+      <td><code>addPolygon</code></td>
+      <td><code>x, y, radius, sides, rotation?, ...</code></td>
+      <td>绘制正多边形</td>
+    </tr>
+    <tr>
+      <td><code>addPath</code></td>
+      <td><code>commands, fillColor?, strokeColor?, lineWidth?</code></td>
+      <td>绘制自由路径</td>
+    </tr>
+  </tbody>
+</table>
+
+### 曲线
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addBezier</code></td>
+      <td><code>startX, startY, cp1x, cp1y, cp2x, cp2y, endX, endY, ...</code></td>
+      <td>绘制三次贝塞尔曲线</td>
+    </tr>
+    <tr>
+      <td><code>addQuadratic</code></td>
+      <td><code>startX, startY, cpx, cpy, endX, endY, ...</code></td>
+      <td>绘制二次贝塞尔曲线</td>
+    </tr>
+  </tbody>
+</table>
+
+### 渐变与样式
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addLinearGradient</code></td>
+      <td><code>x0, y0, x1, y1, colorStops, x, y, width, height</code></td>
+      <td>创建线性渐变</td>
+    </tr>
+    <tr>
+      <td><code>addRadialGradient</code></td>
+      <td><code>x0, y0, r0, x1, y1, r1, colorStops, x, y, width, height</code></td>
+      <td>创建径向渐变</td>
+    </tr>
+    <tr>
+      <td><code>addConicGradient</code></td>
+      <td><code>startAngle, x, y, colorStops, fillX, fillY, fillWidth, fillHeight</code></td>
+      <td>创建锥形渐变</td>
+    </tr>
+    <tr>
+      <td><code>setShadow</code></td>
+      <td><code>color?, blur?, offsetX?, offsetY?</code></td>
+      <td>设置阴影</td>
+    </tr>
+    <tr>
+      <td><code>clearShadow</code></td>
+      <td>-</td>
+      <td>清除阴影</td>
+    </tr>
+    <tr>
+      <td><code>setGlobalAlpha</code></td>
+      <td><code>alpha</code></td>
+      <td>设置全局透明度</td>
+    </tr>
+    <tr>
+      <td><code>resetGlobalAlpha</code></td>
+      <td>-</td>
+      <td>重置全局透明度</td>
+    </tr>
+    <tr>
+      <td><code>setCompositeOperation</code></td>
+      <td><code>operation</code></td>
+      <td>设置混合模式</td>
+    </tr>
+    <tr>
+      <td><code>resetCompositeOperation</code></td>
+      <td>-</td>
+      <td>重置混合模式</td>
+    </tr>
+  </tbody>
+</table>
+
+### 线条样式
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>setLineDash</code></td>
+      <td><code>segments, offset?</code></td>
+      <td>设置虚线样式</td>
+    </tr>
+    <tr>
+      <td><code>clearLineDash</code></td>
+      <td>-</td>
+      <td>清除虚线（恢复实线）</td>
+    </tr>
+    <tr>
+      <td><code>setLineStyle</code></td>
+      <td><code>lineCap?, lineJoin?, miterLimit?, lineWidth?</code></td>
+      <td>设置线条样式</td>
+    </tr>
+    <tr>
+      <td><code>resetLineStyle</code></td>
+      <td>-</td>
+      <td>重置线条样式</td>
+    </tr>
+  </tbody>
+</table>
+
+### 滤镜
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>setFilter</code></td>
+      <td><code>filter</code></td>
+      <td>设置 CSS 滤镜</td>
+    </tr>
+    <tr>
+      <td><code>clearFilter</code></td>
+      <td>-</td>
+      <td>清除滤镜</td>
+    </tr>
+    <tr>
+      <td><code>Canvas.filters</code></td>
+      <td>-</td>
+      <td>预设滤镜（静态属性）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 裁剪
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>clipRect</code></td>
+      <td><code>x, y, width, height</code></td>
+      <td>矩形裁剪</td>
+    </tr>
+    <tr>
+      <td><code>clipCircle</code></td>
+      <td><code>x, y, radius</code></td>
+      <td>圆形裁剪</td>
+    </tr>
+    <tr>
+      <td><code>clipPath</code></td>
+      <td><code>path, fillRule?</code></td>
+      <td>自定义路径裁剪</td>
+    </tr>
+  </tbody>
+</table>
+
+### 碰撞检测
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>isPointInPath</code></td>
+      <td><code>x, y, path?, fillRule?</code></td>
+      <td>判断点是否在路径内</td>
+    </tr>
+    <tr>
+      <td><code>isPointInStroke</code></td>
+      <td><code>x, y, path?</code></td>
+      <td>判断点是否在描边上</td>
+    </tr>
+  </tbody>
+</table>
+
+### 像素操作
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>getImageData</code></td>
+      <td><code>x, y, width, height</code></td>
+      <td>获取像素数据</td>
+    </tr>
+    <tr>
+      <td><code>putImageData</code></td>
+      <td><code>imageData, x, y</code></td>
+      <td>写入像素数据</td>
+    </tr>
+    <tr>
+      <td><code>drawImageBitmap</code></td>
+      <td><code>bitmap, dx, dy, dWidth?, dHeight?</code></td>
+      <td>绘制 ImageBitmap</td>
+    </tr>
+    <tr>
+      <td><code>Canvas.createImageBitmap</code></td>
+      <td><code>source, sx?, sy?, sw?, sh?, options?</code></td>
+      <td>创建 ImageBitmap（静态）</td>
+    </tr>
+    <tr>
+      <td><code>Canvas.loadImageBitmap</code></td>
+      <td><code>url</code></td>
+      <td>从 URL 加载 ImageBitmap（静态）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 画布操作
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>clear</code></td>
+      <td><code>x?, y?, width?, height?</code></td>
+      <td>清空画布</td>
+    </tr>
+    <tr>
+      <td><code>resize</code></td>
+      <td><code>width, height, preserveContent?</code></td>
+      <td>调整尺寸</td>
+    </tr>
+    <tr>
+      <td><code>save</code></td>
+      <td>-</td>
+      <td>保存状态</td>
+    </tr>
+    <tr>
+      <td><code>restore</code></td>
+      <td>-</td>
+      <td>恢复状态</td>
+    </tr>
+    <tr>
+      <td><code>resetTransform</code></td>
+      <td>-</td>
+      <td>重置变换</td>
+    </tr>
+    <tr>
+      <td><code>translate</code></td>
+      <td><code>x, y</code></td>
+      <td>平移</td>
+    </tr>
+    <tr>
+      <td><code>rotate</code></td>
+      <td><code>angle</code></td>
+      <td>旋转</td>
+    </tr>
+    <tr>
+      <td><code>scale</code></td>
+      <td><code>scaleX, scaleY</code></td>
+      <td>缩放</td>
+    </tr>
+    <tr>
+      <td><code>setTransform</code></td>
+      <td><code>a, b, c, d, e, f</code></td>
+      <td>设置变换矩阵</td>
+    </tr>
+    <tr>
+      <td><code>transform</code></td>
+      <td><code>a, b, c, d, e, f</code></td>
+      <td>叠加变换矩阵</td>
+    </tr>
+    <tr>
+      <td><code>getTransform</code></td>
+      <td>-</td>
+      <td>获取当前变换矩阵</td>
+    </tr>
+    <tr>
+      <td><code>setTransformMatrix</code></td>
+      <td><code>matrix</code></td>
+      <td>使用 DOMMatrix 设置变换</td>
+    </tr>
+  </tbody>
+</table>
+
+### 导出
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>createBase64</code></td>
+      <td><code>type?, quality?</code></td>
+      <td>导出 Base64</td>
+    </tr>
+    <tr>
+      <td><code>toBlob</code></td>
+      <td><code>type?, quality?</code></td>
+      <td>导出 Blob</td>
+    </tr>
+    <tr>
+      <td><code>download</code></td>
+      <td><code>filename?, type?, quality?</code></td>
+      <td>下载图片</td>
+    </tr>
+  </tbody>
+</table>
+
+### 工具
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>getContext()</code></td>
+      <td>获取 2D 上下文</td>
+    </tr>
+    <tr>
+      <td><code>getCanvas()</code></td>
+      <td>获取 canvas 元素</td>
+    </tr>
+    <tr>
+      <td><code>Canvas.degToRad(deg)</code></td>
+      <td>角度转弧度（静态方法）</td>
+    </tr>
+    <tr>
+      <td><code>Canvas.filters</code></td>
+      <td>预设滤镜（静态属性）</td>
+    </tr>
+    <tr>
+      <td><code>drawFocusIfNeeded</code></td>
+      <td>绘制焦点环（无障碍）</td>
+    </tr>
+  </tbody>
+</table>

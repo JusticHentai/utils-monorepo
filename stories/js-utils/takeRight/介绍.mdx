@@ -1,0 +1,68 @@
+import takeRightDemo from './takeRightDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# takeRight
+
+创建一个切片数组，包含数组末尾的 n 个元素
+
+## 详细介绍
+
+`takeRight` 创建一个切片数组，包含数组末尾的 n 个元素。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `takeRight` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {takeRightDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>unknown</code></td>
+      <td>要提取的元素个数，默认为 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：返回数组的切片
+
+## 具体实现原理
+
+1. **文件职责**: `takeRight/index.ts` 导出 takeRight 函数
+2. **核心流程**: 创建一个切片数组，包含数组末尾的 n 个元素
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

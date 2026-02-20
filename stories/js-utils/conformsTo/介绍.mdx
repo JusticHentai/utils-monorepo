@@ -1,0 +1,59 @@
+import conformsToDemo from './conformsToDemo?raw'
+import conformsDemo from './conformsDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# conformsTo
+
+检查对象是否符合源对象的约束条件。
+
+## 详细介绍
+
+`conformsTo` 检查对象的属性值是否满足对应的断言函数。`conforms` 则创建一个可复用的验证函数。常用于数据验证场景，例如检查用户输入是否符合规则。
+
+## conformsTo - 检查对象约束
+
+<CodeOrSourceMdx language="typescript">
+  {conformsToDemo}
+</CodeOrSourceMdx>
+
+## conforms - 创建约束函数
+
+<CodeOrSourceMdx language="typescript">
+  {conformsDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>T</code></td>
+      <td>要检查的对象</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td><code>Record&lt;string, (value) =&gt; boolean&gt;</code></td>
+      <td>约束条件对象，每个属性值是一个断言函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否符合所有约束
+
+## 具体实现原理
+
+1. **文件职责**: `conformsTo/index.ts` 导出 conformsTo（default）和 conforms（named）
+2. **核心流程**: 遍历 source 的每个属性，用其断言函数检查 object 对应属性的值
+3. **关键技术点**: `Object.keys` 遍历约束属性，`every` 确保全部满足
+4. **数据流向**: 对象属性值 → 传入对应断言函数 → 所有断言返回 true 则整体为 true

@@ -1,0 +1,59 @@
+import partitionDemo from './partitionDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# partition
+
+根据条件将集合分成两组。
+
+## 详细介绍
+
+`partition` 根据断言函数将集合分成两组：满足条件的和不满足条件的。
+
+**常用场景**：
+- 数据分类
+- 分离通过/未通过验证的数据
+- 将列表按条件拆分
+
+## 条件分组
+
+使用 `partition` 将数组按条件分成两组。
+
+<CodeOrSourceMdx language="typescript">
+  {partitionDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要分组的集合</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value: T, index: number, array: T[]) => boolean</code></td>
+      <td>断言函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`[T[], T[]]`
+- 描述：[满足条件的元素, 不满足条件的元素]
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现集合条件分组
+2. **核心流程**: 遍历集合 → 对每个元素执行断言 → 分别放入两个数组
+3. **关键技术点**: 单次遍历完成分组，返回二元组
+4. **数据流向**: 集合 + 断言 → 遍历判断 → 分入两组 → 返回 [truthy, falsy]

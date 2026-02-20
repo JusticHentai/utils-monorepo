@@ -1,0 +1,62 @@
+import basicDemo from './basicDemo?raw'
+import objectDemo from './objectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isHeaders
+
+判断传入的值是否是 `Headers` 实例。
+
+## 详细介绍
+
+`isHeaders` 是一个类型守卫函数，使用 `instanceof Headers` 判断目标是否为浏览器原生 `Headers` 对象实例。
+
+`Headers` 是 Fetch API 的一部分，用于表示 HTTP 请求和响应的头信息。在处理请求配置时，`headers` 参数可能是 `Headers` 实例、普通对象或二维数组，因此需要通过类型判断来选择正确的遍历方式。
+
+常用于请求监控、HTTP 客户端封装等需要解析请求头的场景。
+
+## 检测 Headers 实例
+
+传入通过 `new Headers()` 构造的对象，返回 `true`，同时 TypeScript 会将类型收窄为 `Headers`。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 检测非 Headers 类型
+
+传入普通对象、数组、字符串、null 等非 `Headers` 实例的值，均返回 `false`。
+
+<CodeOrSourceMdx language="typescript">
+  {objectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>obj</td>
+      <td><code>unknown</code></td>
+      <td>待判断的值</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否为 Headers 实例，同时作为 <code>obj is Headers</code> 类型守卫</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**: `isHeaders/index.ts` 为唯一源码文件，提供类型守卫函数
+2. **核心流程**: 使用 `instanceof Headers` 检查对象是否为 `Headers` 构造函数的实例
+3. **关键技术点**: TypeScript 类型谓词 `obj is Headers`，在返回 `true` 时自动收窄类型
+4. **数据流向**: 传入任意值 → `instanceof` 判断 → 返回布尔值并收窄类型

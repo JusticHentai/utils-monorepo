@@ -1,0 +1,66 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useUnmountedRef
+
+返回一个 ref，用于判断组件是否已卸载。
+
+## 详细介绍
+
+`useUnmountedRef` 返回一个 `MutableRefObject<boolean>`，其 `current` 值在组件卸载后变为 `true`。
+
+常用于异步操作中判断组件是否仍然挂载，避免在已卸载的组件上调用 `setState` 导致内存泄漏警告。
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>MutableRefObject&lt;boolean&gt;</code></td>
+      <td><code>current</code> 为 <code>true</code> 时表示组件已卸载</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：实现 `useUnmountedRef` Hook，利用 `useEffect` 清理函数标记组件卸载状态
+
+### 核心流程
+
+1. 使用 `useRef(false)` 创建 ref，初始值为 `false`（组件已挂载）
+2. 在 `useEffect` 中将 `unmountedRef.current` 设为 `false`（处理 StrictMode 重新挂载）
+3. `useEffect` 的清理函数将 `unmountedRef.current` 设为 `true`（组件卸载时执行）
+4. 返回 `unmountedRef`
+
+### 关键技术点
+
+- **`useEffect` 清理函数**：利用 React 在组件卸载时自动执行清理函数的机制
+- **空依赖数组 `[]`**：确保 effect 只在挂载和卸载时执行
+- **StrictMode 兼容**：effect 回调中重置为 `false`，处理开发模式下的双重挂载
+
+### 数据流向
+
+```
+useRef(false) → unmountedRef
+       ↓
+useEffect 挂载 → unmountedRef.current = false
+       ↓
+组件卸载 → cleanup → unmountedRef.current = true
+       ↓
+外部读取 unmountedRef.current 判断组件是否已卸载
+```

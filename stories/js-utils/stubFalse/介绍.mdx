@@ -1,0 +1,63 @@
+import stubFalseDemo from './stubFalseDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# stubFalse
+
+返回 false 的函数
+
+## 详细介绍
+
+`stubFalse` 返回 false 的函数。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `stubFalse` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {stubFalseDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>-</td>
+      <td>无参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`false`
+- 描述：返回 false
+
+## 具体实现原理
+
+1. **文件职责**: `stubFalse/index.ts` 导出 stubFalse 函数
+2. **核心流程**: 返回 false 的函数
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

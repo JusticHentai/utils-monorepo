@@ -1,4 +1,4 @@
-import minPathSum from '@jqxon/learn-utils/leetcode/minPathSum'
+import minPathSum from '../../../../packages/learn-utils/src/leetcode/minPathSum'
 
 export default () => {
   const grid = [

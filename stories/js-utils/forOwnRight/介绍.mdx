@@ -1,0 +1,68 @@
+import forOwnRightDemo from './forOwnRightDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# forOwnRight
+
+类似 forOwn，但从后向前遍历自有属性
+
+## 详细介绍
+
+`forOwnRight` 类似 forOwn，但从后向前遍历自有属性。
+
+**常用场景**：
+- 遍历集合进行副作用操作
+- 批量处理数据元素
+- 对象属性的逐一处理
+
+## 基础用法
+
+点击按钮查看 `forOwnRight` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {forOwnRightDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>要遍历的对象</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>unknown</code></td>
+      <td>每次迭代调用的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回对象
+
+## 具体实现原理
+
+1. **文件职责**: `forOwnRight/index.ts` 导出 forOwnRight 函数
+2. **核心流程**: 类似 forOwn，但从后向前遍历自有属性
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

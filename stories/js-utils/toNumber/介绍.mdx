@@ -1,0 +1,146 @@
+import toNumberDemo from './toNumberDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toNumber
+
+将 value 转换为数值
+
+## 详细介绍
+
+`toNumber` 将 value 转换为数值。
+
+**常用场景**：
+- 数据类型标准化
+- 用户输入处理
+- 跨模块数据传递前的格式统一
+
+## 基础用法
+
+点击按钮查看 `toNumber` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {toNumberDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要转换的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回转换后的数值
+
+## 具体实现原理
+
+`toNumber` 采用**类型分支策略**，按 `typeof` 结果逐一处理不同类型的输入：
+
+```typescript
+const toNumber = (value: unknown): number => {
+  if (typeof value === 'number') { return value }         // 分支1
+  if (typeof value === 'symbol') { return NaN }           // 分支2
+  if (typeof value === 'string') { /* 进制解析 */ }       // 分支3
+  return Number(value)                                     // 分支4：兜底
+}
+```
+
+### 分支1：`typeof value === 'number'` — 直接返回
+
+已经是 number 类型的值无需任何转换，直接返回。这包括所有合法的 number 值：
+
+| 输入 | 返回 | 说明 |
+|------|------|------|
+| `3.2` | `3.2` | 普通数值 |
+| `NaN` | `NaN` | NaN 也是 number 类型 |
+| `Infinity` | `Infinity` | 无穷大也是 number 类型 |
+| `0` | `0` | 零 |
+
+### 分支2：`typeof value === 'symbol'` — 返回 NaN
+
+Symbol 是 ES6 引入的原始类型，**无法**通过 `Number()` 转换——直接调用 `Number(Symbol())` 会**抛出 TypeError**。所以这里提前拦截，安全地返回 `NaN`。
+
+### 分支3：`typeof value === 'string'` — 字符串解析
+
+字符串是最复杂的分支，需要处理多种数值格式：
+
+#### 3.1 去除空白：`value.trim()`
+
+先去掉首尾空白字符，避免 `" 123 "` 这类输入干扰后续正则匹配。
+
+#### 3.2 空字符串 → 0
+
+`trimmed === ''` 时返回 `0`，与 `Number('')` 的行为一致。纯空白字符串（如 `"   "`）trim 后也变为空字符串。
+
+#### 3.3 二进制字面量：`/^0b[01]+$/i`
+
+匹配 `0b` 或 `0B` 开头、后跟一个或多个 `0`/`1` 的字符串：
+
+| 正则部分 | 含义 |
+|---------|------|
+| `^0b` | 以 `0b` 开头（`i` 标志使其不区分大小写） |
+| `[01]+` | 一个或多个二进制数字 |
+| `$` | 到字符串结尾，确保整体匹配 |
+
+`parseInt` 不认识 `0b` 前缀，所以用 `slice(2)` 去掉前两个字符，再以**基数 2** 解析。例如 `'0b1010'` → `parseInt('1010', 2)` → `10`。
+
+#### 3.4 八进制字面量：`/^0o[0-7]+$/i`
+
+同理，匹配 `0o` 开头 + 八进制数字（0-7）。`slice(2)` 去掉前缀后以**基数 8** 解析。例如 `'0o17'` → `parseInt('17', 8)` → `15`。
+
+#### 3.5 十六进制字面量：`/^0x[0-9a-f]+$/i`
+
+匹配 `0x` 开头 + 十六进制数字（0-9, a-f）。`parseInt` 原生支持 `0x` 前缀，所以**无需 slice**，直接传入以**基数 16** 解析。例如 `'0xff'` → `parseInt('0xff', 16)` → `255`。
+
+#### 3.6 其他字符串 → `Number(trimmed)`
+
+不匹配任何进制前缀的字符串，交给 `Number()` 处理。`Number()` 能解析十进制数字、科学计数法等：
+
+| 输入 | Number() 结果 |
+|------|--------------|
+| `'3.14'` | `3.14` |
+| `'1e5'` | `100000` |
+| `'abc'` | `NaN` |
+
+### 分支4：兜底 — `Number(value)`
+
+所有不属于 number / symbol / string 的类型（boolean、null、undefined、object 等）统一用 `Number()` 转换：
+
+| 输入 | Number() 结果 | 说明 |
+|------|--------------|------|
+| `true` | `1` | 布尔值转换 |
+| `false` | `0` | 布尔值转换 |
+| `null` | `0` | null 转为 0 |
+| `undefined` | `NaN` | undefined 转为 NaN |
+| `[]` | `0` | 空数组先 toString 得 `""`，再 Number 得 0 |
+| `[3]` | `3` | 单元素数组 toString 得 `"3"` |
+| `{}` | `NaN` | 对象 toString 得 `"[object Object]"` |
+
+### 为什么不直接用 `Number()` 处理所有情况？
+
+`Number()` 有两个问题：
+1. **Symbol 会抛错**：`Number(Symbol())` 直接 TypeError，不安全
+2. **不支持二进制/八进制字面量的一致解析**：虽然现代引擎的 `Number('0b1010')` 能正确返回 `10`，但通过 `parseInt` + 正则显式处理更可控，且与旧环境兼容性更好

@@ -1,0 +1,63 @@
+import toLowerDemo from './toLowerDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toLower
+
+转换字符串为全小写
+
+## 详细介绍
+
+`toLower` 转换字符串为全小写。
+
+**常用场景**：
+- 数据类型标准化
+- 用户输入处理
+- 跨模块数据传递前的格式统一
+
+## 基础用法
+
+点击按钮查看 `toLower` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {toLowerDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>unknown</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：返回转换后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `toLower/index.ts` 导出 toLower 函数
+2. **核心流程**: 转换字符串为全小写
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

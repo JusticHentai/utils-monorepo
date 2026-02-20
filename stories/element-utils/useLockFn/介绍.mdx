@@ -1,0 +1,68 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useLockFn
+
+用于给异步函数增加竞态锁，防止并发执行。
+
+## 详细介绍
+
+useLockFn 可以确保一个异步函数在执行期间不会被重复调用，有效防止用户快速多次点击导致的重复请求问题。
+
+### 使用场景
+
+- 表单提交防重复点击
+- 接口请求防并发
+- 异步操作的互斥执行
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>fn</td>
+      <td><code>(...args: P) =&gt; Promise&lt;V&gt;</code></td>
+      <td>需要加锁的异步函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>(...args: P) =&gt; Promise&lt;V | undefined&gt;</code></td>
+      <td>加锁后的函数，执行期间重复调用会返回 undefined</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useRef 保存锁状态
+2. 调用函数时检查锁状态
+3. 如果已锁定则直接返回
+4. 否则设置锁定并执行函数
+5. 函数执行完毕后释放锁

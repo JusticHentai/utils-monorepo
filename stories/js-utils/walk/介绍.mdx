@@ -3,7 +3,7 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # walk
 
-walk 是一个用于遍历对象并处理值的异步函数，会跳过对象和数组，只处理基本类型的值。
+walk 是一个用于遍历对象并处理值的异步函数，如果是对象或者数组会递归遍历，其他类型则触发回调函数。
 
 ## 使用示例
 

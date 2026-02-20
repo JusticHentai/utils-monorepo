@@ -1,0 +1,139 @@
+import basicDemo from './basicDemo?raw'
+import maxLengthDemo from './maxLengthDemo?raw'
+import invalidDemo from './invalidDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getElementInfo
+
+获取 DOM 元素的关键信息，返回包含标签名、ID、类名、文本内容和 XPath 路径的对象。
+
+## 详细介绍
+
+`getElementInfo` 用于提取 DOM 元素的核心标识信息，包括 `tagName`（标签名）、`id`、`className`（类名）、`innerText`（文本内容）和 `xpath`（XPath 路径）。
+
+常用于行为监控、埋点上报等场景，在用户与页面交互时快速收集目标元素的关键信息。文本内容支持通过 `maxLength` 配置截断长度，避免上报过长文本。内部使用 `isElement` 进行类型守卫，确保传入的值为有效 DOM 元素。
+
+## 获取元素基础信息
+
+传入一个 DOM 元素，返回该元素的 tagName、id、className、innerText 和 xpath 等完整信息。内部通过 `element.tagName.toLowerCase()` 获取小写标签名，通过 `getXPath` 工具获取元素的 XPath 路径。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 自定义文本截断长度
+
+通过 `maxLength` 选项控制 `innerText` 的最大长度。默认值为 100，超出部分会被 `truncate` 工具截断。适用于文本内容较长的元素，避免上报数据体积过大。
+
+<CodeOrSourceMdx language="typescript">
+  {maxLengthDemo}
+</CodeOrSourceMdx>
+
+## 传入非法值
+
+当传入 `null`、字符串、普通对象等非 Element 值时，内部 `isElement` 检测不通过，直接返回 `undefined`，不会抛出异常。
+
+<CodeOrSourceMdx language="typescript">
+  {invalidDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>element</td>
+      <td><code>Element</code></td>
+      <td>目标 DOM 元素</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>GetElementInfoOptions</code></td>
+      <td>可选配置项</td>
+    </tr>
+    <tr>
+      <td>options.maxLength</td>
+      <td><code>number</code></td>
+      <td>文本截断最大长度，默认值：100</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ElementInfo | undefined</code></td>
+      <td>元素信息对象，非法元素返回 undefined</td>
+    </tr>
+  </tbody>
+</table>
+
+### ElementInfo
+
+<table>
+  <thead>
+    <tr>
+      <th>字段</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tagName</td>
+      <td><code>string</code></td>
+      <td>标签名（小写）</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td><code>string</code></td>
+      <td>元素 ID</td>
+    </tr>
+    <tr>
+      <td>className</td>
+      <td><code>string</code></td>
+      <td>元素类名</td>
+    </tr>
+    <tr>
+      <td>innerText</td>
+      <td><code>string</code></td>
+      <td>文本内容（截断后）</td>
+    </tr>
+    <tr>
+      <td>xpath</td>
+      <td><code>string</code></td>
+      <td>XPath 路径</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**:
+   - `index.ts` — 主入口，导出 `getElementInfo` 函数
+   - `interface.ts` — 类型定义（`ElementInfo`、`GetElementInfoOptions`）和默认常量（`DEFAULT_MAX_LENGTH`）
+
+2. **核心流程**: 传入元素 → `isElement` 校验 → 提取 tagName/id/className → `truncate` 截断 innerText → `getXPath` 获取 XPath → 返回 `ElementInfo` 对象
+
+3. **关键技术点**:
+   - 使用 `isElement` 进行类型守卫，非法输入直接返回 `undefined`
+   - 使用 `@justichentai/js-utils` 的 `truncate` 工具截断文本
+   - 使用 `getXPath` 工具获取元素的 XPath 路径
+   - `tagName` 通过 `toLowerCase()` 统一为小写
+
+4. **数据流向**: `element` → `isElement` 校验 → 各属性提取（tagName/id/className/innerText/xpath）→ 组合为 `ElementInfo` 返回

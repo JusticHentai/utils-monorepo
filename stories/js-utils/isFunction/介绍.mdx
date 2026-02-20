@@ -1,31 +1,35 @@
 import functionDemo from './functionDemo?raw'
-import notFunctionDemo from './notFunctionDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isFunction
 
-isFunction 是一个用于判断值是否为函数的函数。
+判断值是否为函数。
 
-## 函数示例
+## 详细介绍
+
+使用 `typeof` 检测值是否为函数类型。支持箭头函数、function 声明、class、内置函数等。
+
+## isFunction - 类型检测
 
 <CodeOrSourceMdx language="typescript">
   {functionDemo}
 </CodeOrSourceMdx>
 
-## 非函数示例
-
-<CodeOrSourceMdx language="typescript">
-  {notFunctionDemo}
-</CodeOrSourceMdx>
-
 ## 参数介绍
 
-### obj
-
-- 类型：`any`
-- 描述：要检测的值
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>obj</td><td><code>any</code></td><td>要检测的值</td></tr>
+  </tbody>
+</table>
 
 ### 返回值
+- 类型：`boolean`
+- 描述：如果是函数返回 true
 
-- 类型：`obj is (...args: any[]) => any`
-- 描述：如果值是函数则返回 `true`，否则返回 `false`
+## 具体实现原理
+1. **文件职责**: `isFunction/index.ts` 导出 isFunction
+2. **核心流程**: `typeof obj === 'function'`
+3. **关键技术点**: typeof 检测直接而高效
+4. **数据流向**: value → typeof → 返回布尔值

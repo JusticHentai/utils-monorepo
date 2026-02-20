@@ -1,0 +1,86 @@
+import basicDemo from './basicDemo?raw'
+import typescriptDemo from './typescriptDemo?raw'
+import jsonDemo from './jsonDemo?raw'
+import batchDemo from './batchDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# formatCode
+
+formatCode 是一个基于 Prettier 的代码格式化工具，支持多种语言格式化。
+
+## 支持的语言
+
+- JavaScript / TypeScript / JSX / TSX
+- JSON
+- HTML / Vue
+- CSS / SCSS / Less
+- Markdown
+- YAML
+- GraphQL
+
+## 基础示例 - JavaScript
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## TypeScript 示例
+
+<CodeOrSourceMdx language="typescript">
+  {typescriptDemo}
+</CodeOrSourceMdx>
+
+## JSON 示例
+
+<CodeOrSourceMdx language="typescript">
+  {jsonDemo}
+</CodeOrSourceMdx>
+
+## 批量格式化示例
+
+<CodeOrSourceMdx language="typescript">
+  {batchDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### formatCode(code, options?)
+
+#### code
+
+- 类型：`string`
+- 描述：需要格式化的代码字符串
+
+#### options
+
+- 类型：`FormatCodeOptions`
+- 描述：可选配置对象
+
+##### options.language
+
+- 类型：`CodeLanguage`
+- 描述：代码语言类型，不传会自动检测
+- 可选值：`'javascript' | 'typescript' | 'jsx' | 'tsx' | 'json' | 'html' | 'css' | 'scss' | 'less' | 'markdown' | 'yaml' | 'graphql' | 'vue'`
+
+##### options.prettierOptions
+
+- 类型：`Partial<PrettierOptions>`
+- 描述：Prettier 配置选项，会与默认配置合并
+
+### 返回值
+
+- 类型：`Promise<FormatCodeResult>`
+- 描述：返回格式化结果对象
+  - `code`: 格式化后的代码
+  - `success`: 是否成功
+  - `error`: 错误信息（如果失败）
+
+## 其他方法
+
+### needsFormatting(code, options?)
+
+检查代码是否需要格式化，返回 `Promise<boolean>`
+
+### formatCodeBatch(codes)
+
+批量格式化代码，返回 `Promise<FormatCodeResult[]>`

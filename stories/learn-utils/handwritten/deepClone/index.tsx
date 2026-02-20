@@ -1,28 +1,28 @@
 import { action } from 'storybook/actions'
 import '../../../.css/index.css'
-import normalDemo from './normalDemo'
 import circularDemo from './circularDemo'
+import normalDemo from './normalDemo'
 
 const deepCloneDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = normalDemo()
-          action('深拷贝普通对象')(res)
-        }}
-      >
-        普通对象深拷贝
-      </div>
-      <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = circularDemo()
-          action('处理循环引用')(res)
+          action('circular')(res)
         }}
       >
-        循环引用处理
+        circular
+      </div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
       </div>
     </div>
   )

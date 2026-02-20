@@ -1,0 +1,59 @@
+import unsetDemo from './unsetDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# unset
+
+移除对象指定路径的属性。
+
+## 详细介绍
+
+`unset` 移除对象指定路径上的属性，支持嵌套路径。
+
+**常用场景**：
+- 删除嵌套属性
+- 数据清理
+- 动态属性移除
+
+## 移除指定路径属性
+
+使用 `unset` 移除对象上指定路径的属性。
+
+<CodeOrSourceMdx language="typescript">
+  {unsetDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要修改的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>要移除的属性路径</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否成功移除
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现路径属性移除
+2. **核心流程**: 解析路径 → 逐级访问到父对象 → delete 目标属性
+3. **关键技术点**: 路径解析，delete 操作符
+4. **数据流向**: 对象 + 路径 → 定位父对象 → 删除属性 → 返回布尔值

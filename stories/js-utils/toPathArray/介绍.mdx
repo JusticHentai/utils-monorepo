@@ -1,0 +1,297 @@
+import toPathArrayDemo from './toPathArrayDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toPathArray
+
+将属性路径字符串解析为路径数组
+
+## 详细介绍
+
+`toPathArray` 是路径解析的基础工具，被 `get`、`set`、`has`、`invoke`、`update` 等 17 个工具函数内部使用。
+
+它通过正则匹配三种路径格式：
+- **普通属性名**：`a.b.c` => `['a', 'b', 'c']`
+- **数字索引**：`a[0].b` => `['a', '0', 'b']`
+- **引号属性**：`a["key"]` => `['a', 'key']`
+
+如果传入数组则直接返回，无需解析。
+
+## 基础用法
+
+点击按钮查看不同路径格式的解析结果。
+
+<CodeOrSourceMdx language="typescript">
+  {toPathArrayDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径，支持字符串或字符串数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string[]`
+- 描述：返回路径数组
+
+## 具体实现原理
+
+**目标**：把 `'a[0].b["key"]'` 这样的路径字符串，拆成 `['a', '0', 'b', 'key']` 数组。
+
+**难点**：路径里混合了三种写法，不能简单 `split('.')`：
+- `a.b` — 用点号分隔
+- `[0]` — 用方括号包数字
+- `["key"]` — 用方括号包引号字符串
+
+**解法**：用正则逐段匹配，每次取出一个路径片段。
+
+### 为什么正则可以循环匹配？
+
+关键在于正则末尾的 **`g`（global）标志**。
+
+普通正则（没有 `g`）调用 `exec()` 时，永远从字符串开头（位置 0）开始匹配，每次返回同一个结果。
+但加了 `g` 标志后，正则对象内部会维护一个 **`lastIndex` 指针**：
+
+```
+const regex = /pattern/g
+
+regex.exec(str)  // 从 lastIndex=0 开始，匹配成功后 lastIndex 自动移到匹配结束位置
+regex.exec(str)  // 从上次的 lastIndex 继续，找到下一个匹配
+regex.exec(str)  // 继续往后找...
+regex.exec(str)  // 找不到了 → 返回 null，lastIndex 重置为 0
+```
+
+所以 `while ((match = regex.exec(path)) !== null)` 的工作原理是：
+1. 第 1 次 `exec`：从位置 0 开始，找到第一个匹配，`lastIndex` 移动到匹配末尾
+2. 第 2 次 `exec`：从 `lastIndex` 位置继续，找到下一个匹配
+3. ...依次向后
+4. 最后一次 `exec`：没有更多匹配了 → 返回 `null` → `while` 循环结束
+
+> ⚠️ 如果忘记加 `g`，`exec` 每次都从位置 0 匹配，永远返回第一个结果 → **死循环**！
+
+### 正则的三个匹配部分
+
+正则分成三个部分（用 `|` 连接，匹配到任意一种即可）：
+
+```
+/[^.[\]]+|\[(?:(\d+)|["']([^"']*)["'])\]/g
+ --------  ---  -----  ---------------
+    ①       |     ②          ③
+```
+
+- ① `[^.[\]]+`：匹配**不含** `.` `[` `]` 的连续字符 → 即普通属性名，如 `a`、`b`
+- ② `\[(\d+)\]`：匹配 `[数字]` → 如 `[0]`、`[3]`，括号内的数字存入捕获组 1
+- ③ `\[["']([^"']*)["']\]`：匹配 `["字符串"]` 或 `['字符串']` → 如 `["key"]`，引号内的内容存入捕获组 2
+
+### 逐字符拆解正则
+
+完整正则：`/[^.[\]]+|\[(?:(\d+)|["']([^"']*)["'])\]/g`
+
+#### 分支 ① `[^.[\]]+` — 普通属性名
+
+<table>
+  <thead>
+    <tr>
+      <th>字符</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>[</code></td>
+      <td>字符类开始</td>
+    </tr>
+    <tr>
+      <td><code>^</code></td>
+      <td>在字符类内部表示<strong>取反</strong>（匹配不在集合中的字符）</td>
+    </tr>
+    <tr>
+      <td><code>.</code></td>
+      <td>点号字面量（在字符类 <code>[]</code> 内部，<code>.</code> 不是通配符，就是普通的点）</td>
+    </tr>
+    <tr>
+      <td><code>[</code></td>
+      <td>左方括号字面量（在字符类内部直接匹配 <code>[</code>）</td>
+    </tr>
+    <tr>
+      <td><code>\]</code></td>
+      <td>转义的右方括号字面量（需要转义，否则会被当作字符类结束）</td>
+    </tr>
+    <tr>
+      <td><code>]</code></td>
+      <td>字符类结束</td>
+    </tr>
+    <tr>
+      <td><code>+</code></td>
+      <td>量词：前面的字符类匹配<strong>一次或多次</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+效果：匹配一个或多个**不是 `.`、`[`、`]`** 的连续字符。例如在 `a[0].b` 中匹配 `a` 和 `b`。
+
+> `.`、`[`、`]` 是路径分隔符，排除它们后剩下的连续字符就是属性名。
+
+#### `|` — 或运算符
+
+表示"匹配左边 **或** 右边"。左边是分支①，右边是整个 `\[...\]` 括号索引部分。
+
+#### 分支 ② + ③ 的外壳：`\[(?:...)\]`
+
+<table>
+  <thead>
+    <tr>
+      <th>字符</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>\[</code></td>
+      <td>转义的左方括号，匹配字面量 <code>[</code></td>
+    </tr>
+    <tr>
+      <td><code>(?:</code></td>
+      <td><strong>非捕获组</strong>开始，仅用于分组，不会创建捕获组编号</td>
+    </tr>
+    <tr>
+      <td><code>)</code></td>
+      <td>非捕获组结束</td>
+    </tr>
+    <tr>
+      <td><code>\]</code></td>
+      <td>转义的右方括号，匹配字面量 <code>]</code></td>
+    </tr>
+  </tbody>
+</table>
+
+外壳匹配 `[...]` 方括号对，内部用 `|` 分成两个子分支。
+
+#### 子分支 ② `(\d+)` — 数字索引
+
+<table>
+  <thead>
+    <tr>
+      <th>字符</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>(</code></td>
+      <td><strong>捕获组 1</strong> 开始</td>
+    </tr>
+    <tr>
+      <td><code>\d</code></td>
+      <td>匹配一个数字字符（等价于 <code>[0-9]</code>）</td>
+    </tr>
+    <tr>
+      <td><code>+</code></td>
+      <td>量词：一个或多个数字</td>
+    </tr>
+    <tr>
+      <td><code>)</code></td>
+      <td>捕获组 1 结束</td>
+    </tr>
+  </tbody>
+</table>
+
+配合外壳的 `\[...\]`，完整匹配 `[数字]`，如 `[0]`、`[42]`。捕获组 1 存储数字部分（不含方括号）。
+
+#### 子分支 ③ `["']([^"']*)["']` — 引号属性
+
+<table>
+  <thead>
+    <tr>
+      <th>字符</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>["']</code></td>
+      <td>字符类：匹配 <code>"</code> 或 <code>'</code>（开引号）</td>
+    </tr>
+    <tr>
+      <td><code>(</code></td>
+      <td><strong>捕获组 2</strong> 开始</td>
+    </tr>
+    <tr>
+      <td><code>[^"']</code></td>
+      <td>取反字符类：匹配<strong>不是</strong> <code>"</code> 也不是 <code>'</code> 的任意字符</td>
+    </tr>
+    <tr>
+      <td><code>*</code></td>
+      <td>量词：零次或多次（允许空字符串 <code>[""]</code>）</td>
+    </tr>
+    <tr>
+      <td><code>)</code></td>
+      <td>捕获组 2 结束</td>
+    </tr>
+    <tr>
+      <td><code>["']</code></td>
+      <td>字符类：匹配 <code>"</code> 或 <code>'</code>（闭引号）</td>
+    </tr>
+  </tbody>
+</table>
+
+配合外壳，完整匹配 `["内容"]` 或 `['内容']`。捕获组 2 存储引号内的属性名。
+
+> 注意：这里开引号和闭引号是**独立匹配**的（不要求配对），所以 `["key']` 也能匹配。在实际路径中引号一般是配对的，这里简化处理。
+
+#### `g` — 全局标志
+
+让正则的 `lastIndex` 指针在每次匹配后自动前进，配合 `while + exec` 实现逐段遍历。
+
+### 完整正则结构图
+
+```
+/[^.[\]]+  |  \[  (?:  (\d+)  |  ["']([^"']*)["']  )  \]  /g
+ --------     --  ---  -----     -----------------     --
+ 分支①        [   非捕获 捕获组1  |    捕获组2          ]   全局
+ 普通属性名    左括号 分组  数字索引 或   引号属性名       右括号
+```
+
+**逐步匹配 `'a[0].b["key"]'`**：
+
+```
+输入字符串: a[0].b["key"]
+              ↓
+第 1 次匹配: 'a'       → 命中 ①，match[0]='a'    → push('a')
+第 2 次匹配: '[0]'     → 命中 ②，match[1]='0'    → push('0')
+             （跳过 '.'）
+第 3 次匹配: 'b'       → 命中 ①，match[0]='b'    → push('b')
+第 4 次匹配: '["key"]' → 命中 ③，match[2]='key'  → push('key')
+
+结果: ['a', '0', 'b', 'key']
+```
+
+**取值优先级**：`match[1] ?? match[2] ?? match[0]`
+- 命中 ② 时 → `match[1]` 有值（如 `'0'`），直接用
+- 命中 ③ 时 → `match[1]` 为 undefined，取 `match[2]`（如 `'key'`）
+- 命中 ① 时 → 两个捕获组都是 undefined，取完整匹配 `match[0]`（如 `'a'`）
+
+这样就从路径字符串中干净地提取出了每一段属性名，去掉了 `.`、`[]`、引号等分隔符。

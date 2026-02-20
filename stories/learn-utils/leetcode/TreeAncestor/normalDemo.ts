@@ -1,4 +1,4 @@
-import { TreeAncestor } from '@jqxon/learn-utils/leetcode/TreeAncestor'
+import { TreeAncestor } from '../../../../packages/learn-utils/src/leetcode/TreeAncestor'
 
 export default () => {
   // 树结构: 0 是根节点，1 的父节点是 0，2 的父节点是 0，3 的父节点是 1...

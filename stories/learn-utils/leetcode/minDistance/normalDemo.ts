@@ -1,4 +1,4 @@
-import minDistance from '@jqxon/learn-utils/leetcode/minDistance'
+import minDistance from '../../../../packages/learn-utils/src/leetcode/minDistance'
 
 export default () => {
   const word1 = 'horse'

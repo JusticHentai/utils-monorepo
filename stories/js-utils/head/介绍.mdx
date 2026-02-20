@@ -1,0 +1,52 @@
+import headDemo from './headDemo?raw'
+import firstDemo from './firstDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# head
+
+获取数组的第一个元素。
+
+## 详细介绍
+
+`head` 函数用于获取数组的第一个元素，`first` 是其别名。
+
+**常用场景**：
+- 获取列表的第一项
+- 取出队列头部元素
+- 获取默认选中项
+
+## head
+
+<CodeOrSourceMdx language="typescript">
+  {headDemo}
+</CodeOrSourceMdx>
+
+## first（别名）
+
+<CodeOrSourceMdx language="typescript">
+  {firstDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要查询的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined`
+- 描述：数组的第一个元素，空数组返回 undefined

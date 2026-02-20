@@ -1,37 +1,93 @@
-import sourceCode from '../../../packages/element-utils/src/useThrottle/index.ts?raw'
+import basicDemo from './basicDemo.tsx?raw'
+import trailingDemo from './trailingDemo.tsx?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # useThrottle
 
-useThrottle 是一个 React Hook，用于在 React 组件中实现节流功能。
+useThrottle 是一个 React Hook，用于实现节流功能，支持首次立即执行和结束时执行。
 
-## 源码
+## 基础用法
 
 <CodeOrSourceMdx language="typescript">
-  {sourceCode}
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 仅结束时执行
+
+<CodeOrSourceMdx language="typescript">
+  {trailingDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
-### Options
+### callback
 
-#### cb
-
-- 类型：`<T extends any[]>(...args: T) => any`
+- 类型：`T extends (...args: any[]) => any`
 - 描述：需要节流的回调函数
 
-#### duration
+### options
 
-- 类型：`number`
-- 描述：节流时间间隔（毫秒）
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>delay</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>节流延迟时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>leading</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在开始时立即执行</td>
+    </tr>
+    <tr>
+      <td>trailing</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在结束时执行</td>
+    </tr>
+  </tbody>
+</table>
 
-### 返回值
+## 返回值
 
-- 类型：`<T extends any[]>(...args: T) => void`
-- 描述：返回节流后的函数
-
-## 特点
-
-- 使用 useRef 维护 timer，保证在 React Fiber 中正确工作
-- 立即执行回调，然后在 duration 时间内忽略后续调用
-- 适用于 React 组件中的高频事件处理
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>run</td>
+      <td><code>(...args: Parameters&lt;T&gt;) =&gt; void</code></td>
+      <td>节流后的函数</td>
+    </tr>
+    <tr>
+      <td>cancel</td>
+      <td><code>() =&gt; void</code></td>
+      <td>取消节流</td>
+    </tr>
+    <tr>
+      <td>flush</td>
+      <td><code>() =&gt; void</code></td>
+      <td>立即执行</td>
+    </tr>
+    <tr>
+      <td>isPending</td>
+      <td><code>() =&gt; boolean</code></td>
+      <td>是否处于节流中</td>
+    </tr>
+  </tbody>
+</table>

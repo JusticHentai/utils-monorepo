@@ -31,9 +31,9 @@ export interface AnimationOptions extends Options {
    */
   height: number
   /**
-   * 帧列表
+   * 帧列表 (ImageBitmap)
    */
-  frameList: HTMLCanvasElement[]
+  frameList: ImageBitmap[]
   /**
    * 图片 http 下载完成时回调
    */

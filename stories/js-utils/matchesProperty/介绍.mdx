@@ -1,0 +1,59 @@
+import matchesPropertyDemo from './matchesPropertyDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# matchesProperty
+
+创建路径属性值匹配的谓词函数。
+
+## 详细介绍
+
+`matchesProperty` 创建一个函数，检查对象指定路径上的属性值是否等于给定值。
+
+**常用场景**：
+- 过滤具有特定属性值的对象
+- 配合 filter、find 等集合方法
+- 配置驱动的条件过滤
+
+## 属性路径匹配
+
+使用 `matchesProperty` 创建匹配谓词，检查对象指定路径的属性值。
+
+<CodeOrSourceMdx language="typescript">
+  {matchesPropertyDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径</td>
+    </tr>
+    <tr>
+      <td>srcValue</td>
+      <td><code>unknown</code></td>
+      <td>要匹配的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(object: T) => boolean`
+- 描述：返回一个匹配谓词函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 创建基于路径和值的匹配谓词
+2. **核心流程**: 接收路径和值 → 返回闭包函数 → 闭包内解析路径获取值 → 深度比较
+3. **关键技术点**: 路径解析、深度相等比较、闭包模式
+4. **数据流向**: 路径 + 值 → 创建闭包 → 调用时解析对象路径 → 比较返回布尔值

@@ -1,0 +1,93 @@
+import basicDemo from './basicDemo.tsx?raw'
+import immediateDemo from './immediateDemo.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useDebounce
+
+useDebounce 是一个 React Hook，用于实现防抖功能，支持立即执行和最大等待时间。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 立即执行模式
+
+<CodeOrSourceMdx language="typescript">
+  {immediateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### callback
+
+- 类型：`T extends (...args: any[]) => any`
+- 描述：需要防抖的回调函数
+
+### options
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>delay</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>防抖延迟时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>immediate</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否立即执行</td>
+    </tr>
+    <tr>
+      <td>maxWait</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最大等待时间（毫秒），超过此时间强制执行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>run</td>
+      <td><code>(...args: Parameters&lt;T&gt;) =&gt; void</code></td>
+      <td>防抖后的函数</td>
+    </tr>
+    <tr>
+      <td>cancel</td>
+      <td><code>() =&gt; void</code></td>
+      <td>取消防抖</td>
+    </tr>
+    <tr>
+      <td>flush</td>
+      <td><code>() =&gt; void</code></td>
+      <td>立即执行</td>
+    </tr>
+    <tr>
+      <td>isPending</td>
+      <td><code>() =&gt; boolean</code></td>
+      <td>是否处于等待状态</td>
+    </tr>
+  </tbody>
+</table>

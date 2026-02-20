@@ -1,4 +1,4 @@
-import isSymmetric from '@jqxon/learn-utils/leetcode/isSymmetric'
+import isSymmetric from '../../../../packages/learn-utils/src/leetcode/isSymmetric'
 
 export default () => {
   // 构建对称二叉树:

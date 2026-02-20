@@ -1,0 +1,224 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportResizeObserver
+
+检测浏览器是否支持 ResizeObserver API。ResizeObserver 用于监听元素尺寸的变化。
+
+## 什么是 ResizeObserver？
+
+ResizeObserver 是一个浏览器原生 API，用于异步观察元素的尺寸变化：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    元素尺寸变化监听                          │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌──────────────┐      ┌──────────────────────┐           │
+│   │   Element    │  →   │      Element         │           │
+│   │  200 x 100   │      │    300 x 150         │           │
+│   └──────────────┘      └──────────────────────┘           │
+│         ↓                                                   │
+│   ResizeObserver 检测到变化                                  │
+│         ↓                                                   │
+│   回调函数执行，获取新尺寸信息                                │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 ResizeObserver API。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 ResizeObserver API</td>
+    </tr>
+  </tbody>
+</table>
+
+## 主要使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>响应式组件</td>
+      <td>根据容器尺寸调整布局</td>
+    </tr>
+    <tr>
+      <td>图表重绘</td>
+      <td>容器尺寸变化时重新绘制图表</td>
+    </tr>
+    <tr>
+      <td>虚拟列表</td>
+      <td>计算可视区域可显示的项数</td>
+    </tr>
+    <tr>
+      <td>文本截断</td>
+      <td>根据容器宽度动态截断文本</td>
+    </tr>
+    <tr>
+      <td>Canvas 适配</td>
+      <td>根据容器尺寸调整 Canvas 大小</td>
+    </tr>
+  </tbody>
+</table>
+
+## 原生 API 用法
+
+```typescript
+// 创建观察器
+const observer = new ResizeObserver((entries) => {
+  entries.forEach(entry => {
+    const { width, height } = entry.contentRect
+    console.log(`元素尺寸: ${width} x ${height}`)
+    
+    // 获取边框盒尺寸
+    const borderBoxSize = entry.borderBoxSize[0]
+    console.log(`边框盒: ${borderBoxSize.inlineSize} x ${borderBoxSize.blockSize}`)
+  })
+})
+
+// 开始观察
+observer.observe(element)
+
+// 指定盒模型
+observer.observe(element, { box: 'border-box' })
+
+// 停止观察
+observer.unobserve(element)
+
+// 断开所有观察
+observer.disconnect()
+```
+
+## ResizeObserverEntry 属性
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>Element</code></td>
+      <td>被观察的元素</td>
+    </tr>
+    <tr>
+      <td>contentRect</td>
+      <td><code>DOMRectReadOnly</code></td>
+      <td>内容区域的尺寸信息</td>
+    </tr>
+    <tr>
+      <td>borderBoxSize</td>
+      <td><code>ResizeObserverSize[]</code></td>
+      <td>边框盒尺寸</td>
+    </tr>
+    <tr>
+      <td>contentBoxSize</td>
+      <td><code>ResizeObserverSize[]</code></td>
+      <td>内容盒尺寸</td>
+    </tr>
+    <tr>
+      <td>devicePixelContentBoxSize</td>
+      <td><code>ResizeObserverSize[]</code></td>
+      <td>设备像素内容盒尺寸</td>
+    </tr>
+  </tbody>
+</table>
+
+## 盒模型选项
+
+<table>
+  <thead>
+    <tr>
+      <th>选项值</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>content-box</td>
+      <td>内容区域（默认）</td>
+    </tr>
+    <tr>
+      <td>border-box</td>
+      <td>包含内边距和边框</td>
+    </tr>
+    <tr>
+      <td>device-pixel-content-box</td>
+      <td>设备像素单位的内容区域</td>
+    </tr>
+  </tbody>
+</table>
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>64+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>69+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>13.1+</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>79+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>❌ 不支持</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+import isBrowser from '../isBrowser'
+
+const supportResizeObserver = (): boolean => {
+  return isBrowser() && 'ResizeObserver' in window
+}
+```
+
+通过检测 `window.ResizeObserver` 是否存在来判断浏览器支持情况。

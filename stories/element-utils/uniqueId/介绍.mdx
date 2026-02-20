@@ -1,0 +1,77 @@
+import generateDemo from './generateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# uniqueId
+
+生成唯一标识符的工具函数，格式为 `v4-{timestamp}-{random}`。
+
+## 详细介绍
+
+uniqueId 是一个简单的 ID 生成函数，核心作用是：**生成一个在当前运行环境中几乎不会重复的唯一标识符**。
+
+**涉及的知识点**：
+- `Date.now()`：获取毫秒级时间戳
+- `Math.random().toString(36)`：生成 36 进制随机字符串
+- 字符串拼接：组合多个来源保证唯一性
+
+**常用场景**：
+- React key：列表渲染时的唯一 key
+- 临时 ID：创建新数据时的临时标识
+- 日志追踪：请求或操作的追踪 ID
+- 缓存键：生成唯一的缓存标识
+
+**优势**：
+- 纯前端生成，无需服务端
+- 组合时间戳和随机数，碰撞概率极低
+- 格式简洁可读
+
+## 生成唯一ID
+
+通过组合时间戳和随机字符串生成唯一标识符，适用于需要在前端生成唯一 key 的场景。
+
+<CodeOrSourceMdx language="typescript">
+  {generateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>-</td>
+      <td>无参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：唯一标识字符串，格式为 `v4-{timestamp}-{random}`
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 uniqueId 函数实现
+
+### 核心流程
+
+1. 调用 `Date.now()` 获取当前时间戳
+2. 调用 `Math.random().toString(36).slice(2, 11)` 生成 9 位随机字符串
+3. 拼接返回 `v4-{timestamp}-{random}`
+
+### 关键技术点
+
+- 实现：`` `v4-${Date.now()}-${Math.random().toString(36).slice(2, 11)}` ``
+- `toString(36)` 将随机数转为 36 进制（0-9 + a-z）
+- `slice(2, 11)` 跳过 "0." 前缀，取 9 位字符
+- 时间戳 + 随机数双重保障唯一性

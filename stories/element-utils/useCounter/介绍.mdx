@@ -1,0 +1,120 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useCounter
+
+管理计数器的 Hook。
+
+## 详细介绍
+
+useCounter 提供了一套完整的计数器管理方案，支持增加、减少、设置值、重置等操作，并支持设置最大值和最小值边界。
+
+### 使用场景
+
+- 商品数量选择器
+- 分页页码管理
+- 步骤进度控制
+- 任何需要数值增减的场景
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialValue</td>
+      <td><code>number</code></td>
+      <td><code>0</code></td>
+      <td>初始值</td>
+    </tr>
+    <tr>
+      <td>options.min</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最小值</td>
+    </tr>
+    <tr>
+      <td>options.max</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最大值</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>current</td>
+      <td><code>number</code></td>
+      <td>当前值</td>
+    </tr>
+    <tr>
+      <td>actions.inc</td>
+      <td><code>(delta?: number) =&gt; void</code></td>
+      <td>增加，默认 +1</td>
+    </tr>
+    <tr>
+      <td>actions.dec</td>
+      <td><code>(delta?: number) =&gt; void</code></td>
+      <td>减少，默认 -1</td>
+    </tr>
+    <tr>
+      <td>actions.set</td>
+      <td><code>(value: number | ((c: number) =&gt; number)) =&gt; void</code></td>
+      <td>设置值</td>
+    </tr>
+    <tr>
+      <td>actions.reset</td>
+      <td><code>() =&gt; void</code></td>
+      <td>重置为初始值</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：Hook 主逻辑，管理计数状态和操作方法
+- `interface.ts`：类型定义，包括 UseCounterOptions、CounterActions、ValueParam
+
+### 核心流程
+
+1. 初始化时通过 `clamp` 函数根据 min/max 约束初始值
+2. 每次更新值时通过 `clamp` 函数确保值在边界范围内
+3. 使用 `useMemoizedFn` 包装 inc/dec/set/reset 操作方法，保证引用稳定
+
+### 关键技术点
+
+- **clamp 函数**：从 `@justichentai/js-utils/clamp` 导入，负责将值约束在 min/max 范围内
+- **useMemoizedFn**：包装操作方法，保证函数引用在组件生命周期内稳定
+- **ValueParam 类型**：支持直接传数值或传函数 `(c: number) => number`，类似 setState 的用法
+
+### 数据流向
+
+```
+inc/dec/set/reset 调用 → setValue 统一处理 → clamp 约束边界 → setCurrent 更新状态
+```

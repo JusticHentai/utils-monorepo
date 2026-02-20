@@ -1,4 +1,4 @@
-import countBits from '@jqxon/learn-utils/leetcode/countBits'
+import countBits from '../../../../packages/learn-utils/src/leetcode/countBits'
 
 export default () => {
   const n = 5

@@ -1,0 +1,59 @@
+import overArgsDemo from './overArgsDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# overArgs
+
+创建参数转换后调用的函数。
+
+## 详细介绍
+
+`overArgs` 创建一个函数，使用转换函数数组分别处理对应位置的参数后再调用原函数。
+
+**常用场景**：
+- 参数预处理
+- 数据类型转换
+- 输入标准化
+
+## 参数转换调用
+
+使用 `overArgs` 在调用原函数前对参数进行转换。
+
+<CodeOrSourceMdx language="typescript">
+  {overArgsDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>(...args) => unknown</code></td>
+      <td>要调用的函数</td>
+    </tr>
+    <tr>
+      <td>transforms</td>
+      <td><code>Function[]</code></td>
+      <td>参数转换函数数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T>`
+- 描述：参数转换后调用原函数的包装函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现参数转换调用
+2. **核心流程**: 接收原函数和转换数组 → 创建包装 → 调用时先转换参数再调用原函数
+3. **关键技术点**: 按索引匹配参数和转换函数，超出转换数组的参数原样传递
+4. **数据流向**: 参数 → 对应转换函数处理 → 转换后的参数调用原函数 → 返回结果

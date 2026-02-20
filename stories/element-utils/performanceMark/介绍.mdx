@@ -1,0 +1,182 @@
+import basicDemo from './basicDemo?raw'
+import measureDemo from './measureDemo?raw'
+import clearDemo from './clearDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# performanceMark
+
+性能标记和测量工具，封装 Performance API 的 mark 和 measure 功能，用于精确测量代码执行时间。
+
+## 详细介绍
+
+`performanceMark` 是对浏览器 Performance API 中 `performance.mark()` 和 `performance.measure()` 的封装工具。
+
+### 核心概念
+
+- **mark（标记）**：在代码执行的某个时刻"打卡"，记录一个时间戳
+- **measure（测量）**：计算两个标记点之间的时间差，得出代码执行耗时
+
+### 使用场景
+
+1. **性能分析**：测量关键代码段的执行时间
+2. **API 请求耗时**：测量网络请求从发起到响应的时间
+3. **组件渲染**：测量 React/Vue 组件的渲染耗时
+4. **用户交互**：测量从用户操作到界面响应的时间
+
+### 优势
+
+- 比 `console.time()` 更精确（基于 `performance.now()`）
+- 数据可被 PerformanceObserver 监听
+- 支持在 Chrome DevTools Performance 面板中查看
+- 标记和测量结果可持久化存储
+
+## 基础标记 (mark)
+
+使用 `mark()` 方法在代码中打时间标记点，记录执行时刻。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 测量耗时 (measure)
+
+使用 `measure()` 方法计算两个标记点之间的时间差，支持异步操作的耗时测量。
+
+<CodeOrSourceMdx language="typescript">
+  {measureDemo}
+</CodeOrSourceMdx>
+
+## 清除标记和测量
+
+使用 `clearMarks()` 和 `clearMeasures()` 方法清除已创建的标记和测量，避免内存泄漏。
+
+<CodeOrSourceMdx language="typescript">
+  {clearDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 返回值 PerformanceMarkInstance
+
+<table>
+  <thead>
+    <tr>
+      <th>方法名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>mark</td>
+      <td><code>(name: string) =&gt; void</code></td>
+      <td>打标记点，记录当前时间戳</td>
+    </tr>
+    <tr>
+      <td>measure</td>
+      <td><code>(name: string, startMark: string, endMark?: string) =&gt; MeasureResult | null</code></td>
+      <td>测量两个标记点之间的耗时，endMark 可选（默认为当前时间）</td>
+    </tr>
+    <tr>
+      <td>clearMarks</td>
+      <td><code>(name?: string) =&gt; void</code></td>
+      <td>清除标记，不传参数则清除所有标记</td>
+    </tr>
+    <tr>
+      <td>clearMeasures</td>
+      <td><code>(name?: string) =&gt; void</code></td>
+      <td>清除测量，不传参数则清除所有测量</td>
+    </tr>
+    <tr>
+      <td>getMarks</td>
+      <td><code>(name?: string) =&gt; PerformanceMark[]</code></td>
+      <td>获取标记列表</td>
+    </tr>
+    <tr>
+      <td>getMeasures</td>
+      <td><code>(name?: string) =&gt; PerformanceMeasure[]</code></td>
+      <td>获取测量列表</td>
+    </tr>
+  </tbody>
+</table>
+
+### MeasureResult 类型
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td><code>string</code></td>
+      <td>测量名称</td>
+    </tr>
+    <tr>
+      <td>duration</td>
+      <td><code>number</code></td>
+      <td>耗时（毫秒）</td>
+    </tr>
+    <tr>
+      <td>startTime</td>
+      <td><code>number</code></td>
+      <td>开始时间（相对于 performance.timeOrigin）</td>
+    </tr>
+    <tr>
+      <td>endTime</td>
+      <td><code>number</code></td>
+      <td>结束时间（相对于 performance.timeOrigin）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>index.ts</code></td>
+      <td>主入口，封装 Performance API 的 mark/measure 方法</td>
+    </tr>
+    <tr>
+      <td><code>interface.ts</code></td>
+      <td>类型定义，包含 MeasureResult 和 PerformanceMarkInstance</td>
+    </tr>
+  </tbody>
+</table>
+
+### 核心流程
+
+1. **初始化**：检测浏览器环境和 Performance API 支持情况
+2. **打标记**：调用 `performance.mark()` 记录时间戳
+3. **测量耗时**：调用 `performance.measure()` 计算两个标记之间的时间差
+4. **获取结果**：通过 `performance.getEntriesByType()` 获取标记和测量记录
+5. **清理**：调用 `performance.clearMarks()` / `clearMeasures()` 清除记录
+
+### 关键技术点
+
+- **Performance API**：使用 `performance.mark()` 和 `performance.measure()` 实现高精度计时
+- **PerformanceMark/PerformanceMeasure**：浏览器内置类型，包含 name、startTime、duration 等属性
+- **错误处理**：measure 时如果标记不存在会抛出异常，使用 try-catch 处理
+
+### 数据流向
+
+```
+mark(name) → performance.mark() → PerformanceMark 存储
+                                        ↓
+measure(name, start, end) → performance.measure() → MeasureResult 返回
+                                        ↓
+getMarks() / getMeasures() → performance.getEntriesByType() → 数组返回
+```

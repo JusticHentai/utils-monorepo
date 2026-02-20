@@ -1,0 +1,54 @@
+import capitalizeDemo from './capitalizeDemo?raw'
+import upperFirstDemo from './upperFirstDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# capitalize
+
+首字母大写，其余小写。同时提供 `upperFirst` 和 `lowerFirst` 变体。
+
+## 详细介绍
+
+`capitalize` 将字符串首字母转为大写，其余转为小写。`upperFirst` 只将首字母转大写，其余不变。`lowerFirst` 只将首字母转小写。常用于文本格式化、标题处理等场景。
+
+## capitalize - 首字母大写其余小写
+
+<CodeOrSourceMdx language="typescript">
+  {capitalizeDemo}
+</CodeOrSourceMdx>
+
+## upperFirst / lowerFirst
+
+<CodeOrSourceMdx language="typescript">
+  {upperFirstDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>str</td>
+      <td><code>string</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：转换后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `capitalize/index.ts` 导出 capitalize（default）、upperFirst、lowerFirst
+2. **核心流程**: 提取首字符和剩余字符串，分别进行大小写转换后拼接
+3. **关键技术点**: `String.prototype.charAt`、`toUpperCase`、`toLowerCase`
+4. **数据流向**: 输入字符串 → 分离首字符 → 转换大小写 → 拼接返回

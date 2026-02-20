@@ -1,0 +1,63 @@
+import flatMapDemo from './flatMapDemo?raw'
+import flatMapDeepDemo from './flatMapDeepDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flatMap
+
+映射后扁平化，提供 flatMap、flatMapDeep、flatMapDepth 三种深度。
+
+## 详细介绍
+
+`flatMap` 对集合每个元素调用映射函数，然后将结果扁平化一层。`flatMapDeep` 完全扁平化。`flatMapDepth` 可指定扁平化深度。等价于先 `map` 再 `flatten`。
+
+## flatMap - 映射后扁平化一层
+
+<CodeOrSourceMdx language="typescript">
+  {flatMapDemo}
+</CodeOrSourceMdx>
+
+## flatMapDeep - 完全扁平化
+
+<CodeOrSourceMdx language="typescript">
+  {flatMapDeepDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要处理的集合</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) =&gt; R[]</code></td>
+      <td>映射函数</td>
+    </tr>
+    <tr>
+      <td>depth</td>
+      <td><code>number</code></td>
+      <td>扁平化深度（flatMapDepth，默认1）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`R[]`
+
+## 具体实现原理
+
+1. **文件职责**: `flatMap/index.ts` 导出 flatMap、flatMapDeep、flatMapDepth
+2. **核心流程**: map → flatten，depth 控制扁平化层级
+3. **关键技术点**: 递归扁平化、深度参数控制
+4. **数据流向**: 集合 → map 映射 → flatten 扁平化 → 返回一维数组

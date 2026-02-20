@@ -1,0 +1,100 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getWindowSize
+
+获取当前浏览器窗口的尺寸。
+
+## 详细介绍
+
+`getWindowSize` 是一个简单的工具函数，用于获取当前浏览器窗口的宽度和高度。它封装了 `window.innerWidth` 和 `window.innerHeight`，返回一个包含 `width` 和 `height` 的对象。
+
+**核心特点**：
+- 纯函数，无副作用
+- 返回值类型明确
+- 可与 `onWindowResize` 配合使用监听窗口变化
+
+**使用场景**：
+- 响应式布局判断
+- 根据窗口大小调整组件显示
+- 计算元素相对于窗口的位置
+- 判断移动端/桌面端视图
+
+## 基础用法
+
+获取当前窗口尺寸：
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+该函数无需传入参数。
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>width</td>
+      <td><code>number</code></td>
+      <td>窗口宽度（像素）</td>
+    </tr>
+    <tr>
+      <td>height</td>
+      <td><code>number</code></td>
+      <td>窗口高度（像素）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：主入口文件，导出 `getWindowSize` 函数
+- `interface.ts`：类型定义文件，定义 `WindowSize` 接口
+
+### 核心流程
+
+1. 读取 `window.innerWidth` 获取窗口宽度
+2. 读取 `window.innerHeight` 获取窗口高度
+3. 返回包含宽高的对象
+
+### 关键技术点
+
+- **window.innerWidth**：返回浏览器窗口视口（viewport）的宽度，包括垂直滚动条（如果存在）
+- **window.innerHeight**：返回浏览器窗口视口的高度，包括水平滚动条（如果存在）
+
+### 与其他尺寸 API 的区别
+
+<table>
+  <thead>
+    <tr>
+      <th>API</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>window.innerWidth/Height</code></td>
+      <td>视口尺寸（本工具使用）</td>
+    </tr>
+    <tr>
+      <td><code>window.outerWidth/Height</code></td>
+      <td>整个浏览器窗口尺寸（包括工具栏、边框等）</td>
+    </tr>
+    <tr>
+      <td><code>document.documentElement.clientWidth/Height</code></td>
+      <td>视口尺寸（不包括滚动条）</td>
+    </tr>
+  </tbody>
+</table>

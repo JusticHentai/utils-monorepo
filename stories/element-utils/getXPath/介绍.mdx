@@ -1,0 +1,70 @@
+import basicDemo from './basicDemo?raw'
+import idDemo from './idDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getXPath
+
+获取 DOM 元素的 XPath 路径字符串。XPath（XML Path Language）是一种在 DOM 树中定位元素的查询语言，常用于前端监控、元素定位、自动化测试等场景。
+
+## 获取普通元素 XPath
+
+对于没有 ID 的普通元素，会递归向上遍历 DOM 树，生成完整的路径表达式。路径中包含标签名和同级索引，如 `/html/body/div[1]/ul[1]/li[2]`。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 获取带 ID 元素 XPath
+
+如果元素具有 `id` 属性，会直接返回 ID 选择器形式 `//*[@id="xxx"]`，这是最简短且最精确的定位方式。子元素会基于最近的带 ID 父元素构建路径。
+
+<CodeOrSourceMdx language="typescript">
+  {idDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>element</td>
+      <td><code>Element</code></td>
+      <td>目标 DOM 元素</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>string</code></td>
+      <td>元素的 XPath 路径字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### index.ts
+
+核心实现文件，采用递归算法生成 XPath：
+
+1. **ID 优先**：如果元素有 `id` 属性，直接返回 `//*[@id="xxx"]` 形式
+2. **特殊处理**：`body` 元素返回固定路径 `/html/body`
+3. **递归构建**：遍历同级元素，计算当前元素在同名标签中的索引位置，然后递归获取父元素路径进行拼接
+4. **索引计算**：索引从 1 开始（符合 XPath 规范），格式为 `tagName[index]`

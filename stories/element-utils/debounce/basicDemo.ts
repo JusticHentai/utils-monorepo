@@ -1,16 +1,21 @@
+import { action } from 'storybook/actions'
 import debounce from '../../../packages/element-utils/src/debounce'
 
-const basicDemo = () => {
-  const fn = debounce({
-    cb: () => {
-      console.log('防抖回调执行')
-      return '防抖回调执行'
-    },
+let fn: (() => void) | null = null
+
+export const initBasicDemo = () => {
+  fn = debounce({
+    cb: () => action('防抖回调执行')(),
     duration: 1000,
   })
-
-  fn()
-  return '已触发防抖函数，1秒后执行回调'
+  action('初始化防抖函数（延迟执行）')()
 }
 
-export default basicDemo
+export const runBasicDemo = () => {
+  if (!fn) {
+    action('请先初始化')()
+    return
+  }
+  fn()
+  action('触发防抖函数')()
+}

@@ -1,0 +1,79 @@
+import isNilDemo from './isNilDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isNil
+
+检查值是否为 null 或 undefined。
+
+## 详细介绍
+
+`isNil` 用于判断一个值是否为 `null` 或 `undefined`。
+
+### `==` 的特殊规则
+
+实现只有一行：`value == null`。这里用的是 `==`（宽松相等）而不是 `===`（严格相等）。
+
+JS 规范中，`==` 对 `null` 和 `undefined` 有一条**特殊规定**：它们互相相等，且不等于任何其他值。
+
+```js
+null == undefined   // true  ← 互相相等
+null == null        // true
+undefined == undefined // true
+
+null == 0           // false ← 不会隐式转换为数字
+null == ''          // false ← 不会隐式转换为字符串
+null == false       // false ← 不会隐式转换为布尔值
+```
+
+所以 `value == null` 恰好能同时命中 `null` 和 `undefined` 两种情况，是判断"空值"的经典简写。
+
+如果用 `===` 严格相等，就必须写成 `value === null || value === undefined`，效果一样但更冗长。
+
+### 常用场景
+
+- **参数默认值处理**：判断参数是否传了值
+- **空值保护**：在访问属性前排除 null/undefined
+- **数据验证**：区分"没有值"和"值为 0/空字符串/false"
+
+## 空值检测
+
+使用 `isNil` 检查各种值是否为 null 或 undefined。
+
+<CodeOrSourceMdx language="typescript">
+  {isNilDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要检查的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`value is null | undefined`
+- 描述：值是否为 null 或 undefined
+
+## 具体实现原理
+
+实现只有一行：`value == null`
+
+利用了 JS 宽松相等（`==`）的特殊规则：
+- `null == null` → true
+- `undefined == null` → true
+- **其他任何值** `== null` → false（包括 `0`、`''`、`false`、`NaN`）
+
+这是 JS 中 `==` 极少数**推荐使用的场景**之一。通常我们都用 `===` 避免隐式转换的坑，但 `== null` 是公认的例外，因为它的行为非常明确且实用——ESLint 的 `eqeqeq` 规则也提供了 `"allow-null"` 选项来放行这种写法。

@@ -1,0 +1,58 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useDocumentVisibility
+
+监听页面可见性变化的 Hook。
+
+## 详细介绍
+
+useDocumentVisibility 使用 Page Visibility API 监听页面的可见性状态变化，可以用于检测用户是否离开当前标签页。
+
+### 使用场景
+
+- 暂停/恢复视频播放
+- 暂停/恢复动画
+- 停止/启动数据轮询
+- 埋点统计页面停留时间
+- 节省资源消耗
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>可选值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>VisibilityState</code></td>
+      <td><code>'visible' | 'hidden' | 'prerender'</code></td>
+      <td>当前页面可见性状态</td>
+    </tr>
+  </tbody>
+</table>
+
+### 状态说明
+
+- `visible`: 页面至少部分可见
+- `hidden`: 页面完全不可见（用户切换标签页、最小化窗口等）
+- `prerender`: 页面正在预渲染（不常见）
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useState 管理可见性状态
+2. 使用 useEventListener 监听 document 的 visibilitychange 事件
+3. 事件触发时读取 document.visibilityState 更新状态
+4. SSR 环境下默认返回 'visible'

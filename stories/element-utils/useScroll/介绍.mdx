@@ -1,0 +1,84 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useScroll
+
+监听元素滚动位置的 Hook。
+
+## 详细介绍
+
+useScroll 可以实时获取目标元素的滚动位置（scrollTop 和 scrollLeft），支持 DOM 元素和 document 作为监听目标，并支持条件过滤更新。
+
+### 使用场景
+
+- 滚动动画
+- 返回顶部按钮
+- 无限滚动加载
+- 滚动进度指示器
+- 吸顶/吸底效果
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>Target</code></td>
+      <td><code>document</code></td>
+      <td>目标元素</td>
+    </tr>
+    <tr>
+      <td>shouldUpdate</td>
+      <td><code>(val: Position) =&gt; boolean</code></td>
+      <td><code>() =&gt; true</code></td>
+      <td>控制是否更新滚动信息</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>left</td>
+      <td><code>number</code></td>
+      <td>横向滚动距离</td>
+    </tr>
+    <tr>
+      <td>top</td>
+      <td><code>number</code></td>
+      <td>纵向滚动距离</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useRafState 管理滚动位置（使用 requestAnimationFrame 优化性能）
+2. 监听目标元素的 scroll 事件
+3. 计算滚动位置时兼容 document 和普通元素
+4. 支持通过 shouldUpdate 函数过滤不需要的更新

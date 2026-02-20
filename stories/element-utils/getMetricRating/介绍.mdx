@@ -1,0 +1,176 @@
+import lcpDemo from './lcpDemo?raw'
+import clsDemo from './clsDemo?raw'
+import allMetricsDemo from './allMetricsDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getMetricRating
+
+根据 Web Vitals 标准，获取性能指标的评级（good/needs-improvement/poor）。
+
+## 详细介绍
+
+`getMetricRating` 是一个用于评估 Web Vitals 性能指标的工具函数，基于 Google 定义的阈值标准。
+
+**核心功能：**
+- 支持所有主流 Web Vitals 指标（LCP、FID、CLS、FCP、TTFB、INP、FP）
+- 返回三级评级：Good（良好）、NeedsImprovement（需要改进）、Poor（较差）
+- 使用 TypeScript 枚举提供类型安全的指标名称和评级值
+- 内置标准阈值配置，符合 Google 官方标准
+
+**应用场景：**
+- 前端性能监控系统中判断指标健康度
+- 性能报告生成，标记需要优化的指标
+- 实时性能告警，当指标变差时触发通知
+
+**Web Vitals 阈值标准：**
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>Good</th>
+      <th>Needs Improvement</th>
+      <th>Poor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LCP</td>
+      <td>≤ 2.5s</td>
+      <td>≤ 4s</td>
+      <td>&gt; 4s</td>
+    </tr>
+    <tr>
+      <td>FID</td>
+      <td>≤ 100ms</td>
+      <td>≤ 300ms</td>
+      <td>&gt; 300ms</td>
+    </tr>
+    <tr>
+      <td>CLS</td>
+      <td>≤ 0.1</td>
+      <td>≤ 0.25</td>
+      <td>&gt; 0.25</td>
+    </tr>
+    <tr>
+      <td>FCP</td>
+      <td>≤ 1.8s</td>
+      <td>≤ 3s</td>
+      <td>&gt; 3s</td>
+    </tr>
+    <tr>
+      <td>TTFB</td>
+      <td>≤ 800ms</td>
+      <td>≤ 1.8s</td>
+      <td>&gt; 1.8s</td>
+    </tr>
+    <tr>
+      <td>INP</td>
+      <td>≤ 200ms</td>
+      <td>≤ 500ms</td>
+      <td>&gt; 500ms</td>
+    </tr>
+    <tr>
+      <td>FP</td>
+      <td>≤ 1s</td>
+      <td>≤ 2.5s</td>
+      <td>&gt; 2.5s</td>
+    </tr>
+  </tbody>
+</table>
+
+## LCP 评级
+
+LCP（Largest Contentful Paint）是衡量页面主要内容加载速度的核心指标。使用枚举值进行类型安全的调用和比较。
+
+<CodeOrSourceMdx language="typescript">
+  {lcpDemo}
+</CodeOrSourceMdx>
+
+## CLS 评级
+
+CLS（Cumulative Layout Shift）衡量页面视觉稳定性，值越小越好。
+
+<CodeOrSourceMdx language="typescript">
+  {clsDemo}
+</CodeOrSourceMdx>
+
+## 所有指标评级
+
+批量评估多个性能指标，生成完整的性能报告。
+
+<CodeOrSourceMdx language="typescript">
+  {allMetricsDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td><code>MetricName</code></td>
+      <td>指标名称枚举：MetricName.LCP | .FID | .CLS | .FCP | .TTFB | .INP | .FP</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>number</code></td>
+      <td>指标值（毫秒或分数）</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>MetricRating</code></td>
+      <td>MetricRating.Good | .NeedsImprovement | .Poor</td>
+    </tr>
+  </tbody>
+</table>
+
+### 枚举定义
+
+**MetricName 枚举：**
+```typescript
+enum MetricName {
+  LCP = 'LCP',
+  FID = 'FID',
+  CLS = 'CLS',
+  FCP = 'FCP',
+  TTFB = 'TTFB',
+  INP = 'INP',
+  FP = 'FP',
+}
+```
+
+**MetricRating 枚举：**
+```typescript
+enum MetricRating {
+  Good = 'good',
+  NeedsImprovement = 'needs-improvement',
+  Poor = 'poor',
+}
+```
+
+## 具体实现原理
+
+**文件职责：**
+- `index.ts`: 主函数，实现评级判断逻辑
+- `interface.ts`: 枚举定义和阈值配置常量
+
+**核心流程：**
+1. 根据指标名称枚举从 `WEB_VITALS_THRESHOLDS` 获取对应阈值
+2. 如果阈值不存在，返回默认评级 `MetricRating.Good`
+3. 将指标值与阈值比较：
+   - `value <= good` 返回 `MetricRating.Good`
+   - `value <= poor` 返回 `MetricRating.NeedsImprovement`
+   - 否则返回 `MetricRating.Poor`
+
+**关键技术点：**
+- 使用 TypeScript 枚举确保指标名称和评级值的类型安全
+- 阈值配置使用计算属性名 `[MetricName.XXX]` 与枚举关联
+- 采用 Google Web Vitals 官方标准阈值

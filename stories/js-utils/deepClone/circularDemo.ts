@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import deepClone from '../../../packages/js-utils/src/deepClone'
 
 const circularDemo = () => {
@@ -6,11 +7,11 @@ const circularDemo = () => {
 
   const cloned = deepClone(obj)
 
-  return {
+  action('深拷贝循环引用对象')({
     original: obj,
     cloned,
-    isCircular: cloned.self === cloned,
-  }
+    isDeep: cloned.self === cloned,
+  })
 }
 
 export default circularDemo

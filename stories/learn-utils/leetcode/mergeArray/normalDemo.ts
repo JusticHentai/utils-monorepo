@@ -1,4 +1,4 @@
-import mergeArray from '@jqxon/learn-utils/leetcode/mergeArray'
+import mergeArray from '../../../../packages/learn-utils/src/leetcode/mergeArray'
 
 export default () => {
   const A = [1, 2, 3, 0, 0, 0]

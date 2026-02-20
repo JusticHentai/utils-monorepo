@@ -1,9 +1,6 @@
-{/* @jsxImportSource react */}
-import { Meta } from '@storybook/blocks'
-import sourceCode from '@jqxon/learn-utils/leetcode/numSquares?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import sourceCode from '../../../../packages/learn-utils/src/leetcode/numSquares?raw'
 import demoCode from './normalDemo?raw'
-
-<Meta title="learn-utils/leetcode/numSquares/介绍" />
 
 # 完全平方数 (LeetCode 279)
 
@@ -20,7 +17,7 @@ import demoCode from './normalDemo?raw'
 ## 解题思路
 
 1. 初始化 `dp[i] = i`（最坏情况全是 1）
-2. 对于每个 i，遍历所有 j*j <= i
+2. 对于每个 i，遍历所有 `j*j <= i`
 3. 更新 `dp[i] = min(dp[i], dp[i - j*j] + 1)`
 
 ## 复杂度分析
@@ -30,12 +27,12 @@ import demoCode from './normalDemo?raw'
 
 ## 源码实现
 
-```typescript
-{sourceCode}
-```
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
 
 ## 示例代码
 
-```typescript
-{demoCode}
-```
+<CodeOrSourceMdx language="typescript">
+  {demoCode}
+</CodeOrSourceMdx>

@@ -1,0 +1,63 @@
+import basicDemo from './basicDemo?raw'
+import numberAndAcronymDemo from './numberAndAcronymDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# camelCase
+
+将字符串转换为驼峰命名格式。
+
+## 详细介绍
+
+`camelCase` 将各种格式的字符串（空格分隔、连字符分隔、下划线分隔、PascalCase 等）统一转换为小驼峰命名（lowerCamelCase）格式。内部先用 `words` 函数拆分单词，再将首个单词全小写、后续单词首字母大写后拼接。
+
+**常用场景**：
+- CSS 属性名转 JS 属性名（`background-color` → `backgroundColor`）
+- API 字段命名风格统一
+- 代码风格转换工具
+
+## 基础转换
+
+支持空格、连字符、下划线等多种分隔格式，且双重转换结果幂等。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 数字与缩略词处理
+
+正确处理含数字的字符串和首字母缩略词。
+
+<CodeOrSourceMdx language="typescript">
+  {numberAndAcronymDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>str</td>
+      <td><code>string</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：驼峰格式的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `camelCase/index.ts` 导出 camelCase 函数，依赖 `words` 函数拆分单词
+2. **核心流程**: 输入字符串 → words 拆分为单词数组 → 首个单词全小写，后续首字母大写 → 拼接
+3. **关键技术点**: `words` 函数使用正则匹配各种单词边界
+4. **数据流向**: 字符串 → words() 拆分 → map 转换大小写 → join 拼接

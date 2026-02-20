@@ -1,0 +1,68 @@
+import startCaseDemo from './startCaseDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# startCase
+
+转换字符串为 Start Case（每个单词首字母大写）
+
+## 详细介绍
+
+`startCase` 转换字符串为 Start Case（每个单词首字母大写）。
+
+**处理流程**：
+1. 去除撇号：`'`（普通撇号）和 `\u2019`（`'` 右单引号，macOS/iOS/Word 中常自动替换），避免 `"don't"` 被拆分为 `["don", "t"]`
+2. 调用 `words` 拆分单词（支持 camelCase、snake_case、kebab-case 等格式）
+3. 每个单词首字母大写，用空格拼接
+
+**常用场景**：
+- 标题格式化
+- 变量名转可读文本
+- UI 展示用的标签文案
+
+## 基础用法
+
+点击按钮查看 `startCase` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {startCaseDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>unknown</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：返回转换后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `startCase/index.ts` 导出 startCase 函数
+2. **核心流程**: 去除撇号 → `words` 拆分单词 → 首字母大写 → 空格拼接
+3. **关键技术点**: `replace(/['\u2019]/g, '')` 同时处理普通撇号 `'` 和 Unicode 右单引号 `'`（`\u2019`），防止撇号导致单词被错误拆分
+4. **数据流向**: 字符串 → 去撇号 → words 拆分 → map 首字母大写 → join(' ') → 返回

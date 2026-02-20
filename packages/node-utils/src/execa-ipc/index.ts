@@ -1,0 +1,1 @@
+export { validateIpcInputOption } from './ipcInput'

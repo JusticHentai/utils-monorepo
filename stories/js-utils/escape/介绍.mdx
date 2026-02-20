@@ -1,0 +1,54 @@
+import escapeDemo from './escapeDemo?raw'
+import escapeRegExpDemo from './escapeRegExpDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# escape
+
+转义 HTML 特殊字符，防止 XSS 攻击。同时提供 `unescape` 和 `escapeRegExp`。
+
+## 详细介绍
+
+`escape` 将 HTML 特殊字符（`&`, `<`, `>`, `"`, `'`）转换为对应的 HTML 实体。`unescape` 执行反向操作。`escapeRegExp` 转义正则表达式中的特殊字符。常用于安全地渲染用户输入内容和动态构建正则。
+
+## escape / unescape - HTML 转义
+
+<CodeOrSourceMdx language="typescript">
+  {escapeDemo}
+</CodeOrSourceMdx>
+
+## escapeRegExp - 正则转义
+
+<CodeOrSourceMdx language="typescript">
+  {escapeRegExpDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要转义的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：转义后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `escape/index.ts` 导出 escape（default）、unescape、escapeRegExp
+2. **核心流程**: 使用字符映射表和正则替换特殊字符
+3. **关键技术点**: HTML 实体映射、`String.prototype.replace` 正则替换
+4. **数据流向**: 输入字符串 → 正则匹配特殊字符 → 替换为对应实体/转义 → 返回

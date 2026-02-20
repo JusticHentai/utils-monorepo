@@ -1,0 +1,123 @@
+import basicDemo from './basicDemo?raw'
+import inheritanceDemo from './inheritanceDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# create
+
+创建一个继承 prototype 的对象。
+
+## 详细介绍
+
+`create` 是 `Object.create()` 的封装，用于**创建一个以指定原型为基础的新对象**，并可选地赋值属性：
+
+```ts
+const obj = create(Shape.prototype, { constructor: Circle })
+// 等价于：
+const obj = Object.create(Shape.prototype)
+obj.constructor = Circle
+```
+
+### 经典继承模式中的三步协作
+
+<table>
+  <thead>
+    <tr>
+      <th>步骤</th>
+      <th>代码</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>继承属性</td>
+      <td><code>Shape.call(this)</code></td>
+      <td>借用父构造函数，获得实例属性</td>
+    </tr>
+    <tr>
+      <td>继承方法</td>
+      <td><code>Circle.prototype = create(Shape.prototype)</code></td>
+      <td>原型链连接，获得原型方法</td>
+    </tr>
+    <tr>
+      <td>修复构造器</td>
+      <td><code>{'{ constructor: Circle }'}</code></td>
+      <td>保证 instanceof 和 constructor 指向正确</td>
+    </tr>
+  </tbody>
+</table>
+
+### call 与 apply
+
+两者都是**调用函数并手动指定 `this`**，区别仅在于传参方式：
+
+```ts
+func.call(thisArg, arg1, arg2)      // 逐个传参
+func.apply(thisArg, [arg1, arg2])   // 数组传参
+```
+
+示例中 `Shape.call(this)` 的作用：在 `Circle` 构造函数内部，借用 `Shape` 的构造逻辑，让 `Circle` 实例也拥有 `x`、`y` 属性。
+
+### constructor 属性
+
+每个函数的 `prototype` 默认有 `constructor` 指回函数自身。用 `create(Shape.prototype)` 覆盖 `Circle.prototype` 后，`constructor` 会丢失（变成指向 `Shape`），所以需要手动修复：
+
+```ts
+Circle.prototype = create(Shape.prototype, {
+  constructor: Circle  // 修复：让实例的 constructor 正确指向 Circle
+})
+```
+
+> 现代 JS 中 `class extends` 语法已经封装了以上所有步骤。
+
+**常用场景**：
+- 实现经典的构造函数继承模式
+- 创建带有指定原型的对象
+- 手动控制原型链关系
+
+## 基础继承
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 经典继承模式
+
+<CodeOrSourceMdx language="typescript">
+  {inheritanceDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prototype</td>
+      <td><code>T | null</code></td>
+      <td>要继承的原型对象</td>
+    </tr>
+    <tr>
+      <td>properties</td>
+      <td><code>Record&lt;string, unknown&gt;</code></td>
+      <td>要分配的自有属性（可选）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：继承了 prototype 的新对象
+
+## 具体实现原理
+
+1. **文件职责**: `create/index.ts` 导出 create 函数
+2. **核心流程**: `Object.create(prototype)` 创建继承原型的新对象 → 遍历 `properties` 的 keys → 赋值到新对象 → 返回
+3. **关键技术点**: `Object.create` 建立原型链，`Object.keys` 遍历自有可枚举属性进行赋值
+4. **与原生的区别**: lodash 的 `create` 额外提供了 properties 参数的便捷赋值，功能类似 `Object.create` + `Object.assign` 的组合

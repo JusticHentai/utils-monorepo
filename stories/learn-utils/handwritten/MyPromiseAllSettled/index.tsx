@@ -6,13 +6,13 @@ const MyPromiseAllSettledDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await normalDemo()
-          action('Promise.allSettled')(res)
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
         }}
       >
-        Promise.allSettled 测试
+        normal
       </div>
     </div>
   )

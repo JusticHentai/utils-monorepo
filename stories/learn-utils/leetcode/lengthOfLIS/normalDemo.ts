@@ -1,4 +1,4 @@
-import lengthOfLIS from '@jqxon/learn-utils/leetcode/lengthOfLIS'
+import lengthOfLIS from '../../../../packages/learn-utils/src/leetcode/lengthOfLIS'
 
 export default () => {
   const nums = [10, 9, 2, 5, 3, 7, 101, 18]

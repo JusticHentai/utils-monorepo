@@ -3,7 +3,28 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # random
 
-random 是一个用于获取 min 和 max 之间的随机整数的函数。
+生成指定范围内随机整数的函数。
+
+## 详细介绍
+
+random 是一个简单的随机数生成函数，核心作用是：**返回 [min, max) 范围内的随机整数**（包含 min，不包含 max）。
+
+**涉及的知识点**：
+- Math.random()：生成 [0, 1) 的随机小数
+- Math.floor()：向下取整得到整数
+- 区间映射：将 [0, 1) 映射到 [min, max)
+
+**常用场景**：
+- 随机索引：从数组中随机选取元素
+- 游戏开发：随机生成怪物属性、掉落物品
+- 随机颜色：生成 RGB 值
+- 随机延迟：实现随机等待时间
+- 抽奖/洗牌：随机排序或选择
+
+**优势**：
+- 简洁易用，两个参数直接指定范围
+- 返回整数，无需额外处理
+- 可用于数组索引等整数场景
 
 ## 使用示例
 
@@ -13,17 +34,48 @@ random 是一个用于获取 min 和 max 之间的随机整数的函数。
 
 ## 参数介绍
 
-### min
-
-- 类型：`number`
-- 描述：最小值（不包含）
-
-### max
-
-- 类型：`number`
-- 描述：最大值（不包含）
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>min</td>
+      <td><code>number</code></td>
+      <td>最小值（包含）</td>
+    </tr>
+    <tr>
+      <td>max</td>
+      <td><code>number</code></td>
+      <td>最大值（不包含）</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
 - 类型：`number`
-- 描述：min 和 max 之间的随机整数
+- 描述：[min, max) 范围内的随机整数
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 random 函数实现
+
+### 核心流程
+
+1. `Math.random()` 生成 [0, 1) 的随机小数
+2. 乘以 `(max - min)` 映射到 [0, max-min) 范围
+3. 加上 `min` 偏移到 [min, max) 范围
+4. `Math.floor()` 向下取整得到整数
+
+### 关键技术点
+
+- 实现：`Math.floor(Math.random() * (max - min)) + min`
+- Math.random() 范围是 [0, 1)，永远小于 1
+- 结果范围是 [min, max)，包含 min 不包含 max

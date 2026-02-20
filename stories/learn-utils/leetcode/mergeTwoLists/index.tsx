@@ -6,13 +6,13 @@ const mergeTwoListsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('合并两个有序链表')(res)
+          action('normal')(res)
         }}
       >
-        合并两个有序链表
+        normal
       </div>
     </div>
   )

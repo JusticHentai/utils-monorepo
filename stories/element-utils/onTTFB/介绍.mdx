@@ -1,0 +1,119 @@
+import initDemo from './initDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onTTFB
+
+监听 TTFB (Time to First Byte)。TTFB 衡量从请求开始到收到第一个字节的时间，是服务器响应速度的重要指标。
+
+## 详细介绍
+
+`onTTFB` 是基于 Navigation Timing API 封装的 TTFB 性能指标监听工具。
+
+**涉及的知识点**：
+- TTFB 指标：衡量服务器响应速度的关键指标
+- Navigation Timing API：获取页面导航性能数据
+- PerformanceNavigationTiming：包含完整的导航时间线数据
+
+**TTFB 组成部分**：
+- DNS 查询时间
+- TCP 连接时间
+- SSL 握手时间（HTTPS）
+- 请求发送到首字节响应时间
+
+**TTFB 评分标准**：
+- 好：≤ 800ms
+- 需要改进：800ms - 1.8s
+- 差：> 1.8s
+
+**常用场景**：
+- 服务器性能监控：评估后端响应速度
+- CDN 效果验证：对比使用 CDN 前后的 TTFB
+- 网络诊断：分析各阶段耗时定位瓶颈
+
+## 监听 TTFB
+
+监听 TTFB 指标，获取完整的导航时间数据。
+
+<CodeOrSourceMdx language="typescript">
+  {initDemo}
+</CodeOrSourceMdx>
+
+## 清理监听
+
+调用返回的清理函数停止 TTFB 监听，释放资源。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>OnTTFBCallback</code></td>
+      <td>TTFB 回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnTTFBCallback
+
+```typescript
+type OnTTFBCallback = (entry: PerformanceNavigationTiming) => void
+```
+
+回调参数 entry 包含：
+- `responseStart`: TTFB 时间（毫秒）
+- `domainLookupStart/End`: DNS 查询时间
+- `connectStart/End`: TCP 连接时间
+- `requestStart`: 请求开始时间
+- `type`: 导航类型（navigate、reload、back_forward 等）
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 检查 `document.readyState` 状态
+2. 如果已加载完成，直接获取 navigation entry
+3. 否则监听 `load` 事件后获取
+4. 从 `performance.getEntriesByType('navigation')` 获取数据
+5. 监听 BFCache 恢复事件，重新上报
+
+### 关键技术点
+
+- 使用 `PerformanceNavigationTiming` 获取完整时间线
+- 区分页面已加载和未加载两种情况
+- BFCache 恢复时重置并重新上报
+- 使用 `responseStart` 作为 TTFB 值

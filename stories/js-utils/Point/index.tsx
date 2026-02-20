@@ -1,19 +1,15 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
+import edgeCaseDemo from './edgeCaseDemo'
 import normalDemo from './normalDemo'
 
 const PointDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = normalDemo()
-
-          action('创建 Point 对象')(res)
-        }}
-      >
+      <div className="button" onClick={normalDemo}>
         创建 Point 对象
+      </div>
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )

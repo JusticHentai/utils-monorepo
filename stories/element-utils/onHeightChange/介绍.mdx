@@ -1,0 +1,127 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onHeightChange
+
+监听元素高度变化（带防抖）。使用 ResizeObserver 监听元素高度变化，支持变化阈值和防抖处理。
+
+## 详细介绍
+
+`onHeightChange` 专门监听元素高度变化，支持设置变化阈值避免微小变化触发回调。
+
+**涉及的知识点**：
+- ResizeObserver API：浏览器原生的元素尺寸监听 API
+- 变化阈值：只有变化量超过阈值才触发回调
+- 防抖处理：减少高频回调
+
+**常用场景**：
+- 折叠面板：监听内容高度变化做动画过渡
+- 文本域自适应：根据内容自动调整高度
+- 虚拟滚动：监听容器高度变化重新计算
+
+**优势**：
+- 支持变化阈值，过滤微小变化
+- 获取前值和现值
+- 内置防抖处理
+
+## 使用示例
+
+<CodeOrSourceMdx language="tsx">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>Element | null</code></td>
+      <td>要观察的目标元素</td>
+    </tr>
+    <tr>
+      <td>callback</td>
+      <td><code>OnHeightChangeCallback</code></td>
+      <td>高度变化时的回调函数</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>OnHeightChangeOptions</code></td>
+      <td>可选，配置选项</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnHeightChangeCallback
+
+```typescript
+type OnHeightChangeCallback = (height: number, prevHeight: number) => void
+```
+
+### OnHeightChangeOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>threshold</td>
+      <td><code>number</code></td>
+      <td>变化阈值（像素），变化小于此值不触发，默认为 0</td>
+    </tr>
+    <tr>
+      <td>delay</td>
+      <td><code>number</code></td>
+      <td>防抖延迟时间（毫秒），默认为 0</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 使用 `getElementSize` 获取初始高度
+2. 使用闭包保存 `prevHeight` 状态
+3. ResizeObserver 回调中比较变化量与阈值
+4. 超过阈值则执行回调并更新 prevHeight
+
+### 关键技术点
+
+- 使用 `Math.abs(height - prevHeight)` 计算变化量
+- 阈值过滤避免不必要的回调
+- 回调参数包含当前值和前一个值

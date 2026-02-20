@@ -1,0 +1,105 @@
+import isNativeDemo from './isNativeDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isNative
+
+检查 value 是否是原生函数
+
+## 详细介绍
+
+`isNative` 用于判断一个函数是否是**原生函数**。
+
+### 什么是原生函数？
+
+原生函数（Native Function）是 JS 引擎（V8、SpiderMonkey 等）用 **C/C++ 实现**的内置函数，不是用户用 JavaScript 编写的。
+
+常见的原生函数：
+- **数组方法**：`Array.prototype.push`、`Array.prototype.map`、`Array.isArray`
+- **对象方法**：`Object.keys`、`Object.assign`、`Object.getPrototypeOf`
+- **构造函数**：`Promise`、`Map`、`Set`、`WeakMap`
+- **工具函数**：`JSON.stringify`、`parseInt`、`encodeURIComponent`
+- **宿主 API**：`console.log`、`setTimeout`（由浏览器/Node 提供）
+
+### 判断依据
+
+每个函数都可以通过 `Function.prototype.toString()` 获取其"源码"字符串：
+
+```js
+// 用户函数 → 返回实际 JS 源码
+Function.prototype.toString.call(() => {})
+// '() => {}'
+
+// 原生函数 → 返回固定格式，源码被替换为 [native code]
+Function.prototype.toString.call(Array.prototype.push)
+// 'function push() { [native code] }'
+```
+
+因为原生函数是 C/C++ 实现的，没有 JS 源码可展示，所以引擎统一用 `[native code]` 占位。`isNative` 就是通过正则 `/\[native code\]/` 来检测这个标记。
+
+### 使用场景
+
+- **特性检测**：判断某个 API 是否被 polyfill 覆盖（polyfill 后 toString 会显示 JS 源码）
+- **安全检查**：确认使用的是引擎原始实现，而非被篡改的版本
+- **兼容性判断**：检测环境是否原生支持某个 API（如 `Promise`、`Proxy`）
+
+## 基础用法
+
+点击按钮查看 `isNative` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {isNativeDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要检查的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：如果是原生函数，返回 true
+
+## 具体实现原理
+
+分两步判断：
+
+1. **`typeof value !== 'function'`**：排除非函数值，`null`、数字、字符串等直接返回 false
+2. **`/\[native code\]/.test(Function.prototype.toString.call(value))`**：获取函数源码字符串，用正则检测是否包含 `[native code]`
+
+### 为什么用 `Function.prototype.toString.call(value)` 而不是 `value.toString()`？
+
+和 `getTag` 的原理类似——防止函数自身重写了 `toString`：
+
+```js
+const fn = () => {}
+fn.toString = () => 'function fake() { [native code] }'
+
+fn.toString()                              // 'function fake() { [native code] }' ← 被骗了
+Function.prototype.toString.call(fn)       // '() => {}' ← 拿到真实源码
+```
+
+通过 `.call` 强制使用原始的 `Function.prototype.toString`，避免被篡改。

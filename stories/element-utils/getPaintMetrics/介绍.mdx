@@ -1,0 +1,60 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getPaintMetrics
+
+获取绘制性能指标（FP / FCP）。
+
+## 详细介绍
+
+`getPaintMetrics` 基于 Paint Timing API 获取首次绘制（FP）和首次内容绘制（FCP）时间，并通过 `getMetricRating` 计算评级。
+
+FP 是浏览器首次将像素渲染到屏幕的时间，FCP 是首次渲染 DOM 内容（文本、图片等）的时间。两者都基于 `performance.getEntriesByType('paint')` 获取。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FP</td>
+      <td><code>number</code></td>
+      <td>First Paint 时间 (ms)</td>
+    </tr>
+    <tr>
+      <td>FCP</td>
+      <td><code>number</code></td>
+      <td>First Contentful Paint 时间 (ms)</td>
+    </tr>
+    <tr>
+      <td>FPRating</td>
+      <td><code>MetricRating</code></td>
+      <td>FP 评级 (good / needs-improvement / poor)</td>
+    </tr>
+    <tr>
+      <td>FCPRating</td>
+      <td><code>MetricRating</code></td>
+      <td>FCP 评级</td>
+    </tr>
+  </tbody>
+</table>
+
+如果 Performance API 或 Paint Timing 数据不可用则返回 `undefined`。
+
+## 具体实现原理
+
+1. **文件职责**：`index.ts` 从 paint 和 navigation 条目计算 FP/FCP 时间
+2. **核心流程**：通过 `performance.getEntriesByType('paint')` 找到 `first-paint` 和 `first-contentful-paint` 条目，减去 `fetchStart` 得到相对时间
+3. **关键技术点**：使用 `getMetricRating` 对 FP/FCP 进行评级

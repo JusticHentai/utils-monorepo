@@ -1,0 +1,63 @@
+import isWeakMapDemo from './isWeakMapDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isWeakMap
+
+检查 value 是否是 WeakMap 对象
+
+## 详细介绍
+
+`isWeakMap` 检查 value 是否是 WeakMap 对象。
+
+**常用场景**：
+- 条件判断前的类型检查
+- 数据验证和过滤
+- 类型安全的分支处理
+
+## 基础用法
+
+点击按钮查看 `isWeakMap` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {isWeakMapDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要检查的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：如果是 WeakMap，返回 true
+
+## 具体实现原理
+
+1. **文件职责**: `isWeakMap/index.ts` 导出 isWeakMap 函数
+2. **核心流程**: 检查 value 是否是 WeakMap 对象
+3. **关键技术点**: 使用 Object.prototype.toString 进行类型判断
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

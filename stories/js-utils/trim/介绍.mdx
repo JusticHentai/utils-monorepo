@@ -1,0 +1,59 @@
+import trimDemo from './trimDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# trim
+
+移除字符串两端的空白或指定字符。
+
+## 详细介绍
+
+`trim` 移除字符串两端的空白字符或指定字符。`trimStart` 仅移除开头，`trimEnd` 仅移除结尾。
+
+**常用场景**：
+- 用户输入清理
+- 移除特定分隔符
+- 文本预处理
+
+## 字符串修剪
+
+使用 `trim`、`trimStart`、`trimEnd` 移除字符串两端的字符。
+
+<CodeOrSourceMdx language="typescript">
+  {trimDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>str</td>
+      <td><code>string</code></td>
+      <td>要修剪的字符串</td>
+    </tr>
+    <tr>
+      <td>chars</td>
+      <td><code>string</code></td>
+      <td>可选，要移除的字符集</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：修剪后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 trim、trimStart、trimEnd
+2. **核心流程**: 无 chars 时使用原生 trim；有 chars 时构建正则匹配移除
+3. **关键技术点**: 自定义字符集转正则，分别处理开头和结尾
+4. **数据流向**: 字符串 + 字符集 → 正则匹配 → 移除匹配字符 → 返回结果

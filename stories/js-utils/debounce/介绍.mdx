@@ -1,0 +1,159 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# debounce
+
+创建一个防抖函数，在最后一次调用后的指定时间内没有新调用才执行。
+
+## 详细介绍
+
+`debounce` 函数用于限制函数的执行频率，常用于处理高频触发的事件。
+
+**与 throttle 的区别**：
+- debounce：延迟执行，连续触发时重置计时器
+- throttle：固定频率执行，不管触发多频繁
+
+**常用场景**：
+- 搜索框输入：用户停止输入后再发起搜索请求
+- 窗口调整：resize 事件结束后再执行计算
+- 按钮点击：防止重复提交
+
+## 各场景执行流程
+
+### 场景一：默认模式（trailing: true, leading: false）
+
+```
+调用: ──X───X───X──────────────────▶ 时间
+            ↓   ↓   ↓
+          重置  重置  启动 wait 定时器
+                          │
+                          ▼ wait 到期
+                        执行 func ✅
+```
+
+1. 每次调用 `debounced()` → 保存参数，重置定时器
+2. 最后一次调用后等待 `wait` 毫秒
+3. `timerExpired` 触发 → `shouldInvoke` 为 true → `trailingEdge` 执行 `func`
+
+### 场景二：leading 模式（leading: true, trailing: false）
+
+```
+调用: ──X───X───X──────────────────▶ 时间
+        ↓
+      立即执行 ✅（后续调用被忽略）
+                          │
+                          ▼ wait 到期
+                        不执行（trailing: false）
+```
+
+1. 首次调用 → `shouldInvoke` 为 true，`timerId` 为空 → 进入 `leadingEdge`
+2. `leadingEdge`：记录 `lastInvokeTime`，启动定时器，`leading` 为 true 则立即 `invokeFunc`
+3. 后续调用在 wait 内 → `shouldInvoke` 为 false → 只更新参数，不执行
+4. 定时器到期 → `trailingEdge` 中 `trailing` 为 false → 不执行
+
+### 场景三：leading + trailing 都开启
+
+```
+调用: ──X───X───X──────────────────▶ 时间
+        ↓                     ↓
+      立即执行 ✅           wait 到期再执行 ✅
+```
+
+1. 首次调用 → `leadingEdge` 立即执行
+2. 后续调用 → 更新 `lastArgs`，定时器继续
+3. 定时器到期 → `trailingEdge` 检查 `lastArgs` 存在 → 再次执行（使用最后一次调用的参数）
+
+### 场景四：maxWait 模式
+
+```
+调用: ──X─X─X─X─X─X─X─X─X─X─────▶ 时间
+        ↓         ↓         ↓
+      启动    maxWait到达   wait到期
+              强制执行 ✅   执行 ✅
+```
+
+1. 首次调用 → 启动定时器
+2. 持续高频调用 → 不断重置 `lastArgs` 和 `lastCallTime`
+3. 当 `timeSinceLastInvoke >= maxWait` → `shouldInvoke` 为 true，`maxing` 为 true → 直接 `invokeFunc` 并重启定时器
+4. 保证即使不断有新调用，最多等 `maxWait` 毫秒就会执行一次
+
+### 辅助方法流程
+
+- **`cancel()`**：清除定时器，重置所有状态 → 丢弃待执行的调用
+- **`flush()`**：如果有待执行的定时器 → 立即触发 `trailingEdge` → 执行 `func`
+- **`pending()`**：检查 `timerId` 是否存在 → 判断是否有待执行的调用
+
+## 配置选项
+
+<table>
+  <thead>
+    <tr>
+      <th>选项</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>leading</td>
+      <td><code>boolean</code></td>
+      <td>false</td>
+      <td>是否在延迟开始前调用</td>
+    </tr>
+    <tr>
+      <td>trailing</td>
+      <td><code>boolean</code></td>
+      <td>true</td>
+      <td>是否在延迟结束后调用</td>
+    </tr>
+    <tr>
+      <td>maxWait</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最大等待时间</td>
+    </tr>
+  </tbody>
+</table>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>Function</code></td>
+      <td>要防抖的函数</td>
+    </tr>
+    <tr>
+      <td>wait</td>
+      <td><code>number</code></td>
+      <td>等待时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>DebounceOptions</code></td>
+      <td>配置选项</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+返回的防抖函数包含以下方法：
+- `cancel()` - 取消延迟的函数调用
+- `flush()` - 立即执行延迟的函数调用
+- `pending()` - 检查是否有待执行的调用
+
+## 实现原理
+
+1. **核心状态**：`timerId`（定时器）、`lastArgs`（最新参数）、`lastCallTime`（最后调用时间）、`lastInvokeTime`（最后执行时间）
+2. **调用入口**：`debounced()` → 保存参数 → `shouldInvoke` 判断是否需要执行 → 分发到 `leadingEdge` 或等待定时器
+3. **定时器回调**：`timerExpired` → 再次 `shouldInvoke` 判断 → 为 true 则 `trailingEdge` 执行，否则重新计算剩余时间继续等待
+4. **maxWait 机制**：`shouldInvoke` 中额外判断 `timeSinceLastInvoke >= maxWait`，确保高频调用下仍能定期执行

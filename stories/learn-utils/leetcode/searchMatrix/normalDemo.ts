@@ -1,4 +1,4 @@
-import searchMatrix from '@jqxon/learn-utils/leetcode/searchMatrix'
+import searchMatrix from '../../../../packages/learn-utils/src/leetcode/searchMatrix'
 
 export default () => {
   const matrix = [

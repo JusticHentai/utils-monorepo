@@ -1,0 +1,68 @@
+import mapKeysDemo from './mapKeysDemo?raw'
+import mapValuesDemo from './mapValuesDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# mapKeys
+
+创建一个对象，键经过迭代器处理。
+
+## 详细介绍
+
+`mapKeys` 创建新对象，键为迭代器处理后的值，值保持不变。`mapValues` 则处理值保持键不变。
+
+**常用场景**：
+- 对象键名转换（如 camelCase 转 snake_case）
+- 添加键前缀/后缀
+- 值的批量转换
+
+## mapKeys 转换键名
+
+使用 `mapKeys` 对对象的键名进行转换。
+
+<CodeOrSourceMdx language="typescript">
+  {mapKeysDemo}
+</CodeOrSourceMdx>
+
+## mapValues 转换值
+
+使用 `mapValues` 对对象的值进行转换。
+
+<CodeOrSourceMdx language="typescript">
+  {mapValuesDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要处理的对象</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value, key, object) => string</code></td>
+      <td>迭代器函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Record<string, unknown>`
+- 描述：键或值经过转换的新对象
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 mapKeys 和 mapValues 两个函数
+2. **核心流程**: 遍历对象属性 → 调用迭代器转换键/值 → 构建新对象
+3. **关键技术点**: 保持另一半（键或值）不变，仅转换目标部分
+4. **数据流向**: 输入对象 + 迭代器 → 遍历属性 → 转换键/值 → 返回新对象

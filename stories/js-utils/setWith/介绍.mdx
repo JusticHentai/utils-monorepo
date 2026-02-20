@@ -1,0 +1,69 @@
+import setWithDemo from './setWithDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# setWith
+
+在对象指定路径上设置值。
+
+## 详细介绍
+
+`setWith` 类似于 `set`，但支持自定义路径上创建的中间值。
+
+**常用场景**：
+- 深层嵌套对象属性设置
+- 自定义中间层类型（如用数组代替对象）
+- 配置对象构建
+
+## 路径设置值
+
+使用 `setWith` 在对象的指定路径上设置值。
+
+<CodeOrSourceMdx language="typescript">
+  {setWithDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要修改的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要设置的值</td>
+    </tr>
+    <tr>
+      <td>customizer</td>
+      <td><code>(nsValue, key, nsObject) => unknown</code></td>
+      <td>可选，自定义中间值创建</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：修改后的原对象
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现带自定义器的深层路径设置
+2. **核心流程**: 解析路径 → 逐级创建/访问属性 → 最终设置值
+3. **关键技术点**: customizer 控制中间层对象类型，路径解析
+4. **数据流向**: 对象 + 路径 + 值 → 逐级创建路径 → 设置最终值 → 返回对象

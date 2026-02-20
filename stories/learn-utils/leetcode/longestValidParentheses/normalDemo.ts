@@ -1,4 +1,4 @@
-import longestValidParentheses from '@jqxon/learn-utils/leetcode/longestValidParentheses'
+import longestValidParentheses from '../../../../packages/learn-utils/src/leetcode/longestValidParentheses'
 
 export default () => {
   const testCases = [')()())', '(()']

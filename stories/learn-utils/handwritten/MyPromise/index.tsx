@@ -7,22 +7,22 @@ const MyPromiseDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await normalDemo()
-          action('MyPromise resolve')(res)
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
         }}
       >
-        MyPromise resolve 测试
+        normal
       </div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await rejectDemo()
-          action('MyPromise reject')(res)
+        className="button"
+        onClick={() => {
+          const res = rejectDemo()
+          action('reject')(res)
         }}
       >
-        MyPromise reject 测试
+        reject
       </div>
     </div>
   )

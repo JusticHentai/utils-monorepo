@@ -6,13 +6,13 @@ const wordBreakDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('单词拆分')(res)
+          action('normal')(res)
         }}
       >
-        单词拆分测试
+        normal
       </div>
     </div>
   )

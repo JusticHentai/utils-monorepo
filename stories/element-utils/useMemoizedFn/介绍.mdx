@@ -1,0 +1,102 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useMemoizedFn
+
+持久化函数引用的 Hook。
+
+## 详细介绍
+
+useMemoizedFn 返回一个引用永远不变的函数，该函数内部总是调用最新的函数实现。它解决了 useCallback 在依赖变化时函数引用会变化的问题，可以避免不必要的子组件重渲染。
+
+### 使用场景
+
+- 传递给子组件的回调函数
+- 需要稳定引用的事件处理函数
+- 作为其他 Hook 的依赖项
+
+## useMemoizedFn vs useCallback
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>useMemoizedFn</th>
+      <th>useCallback</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>函数引用</td>
+      <td>永远不变</td>
+      <td>依赖变化时改变</td>
+    </tr>
+    <tr>
+      <td>依赖声明</td>
+      <td>不需要</td>
+      <td>需要</td>
+    </tr>
+    <tr>
+      <td>最新状态</td>
+      <td>总是最新</td>
+      <td>需要正确声明依赖</td>
+    </tr>
+    <tr>
+      <td>使用场景</td>
+      <td>几乎所有场景</td>
+      <td>特定场景</td>
+    </tr>
+  </tbody>
+</table>
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>fn</td>
+      <td><code>T extends (...args: any[]) =&gt; any</code></td>
+      <td>需要持久化的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>T</code></td>
+      <td>持久化后的函数，引用永远不变</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useRef 保存最新的函数实现
+2. 每次渲染时更新 fnRef.current
+3. 使用另一个 useRef 保存代理函数
+4. 代理函数内部调用 fnRef.current
+5. 返回代理函数（引用永远不变）

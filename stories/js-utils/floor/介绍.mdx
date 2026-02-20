@@ -1,0 +1,77 @@
+import floorDemo from './floorDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# floor
+
+根据精度向下舍入数值
+
+## 详细介绍
+
+`floor` 根据指定精度对数值向下舍入（取不大于该精度的最近值）。
+
+**常用场景**：
+- 价格截断（保留两位小数，不四舍五入）
+- 数据展示时控制小数位数
+- 需要向下取整到指定精度的数学计算
+
+## 基础用法
+
+点击按钮查看 `floor` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {floorDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>number</td>
+      <td><code>number</code></td>
+      <td>要舍入的数值</td>
+    </tr>
+    <tr>
+      <td>precision</td>
+      <td><code>number</code></td>
+      <td>精度，默认为 0</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回舍入后的数值
+
+## 具体实现原理
+
+以 `floor(0.046, 2)` 为例，核心思路是**先放大、再取整、再缩回**：
+
+```
+factor = Math.pow(10, 2) = 100    // 缩放因子，将小数点右移 precision 位
+
+0.046 * 100 = 4.6                 // 放大：小数变成可操作的数
+Math.floor(4.6) = 4               // 取整：向下舍入
+4 / 100 = 0.04                    // 缩回：恢复到原来的数量级
+
+最终返回：0.04
+```
+
+`Math.pow(10, precision)` 的作用就是生成缩放因子，让 `Math.floor` 能作用在指定的小数位上。

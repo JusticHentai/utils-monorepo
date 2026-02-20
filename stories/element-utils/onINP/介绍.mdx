@@ -1,0 +1,394 @@
+import initBasicDemo from './initBasicDemo?raw'
+import initAllChangesDemo from './initAllChangesDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onINP
+
+监听 INP (Interaction to Next Paint)。INP 衡量页面整体响应性，是取代 FID 成为 Core Web Vitals 的新指标。
+
+## 详细介绍
+
+`onINP` 是基于 `PerformanceObserver` 封装的 INP 性能指标监听工具。
+
+**涉及的知识点**：
+- INP 指标：2024 年 3 月取代 FID 成为 Core Web Vitals 核心指标
+- PerformanceObserver API：监听 event 类型，获取用户交互事件
+- 第 98 百分位计算：INP 取所有交互延迟的第 98 百分位值
+
+**INP vs FID**：
+- FID 只测量首次输入延迟
+- INP 测量页面整个生命周期内所有交互的响应性
+- INP 更能反映用户的真实体验
+
+**INP 评分标准**：
+- 好：≤ 200ms
+- 需要改进：200 - 500ms
+- 差：> 500ms
+
+**常用场景**：
+- 性能监控：收集用户真实交互响应数据
+- 性能优化：识别慢交互的原因
+- A/B 测试：对比不同版本的交互响应性
+
+## 监听 INP（最终值）
+
+监听 INP 指标，仅在页面隐藏时报告最终的 INP 值。这是默认模式，适合生产环境收集用户真实体验数据。
+
+<CodeOrSourceMdx language="typescript">
+  {initBasicDemo}
+</CodeOrSourceMdx>
+
+## 监听 INP（所有变化）
+
+设置 `reportAllChanges` 为 `true`，每次 INP 值变化时都会触发回调。适合开发调试阶段观察 INP 的变化过程。
+
+<CodeOrSourceMdx language="typescript">
+  {initAllChangesDemo}
+</CodeOrSourceMdx>
+
+## 清理监听
+
+调用返回的清理函数停止 INP 监听，释放资源。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>OnINPCallback</code></td>
+      <td>INP 回调函数</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>OnINPOptions</code></td>
+      <td>可选，配置选项</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnINPOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>reportAllChanges</td>
+      <td><code>boolean</code></td>
+      <td>false</td>
+      <td>是否报告所有变化</td>
+    </tr>
+    <tr>
+      <td>durationThreshold</td>
+      <td><code>number</code></td>
+      <td>40</td>
+      <td>持续时间阈值（ms），低于此值的交互被忽略</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnINPCallback
+
+```typescript
+type OnINPCallback = (entry: PerformanceEventTiming) => void
+```
+
+回调参数 entry 包含：
+- `duration`: 交互延迟时间（毫秒）
+- `name`: 事件类型（click、keydown 等）
+- `target`: 触发交互的 DOM 元素
+- `processingStart`: 开始处理时间
+- `processingEnd`: 处理结束时间
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 使用 `createPerformanceObserver` 监听 `event` 类型
+2. 记录所有交互的延迟到 `interactionMap`
+3. 维护最长的 10 个交互延迟列表
+4. 计算第 98 百分位作为 INP 值
+5. 根据 `reportAllChanges` 决定是否立即报告
+6. 监听 `visibilitychange` 事件，页面隐藏时报告最终值
+
+### 关键技术点
+
+- 使用 `interactionId` 区分不同交互
+- 同一交互多次触发时只取最长延迟
+- 使用第 98 百分位算法计算 INP
+- BFCache 恢复时重置状态
+
+## interactionId 详解
+
+### 为什么要过滤没有 interactionId 的条目？
+
+```typescript
+// 忽略没有 interactionId 的条目
+if (!entry.interactionId) continue
+```
+
+`interactionId` 是用于标识用户交互的唯一 ID。忽略没有 `interactionId` 的条目是因为：
+
+### 1. 并非所有 event 条目都代表用户交互
+
+`PerformanceObserver` 监听 `event` 类型时会捕获很多事件，但只有**真正的用户交互**才会有 `interactionId`：
+
+<table>
+  <thead>
+    <tr>
+      <th>事件类型</th>
+      <th>有 interactionId</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>click</code></td>
+      <td>✅</td>
+      <td>用户点击</td>
+    </tr>
+    <tr>
+      <td><code>keydown</code>/<code>keyup</code></td>
+      <td>✅</td>
+      <td>键盘输入</td>
+    </tr>
+    <tr>
+      <td><code>pointerdown</code>/<code>pointerup</code></td>
+      <td>✅</td>
+      <td>触摸/鼠标交互</td>
+    </tr>
+    <tr>
+      <td><code>mousemove</code></td>
+      <td>❌</td>
+      <td>鼠标移动（非交互）</td>
+    </tr>
+    <tr>
+      <td><code>scroll</code></td>
+      <td>❌</td>
+      <td>滚动事件（非交互）</td>
+    </tr>
+    <tr>
+      <td><code>focus</code>/<code>blur</code></td>
+      <td>❌</td>
+      <td>焦点变化（非交互）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 2. 同一交互可能触发多个事件
+
+一次点击会触发多个事件（`pointerdown` → `mousedown` → `pointerup` → `mouseup` → `click`），它们共享同一个 `interactionId`，这样可以：
+
+```typescript
+// 对于同一个交互，只记录最长的延迟
+if (existingLatency === undefined || duration > existingLatency) {
+  interactionMap.set(entry.interactionId, duration)
+}
+```
+
+### 3. INP 只关心用户交互
+
+INP 的定义是"交互到下一次绘制"的延迟，只有真正的用户交互才应该被计入 INP 指标。没有 `interactionId` 的事件不算用户交互，不应影响 INP 计算。
+
+## P98（第 98 百分位）详解
+
+### 为什么使用 P98？
+
+INP 使用第 98 百分位而不是最大值或平均值，主要原因：
+
+1. **排除异常值**：网页可能有极端的慢交互（如用户切换标签页后回来），使用 P98 可以排除最坏的 2% 异常情况
+2. **反映真实体验**：P98 意味着 98% 的交互都比这个值更快，能代表绝大多数用户的实际体验
+3. **避免单次偶发问题的影响**：一次网络抖动或系统卡顿不会严重影响整体指标
+4. **Google 官方标准**：这是 Chrome 团队定义 INP 指标时采用的标准算法
+
+### P98 计算公式
+
+```
+P98 索引 = floor(交互总数 / 50)
+```
+
+这意味着：
+- 1-49 次交互：取最大值（索引 0）
+- 50-99 次交互：取第 2 大值（索引 1）
+- 100-149 次交互：取第 3 大值（索引 2）
+- 以此类推...
+
+### 代码实现解析
+
+```typescript
+// 常量定义：最多保留 10 个最长交互
+const MAX_INTERACTIONS = 10
+
+// 计算 INP 的核心函数
+const computeINP = (): number => {
+  const interactionCount = Math.min(
+    longestInteractions.length,
+    MAX_INTERACTIONS
+  )
+
+  if (interactionCount === 0) return 0
+
+  // 按延迟从大到小排序
+  longestInteractions.sort((a, b) => b.latency - a.latency)
+
+  // 计算第 98 百分位索引
+  // 交互数少于 50 个时，floor(n/50) = 0，取最大值
+  const idx = Math.min(
+    longestInteractions.length - 1,
+    Math.floor(interactionCount / 50)
+  )
+
+  return longestInteractions[idx]?.latency || 0
+}
+```
+
+### 为什么只保留 10 个交互？
+
+`MAX_INTERACTIONS = 10` 的设计考量：
+
+1. **内存优化**：页面生命周期内可能有成百上千次交互，全部存储会消耗大量内存
+2. **P98 只需要最慢的几个**：对于 500 次以内的交互，P98 最多需要第 10 大的值
+3. **实际场景足够**：大多数页面会话不会超过 500 次有意义的交互
+
+### 交互次数与 P98 对照表
+
+<table>
+  <thead>
+    <tr>
+      <th>交互次数</th>
+      <th>P98 索引</th>
+      <th>取值说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1-49</td>
+      <td>0</td>
+      <td>最大值</td>
+    </tr>
+    <tr>
+      <td>50-99</td>
+      <td>1</td>
+      <td>第 2 大</td>
+    </tr>
+    <tr>
+      <td>100-149</td>
+      <td>2</td>
+      <td>第 3 大</td>
+    </tr>
+    <tr>
+      <td>150-199</td>
+      <td>3</td>
+      <td>第 4 大</td>
+    </tr>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <td>450-499</td>
+      <td>9</td>
+      <td>第 10 大</td>
+    </tr>
+    <tr>
+      <td>500+</td>
+      <td>10</td>
+      <td>需要更多存储（当前实现限制为 10）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 与其他百分位的对比
+
+<table>
+  <thead>
+    <tr>
+      <th>百分位</th>
+      <th>特点</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>P50（中位数）</td>
+      <td>一半交互比这快</td>
+      <td>了解"典型"体验</td>
+    </tr>
+    <tr>
+      <td>P75</td>
+      <td>75% 交互比这快</td>
+      <td>常规性能监控</td>
+    </tr>
+    <tr>
+      <td>P90</td>
+      <td>90% 交互比这快</td>
+      <td>性能敏感的应用</td>
+    </tr>
+    <tr>
+      <td><strong>P98</strong></td>
+      <td>98% 交互比这快</td>
+      <td><strong>INP 官方标准</strong></td>
+    </tr>
+    <tr>
+      <td>P99/最大值</td>
+      <td>几乎所有交互</td>
+      <td>易受异常值影响</td>
+    </tr>
+  </tbody>
+</table>
+
+### 实际示例
+
+假设一个页面会话中有 60 次交互，延迟从高到低排序为：
+
+```
+[500ms, 300ms, 250ms, 200ms, 180ms, 150ms, 120ms, 100ms, 80ms, 60ms, ...]
+```
+
+P98 计算：
+- `idx = Math.floor(60 / 50) = 1`
+- INP = 第 2 大值 = **300ms**
+
+这意味着 98% 的交互（约 59 次）响应时间都在 300ms 以内。

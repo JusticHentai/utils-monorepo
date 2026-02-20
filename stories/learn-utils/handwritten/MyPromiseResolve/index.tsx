@@ -6,13 +6,13 @@ const MyPromiseResolveDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await normalDemo()
-          action('Promise.resolve')(res)
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
         }}
       >
-        Promise.resolve 测试
+        normal
       </div>
     </div>
   )

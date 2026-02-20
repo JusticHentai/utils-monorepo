@@ -6,13 +6,13 @@ const groupAnagramsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('字母异位词分组')(res)
+          action('normal')(res)
         }}
       >
-        字母异位词分组
+        normal
       </div>
     </div>
   )

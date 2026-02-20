@@ -1,0 +1,68 @@
+import memoizeDemo from './memoizeDemo?raw'
+import memoizeResolverDemo from './memoizeResolverDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# memoize
+
+创建记忆化函数，缓存计算结果。
+
+## 详细介绍
+
+`memoize` 创建一个会缓存计算结果的函数。如果同样的参数再次传入，直接返回缓存值而不重新计算。
+
+**常用场景**：
+- 昂贵计算的结果缓存
+- 递归函数优化
+- API 请求结果缓存
+
+## 基础记忆化
+
+使用 `memoize` 缓存计算结果，避免重复计算。
+
+<CodeOrSourceMdx language="typescript">
+  {memoizeDemo}
+</CodeOrSourceMdx>
+
+## 自定义缓存键解析器
+
+使用 `memoize` 的第二个参数自定义缓存键的生成逻辑。
+
+<CodeOrSourceMdx language="typescript">
+  {memoizeResolverDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>(...args) => unknown</code></td>
+      <td>要记忆化的函数</td>
+    </tr>
+    <tr>
+      <td>resolver</td>
+      <td><code>(...args) => unknown</code></td>
+      <td>可选，自定义缓存键解析器</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`MemoizedFunc<T>`
+- 描述：带 cache 属性（Map）的记忆化函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现函数记忆化
+2. **核心流程**: 包装原函数 → 调用时检查缓存 → 有缓存直接返回 → 无缓存执行并存储
+3. **关键技术点**: Map 作为缓存存储，resolver 自定义缓存键
+4. **数据流向**: 参数 → resolver 生成缓存键 → 查缓存 → 命中返回/未命中计算并缓存

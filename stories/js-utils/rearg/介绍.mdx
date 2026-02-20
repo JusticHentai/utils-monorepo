@@ -1,0 +1,59 @@
+import reargDemo from './reargDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# rearg
+
+创建重新排列参数的函数。
+
+## 详细介绍
+
+`rearg` 创建一个函数，按照指定的索引顺序重新排列参数后调用原函数。
+
+**常用场景**：
+- 调整函数参数顺序以适配不同 API
+- 函数适配器
+- 参数重排列
+
+## 参数重排列
+
+使用 `rearg` 改变函数参数的传入顺序。
+
+<CodeOrSourceMdx language="typescript">
+  {reargDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>(...args) => unknown</code></td>
+      <td>要重排参数的函数</td>
+    </tr>
+    <tr>
+      <td>indexes</td>
+      <td><code>number[]</code></td>
+      <td>参数索引排列顺序</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T>`
+- 描述：参数重排后调用原函数的包装函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现参数重排列
+2. **核心流程**: 接收函数和索引数组 → 创建包装 → 调用时按索引重新排列参数
+3. **关键技术点**: 索引映射，参数位置交换
+4. **数据流向**: 参数列表 → 按索引重排 → 调用原函数 → 返回结果

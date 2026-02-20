@@ -1,0 +1,63 @@
+import findDemo from './findDemo?raw'
+import findLastDemo from './findLastDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# find
+
+返回第一个满足谓词函数的元素，同时提供 `findLast` 从右查找。
+
+## 详细介绍
+
+`find` 遍历集合，返回第一个使谓词函数返回 true 的元素。`findLast` 从集合末尾开始查找。找不到则返回 undefined。
+
+## find - 查找第一个匹配
+
+<CodeOrSourceMdx language="typescript">
+  {findDemo}
+</CodeOrSourceMdx>
+
+## findLast - 从右查找
+
+<CodeOrSourceMdx language="typescript">
+  {findLastDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要搜索的集合</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value: T) =&gt; boolean</code></td>
+      <td>谓词函数</td>
+    </tr>
+    <tr>
+      <td>fromIndex</td>
+      <td><code>number</code></td>
+      <td>起始搜索位置（可选，默认0）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined`
+
+## 具体实现原理
+
+1. **文件职责**: `find/index.ts` 导出 find（default）和 findLast（named）
+2. **核心流程**: 遍历集合（正向或逆向），返回第一个满足谓词的元素
+3. **关键技术点**: 短路返回、fromIndex 支持
+4. **数据流向**: 集合 → 遍历 → 谓词匹配 → 返回匹配元素或 undefined

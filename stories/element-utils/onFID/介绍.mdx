@@ -1,0 +1,110 @@
+import initDemo from './initDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onFID
+
+监听 FID (First Input Delay)。FID 是首次输入延迟，衡量页面首次交互的响应性。
+
+## 详细介绍
+
+`onFID` 是基于 `PerformanceObserver` 封装的 FID 性能指标监听工具。
+
+**涉及的知识点**：
+- FID 指标：Core Web Vitals 三大核心指标之一
+- PerformanceObserver API：监听 first-input 类型
+- 输入延迟：从用户首次交互到浏览器开始处理的时间差
+
+**FID 评分标准**：
+- 好：≤ 100 毫秒
+- 需要改进：100 - 300 毫秒
+- 差：> 300 毫秒
+
+**常用场景**：
+- 性能监控：收集用户真实首次交互延迟
+- 主线程优化：识别阻塞主线程的脚本
+- 用户体验分析：评估页面交互响应性
+
+**优势**：
+- 只触发一次，精确捕获首次交互
+- 自动计算输入延迟
+- 区分交互类型（点击、按键等）
+
+## 初始化监听
+
+<CodeOrSourceMdx language="typescript">
+  {initDemo}
+</CodeOrSourceMdx>
+
+## 清理监听
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>OnFIDCallback</code></td>
+      <td>FID 回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnFIDCallback
+
+```typescript
+type OnFIDCallback = (entry: PerformanceEntry) => void
+```
+
+回调参数 entry 包含：
+- `startTime`: 用户交互开始时间
+- `processingStart`: 浏览器开始处理时间
+- `name`: 事件类型（如 pointerdown、keydown）
+- FID = processingStart - startTime
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 使用 `createPerformanceObserver` 监听 `first-input`
+2. 首次交互时触发回调
+3. 触发后自动停止观察
+
+### 关键技术点
+
+- FID 只能测量首次交互，之后的交互不计入
+- 通过 `processingStart - startTime` 计算延迟
+- 触发后自动调用 `stop()` 停止监听

@@ -1,0 +1,68 @@
+import maxDemo from './maxDemo?raw'
+import maxByDemo from './maxByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# max
+
+计算数组中的最大值和最小值。
+
+## 详细介绍
+
+`max` 模块提供 `max`、`maxBy`、`min`、`minBy` 函数，用于查找数组中的极值。
+
+**常用场景**：
+- 数据分析中的极值查找
+- 对象数组中按属性找最大/最小元素
+- 数据范围计算
+
+## 最大值与最小值
+
+使用 `max` 和 `min` 查找数组中的极值。
+
+<CodeOrSourceMdx language="typescript">
+  {maxDemo}
+</CodeOrSourceMdx>
+
+## 按迭代器查找极值
+
+使用 `maxBy` 和 `minBy` 按迭代器函数查找对象数组中的极值元素。
+
+<CodeOrSourceMdx language="typescript">
+  {maxByDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要查找的数组</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) => number</code></td>
+      <td>迭代器函数（maxBy/minBy 使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined`
+- 描述：数组中的最大/最小元素
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 max、maxBy、min、minBy 四个函数
+2. **核心流程**: 遍历数组元素 → 比较/迭代器提取值比较 → 返回极值元素
+3. **关键技术点**: maxBy/minBy 通过迭代器将对象转为可比较的数值
+4. **数据流向**: 数组 → 遍历比较 → 返回极值元素

@@ -1,0 +1,119 @@
+import toIntegerDemo from './toIntegerDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toInteger
+
+将 value 转换为整数
+
+## 详细介绍
+
+`toInteger` 将 value 转换为整数。
+
+**常用场景**：
+- 数据类型标准化
+- 用户输入处理
+- 跨模块数据传递前的格式统一
+
+## 基础用法
+
+点击按钮查看 `toInteger` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {toIntegerDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要转换的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回转换后的整数
+
+## 具体实现原理
+
+`toInteger` 的实现仅三行代码，但每一步都有其设计意图：
+
+```typescript
+const result = toFinite(value)        // 第一步：归一化
+const remainder = result % 1          // 第二步：提取小数部分
+return remainder ? result - remainder : result  // 第三步：向零截断
+```
+
+### 第一步：`toFinite(value)` — 归一化为有限数值
+
+在做整数截断之前，必须先确保值是一个**有限的 number**。`toFinite` 负责处理所有非常规输入：
+
+| 输入 | toFinite 输出 | 说明 |
+|------|-------------|------|
+| `3.2` | `3.2` | 普通数值原样返回 |
+| `'3.2'` | `3.2` | 字符串先通过 `Number()` 转换 |
+| `null` / `undefined` | `0` | 空值转为 0 |
+| `NaN` | `0` | 非数字转为 0 |
+| `Infinity` | `1.7976931348623157e+308` | 正无穷转为 `Number.MAX_VALUE` |
+| `-Infinity` | `-1.7976931348623157e+308` | 负无穷转为 `-Number.MAX_VALUE` |
+
+经过这一步，`result` 一定是一个有限的 number，后续的数学运算可以安全进行。
+
+### 第二步：`result % 1` — 用模运算提取小数部分
+
+`%` 是取余运算符，`result % 1` 的含义是"除以 1 的余数"，其效果是**提取小数部分**：
+
+| result | result % 1 | 说明 |
+|--------|-----------|------|
+| `3` | `0` | 整数模 1 等于 0 |
+| `3.7` | `0.7` | 提取出小数部分 0.7 |
+| `-3.7` | `-0.7` | 负数保留符号，小数部分为 -0.7 |
+| `0` | `0` | 零模 1 等于 0 |
+
+**为什么用 `% 1` 而不是 `Math.floor`？** 因为 `Math.floor` 是"向负无穷取整"（`Math.floor(-3.7)` = `-4`），而我们需要的是**向零截断**（`-3.7` → `-3`），`% 1` 配合减法恰好能实现这个效果。
+
+### 第三步：`remainder ? result - remainder : result` — 条件截断
+
+这是一个三元表达式，根据是否有小数部分决定处理方式：
+
+- **`remainder` 为 `0`**（即 falsy）：值本身就是整数，直接返回 `result`，无需额外运算
+- **`remainder` 非 `0`**：用原值减去小数部分，得到整数部分
+
+示例推演：
+
+| 输入 | result | remainder | 返回值 | 计算过程 |
+|------|--------|-----------|--------|---------|
+| `3.7` | `3.7` | `0.7` | `3` | `3.7 - 0.7 = 3` |
+| `-3.7` | `-3.7` | `-0.7` | `-3` | `-3.7 - (-0.7) = -3` |
+| `5` | `5` | `0` | `5` | remainder 为 0，直接返回 |
+| `'3.2'` | `3.2` | `0.2` | `3` | `3.2 - 0.2 = 3` |
+| `null` | `0` | `0` | `0` | remainder 为 0，直接返回 |
+
+### 与 `Math.trunc` 的对比
+
+这个实现的行为与 `Math.trunc()` 完全一致——都是**向零截断**（truncation towards zero）：
+- 正数：去掉小数部分（等同于 `Math.floor`）
+- 负数：去掉小数部分（等同于 `Math.ceil`）
+
+之所以不直接用 `Math.trunc`，是因为 `toInteger` 额外集成了 `toFinite` 的归一化能力，能安全处理 `null`、`undefined`、`Infinity`、字符串等非常规输入。

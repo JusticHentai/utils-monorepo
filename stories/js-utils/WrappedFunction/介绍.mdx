@@ -1,0 +1,70 @@
+import basicDemo from './basicDemo?raw'
+import compositionDemo from './compositionDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# WrappedFunction
+
+WrappedFunction 是一个通用的包装函数类型，用于定义接受原函数参数并返回 `WrappedFunctionResult` 格式的函数。它是构建各种功能包装器（如日志、缓存、重试、超时等）的基础类型。
+
+## 基础包装函数演示
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 函数组合演示
+
+<CodeOrSourceMdx language="typescript">
+  {compositionDemo}
+</CodeOrSourceMdx>
+
+## 类型定义
+
+```typescript
+type WrappedFunction<Fn extends BaseFunction, ErrorType = any> = (
+  ...args: Parameters<Fn>
+) => WrappedFunctionResult<Fn, ErrorType>
+```
+
+## 参数介绍
+
+### 泛型参数
+
+- `Fn` - 被包装的函数类型，必须继承自 `BaseFunction`
+- `ErrorType` - 错误类型，默认为 `any`，可以自定义具体的错误类型
+
+### 函数签名
+
+- **参数**: `...args: Parameters<Fn>` - 接受原函数的所有参数
+- **返回值**: `WrappedFunctionResult<Fn, ErrorType>` - 返回 `[result, error]` 格式的 Promise
+
+## 使用场景
+
+### 1. **日志包装器**
+为函数添加执行日志，记录参数、结果和错误信息。
+
+### 2. **性能监控**
+监控函数执行时间，用于性能分析和优化。
+
+### 3. **缓存包装器**
+为函数添加缓存功能，避免重复计算。
+
+### 4. **函数组合**
+多个包装器可以组合使用，形成功能强大的处理链。
+
+## 设计优势
+
+1. **类型安全**: 完全保持原函数的参数和返回值类型
+2. **统一接口**: 所有包装函数都遵循相同的 `[result, error]` 格式
+3. **可组合性**: 包装器可以相互组合，构建复杂的功能链
+4. **错误处理**: 统一的错误处理模式，避免异常抛出
+5. **扩展性**: 支持自定义错误类型，适应不同业务需求
+
+## 相关类型
+
+- `WrappedFunctionResult` - 包装函数的返回值类型
+- `BaseFunction` - 基础函数类型约束
+
+## 实际应用
+
+项目中的 `retry`、`timeout` 等工具函数都基于此类型构建，提供了一致的使用体验和错误处理模式。

@@ -1,0 +1,102 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# createEffectWithTarget
+
+创建一个支持目标元素的 effect hook 工厂函数。
+
+## 详细介绍
+
+`createEffectWithTarget` 是一个工厂函数，用于创建支持 DOM 目标元素变化检测的 effect hook。当目标元素或依赖数组变化时，会重新执行 effect。
+
+常用场景：
+- 需要监听某个 DOM 元素的 effect
+- 当 ref 指向的元素变化时需要重新绑定事件
+- 配合其他 DOM 相关的 hook 使用
+
+## 使用示例
+
+```typescript
+import { useEffect } from 'react'
+import { createEffectWithTarget } from '@justichentai/element-utils'
+
+const useEffectWithTarget = createEffectWithTarget(useEffect)
+
+function MyComponent() {
+  const targetRef = useRef<HTMLDivElement>(null)
+  const [count, setCount] = useState(0)
+
+  useEffectWithTarget(
+    () => {
+      console.log('effect 执行', targetRef.current)
+      return () => {
+        console.log('effect 清理')
+      }
+    },
+    [count],
+    targetRef
+  )
+
+  return <div ref={targetRef}>内容</div>
+}
+```
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>useEffectType</td>
+      <td><code>typeof useEffect | typeof useLayoutEffect</code></td>
+      <td>要包装的 effect hook</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回的 Hook 参数
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>effect</td>
+      <td><code>EffectCallback</code></td>
+      <td>effect 回调函数</td>
+    </tr>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>依赖数组</td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td><code>BasicTarget | BasicTarget[]</code></td>
+      <td>目标元素（支持 ref、函数或直接 DOM 元素）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 包含工厂函数的完整实现
+2. **核心流程**: 
+   - 使用 ref 保存上一次的元素和依赖
+   - 每次 effect 执行时比较元素和依赖是否变化
+   - 变化时执行清理函数并重新执行 effect
+3. **关键技术点**: 
+   - 使用 `depsAreSame` 比较依赖数组
+   - 使用 `getTargetElement` 解析目标元素
+   - 支持数组形式的多个目标元素
+4. **数据流向**: effect 触发 → 比较元素/依赖 → 执行或跳过

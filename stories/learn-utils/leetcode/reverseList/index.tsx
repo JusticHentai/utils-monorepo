@@ -6,13 +6,13 @@ const reverseListDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('反转链表')(res)
+          action('normal')(res)
         }}
       >
-        反转链表 [1,2,3,4,5]
+        normal
       </div>
     </div>
   )

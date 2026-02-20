@@ -1,0 +1,195 @@
+import toStringValueDemo from './toStringValueDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toStringValue
+
+将 value 转换为字符串
+
+## 详细介绍
+
+`toStringValue` 将 value 转换为字符串。
+
+**常用场景**：
+- 数据类型标准化
+- 用户输入处理
+- 跨模块数据传递前的格式统一
+
+## 基础用法
+
+点击按钮查看 `toStringValue` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {toStringValueDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要转换的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：返回转换后的字符串
+
+## 具体实现原理
+
+`toStringValue` 按类型分支逐一处理，每个分支都有其设计意图：
+
+### 第一步：`value == null` — 空值返回空字符串
+
+```typescript
+if (value == null) return ''
+```
+
+`== null` 同时匹配 `null` 和 `undefined`（宽松相等）。不用 `String(null)` → `'null'`，而是返回空字符串 `''`，在拼接场景中更安全。
+
+### 第二步：`typeof value === 'string'` — 字符串直接返回
+
+```typescript
+if (typeof value === 'string') return value
+```
+
+已经是字符串，无需任何转换，直接返回。提前拦截避免后续不必要的判断。
+
+### 第三步：`Array.isArray(value)` — 数组递归转换
+
+```typescript
+if (Array.isArray(value)) {
+  return value.map(item => item == null ? '' : toStringValue(item)).join(',')
+}
+```
+
+对数组的每个元素递归调用 `toStringValue`，然后用逗号拼接。其中 `null`/`undefined` 元素转为空字符串而非 `'null'`/`'undefined'`。
+
+示例：`[1, null, [2, 3]]` → `'1,,2,3'`
+
+### 第四步：`1 / value === -Infinity` — 负零（-0）检测
+
+```typescript
+if (typeof value === 'number' && 1 / value === -Infinity) {
+  return '-0'
+}
+```
+
+这是整个函数中最巧妙的一步，专门处理 **-0（负零）**。
+
+**为什么需要特殊处理？** 因为 JS 内置的转换会**丢失负零的符号**：
+
+<table>
+  <thead>
+    <tr>
+      <th>表达式</th>
+      <th>结果</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>String(-0)</code></td>
+      <td><code>'0'</code></td>
+      <td>符号丢失！变成了正零的字符串</td>
+    </tr>
+    <tr>
+      <td><code>(-0).toString()</code></td>
+      <td><code>'0'</code></td>
+      <td>同样丢失符号</td>
+    </tr>
+    <tr>
+      <td><code>-0 === 0</code></td>
+      <td><code>true</code></td>
+      <td>全等比较也无法区分 -0 和 +0</td>
+    </tr>
+    <tr>
+      <td><code>-0 > 0</code></td>
+      <td><code>false</code></td>
+      <td>大小比较也无法区分</td>
+    </tr>
+  </tbody>
+</table>
+
+**如何检测 -0？** 利用 IEEE 754 浮点数的除法特性：
+
+<table>
+  <thead>
+    <tr>
+      <th>表达式</th>
+      <th>结果</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>1 / -0</code></td>
+      <td><code>-Infinity</code></td>
+      <td>正数除以负零得到负无穷</td>
+    </tr>
+    <tr>
+      <td><code>1 / +0</code></td>
+      <td><code>Infinity</code></td>
+      <td>正数除以正零得到正无穷</td>
+    </tr>
+  </tbody>
+</table>
+
+`-Infinity !== Infinity`，所以 `1 / value === -Infinity` 能准确区分 -0 和 +0。
+
+**-0 的应用场景**：在动画、物理模拟等场景中，-0 表示"从负方向趋近于零"，保留符号信息可以正确判断运动方向。
+
+### 第五步：`String(value)` — 兜底转换
+
+```typescript
+return String(value)
+```
+
+其他所有类型（number、boolean、symbol、bigint、object 等）统一用 `String()` 转换：
+
+<table>
+  <thead>
+    <tr>
+      <th>输入</th>
+      <th>String() 结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>42</code></td>
+      <td><code>'42'</code></td>
+    </tr>
+    <tr>
+      <td><code>true</code></td>
+      <td><code>'true'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol('x')</code></td>
+      <td><code>'Symbol(x)'</code></td>
+    </tr>
+    <tr>
+      <td><code>{}</code></td>
+      <td><code>'[object Object]'</code></td>
+    </tr>
+  </tbody>
+</table>

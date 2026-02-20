@@ -6,13 +6,13 @@ const addTwoNumbersDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('两数相加')(res)
+          action('normal')(res)
         }}
       >
-        两数相加 342 + 465
+        normal
       </div>
     </div>
   )

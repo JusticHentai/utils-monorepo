@@ -1,4 +1,4 @@
-import { Options, RESIZE_TYPE } from '../interface'
+import { RESIZE_TYPE, ResizeOptions } from '../interface'
 import getScreenSize from './getScreenSize'
 
 /**
@@ -9,29 +9,25 @@ import getScreenSize from './getScreenSize'
  * 为了让大屏有更好的呈现方式 当 preset 的值小于当前屏幕的对应值 比例默认是 1
  * 如果想自定义大屏 可以按比例提高 preset 的值
  */
-const getCurrentRatio = (options: Options): number => {
-  const { type, preset } = options
+const getCurrentRatio = (options: ResizeOptions): number => {
+  const { type, preset, maxRatio = 1 } = options
   const { width, height } = getScreenSize()
 
   let ratio = 1
 
   if (type === RESIZE_TYPE.WIDTH && preset?.width) {
-    const xRatio = width / preset.width
-
-    ratio = Math.min(xRatio, 1)
+    ratio = Math.min(width / preset.width, maxRatio)
   }
 
   if (type === RESIZE_TYPE.HEIGHT && preset?.height) {
-    const yRatio = height / preset.height
-
-    ratio = Math.min(yRatio, 1)
+    ratio = Math.min(height / preset.height, maxRatio)
   }
 
   if (type === RESIZE_TYPE.BOTH && preset?.width && preset?.height) {
     const xRatio = width / preset.width
     const yRatio = height / preset.height
 
-    ratio = Math.min(yRatio, xRatio, 1)
+    ratio = Math.min(yRatio, xRatio, maxRatio)
   }
 
   return ratio

@@ -1,11 +1,21 @@
-import { DemoBlock } from '@jqxon/storybook-utils'
+import { action } from 'storybook/actions'
+import '../../../.css/index.css'
 import normalDemo from './normalDemo'
 
-export default function FindDuplicateDemo() {
+const findDuplicateDemo = () => {
   return (
-    <DemoBlock
-      title="寻找重复数"
-      demos={[{ title: '基础示例', fn: normalDemo }]}
-    />
+    <div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
+      </div>
+    </div>
   )
 }
+
+export default findDuplicateDemo

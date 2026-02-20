@@ -1,0 +1,123 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useKeyPress
+
+监听键盘按键的 Hook。
+
+## 详细介绍
+
+useKeyPress 提供了强大的键盘事件监听功能，支持单个按键、多个按键、组合键的监听，并支持自定义事件类型和精确匹配模式。
+
+### 使用场景
+
+- 快捷键功能
+- 游戏控制
+- 表单提交（Enter 键）
+- 模态框关闭（Esc 键）
+- 导航控制（方向键）
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>keyFilter</td>
+      <td><code>KeyFilter</code></td>
+      <td>-</td>
+      <td>按键过滤器</td>
+    </tr>
+    <tr>
+      <td>eventHandler</td>
+      <td><code>(event: KeyboardEvent, key: KeyType) =&gt; void</code></td>
+      <td>-</td>
+      <td>事件处理函数</td>
+    </tr>
+    <tr>
+      <td>options.events</td>
+      <td><code>KeyEvent[]</code></td>
+      <td><code>['keydown']</code></td>
+      <td>触发事件类型</td>
+    </tr>
+    <tr>
+      <td>options.target</td>
+      <td><code>Target</code></td>
+      <td><code>window</code></td>
+      <td>目标元素</td>
+    </tr>
+    <tr>
+      <td>options.exactMatch</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>精确匹配</td>
+    </tr>
+    <tr>
+      <td>options.useCapture</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>使用捕获阶段</td>
+    </tr>
+  </tbody>
+</table>
+
+### KeyFilter 类型
+
+```typescript
+type KeyFilter = 
+  | KeyType                           // 单个按键
+  | KeyType[]                         // 多个按键
+  | ((event: KeyboardEvent) => boolean)  // 自定义过滤函数
+
+type KeyType = string | number
+```
+
+### 支持的按键别名
+
+- 数字键：`0-9`
+- 字母键：`a-z`
+- 功能键：`f1-f12`
+- 控制键：`enter`、`esc`、`tab`、`space`、`backspace`、`delete`
+- 方向键：`uparrow`、`downarrow`、`leftarrow`、`rightarrow`
+- 修饰键：`ctrl`、`shift`、`alt`、`meta`
+
+### 组合键
+
+使用 `.` 连接多个按键，例如：
+- `ctrl.s` - Ctrl + S
+- `ctrl.shift.a` - Ctrl + Shift + A
+- `meta.k` - Cmd/Win + K
+
+## 具体实现原理
+
+**文件职责**：
+- `index.ts`：React Hook 主体，负责响应式事件绑定与生命周期管理
+- `interface.ts`：自身类型定义（`KeyEvent`、`Target`、`UseKeyPressOptions`），同时 re-export `onKeyPress/interface` 中的共享类型（`KeyType`、`KeyFilter`、`KeyPredicate`）
+
+**与 `onKeyPress` 的关系**：
+`useKeyPress` 是一层薄 Hook 封装，键盘匹配相关的核心逻辑（别名映射、修饰键检测、组合键解析）全部从 `onKeyPress` 模块导入，自身只处理 React 生命周期。
+
+**核心流程**：
+
+1. **`useLatest` 存储最新引用**：`eventHandler`、`keyFilter`、`events` 都通过 `useLatest` 存入 ref。因为这些参数可能在每次渲染时都是新的引用（如内联函数），如果直接放入 `useEffect` 依赖项会导致监听器反复解绑重绑，用 ref 可以始终读取到最新值而不触发 effect 重新执行
+2. **`getTargetElement` 解析目标元素**：支持 `RefObject`、DOM 元素、函数等多种 `target` 传入方式，统一解析为实际的 DOM 节点，默认为 `window`
+3. **`callbackHandler` 事件处理**：
+   - 调用 `genKeyFormatter`（来自 `onKeyPress`）将 `keyFilter` 标准化为判断函数——因为 `keyFilter` 支持函数、单键、数组等多种格式，需要统一为 `(event) => KeyType | boolean` 的判断接口
+   - 执行判断函数得到 `keyGuard`，它可能是匹配到的按键标识或 `false`
+   - 通过 `isValidKeyType`（来自 `onKeyPress`）判断 `keyGuard` 是否为有效按键类型——如果是（如 `'ctrl.s'`）则作为 `firedKey` 传给用户回调，否则回退到 `event.key`，确保用户回调始终能拿到有意义的按键信息
+   - 匹配成功时调用用户回调
+4. **遍历 `events` 数组注册监听**：支持同时监听 `keydown` 和 `keyup`（如需要在按下和松开时分别响应），为每个事件类型都注册同一个 `callbackHandler`
+5. **`useEffect` 返回清理函数**：组件卸载或依赖项变化时移除所有事件监听，防止内存泄漏。依赖项中不包含 `ref` 引用的值（`eventHandler`、`keyFilter`），只包含真正影响监听器绑定方式的参数（`target`、`exactMatch`、`useCapture`）

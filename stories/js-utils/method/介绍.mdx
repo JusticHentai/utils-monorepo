@@ -1,0 +1,68 @@
+import methodDemo from './methodDemo?raw'
+import methodOfDemo from './methodOfDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# method
+
+创建调用指定路径方法的函数。
+
+## 详细介绍
+
+`method` 创建一个函数，该函数调用传入对象上指定路径的方法。`methodOf` 是反向版本，先绑定对象。
+
+**常用场景**：
+- 动态方法调用
+- 函数式编程中的方法引用
+- 配置驱动的对象操作
+
+## method 创建方法调用函数
+
+使用 `method` 创建一个函数，调用传入对象上指定路径的方法。
+
+<CodeOrSourceMdx language="typescript">
+  {methodDemo}
+</CodeOrSourceMdx>
+
+## methodOf 绑定对象
+
+使用 `methodOf` 先绑定对象，再通过不同路径调用方法。
+
+<CodeOrSourceMdx language="typescript">
+  {methodOfDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>方法路径</td>
+    </tr>
+    <tr>
+      <td>...args</td>
+      <td><code>unknown[]</code></td>
+      <td>传递给方法的参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(object) => unknown`
+- 描述：调用指定路径方法的函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 method 和 methodOf 两个函数
+2. **核心流程**: method 接收路径和参数 → 返回闭包 → 闭包接收对象并调用路径方法
+3. **关键技术点**: 路径解析、参数预设、method/methodOf 互为反向操作
+4. **数据流向**: 路径 + 参数 → 创建闭包 → 接收对象 → 解析路径 → 调用方法

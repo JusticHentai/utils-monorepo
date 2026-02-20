@@ -1,11 +1,12 @@
+import { action } from 'storybook/actions'
+import mergeChildren from '../../../packages/element-utils/src/mergeChildren'
+
 const basicDemo = () => {
-  return {
-    message: 'mergeChildren 用于合并相邻的纯文本子元素',
-    example: `
-// 输入: ['Hello', ' ', 'World', <span>!</span>]
-// 输出: [<span>Hello World</span>, <span>!</span>]
-    `.trim(),
-  }
+  const children = ['Hello', ' ', 'World', 123]
+  const merged = mergeChildren(children)
+
+  action('原始子元素')(children)
+  action('合并后子元素')(merged)
 }
 
 export default basicDemo

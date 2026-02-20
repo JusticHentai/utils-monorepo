@@ -1,0 +1,54 @@
+import tailDemo from './tailDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# tail
+
+获取除第一个元素外的所有元素。
+
+## 详细介绍
+
+`tail` 返回数组中除第一个元素外的所有元素（新数组）。
+
+**常用场景**：
+- 递归处理（取头尾分离）
+- 跳过首元素
+- 函数式列表处理
+
+## 获取数组尾部
+
+使用 `tail` 获取除第一个元素外的所有元素。
+
+<CodeOrSourceMdx language="typescript">
+  {tailDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：除第一个元素外的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现数组尾部获取
+2. **核心流程**: 返回从索引1开始的数组切片
+3. **关键技术点**: Array.prototype.slice(1) 创建新数组
+4. **数据流向**: 数组 → slice(1) → 返回新数组

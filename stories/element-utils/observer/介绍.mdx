@@ -1,0 +1,252 @@
+import intersectionDemo from './intersectionDemo?raw'
+import mutationDemo from './mutationDemo?raw'
+import resizeDemo from './resizeDemo?raw'
+import performanceDemo from './performanceDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Observer 统一观察器工具库
+
+Observer 是一个功能完善的浏览器观察器统一封装库，整合了多种原生 Web API，提供统一的接口和更好的开发体验。
+
+## 详细介绍
+
+Observer 工具库封装了浏览器原生的四种观察器 API：
+
+- **IntersectionObserver**: 用于异步监测元素与视口的交叉状态
+- **MutationObserver**: 用于监听 DOM 树的变化
+- **ResizeObserver**: 用于监听元素尺寸的变化
+- **PerformanceObserver**: 用于监听性能相关的指标
+
+**优势**：
+- 统一的 API 设计，学习成本低
+- 支持暂停/恢复，灵活控制观察行为
+- TypeScript 类型完善
+
+**相关独立工具**：
+
+基于这些 Observer 封装的便捷工具已拆分为独立模块：
+
+<table>
+  <thead>
+    <tr>
+      <th>分类</th>
+      <th>工具</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>IntersectionObserver</td>
+      <td><code>onEnterViewport</code></td>
+      <td>一次性监听元素进入视口</td>
+    </tr>
+    <tr>
+      <td>IntersectionObserver</td>
+      <td><code>onLeaveViewport</code></td>
+      <td>一次性监听元素离开视口</td>
+    </tr>
+    <tr>
+      <td>IntersectionObserver</td>
+      <td><code>createLazyLoadObserver</code></td>
+      <td>批量懒加载观察器</td>
+    </tr>
+    <tr>
+      <td>MutationObserver</td>
+      <td><code>onAttributeChange</code></td>
+      <td>监听属性变化</td>
+    </tr>
+    <tr>
+      <td>MutationObserver</td>
+      <td><code>onChildListChange</code></td>
+      <td>监听子节点变化</td>
+    </tr>
+    <tr>
+      <td>MutationObserver</td>
+      <td><code>onTextContentChange</code></td>
+      <td>监听文本内容变化</td>
+    </tr>
+    <tr>
+      <td>ResizeObserver</td>
+      <td><code>onElementResize</code></td>
+      <td>监听元素尺寸变化（带防抖）</td>
+    </tr>
+    <tr>
+      <td>ResizeObserver</td>
+      <td><code>onWidthChange</code></td>
+      <td>监听宽度变化</td>
+    </tr>
+    <tr>
+      <td>ResizeObserver</td>
+      <td><code>onHeightChange</code></td>
+      <td>监听高度变化</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>onLCP</code></td>
+      <td>监听 LCP 指标</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>onFID</code></td>
+      <td>监听 FID 指标</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>onCLS</code></td>
+      <td>监听 CLS 指标</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>onFCP</code></td>
+      <td>监听 FCP 指标</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>onLongTask</code></td>
+      <td>监听长任务</td>
+    </tr>
+    <tr>
+      <td>PerformanceObserver</td>
+      <td><code>resourceMonitor</code></td>
+      <td>监听资源加载</td>
+    </tr>
+  </tbody>
+</table>
+
+## IntersectionObserver - 元素可见性检测
+
+用于监听元素与视口或祖先元素的交叉状态。底层使用浏览器原生 IntersectionObserver API，相比传统的 `scroll + getBoundingClientRect()` 方案，性能更优，不会阻塞主线程。
+
+**常用场景**:
+- 懒加载图片和组件
+- 无限滚动列表
+- 曝光统计埋点
+- 动画触发（进入视口时播放）
+
+<CodeOrSourceMdx language="typescript">
+  {intersectionDemo}
+</CodeOrSourceMdx>
+
+## MutationObserver - DOM 变化监听
+
+用于监听 DOM 树的变化，包括子节点增删、属性变化、文本内容变化等。底层使用 MutationObserver API，采用微任务队列批量处理变化，避免频繁回调。
+
+**常用场景**:
+- 监听第三方库对 DOM 的修改
+- 实现撤销/重做功能
+- 表单自动保存
+- 富文本编辑器变化监听
+
+<CodeOrSourceMdx language="typescript">
+  {mutationDemo}
+</CodeOrSourceMdx>
+
+## ResizeObserver - 元素尺寸监听
+
+用于监听元素尺寸变化，比 `window.resize` 事件更精确。底层使用 ResizeObserver API，可以精确监听任意元素的尺寸变化。
+
+**常用场景**:
+- 响应式组件布局
+- 图表/Canvas 自适应
+- 虚拟列表高度计算
+- 编辑器面板拖拽调整
+
+<CodeOrSourceMdx language="typescript">
+  {resizeDemo}
+</CodeOrSourceMdx>
+
+## PerformanceObserver - 性能指标监控
+
+用于监听 Web 性能指标，包括 Google 提出的核心 Web Vitals。底层使用 PerformanceObserver API，可以监听各种性能条目。
+
+**核心指标说明**:
+- **LCP (Largest Contentful Paint)**: 最大内容绘制，衡量加载性能，良好阈值 < 2.5s
+- **FID (First Input Delay)**: 首次输入延迟，衡量交互性，良好阈值 < 100ms
+- **CLS (Cumulative Layout Shift)**: 累积布局偏移，衡量视觉稳定性，良好阈值 < 0.1
+
+<CodeOrSourceMdx language="typescript">
+  {performanceDemo}
+</CodeOrSourceMdx>
+
+## API 参考
+
+<table>
+  <thead>
+    <tr>
+      <th>函数名</th>
+      <th>参数</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>createIntersectionObserver</code></td>
+      <td><code>(target, callback, options?)</code></td>
+      <td>创建可暂停的 IntersectionObserver</td>
+    </tr>
+    <tr>
+      <td><code>createMutationObserver</code></td>
+      <td><code>(target, callback, options?)</code></td>
+      <td>创建可暂停的 MutationObserver</td>
+    </tr>
+    <tr>
+      <td><code>createResizeObserver</code></td>
+      <td><code>(target, callback, options?)</code></td>
+      <td>创建可暂停的 ResizeObserver</td>
+    </tr>
+    <tr>
+      <td><code>createPerformanceObserver</code></td>
+      <td><code>(type, callback, options?)</code></td>
+      <td>创建可暂停的 PerformanceObserver</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值类型
+
+所有 `create*Observer` 函数返回 `PausableObserver` 对象：
+
+```typescript
+interface PausableObserver<T> {
+  /** 观察器实例 */
+  observer: T | null
+  /** 是否正在观察 */
+  isActive: boolean
+  /** 暂停观察 */
+  pause: () => void
+  /** 恢复观察 */
+  resume: () => void
+  /** 停止并断开观察器 */
+  stop: () => void
+}
+```
+
+## 具体实现原理
+
+### 文件结构
+
+```
+observer/
+├── index.ts              # 统一导出入口
+├── interface.ts          # 类型定义
+└── core/
+    ├── intersectionObserver.ts  # IntersectionObserver 封装
+    ├── mutationObserver.ts      # MutationObserver 封装
+    ├── resizeObserver.ts        # ResizeObserver 封装
+    └── performanceObserver.ts   # PerformanceObserver 封装
+```
+
+### 核心流程
+
+1. 调用 `create*Observer` 创建观察器实例
+2. 观察器开始监听目标元素/事件
+3. 变化发生时触发用户回调函数
+4. 支持 `pause/resume` 暂停恢复观察
+5. 调用 `stop` 停止观察
+
+### 关键技术点
+
+- **IntersectionObserver**: 异步回调，不阻塞主线程
+- **MutationObserver**: 微任务队列批量处理变化
+- **ResizeObserver**: 支持 content-box 和 border-box
+- **PerformanceObserver**: 支持 buffered 获取历史条目

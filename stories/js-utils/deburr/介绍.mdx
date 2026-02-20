@@ -1,0 +1,62 @@
+import basicDemo from './basicDemo?raw'
+import extendedDemo from './extendedDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# deburr
+
+将拉丁增补字母和拉丁扩展字母转换为基本拉丁字母，移除组合音标。
+
+## 详细介绍
+
+`deburr` 将带有变音符号的字符（如 é、ü、ñ）转换为对应的基本拉丁字母（e、u、n）。一些特殊字符有特定映射（如 Æ→Ae、ß→ss、Þ→Th）。数学运算符（×、÷）不会被转换。
+
+**常用场景**：
+- 搜索文本标准化（忽略变音符号）
+- URL slug 生成
+- 跨语言文本比较
+- 排序时忽略变音差异
+
+## 基础去音标
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 扩展字符与应用
+
+拉丁扩展字符转换和搜索标准化的实际应用。
+
+<CodeOrSourceMdx language="typescript">
+  {extendedDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：去除变音符号后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `deburr/index.ts` 导出 deburr 函数
+2. **核心流程**: 遍历每个字符 → 查找映射表 → 替换或保留 → NFD 标准化后去除组合音标
+3. **关键技术点**: 字符映射表（拉丁增补 + 扩展A）、`String.prototype.normalize('NFD')`、正则去除 \u0300-\u036f 范围
+4. **数据流向**: 输入字符串 → 逐字符映射替换 → NFD 标准化 → 去除组合音标 → 返回

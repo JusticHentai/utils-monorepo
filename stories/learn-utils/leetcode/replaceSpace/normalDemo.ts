@@ -1,4 +1,4 @@
-import replaceSpace from '@jqxon/learn-utils/leetcode/replaceSpace'
+import replaceSpace from '../../../../packages/learn-utils/src/leetcode/replaceSpace'
 
 export default () => {
   const s = 'We are happy.'

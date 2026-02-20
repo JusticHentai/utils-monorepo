@@ -1,4 +1,4 @@
-import isValidBST from '@jqxon/learn-utils/leetcode/isValidBST'
+import isValidBST from '../../../../packages/learn-utils/src/leetcode/isValidBST'
 
 export default () => {
   // 构建有效的 BST:

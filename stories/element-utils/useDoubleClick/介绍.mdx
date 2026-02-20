@@ -1,0 +1,134 @@
+import indexTsx from './index.tsx?raw'
+import basicDemo from './basicDemo.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useDoubleClick
+
+连续点击处理 Hook，基于 `combo` 实现连击计数，支持鼠标点击和触摸事件。
+
+## 详细介绍
+
+`useDoubleClick` 用于处理元素上的连续点击事件：
+
+1. **每次点击**都会递增连击计数，并立即触发 `onCombo(count, event)` 回调
+2. 当 `delay` 时间内无新点击时，连击结束，触发 `onComboEnd(count)` 回传最终连击次数
+
+调用方可在 `onComboEnd` 中根据 `count` 自行判定单击、双击或多次连击。
+
+**使用场景**：
+- 连击计数（如游戏连击效果）
+- 根据连击次数执行不同逻辑
+- 需要同时支持鼠标和触摸设备的点击交互
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+### basicDemo.tsx
+
+<CodeOrSourceMdx language="tsx">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>onCombo</td>
+      <td><code>(count: number, event: ClickEvent&lt;T&gt;) =&gt; void</code></td>
+      <td>-</td>
+      <td>每次点击立即触发，参数为当前连击次数（从 1 开始递增）</td>
+    </tr>
+    <tr>
+      <td>onComboEnd</td>
+      <td><code>(count: number) =&gt; void</code></td>
+      <td>-</td>
+      <td>连击结束时触发（delay 内无新点击），参数为最终连击次数</td>
+    </tr>
+    <tr>
+      <td>delay</td>
+      <td><code>number</code></td>
+      <td><code>300</code></td>
+      <td>连击判定的时间窗口（毫秒），在此时间内无新点击则判定连击结束</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>handleClick</td>
+      <td><code>(event: MouseEvent&lt;T&gt;) =&gt; void</code></td>
+      <td>绑定到元素的 onClick 事件处理函数</td>
+    </tr>
+    <tr>
+      <td>handleTouch</td>
+      <td><code>(event: TouchEvent&lt;T&gt;) =&gt; void</code></td>
+      <td>绑定到元素的 onTouchEnd 事件处理函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：实现 `useDoubleClick` Hook，基于 `combo` 工具封装连击计数
+- `interface.ts`：定义 `ClickEvent`、`UseDoubleClickOptions`、`UseDoubleClickReturn` 类型
+
+### 核心流程
+
+1. 使用 `useLatest` 保存最新的 options 引用，避免闭包陷阱
+2. 在 `useEffect` 中调用 `combo({ duration, onCombo, onClose })` 创建连击函数实例，保存到 `comboFnRef`
+3. 每次点击调用 `comboFnRef.current()`，`combo` 内部递增计数器并立即触发 `onCombo`，同时重置定时器
+4. `delay` 时间内无新点击时，`combo` 触发 `onClose`，在其中调用 `onComboEnd` 回传最终次数
+
+### 关键技术点
+
+- **复用 `combo` 工具**：核心连击逻辑（计数递增、定时器重置、超时回调）由 `combo` 实现，`useDoubleClick` 只负责 React 层封装
+- **`useLatest`**：保持 options 回调始终为最新引用，避免 `useEffect` 闭包捕获过期值
+- **`useCallback`**：`processClick`、`handleClick`、`handleTouch` 均使用 `useCallback`，保证函数引用稳定
+- **`comboCountRef` 独立计数**：`combo` 内部的计数变量在 `onClose` 前已归零，因此需要 `comboCountRef` 在 `onCombo` 中记录最新值，供 `onClose` 判定使用
+
+### 数据流向
+
+```
+点击事件 → handleClick / handleTouch → event.preventDefault()
+                    ↓
+              processClick(event) → lastEventRef = event
+                    ↓
+              comboFnRef.current()（调用 combo 实例）
+                    ↓
+              combo 内部: count++ → onCombo(count)
+                    ↓                     ↓
+              重置 setTimeout         comboCountRef = count
+                                      options.onCombo(count, event)
+                    ↓
+              delay 内无新点击 → combo 内部: count=0 → onClose()
+                    ↓
+              options.onComboEnd(comboCountRef)
+                    ↓
+              重置 comboCountRef=0, lastEventRef=null
+```

@@ -1,0 +1,118 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useClickAway
+
+监听目标元素外的点击事件。
+
+## 详细介绍
+
+useClickAway 用于检测点击是否发生在目标元素外部，常用于实现点击外部关闭下拉菜单、弹窗等功能。支持监听多个目标元素和多种事件类型。
+
+### 使用场景
+
+- 下拉菜单点击外部关闭
+- 弹窗点击外部关闭
+- 侧边栏点击外部收起
+- 右键菜单点击外部关闭
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>onClickAway</td>
+      <td><code>(event: T) =&gt; void</code></td>
+      <td>-</td>
+      <td>点击外部时的回调</td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td><code>BasicTarget | BasicTarget[]</code></td>
+      <td>-</td>
+      <td>目标元素（支持数组）</td>
+    </tr>
+    <tr>
+      <td>eventName</td>
+      <td><code>DocumentEventKey | DocumentEventKey[]</code></td>
+      <td><code>'click'</code></td>
+      <td>事件名称</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 监听 document 上的点击事件
+2. 检查点击目标是否在指定元素内部
+3. 如果点击在所有目标元素外部，则触发回调
+4. 支持多个目标元素和多种事件类型
+
+### 关键实现细节
+
+#### 子元素点击检测
+
+使用 `Element.contains()` 方法判断点击位置：
+
+```ts
+const isInsideTarget = targets.some((item) => {
+  const targetElement = getTargetElement(item)
+  return !targetElement || targetElement.contains(event.target as Node)
+})
+```
+
+`contains()` 方法的特性：
+- 如果 `event.target` 是目标元素**本身**，返回 `true`
+- 如果 `event.target` 是目标元素的**任意子孙节点**，也返回 `true`
+- 只有点击目标元素**外部**时才返回 `false`
+
+这意味着点击目标元素或其任何子元素都**不会触发** `onClickAway` 回调。
+
+#### 多目标元素支持
+
+通过 `Array.isArray()` 统一处理单个和多个目标：
+
+```ts
+const targets = Array.isArray(target) ? target : [target]
+```
+
+使用 `some()` 方法，只要点击在**任意一个**目标元素内部，就不触发回调。
+
+#### 多事件类型支持
+
+支持监听多种事件（如 `click`、`mousedown`、`touchstart` 等）：
+
+```ts
+const eventNames = Array.isArray(eventNameRef.current)
+  ? eventNameRef.current
+  : [eventNameRef.current]
+
+const cleanups = eventNames.map((event) =>
+  createEventListener(document, event, handler)
+)
+```
+
+#### 使用 useLatest 保持引用稳定
+
+```ts
+const onClickAwayRef = useLatest(onClickAway)
+const eventNameRef = useLatest(eventName)
+```
+
+确保回调函数始终是最新的，同时避免不必要的 effect 重新执行。

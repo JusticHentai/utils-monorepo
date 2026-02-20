@@ -1,0 +1,90 @@
+import propertyOfDemo from './propertyOfDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# propertyOf
+
+与 property 相反，创建一个函数，返回给定路径在指定对象上的值
+
+## 详细介绍
+
+`propertyOf` 与 `property` 的柯里化参数顺序相反。
+
+**与 `property` 的区别**：
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>先固定</th>
+      <th>返回的函数接收</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>property</code></td>
+      <td>路径</td>
+      <td>不同对象</td>
+      <td>对多个对象提取同一属性，如 <code>objects.map(property('a.b'))</code></td>
+    </tr>
+    <tr>
+      <td><code>propertyOf</code></td>
+      <td>对象</td>
+      <td>不同路径</td>
+      <td>对同一对象提取多个属性，如 <code>paths.map(propertyOf(obj))</code></td>
+    </tr>
+  </tbody>
+</table>
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `propertyOf` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {propertyOfDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>要查询的对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`((path: string | string[])`
+- 描述：返回新的函数
+
+## 具体实现原理
+
+1. **文件职责**: `propertyOf/index.ts` 导出 propertyOf 函数
+2. **核心流程**: 与 property 相反，创建一个函数，返回给定路径在指定对象上的值
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

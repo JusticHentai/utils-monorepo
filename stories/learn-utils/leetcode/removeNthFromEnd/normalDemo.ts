@@ -1,4 +1,4 @@
-import removeNthFromEnd from '@jqxon/learn-utils/leetcode/removeNthFromEnd'
+import removeNthFromEnd from '../../../../packages/learn-utils/src/leetcode/removeNthFromEnd'
 
 export default () => {
   // 创建链表: 1 -> 2 -> 3 -> 4 -> 5

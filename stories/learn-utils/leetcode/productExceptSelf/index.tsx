@@ -6,13 +6,13 @@ const productExceptSelfDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('除自身以外数组的乘积')(res)
+          action('normal')(res)
         }}
       >
-        除自身以外数组的乘积
+        normal
       </div>
     </div>
   )

@@ -1,0 +1,52 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# countBy
+
+按迭代器返回值对集合元素进行计数。
+
+## 详细介绍
+
+`countBy` 遍历集合中的每个元素，对每个元素调用迭代器函数，以返回值作为键进行计数统计。常用于数据统计分析场景，如统计各分类出现的次数。
+
+## 按条件计数
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要计数的集合</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) =&gt; K</code></td>
+      <td>分组依据的迭代器函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Record<K, number>`
+- 描述：键为分组标识，值为出现次数
+
+## 具体实现原理
+
+1. **文件职责**: `countBy/index.ts` 导出 `countBy` 函数
+2. **核心流程**: 遍历集合 → 对每个元素执行 iteratee → 以返回值为键累加计数
+3. **关键技术点**: 对象作为计数器，`reduce` 模式
+4. **数据流向**: 集合元素 → iteratee 计算分组键 → 累加到结果对象的对应键

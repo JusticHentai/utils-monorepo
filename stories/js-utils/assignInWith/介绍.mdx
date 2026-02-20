@@ -1,0 +1,103 @@
+import assignInWithDemo from './assignInWithDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# assignInWith
+
+类似于 assignIn，但可以自定义分配逻辑
+
+## 详细介绍
+
+`assignInWith` 在 `assignIn` 的基础上增加了 `customizer` 自定义分配函数，两者的关系：
+
+- `assignIn`：使用 `for...in` 遍历来源对象（含继承属性），**直接覆盖**目标属性
+- `assignInWith`：同样使用 `for...in` 遍历（含继承属性），但每个属性的赋值**由 customizer 决定**
+
+### customizer 函数签名
+
+```ts
+(objValue, srcValue, key, object, source) => result
+```
+
+- `customizer` 返回非 `undefined` 值时，使用该返回值作为最终值
+- `customizer` 返回 `undefined` 时，回退到默认行为（直接使用 source 值）
+
+### assignIn vs assignInWith 对比
+
+```ts
+function Foo() { this.a = 1; this.b = 'hello' }
+Foo.prototype.inherited = 'from proto'
+const source = new Foo()
+
+// assignIn：直接覆盖
+assignIn({ a: 99 }, source)
+// => { a: 1, b: 'hello', inherited: 'from proto' }
+
+// assignInWith：保留目标已有值
+assignInWith({ a: 99 }, source, (objVal, srcVal) =>
+  objVal !== undefined ? objVal : srcVal
+)
+// => { a: 99, b: 'hello', inherited: 'from proto' }
+```
+
+**常用场景**：
+- 合并对象时需要自定义冲突解决策略（如保留已有值、值求和、拼接字符串等）
+- 需要按 key 名称区分不同的合并逻辑
+- 合并含继承属性的对象，同时需要对值进行转换处理
+
+## 基础用法
+
+点击按钮查看 `assignInWith` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {assignInWithDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>T extends Record&lt;string, unknown&gt;</code></td>
+      <td>目标对象</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td><code>Record&lt;string, unknown&gt;</code></td>
+      <td>来源对象（含继承属性）</td>
+    </tr>
+    <tr>
+      <td>customizer</td>
+      <td><code>(objValue, srcValue, key, object, source) =&gt; unknown</code></td>
+      <td>自定义分配函数，返回 undefined 时回退到 source 值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：返回修改后的目标对象
+
+## 具体实现原理
+
+1. **文件职责**: `assignInWith/index.ts` 导出 assignInWith 函数
+2. **核心流程**: 使用 `for...in` 遍历 source（含继承属性），对每个 key 调用 `customizer(objValue, srcValue, key, object, source)`
+3. **关键技术点**: customizer 返回非 `undefined` 时使用返回值，返回 `undefined` 时回退使用 `source[key]`
+4. **与 assignIn 的区别**: 在赋值前增加了 customizer 调用，提供自定义分配能力

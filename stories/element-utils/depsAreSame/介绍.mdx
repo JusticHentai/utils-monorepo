@@ -1,0 +1,59 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# depsAreSame
+
+比较两个依赖数组是否相同。
+
+## 详细介绍
+
+`depsAreSame` 用于比较两个 React 依赖数组是否相同，使用 `Object.is` 进行逐项比较。这是 React hooks 内部用于判断依赖是否变化的方法。
+
+常用场景：
+- 自定义 hooks 中判断依赖变化
+- 实现自定义的 memoization 逻辑
+- 配合 createEffectWithTarget 等工具使用
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>oldDeps</td>
+      <td><code>DependencyList</code></td>
+      <td>旧依赖数组</td>
+    </tr>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>新依赖数组</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回 `boolean`，如果两个数组相同则返回 `true`。
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 包含比较函数的实现
+2. **核心流程**: 
+   - 首先检查是否是同一个引用
+   - 然后逐项使用 Object.is 比较
+3. **关键技术点**: 
+   - 使用 Object.is 而非 === 进行比较
+   - Object.is 能正确处理 NaN 和 +0/-0

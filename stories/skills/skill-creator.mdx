@@ -1,0 +1,50 @@
+import SkillCreator from '../../skills/skill-creator/SKILL.md?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# skill-creator
+
+- 技能创建指南
+
+## SKILL.md
+
+<details>
+<summary>点击展开 SKILL.md 源码</summary>
+
+<CodeOrSourceMdx language="markdown">
+  {SkillCreator}
+</CodeOrSourceMdx>
+
+</details>
+
+## 技能详解
+
+### 概述
+
+当需要创建新技能（或更新现有技能）以扩展 AI 能力、添加专业知识、工作流程或工具集成时使用此技能。
+
+### 目录结构
+
+```
+skill-creator/
+├── SKILL.md                    # 技能创建指南主文档
+├── references/
+│   ├── output-patterns.md      # 输出模式参考
+│   └── workflows.md            # 工作流程参考
+└── scripts/
+    ├── init_skill.py           # 初始化技能脚本
+    ├── package_skill.py        # 打包技能脚本
+    └── quick_validate.py       # 快速验证脚本
+```
+
+### 核心功能
+
+- **技能模板生成**：通过 `init_skill.py` 快速生成技能目录结构
+- **格式验证**：通过 `quick_validate.py` 检查技能文件格式是否合规
+- **打包发布**：通过 `package_skill.py` 打包技能用于分发
+- **参考文档**：提供输出模式和工作流程的最佳实践
+
+### 使用场景
+
+- 需要为特定领域创建编码规范
+- 需要添加自动化工作流程
+- 需要扩展 AI 代理的专业能力

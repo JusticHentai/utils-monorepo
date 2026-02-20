@@ -1,0 +1,93 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# throttle
+
+创建一个节流函数，在指定时间内只执行一次。
+
+## 详细介绍
+
+`throttle` 函数用于限制函数的执行频率，保证在指定时间间隔内最多执行一次。
+
+**涉及的知识点**：
+- 时间戳：记录上次执行时间
+- 定时器：处理 trailing 调用
+- 闭包：保存状态和上下文
+
+**常用场景**：
+- 滚动事件：限制滚动监听的执行频率
+- 鼠标移动：限制 mousemove 事件处理
+- 按钮点击：防止短时间内多次点击
+
+**与 debounce 的区别**：
+- throttle：固定频率执行，保证一定时间内至少执行一次
+- debounce：延迟执行，连续触发时重置计时器
+
+## 配置选项
+
+<table>
+  <thead>
+    <tr>
+      <th>选项</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>leading</td>
+      <td><code>boolean</code></td>
+      <td>true</td>
+      <td>是否在延迟开始前调用</td>
+    </tr>
+    <tr>
+      <td>trailing</td>
+      <td><code>boolean</code></td>
+      <td>true</td>
+      <td>是否在延迟结束后调用</td>
+    </tr>
+  </tbody>
+</table>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>Function</code></td>
+      <td>要节流的函数</td>
+    </tr>
+    <tr>
+      <td>wait</td>
+      <td><code>number</code></td>
+      <td>节流时间间隔（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>ThrottleOptions</code></td>
+      <td>配置选项</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+返回的节流函数包含以下方法：
+- `cancel()` - 取消延迟的函数调用
+- `flush()` - 立即执行延迟的函数调用
+
+## 实现原理
+
+1. 记录上次执行时间
+2. 每次调用时检查是否超过等待时间
+3. 超过则立即执行并更新时间戳
+4. 未超过则设置定时器在剩余时间后执行
+5. leading 和 trailing 控制首尾执行行为

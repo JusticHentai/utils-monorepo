@@ -1,0 +1,59 @@
+import forInDemo from './forInDemo?raw'
+import forOwnDemo from './forOwnDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# forIn
+
+遍历对象的所有可枚举属性（包括继承的）。同时提供 forInRight、forOwn、forOwnRight。
+
+## 详细介绍
+
+`forIn` 使用 `for...in` 遍历对象所有可枚举属性（包括原型链上继承的）。`forOwn` 仅遍历自有属性。两者都支持 Right 版本（逆序遍历）。
+
+## forIn - 遍历包括继承属性
+
+<CodeOrSourceMdx language="typescript">
+  {forInDemo}
+</CodeOrSourceMdx>
+
+## forOwn - 仅遍历自有属性
+
+<CodeOrSourceMdx language="typescript">
+  {forOwnDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>T</code></td>
+      <td>要遍历的对象</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value, key, object) =&gt; unknown</code></td>
+      <td>遍历回调</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：原对象
+
+## 具体实现原理
+
+1. **文件职责**: `forIn/index.ts` 导出 forIn、forInRight、forOwn、forOwnRight
+2. **核心流程**: forIn 使用 `for...in`，forOwn 使用 `Object.keys` + for 循环
+3. **关键技术点**: `for...in` vs `Object.keys` 区分继承属性
+4. **数据流向**: 对象属性 → 遍历 → iteratee 回调 → 返回原对象

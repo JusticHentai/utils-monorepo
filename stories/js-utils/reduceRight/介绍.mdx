@@ -1,0 +1,73 @@
+import reduceRightDemo from './reduceRightDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# reduceRight
+
+从右到左遍历集合中的元素，每次迭代返回累积值
+
+## 详细介绍
+
+`reduceRight` 从右到左遍历集合中的元素，每次迭代返回累积值。
+
+**常用场景**：
+- 数据转换和过滤
+- 集合查询和检索
+- 条件聚合计算
+
+## 基础用法
+
+点击按钮查看 `reduceRight` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {reduceRightDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>unknown</code></td>
+      <td>要迭代的集合</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>unknown</code></td>
+      <td>每次迭代调用的函数</td>
+    </tr>
+    <tr>
+      <td>accumulator</td>
+      <td><code>unknown</code></td>
+      <td>初始值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回累积值
+
+## 具体实现原理
+
+1. **文件职责**: `reduceRight/index.ts` 导出 reduceRight 函数
+2. **核心流程**: 从右到左遍历集合中的元素，每次迭代返回累积值
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

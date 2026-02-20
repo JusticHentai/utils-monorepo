@@ -1,4 +1,4 @@
-import rob from '@jqxon/learn-utils/leetcode/rob2'
+import rob from '../../../../packages/learn-utils/src/leetcode/rob2'
 
 export default () => {
   // 构建二叉树:

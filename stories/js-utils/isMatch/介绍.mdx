@@ -1,0 +1,68 @@
+import isMatchDemo from './isMatchDemo?raw'
+import matchesDemo from './matchesDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isMatch
+
+执行部分深度比较，检查对象是否包含匹配的属性值。
+
+## 详细介绍
+
+`isMatch` 检查对象是否包含 source 中所有属性的匹配值。还提供 `isMatchWith`（自定义比较器）和 `matches`（创建匹配谓词）。
+
+**常用场景**：
+- 过滤符合条件的对象
+- 模式匹配
+- 对象属性子集验证
+
+## 基础属性匹配
+
+使用 `isMatch` 检查对象是否包含指定的属性值。
+
+<CodeOrSourceMdx language="typescript">
+  {isMatchDemo}
+</CodeOrSourceMdx>
+
+## matches 创建匹配谓词
+
+使用 `matches` 创建一个匹配谓词函数，可用于 filter 等场景。
+
+<CodeOrSourceMdx language="typescript">
+  {matchesDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要检查的对象</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要匹配的属性模式</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：对象是否包含匹配的属性值
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 isMatch、isMatchWith、matches 三个函数
+2. **核心流程**: 遍历 source 的属性 → 递归深度比较每个属性值
+3. **关键技术点**: 部分深度比较，matches 通过闭包创建谓词函数
+4. **数据流向**: 对象 + 模式 → 遍历模式属性 → 深度比较每个值 → 返回布尔值

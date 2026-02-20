@@ -1,0 +1,73 @@
+import lastIndexOfDemo from './lastIndexOfDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# lastIndexOf
+
+获取 value 在数组中最后一次出现的索引
+
+## 详细介绍
+
+`lastIndexOf` 获取 value 在数组中最后一次出现的索引。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `lastIndexOf` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {lastIndexOfDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>要搜索的数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要搜索的值</td>
+    </tr>
+    <tr>
+      <td>fromIndex</td>
+      <td><code>unknown</code></td>
+      <td>搜索的起始索引，默认为 array.length - 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回值的索引，未找到则返回 -1
+
+## 具体实现原理
+
+1. **文件职责**: `lastIndexOf/index.ts` 导出 lastIndexOf 函数
+2. **核心流程**: 获取 value 在数组中最后一次出现的索引
+3. **关键技术点**: 使用 Math 内置方法
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

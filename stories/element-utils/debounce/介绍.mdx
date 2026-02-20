@@ -1,14 +1,41 @@
-import basicDemo from '../../../packages/element-utils/src/debounce/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import immediateDemo from './immediateDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # debounce
 
-debounce 是一个防抖函数，用于限制函数的执行频率。
+防抖函数，用于限制函数的执行频率，在连续触发时只执行最后一次。
+
+## 详细介绍
+
+防抖（debounce）是一种函数调用控制策略，核心思想是：**在事件被连续触发时，只有当触发间隔超过指定时间后，才执行函数**。
+
+**涉及的知识点**：
+- 闭包：保存定时器引用和执行状态
+- setTimeout/clearTimeout：实现延迟执行和重置计时
+- 高阶函数：接收函数返回函数
+
+**常用场景**：
+- 搜索框输入：用户停止输入后才发起搜索请求
+- 窗口 resize：调整完成后才重新计算布局
+- 表单验证：输入停止后才进行校验
+- 按钮点击：防止重复提交
+
+**优势**：
+- 减少不必要的函数调用，节省计算资源
+- 降低 API 请求频率，减轻服务器压力
+- 提升用户体验，避免页面频繁刷新
 
 ## 基础示例
 
 <CodeOrSourceMdx language="typescript">
   {basicDemo}
+</CodeOrSourceMdx>
+
+## 立即执行示例
+
+<CodeOrSourceMdx language="typescript">
+  {immediateDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
@@ -39,3 +66,23 @@ debounce 是一个防抖函数，用于限制函数的执行频率。
 
 - 类型：`(...params: any[]) => void`
 - 描述：返回防抖后的函数
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 debounce 函数实现和类型定义
+
+### 核心流程
+
+1. 调用 `debounce({ cb, duration, immediate })` 创建防抖函数
+2. 返回的函数被调用时，清除之前的定时器
+3. 根据 `immediate` 参数决定执行时机：
+   - `immediate=true`：首次调用立即执行，后续调用重置计时
+   - `immediate=false`：等待 duration 后执行最后一次调用
+
+### 关键技术点
+
+- 使用闭包保存 `timeout`（定时器）、`canExecute`（是否可执行）、`pendingParams`（待执行参数）
+- `clearTimeout` 清除前一个定时器实现"重新计时"
+- `immediate` 模式使用 `canExecute` 标记控制首次执行

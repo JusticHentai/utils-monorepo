@@ -8,10 +8,6 @@ const useUpdateEffect = (
   effect: EffectCallback,
   deps?: DependencyList
 ): void => {
-  if (typeof effect !== 'function') {
-    throw new Error('effect must be a function')
-  }
-
   // 标记是否是首次渲染
   const isFirstRenderRef = useRef<boolean>(true)
 

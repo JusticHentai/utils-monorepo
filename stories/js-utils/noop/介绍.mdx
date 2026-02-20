@@ -1,0 +1,50 @@
+import noopDemo from './noopDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# noop
+
+空函数，不执行任何操作。
+
+## 详细介绍
+
+`noop` 是一个空函数，不接受参数也不返回值。常用作默认回调或占位函数。
+
+**常用场景**：
+- 默认回调函数
+- 禁用某些操作
+- 占位函数
+
+## 空函数
+
+`noop` 不执行任何操作，常用作默认回调。
+
+<CodeOrSourceMdx language="typescript">
+  {noopDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`void`
+- 描述：undefined
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 导出一个空函数
+2. **核心流程**: 不执行任何操作，返回 undefined
+3. **关键技术点**: 简单的空函数实现
+4. **数据流向**: 无输入 → 无操作 → 返回 undefined

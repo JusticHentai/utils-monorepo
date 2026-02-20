@@ -1,0 +1,68 @@
+import sampleDemo from './sampleDemo?raw'
+import sampleSizeDemo from './sampleSizeDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sample
+
+从集合中随机获取元素。
+
+## 详细介绍
+
+`sample` 从集合中随机获取一个元素。`sampleSize` 随机获取 n 个元素。
+
+**常用场景**：
+- 随机抽样
+- 随机推荐
+- 测试数据生成
+
+## 随机获取单个元素
+
+使用 `sample` 从数组中随机获取一个元素。
+
+<CodeOrSourceMdx language="typescript">
+  {sampleDemo}
+</CodeOrSourceMdx>
+
+## 随机获取多个元素
+
+使用 `sampleSize` 从数组中随机获取指定数量的元素。
+
+<CodeOrSourceMdx language="typescript">
+  {sampleSizeDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要抽样的集合</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>抽样数量（sampleSize 使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined` / `T[]`
+- 描述：随机获取的元素
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 sample 和 sampleSize
+2. **核心流程**: sample 随机索引取一个元素；sampleSize 使用 Fisher-Yates 洗牌取前 n 个
+3. **关键技术点**: Math.random 生成随机索引，Fisher-Yates 算法保证均匀分布
+4. **数据流向**: 集合 → 随机选取 → 返回元素

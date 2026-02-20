@@ -1,11 +1,21 @@
-import { DemoBlock } from '@jqxon/storybook-utils'
+import { action } from 'storybook/actions'
+import '../../../.css/index.css'
 import normalDemo from './normalDemo'
 
-export default function RemoveNthFromEndDemo() {
+const removeNthFromEndDemo = () => {
   return (
-    <DemoBlock
-      title="删除链表的倒数第 N 个结点"
-      demos={[{ title: '基础示例', fn: normalDemo }]}
-    />
+    <div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
+      </div>
+    </div>
   )
 }
+
+export default removeNthFromEndDemo

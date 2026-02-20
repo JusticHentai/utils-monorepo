@@ -1,0 +1,100 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useGetState
+
+给 useState 增加了一个获取当前值的方法。
+
+## 详细介绍
+
+`useGetState` 在 useState 的基础上，增加了一个 `getState` 方法，可以在任何时候获取到最新的状态值，避免闭包陷阱。
+
+常用场景：
+- setTimeout/setInterval 中获取最新状态
+- 异步回调中获取最新状态
+- 事件处理函数中获取最新状态
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialState</td>
+      <td><code>S | (() =&gt; S)</code></td>
+      <td>初始状态</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>索引</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td><code>S</code></td>
+      <td>当前状态</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td><code>Dispatch&lt;SetStateAction&lt;S&gt;&gt;</code></td>
+      <td>设置状态函数</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td><code>() =&gt; S</code></td>
+      <td>获取当前状态函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：实现 `useGetState` Hook，在 `useState` 基础上通过 `useLatest` 提供获取最新状态的能力
+
+### 核心流程
+
+1. 使用 `useState` 管理状态值
+2. 使用 `useLatest` 将 `state` 保存到 ref 中，始终指向最新值
+3. 通过 `useCallback` 创建稳定的 `getState` 函数，读取 `stateRef.current`
+4. 返回 `[state, setState, getState]` 元组
+
+### 关键技术点
+
+- **`useLatest`**：将 state 同步到 ref，使得 `getState` 在任何闭包中都能获取最新值
+- **`useCallback(() => stateRef.current, [])`**：空依赖保证函数引用稳定，不触发消费组件的重渲染
+- **函数重载**：提供有参和无参两种类型签名，支持 `useGetState()` 和 `useGetState(initialState)`
+
+### 数据流向
+
+```
+useState(initialState) → state
+       ↓
+useLatest(state) → stateRef（始终同步最新值）
+       ↓
+getState = useCallback(() => stateRef.current) → 读取最新值
+       ↓
+返回 [state, setState, getState]
+```

@@ -6,13 +6,13 @@ const maxProfitDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('买卖股票的最佳时机')(res)
+          action('normal')(res)
         }}
       >
-        买卖股票的最佳时机
+        normal
       </div>
     </div>
   )

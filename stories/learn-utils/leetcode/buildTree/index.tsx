@@ -1,11 +1,21 @@
-import { DemoBlock } from '@jqxon/storybook-utils'
+import { action } from 'storybook/actions'
+import '../../../.css/index.css'
 import normalDemo from './normalDemo'
 
-export default function BuildTreeDemo() {
+const buildTreeDemo = () => {
   return (
-    <DemoBlock
-      title="从前序与中序遍历序列构造二叉树"
-      demos={[{ title: '基础示例', fn: normalDemo }]}
-    />
+    <div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
+      </div>
+    </div>
   )
 }
+
+export default buildTreeDemo

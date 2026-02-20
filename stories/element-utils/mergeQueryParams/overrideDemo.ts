@@ -1,12 +1,16 @@
+import { action } from 'storybook/actions'
 import mergeQueryParams from '../../../packages/element-utils/src/mergeQueryParams'
 
 const overrideDemo = () => {
-  const sourceUrl = 'https://www.example.com?a=1&b=2'
-  const targetUrl = 'https://www.target.com?a=override&c=3'
+  const sourceUrl = 'https://source.com?a=new&b=2'
+  const targetUrl = 'https://target.com/path?a=old&c=3'
 
   const result = mergeQueryParams(sourceUrl, targetUrl)
 
-  return { mergedUrl: result, note: '参数 a 被覆盖' }
+  action('源 URL')(sourceUrl)
+  action('目标 URL')(targetUrl)
+  action('合并结果（a 被覆盖）')(result)
+  // 结果: https://target.com/path?a=new&c=3&b=2
 }
 
 export default overrideDemo

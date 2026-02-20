@@ -6,13 +6,13 @@ const isValidDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('有效的括号')(res)
+          action('normal')(res)
         }}
       >
-        有效的括号测试
+        normal
       </div>
     </div>
   )

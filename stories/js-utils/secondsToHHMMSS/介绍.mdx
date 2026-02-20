@@ -1,0 +1,25 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# secondsToHHMMSS
+
+secondsToHHMMSS 是一个用于将秒数转换为时分秒数字数组的函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### seconds
+
+- 类型：`number`
+- 描述：要转换的秒数
+
+### 返回值
+
+- 类型：`number[]`
+- 描述：数字数组格式的时间 [时, 时, 分, 分, 秒, 秒]
+- 示例：126秒 → [0, 0, 0, 2, 0, 6] 表示 00:02:06

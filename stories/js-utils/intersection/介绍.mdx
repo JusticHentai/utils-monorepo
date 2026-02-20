@@ -1,0 +1,47 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# intersection
+
+创建交集数组。
+
+## 详细介绍
+
+`intersection` 返回所有数组中共有的元素。`intersectionBy` 按迭代器比较。`intersectionWith` 按比较函数比较。
+
+## 数组交集
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>arrays</td>
+      <td><code>T[][]</code></td>
+      <td>要计算交集的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：交集数组
+
+## 具体实现原理
+
+1. **文件职责**: `intersection/index.ts` 导出 intersection、intersectionBy、intersectionWith
+2. **核心流程**: 以第一个数组为基准，过滤出在所有其他数组中都存在的元素
+3. **关键技术点**: Set 优化查找、iteratee 转换
+4. **数据流向**: 多个数组 → 以首数组为基准 → 过滤共有元素 → 返回交集

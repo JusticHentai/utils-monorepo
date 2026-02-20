@@ -1,0 +1,59 @@
+import removeDemo from './removeDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# remove
+
+移除满足条件的数组元素（原地修改）。
+
+## 详细介绍
+
+`remove` 移除数组中所有满足谓词函数的元素，直接修改原数组，返回被移除的元素。
+
+**常用场景**：
+- 按条件批量删除元素
+- 数据过滤（需要保留被删除项）
+- 列表项管理
+
+## 条件移除
+
+使用 `remove` 移除数组中满足条件的元素。
+
+<CodeOrSourceMdx language="typescript">
+  {removeDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要修改的数组</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value, index, array) => boolean</code></td>
+      <td>断言函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：被移除的元素数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现条件元素移除
+2. **核心流程**: 遍历数组 → 执行谓词 → 匹配则从原数组移除并收集
+3. **关键技术点**: 原地修改数组，反向遍历避免索引偏移
+4. **数据流向**: 数组 + 谓词 → 遍历判断 → 移除匹配项 → 返回被移除数组

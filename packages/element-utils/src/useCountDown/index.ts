@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { COUNT_DOWN_STATUS, UseCountDownProps } from './interface'
+import { COUNT_DOWN_STATUS, UseCountDownOptions } from './interface'
 
 /**
  * 倒计时 Hook
  */
-const useCountDown = (options: UseCountDownProps) => {
+const useCountDown = (options: UseCountDownOptions) => {
   const { initialSeconds } = options
 
   // 剩余秒数

@@ -1,0 +1,98 @@
+import isPlainObjectDemo from './isPlainObjectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isPlainObject
+
+检查值是否为普通对象。
+
+## 详细介绍
+
+`isPlainObject` 判断一个值是否为**普通对象**——即由 `{}` 字面量、`new Object()` 或 `Object.create(null)` 创建的对象，而非 `new Date()`、`new Array()` 等特殊对象。
+
+**常用场景**：
+- 深拷贝/深合并时区分普通对象和特殊对象（Date、RegExp 等需要特殊处理）
+- 配置对象验证：确保传入的是纯数据对象
+- 序列化前检查：只有普通对象才能安全地 JSON 序列化
+
+## 普通对象检测
+
+使用 `isPlainObject` 检测各种值是否为普通对象。
+
+<CodeOrSourceMdx language="typescript">
+  {isPlainObjectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要检查的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`value is Record<string, unknown>`
+- 描述：值是否为普通对象
+
+## 具体实现原理
+
+分三层判断：
+
+### 第一层：基础过滤
+
+```js
+if (value == null || typeof value !== 'object') return false
+```
+
+排除 `null`、`undefined`、数字、字符串、函数等非对象值。
+
+### 第二层：原型为 null
+
+```js
+const proto = Object.getPrototypeOf(value)
+if (proto === null) return true
+```
+
+`Object.create(null)` 创建的对象没有原型，也算普通对象。
+
+### 第三层：构造函数三重验证
+
+从原型上取到 `constructor`，然后做三个判断：
+
+```js
+typeof Ctor === 'function' &&
+Ctor instanceof Ctor &&
+Function.prototype.toString.call(Ctor) === Function.prototype.toString.call(Object)
+```
+
+**① `typeof Ctor === 'function'`** — 构造函数必须是函数
+
+如果原型上没有 `constructor`（被删除了），`Ctor` 会是 `false`（因为 `hasOwnProperty` 返回 false，`&&` 短路），直接排除。
+
+**② `Ctor instanceof Ctor`** — 构造函数是自身的实例
+
+这是最巧妙的一步。只有 `Object` 满足这个条件：
+
+```js
+Object instanceof Object   // true  ← Object 的原型链: Object → Function.prototype → Object.prototype ✓
+Array instanceof Array     // false ← Array 的原型链: Array → Function.prototype → Object.prototype（没有 Array.prototype）
+Date instanceof Date       // false
+```
+
+`Object` 之所以特殊，是因为 `Function.prototype` 的原型是 `Object.prototype`，形成了闭环。
+
+**③ `Function.prototype.toString.call(Ctor) === Function.prototype.toString.call(Object)`** — 源码字符串一致
+
+处理**跨 iframe/realm** 的情况。不同 iframe 中的 `Object` 不是同一个引用（`===` 会失败），但它们的源码字符串都是 `'function Object() { [native code] }'`，所以通过比较 toString 结果来确认。

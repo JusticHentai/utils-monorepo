@@ -1,4 +1,4 @@
-import isPalindrome from '@jqxon/learn-utils/leetcode/isPalindrome'
+import isPalindrome from '../../../../packages/learn-utils/src/leetcode/isPalindrome'
 
 export default () => {
   // 创建回文链表: 1 -> 2 -> 2 -> 1

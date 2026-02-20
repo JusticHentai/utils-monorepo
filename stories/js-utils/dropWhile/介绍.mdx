@@ -1,0 +1,68 @@
+import dropWhileDemo from './dropWhileDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# dropWhile
+
+创建一个切片数组，去除数组中从起点开始到谓词函数返回假值结束的元素
+
+## 详细介绍
+
+`dropWhile` 创建一个切片数组，去除数组中从起点开始到谓词函数返回假值结束的元素。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `dropWhile` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {dropWhileDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>unknown</code></td>
+      <td>每次迭代调用的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回数组的剩余切片
+
+## 具体实现原理
+
+1. **文件职责**: `dropWhile/index.ts` 导出 dropWhile 函数
+2. **核心流程**: 创建一个切片数组，去除数组中从起点开始到谓词函数返回假值结束的元素
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

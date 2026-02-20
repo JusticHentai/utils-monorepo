@@ -6,13 +6,13 @@ const subsetsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('子集')(res)
+          action('normal')(res)
         }}
       >
-        子集 [1,2,3]
+        normal
       </div>
     </div>
   )

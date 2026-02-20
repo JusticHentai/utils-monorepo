@@ -6,13 +6,13 @@ const SchedulerDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await normalDemo()
-          action('并发调度器')(res)
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
         }}
       >
-        并发调度器测试（等待约2秒）
+        normal
       </div>
     </div>
   )

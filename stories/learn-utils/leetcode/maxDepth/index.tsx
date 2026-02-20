@@ -6,13 +6,13 @@ const maxDepthDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('二叉树最大深度')(res)
+          action('normal')(res)
         }}
       >
-        二叉树最大深度
+        normal
       </div>
     </div>
   )

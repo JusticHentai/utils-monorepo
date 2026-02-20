@@ -1,0 +1,73 @@
+import delayDemo from './delayDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# delay
+
+延迟 wait 毫秒后调用 func
+
+## 详细介绍
+
+`delay` 延迟 wait 毫秒后调用 func。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `delay` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {delayDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>unknown</code></td>
+      <td>要延迟的函数</td>
+    </tr>
+    <tr>
+      <td>wait</td>
+      <td><code>unknown</code></td>
+      <td>延迟的毫秒数</td>
+    </tr>
+    <tr>
+      <td>args</td>
+      <td><code>unknown</code></td>
+      <td>调用时传递的参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回计时器 id
+
+## 具体实现原理
+
+1. **文件职责**: `delay/index.ts` 导出 delay 函数
+2. **核心流程**: 延迟 wait 毫秒后调用 func
+3. **关键技术点**: 使用 typeof 运算符进行类型检查
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

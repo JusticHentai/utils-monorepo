@@ -1,0 +1,37 @@
+import successDemo from './successDemo?raw'
+import failDemo from './failDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# retryFormat
+
+retryFormat 是一个用于将已经返回 `[res, err]` 形式的函数转换为带有自动重试能力的新函数。当包装后的函数执行失败时会自动重试，直到成功为止，如果重试次数达到上限，则返回最后一次错误信息。
+
+## 成功用例
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 失败用例
+
+<CodeOrSourceMdx language="typescript">
+  {failDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- `Fn` - 被包装函数的类型
+
+### options
+
+- 类型：`RetryFormatOption<Fn>`
+- 描述：重试选项
+  - `fn`：需要包装的函数，类型为 `WrappedFunction<Fn>`
+  - `retryCount`：重试次数
+
+### 返回值
+
+- 类型：`WrappedFunction<Fn>`
+- 描述：返回一个包装后的函数，调用时返回 `Promise<[res, undefined] | [undefined, err]>` 的形式

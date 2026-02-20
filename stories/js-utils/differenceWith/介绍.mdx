@@ -1,0 +1,73 @@
+import differenceWithDemo from './differenceWithDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# differenceWith
+
+类似 difference，但使用比较器函数来决定比较标准
+
+## 详细介绍
+
+`differenceWith` 类似 difference，但使用比较器函数来决定比较标准。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `differenceWith` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {differenceWithDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>要检查的数组</td>
+    </tr>
+    <tr>
+      <td>values</td>
+      <td><code>unknown</code></td>
+      <td>排除的值</td>
+    </tr>
+    <tr>
+      <td>comparator</td>
+      <td><code>unknown</code></td>
+      <td>比较器函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回过滤后的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `differenceWith/index.ts` 导出 differenceWith 函数
+2. **核心流程**: 类似 difference，但使用比较器函数来决定比较标准
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

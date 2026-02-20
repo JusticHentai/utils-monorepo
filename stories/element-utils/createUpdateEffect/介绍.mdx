@@ -1,0 +1,68 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# createUpdateEffect
+
+创建一个只在更新时执行的 effect hook 工厂函数。
+
+## 详细介绍
+
+`createUpdateEffect` 是一个工厂函数，用于创建只在依赖更新时执行的 effect hook。与原生 useEffect 不同，首次渲染时不会执行。
+
+常用场景：
+- 只需要在状态更新时执行副作用
+- 避免首次渲染时的不必要操作
+- 实现 componentDidUpdate 的效果
+
+## 使用示例
+
+```typescript
+import { useEffect } from 'react'
+import { createUpdateEffect } from '@justichentai/element-utils'
+
+const useUpdateEffect = createUpdateEffect(useEffect)
+
+function MyComponent() {
+  const [count, setCount] = useState(0)
+
+  // 首次渲染不会执行，只在 count 更新时执行
+  useUpdateEffect(() => {
+    console.log('count 更新了:', count)
+  }, [count])
+
+  return <button onClick={() => setCount(c => c + 1)}>增加</button>
+}
+```
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>hook</td>
+      <td><code>typeof useEffect | typeof useLayoutEffect</code></td>
+      <td>要包装的 effect hook</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回一个与 useEffect/useLayoutEffect 签名相同的 hook，但首次渲染时不执行。
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 包含工厂函数实现
+2. **核心流程**: 
+   - 使用 ref 记录是否已挂载
+   - 首次执行时只设置标记，不执行 effect
+   - 后续执行时正常调用 effect
+3. **关键技术点**: 
+   - 使用闭包和 ref 保存挂载状态
+   - 支持 react-refresh（热更新时重置状态）

@@ -1,0 +1,114 @@
+import initDemo from './initDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onFP
+
+监听 FP (First Paint)。FP 衡量从导航开始到浏览器首次在屏幕上渲染像素的时间。
+
+## 详细介绍
+
+`onFP` 是基于 `PerformanceObserver` 封装的 FP 性能指标监听工具。
+
+**涉及的知识点**：
+- FP 指标：首次绘制时间，包括任何用户可见的内容（如背景色）
+- PerformanceObserver API：监听 paint 类型
+- FP vs FCP：FP 是任何绘制，FCP 是首次内容绘制
+
+**FP 与 FCP 的区别**：
+- FP (First Paint)：首次渲染任何像素（包括背景色）
+- FCP (First Contentful Paint)：首次渲染文本、图片等有意义内容
+- 通常 FP ≤ FCP，两者差距反映页面内容加载效率
+
+**FP 评分标准**：
+- 好：≤ 1s
+- 需要改进：1s - 2.5s
+- 差：> 2.5s
+
+**常用场景**：
+- 白屏时间监控：FP 是用户看到页面变化的最早时间
+- 性能优化：优化关键渲染路径减少 FP 时间
+- 用户体验分析：结合 FCP 分析页面加载感知
+
+## 监听 FP
+
+监听 FP 指标，获取首次绘制时间。
+
+<CodeOrSourceMdx language="typescript">
+  {initDemo}
+</CodeOrSourceMdx>
+
+## 清理监听
+
+调用返回的清理函数停止 FP 监听，释放资源。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>OnFPCallback</code></td>
+      <td>FP 回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnFPCallback
+
+```typescript
+type OnFPCallback = (entry: PerformancePaintTiming) => void
+```
+
+回调参数 entry 包含：
+- `startTime`: FP 时间（毫秒）
+- `name`: 固定为 'first-paint'
+- `entryType`: 固定为 'paint'
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 使用 `createPerformanceObserver` 监听 `paint` 类型
+2. 遍历 entries 查找 `name === 'first-paint'` 的条目
+3. 找到后触发回调并停止观察
+4. 使用 `reported` 标志确保只报告一次
+
+### 关键技术点
+
+- paint 类型会同时触发 first-paint 和 first-contentful-paint
+- 通过 `name` 属性区分 FP 和 FCP
+- FP 只会发生一次，找到后立即停止观察

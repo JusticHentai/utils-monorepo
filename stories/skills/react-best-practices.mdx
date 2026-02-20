@@ -1,0 +1,68 @@
+import ReactBestPractices from '../../skills/react-best-practices/SKILL.md?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# react-best-practices
+
+- React 与 Next.js 性能优化技能
+
+## SKILL.md
+
+<details>
+<summary>点击展开 SKILL.md 源码</summary>
+
+<CodeOrSourceMdx language="markdown">
+  {ReactBestPractices}
+</CodeOrSourceMdx>
+
+</details>
+
+## 技能详解
+
+### 概述
+
+在编写、审查或重构 React/Next.js 代码时自动应用的性能优化规范，包含 8 大类别共 57 条规则，按影响程度排列优先级。
+
+### 规则分类与影响程度
+
+#### 1. 消除瀑布流（关键 🔴）
+- 延迟 `await`，`Promise.all` 并行请求
+- `<Suspense>` 流式渲染
+- 避免串行数据请求
+
+#### 2. 包体积优化（关键 🔴）
+- 禁止桶文件（barrel file）导入
+- `next/dynamic` 懒加载
+- 按需加载第三方库
+
+#### 3. 服务端性能（高 🟠）
+- Server Actions 鉴权验证
+- `React.cache()` 请求去重
+- LRU 缓存热点数据
+- `after()` 非阻塞操作
+
+#### 4. 客户端数据请求（中高 🟡）
+- SWR 自动去重
+- `{ passive: true }` 事件监听
+
+#### 5. 重渲染优化（中 🟢）
+- 渲染时计算派生状态
+- 函数式 `setState`
+- `startTransition` 低优先级更新
+
+#### 6. 渲染性能（中 🟢）
+- `content-visibility: auto` 长列表优化
+- 三元条件渲染替代 `&&`
+- `<Activity>` 保留隐藏组件状态
+
+#### 7. JavaScript 性能（低中 🔵）
+- 索引 Map 替代数组查找
+- 合并数组迭代
+- `Set`/`Map` 替代重复查找
+
+#### 8. 高级模式（低 ⚪）
+- 模块级初始化守卫
+- `useEffectEvent` 稳定回调引用
+
+### 参考文件
+
+- `references/full-guide.md`：包含所有 57 条规则的完整说明和代码示例

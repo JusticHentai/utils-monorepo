@@ -1,0 +1,59 @@
+import joinDemo from './joinDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# join
+
+将数组元素用指定分隔符连接成字符串。
+
+## 详细介绍
+
+`join` 函数将数组中的元素通过指定分隔符连接为一个字符串，是 `Array.prototype.join` 的函数式封装。
+
+**常用场景**：
+- 生成 CSV 数据
+- 拼接路径或 URL 参数
+- 将列表转为可读文本
+
+## 基础连接
+
+使用 `join` 将数组元素连接成字符串，支持自定义分隔符。
+
+<CodeOrSourceMdx language="typescript">
+  {joinDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要连接的数组</td>
+    </tr>
+    <tr>
+      <td>separator</td>
+      <td><code>string</code></td>
+      <td>分隔符，默认为 ","</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：连接后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 封装数组连接操作
+2. **核心流程**: 接收数组和分隔符 → 调用数组 join 方法
+3. **关键技术点**: 处理空数组和 null/undefined 值
+4. **数据流向**: 数组 + 分隔符 → 连接操作 → 返回字符串

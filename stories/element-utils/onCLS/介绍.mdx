@@ -1,0 +1,129 @@
+import initBasicDemo from './initBasicDemo?raw'
+import initAllChangesDemo from './initAllChangesDemo?raw'
+import triggerLayoutShiftDemo from './triggerLayoutShiftDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onCLS
+
+监听 CLS (Cumulative Layout Shift)。CLS 是累积布局偏移，衡量页面视觉稳定性。
+
+## 详细介绍
+
+`onCLS` 是基于 `PerformanceObserver` 封装的 CLS 性能指标监听工具。
+
+**涉及的知识点**：
+- CLS 指标：Core Web Vitals 三大核心指标之一
+- 布局偏移：元素在没有用户交互的情况下发生位置移动
+- Session Window：连续偏移的分组计算方式
+
+**CLS 评分标准**：
+- 好：≤ 0.1
+- 需要改进：0.1 - 0.25
+- 差：> 0.25
+
+**常用场景**：
+- 性能监控：收集用户真实 CLS 数据
+- 布局优化：识别导致布局偏移的元素
+- 广告优化：监控广告加载对布局的影响
+
+**优势**：
+- 自动计算累积偏移值
+- 基于 Session Window 算法
+- 过滤用户输入导致的偏移
+
+## 监听 CLS（最终值）
+
+<CodeOrSourceMdx language="typescript">
+  {initBasicDemo}
+</CodeOrSourceMdx>
+
+## 监听 CLS（所有变化）
+
+<CodeOrSourceMdx language="typescript">
+  {initAllChangesDemo}
+</CodeOrSourceMdx>
+
+## 触发布局偏移
+
+<CodeOrSourceMdx language="typescript">
+  {triggerLayoutShiftDemo}
+</CodeOrSourceMdx>
+
+## 清理监听
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>OnCLSCallback</code></td>
+      <td>CLS 回调函数</td>
+    </tr>
+    <tr>
+      <td>reportAllChanges</td>
+      <td><code>boolean</code></td>
+      <td>可选，是否报告所有变化，默认为 false</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnCLSCallback
+
+```typescript
+type OnCLSCallback = (value: number, entries: PerformanceEntry[]) => void
+```
+
+回调参数：
+- `value`: CLS 累积值
+- `entries`: 导致 CLS 的布局偏移条目数组
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现
+- `interface.ts` - 类型定义
+
+### 核心流程
+
+1. 使用 `createPerformanceObserver` 监听 `layout-shift`
+2. 过滤 `hadRecentInput` 为 true 的条目（用户输入导致的偏移）
+3. 基于 Session Window 算法计算 CLS
+4. 取最大的 session 值作为 CLS
+
+### Session Window 算法
+
+- 连续偏移间隔不超过 1 秒
+- 单个 session 总时长不超过 5 秒
+- 超过阈值则开始新的 session
+- 最终 CLS 取所有 session 中的最大值

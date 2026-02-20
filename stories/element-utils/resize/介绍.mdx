@@ -1,56 +1,135 @@
-import sourceCode from '../../../packages/element-utils/src/resize/index.ts?raw'
+import basicDemo from './basicDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import maxRatioDemo from './maxRatioDemo?raw'
+import widthOnlyDemo from './widthOnlyDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # resize
 
-resize 是一个用于实现响应式适配的函数，基于 rem 模式自动调整页面缩放。
+基于 rem 模式的响应式适配工具，通过动态计算设计稿与当前屏幕的缩放比例，自动设置 `html` 的 `fontSize`，配合 CSS `rem` 单位实现页面等比缩放。
 
-## 源码
+## 详细介绍
+
+resize 工具的核心思路是：根据预设的设计稿尺寸（默认 1920x1080）与当前浏览器窗口尺寸计算出一个缩放比例 `ratio`，然后将 `html.style.fontSize` 设置为 `100 * ratio + 'px'`。开发时 CSS 中使用 `rem` 单位（1rem = 设计稿中的 100px），即可实现页面元素随窗口大小等比缩放。
+
+典型应用场景包括：
+- **数据大屏**：固定 1920x1080 设计稿，需要在不同分辨率显示器上等比展示
+- **PC 端响应式**：需要在不同屏幕宽度下保持布局比例
+- **全屏展示页**：如汇报演示、看板等需要铺满屏幕的页面
+
+## 默认适配 (BOTH 模式)
+
+使用 `RESIZE_TYPE.BOTH` 模式，同时考虑宽度和高度，取两者中较小的比例作为缩放系数，确保内容在任意比例屏幕上都不溢出。默认 `maxRatio` 为 1，大屏不会放大。
 
 <CodeOrSourceMdx language="typescript">
-  {sourceCode}
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 仅宽度适配 (WIDTH 模式)
+
+使用 `RESIZE_TYPE.WIDTH` 模式，仅根据宽度计算比例，适合横向内容较多的页面。同时演示了 `debounce: 200` 防抖配置，减少高频 resize 时的计算开销。
+
+<CodeOrSourceMdx language="typescript">
+  {widthOnlyDemo}
+</CodeOrSourceMdx>
+
+## 允许放大 (maxRatio)
+
+设置 `maxRatio: Infinity` 后，当屏幕尺寸大于设计稿时，ratio 可以超过 1，内容会等比放大。适用于需要在超大屏幕上撑满显示的场景。
+
+<CodeOrSourceMdx language="typescript">
+  {maxRatioDemo}
+</CodeOrSourceMdx>
+
+## 销毁监听 (cleanup)
+
+`resize()` 返回一个 cleanup 函数，调用后会移除 `resize` 和 `orientationchange` 事件监听，避免在 SPA 路由切换时产生内存泄漏。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
-### options
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>options.preset</td>
+      <td><code>{`{ width?: number; height?: number }`}</code></td>
+      <td><code>{`{ width: 1920, height: 1080 }`}</code></td>
+      <td>预设的设计稿尺寸</td>
+    </tr>
+    <tr>
+      <td>options.type</td>
+      <td><code>RESIZE_TYPE</code></td>
+      <td><code>RESIZE_TYPE.BOTH</code></td>
+      <td>适配类型: WIDTH (仅宽度) / HEIGHT (仅高度) / BOTH (取最小比例)</td>
+    </tr>
+    <tr>
+      <td>options.cb</td>
+      <td><code>{`(ctx: ResizeOptions & { ratio: number }) => any`}</code></td>
+      <td>-</td>
+      <td>resize 时的回调函数，参数包含当前配置和计算出的比例</td>
+    </tr>
+    <tr>
+      <td>options.debounce</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>防抖时间（毫秒），减少高频触发</td>
+    </tr>
+    <tr>
+      <td>options.fullScreen</td>
+      <td><code>boolean</code></td>
+      <td>-</td>
+      <td>body 是否设置全屏高度，处理移动端浏览器地址栏导致的高度问题</td>
+    </tr>
+    <tr>
+      <td>options.maxRatio</td>
+      <td><code>number</code></td>
+      <td><code>1</code></td>
+      <td>最大缩放比例，默认 1 (大屏不放大)，设为 Infinity 则不限制</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`Options`
-- 描述：配置对象
+### 返回值
 
-#### options.preset
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>{`() => void`}</code></td>
+      <td>cleanup 清理函数，调用后移除 resize 和 orientationchange 事件监听</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`{ width?: number; height?: number }`
-- 默认值：`{ width: 1920, height: 1080 }`
-- 描述：预设的设计稿尺寸
+## 具体实现原理
 
-#### options.type
+**文件职责**:
 
-- 类型：`RESIZE_TYPE`
-- 默认值：`RESIZE_TYPE.BOTH`
-- 描述：适配类型
-  - `WIDTH`：仅根据宽度适配
-  - `HEIGHT`：仅根据高度适配
-  - `BOTH`：同时根据宽高适配
+- `index.ts` — 入口文件，合并默认配置与用户配置，执行初始化并设置事件监听，返回 cleanup 函数
+- `interface.ts` — 类型定义，包含 `RESIZE_TYPE` 枚举、`ResizeOptions` 接口和默认配置
+- `utils/getCurrentRatio.ts` — 根据适配类型和 maxRatio 计算当前缩放比例
+- `utils/getScreenSize.ts` — 获取当前 `html` 元素的 clientWidth/clientHeight
+- `utils/setRemSize.ts` — 设置 `html.style.fontSize = 100 * ratio + 'px'`
+- `utils/setFullScreen.ts` — 设置 `body.style.height` 为 `window.innerHeight`
+- `utils/setResizeEvent.ts` — 注册 resize/orientationchange 事件（支持 debounce），返回清理函数
+- `utils/update.ts` — 编排函数，依次执行：获取比例 → 设置 fontSize → 触发回调 → 设置全屏
 
-#### options.cb
+**核心流程**: `resize(options)` → 合并配置 → `update()` 初始化执行一次 → `setResizeEvent()` 注册窗口事件 → 窗口变化时重新 `update()` → 返回 cleanup 函数
 
-- 类型：`(ctx: Options & { ratio: number }) => any`
-- 描述：resize 时的回调函数，参数包含当前配置和计算出的比例
-
-#### options.debounce
-
-- 类型：`number`
-- 描述：防抖时间（毫秒）
-
-#### options.fullScreen
-
-- 类型：`boolean`
-- 描述：body 是否设置全屏高度
-
-## 特点
-
-- 基于 rem 实现响应式适配
-- 支持多种适配模式
-- 初始化时自动执行一次
-- 自动监听 resize 事件
+**关键技术点**: 以 100px 作为 rem 基准值简化换算（1rem = 设计稿 100px）；BOTH 模式取 `Math.min(widthRatio, heightRatio, maxRatio)` 确保内容不溢出；支持 debounce 减少高频计算

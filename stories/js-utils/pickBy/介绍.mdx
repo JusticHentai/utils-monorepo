@@ -1,0 +1,59 @@
+import pickByDemo from './pickByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# pickBy
+
+创建仅包含满足条件属性的对象。
+
+## 详细介绍
+
+`pickBy` 创建一个新对象，仅包含满足谓词函数条件的属性。
+
+**常用场景**：
+- 过滤对象的空值属性
+- 按条件选择对象属性
+- 数据清洗
+
+## 按条件选择属性
+
+使用 `pickBy` 按条件过滤对象属性。
+
+<CodeOrSourceMdx language="typescript">
+  {pickByDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>源对象</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value, key) => boolean</code></td>
+      <td>谓词函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Partial<T>`
+- 描述：满足条件的属性组成的新对象
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现条件属性选择
+2. **核心流程**: 遍历对象属性 → 对每个属性执行谓词 → 满足条件则保留
+3. **关键技术点**: Object.keys 遍历，谓词函数同时接收值和键
+4. **数据流向**: 对象 + 谓词 → 遍历属性 → 判断保留 → 返回新对象

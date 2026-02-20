@@ -1,0 +1,51 @@
+import deferDemo from './deferDemo?raw'
+import cancelDemo from './cancelDemo?raw'
+import delayDemo from './delayDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# defer
+
+延迟调用函数直到当前调用栈清空。同时提供 `delay` 延迟指定时间后调用。
+
+## 详细介绍
+
+`defer` 将函数推迟到当前调用栈清空后执行（类似 `setTimeout(fn, 1)`）。`delay` 则延迟指定的毫秒数后执行。两者均返回 timerId，可通过 `clearTimeout` 取消。
+
+## defer - 延迟执行与参数传递
+
+<CodeOrSourceMdx language="typescript">
+  {deferDemo}
+</CodeOrSourceMdx>
+
+## defer - 取消延迟执行
+
+<CodeOrSourceMdx language="typescript">
+  {cancelDemo}
+</CodeOrSourceMdx>
+
+## delay - 延迟指定毫秒
+
+<CodeOrSourceMdx language="typescript">
+  {delayDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>func</td><td><code>T extends (...args: any[]) =&gt; any</code></td><td>要延迟执行的函数</td></tr>
+    <tr><td>wait</td><td><code>number</code></td><td>延迟的毫秒数（delay 专用）</td></tr>
+    <tr><td>args</td><td><code>Parameters&lt;T&gt;</code></td><td>传递给函数的参数</td></tr>
+  </tbody>
+</table>
+
+### 返回值
+- 类型：`ReturnType<typeof setTimeout>`
+- 描述：定时器 ID，可用于取消
+
+## 具体实现原理
+1. **文件职责**: `defer/index.ts` 导出 defer（default）和 delay（named）
+2. **核心流程**: 使用 `setTimeout` 将函数推入事件队列
+3. **关键技术点**: defer 使用 1ms 延迟，返回 timerId 支持 clearTimeout 取消
+4. **数据流向**: func + args → setTimeout → 事件循环下一轮执行

@@ -16,7 +16,17 @@ const normalDemo = () => {
   const get4 = cache.get(4) // 返回 4
 
   return {
-    operations: ['put(1,1)', 'put(2,2)', 'get(1)', 'put(3,3)', 'get(2)', 'put(4,4)', 'get(1)', 'get(3)', 'get(4)'],
+    operations: [
+      'put(1,1)',
+      'put(2,2)',
+      'get(1)',
+      'put(3,3)',
+      'get(2)',
+      'put(4,4)',
+      'get(1)',
+      'get(3)',
+      'get(4)',
+    ],
     results: [null, null, get1, null, get2, null, get1Again, get3, get4],
     expected: [null, null, 1, null, -1, null, -1, 3, 4],
   }

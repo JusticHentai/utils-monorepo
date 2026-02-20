@@ -1,0 +1,117 @@
+import basicDemo from './basicDemo?raw'
+import scrollContainerDemo from './scrollContainerDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getScrollDirection
+
+根据当前滚动位置和上一次滚动位置计算滚动方向。
+
+## 详细介绍
+
+`getScrollDirection` 是一个纯函数，用于计算两个滚动位置之间的方向变化。它通过比较当前位置和上一次位置的差值（delta），判断滚动是向上、向下、向左、向右还是没有移动。
+
+**核心逻辑**：
+- 计算水平方向变化量（deltaX）和垂直方向变化量（deltaY）
+- 比较两个方向的绝对值，返回变化更大的方向
+- 当两个方向变化量相等时，优先返回水平方向
+
+**使用场景**：
+- 滚动监听回调中判断用户滚动方向
+- 实现滚动方向相关的 UI 交互（如导航栏隐藏/显示）
+- 无限滚动加载时判断滚动方向
+
+## 基础用法
+
+演示不同滚动方向的计算结果：
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 滚动容器方向检测
+
+演示斜向滚动和边界情况的处理：
+
+<CodeOrSourceMdx language="typescript">
+  {scrollContainerDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>options</td>
+      <td><code>GetScrollDirectionOptions</code></td>
+      <td>配置选项对象</td>
+    </tr>
+    <tr>
+      <td>options.x</td>
+      <td><code>number</code></td>
+      <td>当前滚动位置 X</td>
+    </tr>
+    <tr>
+      <td>options.y</td>
+      <td><code>number</code></td>
+      <td>当前滚动位置 Y</td>
+    </tr>
+    <tr>
+      <td>options.lastX</td>
+      <td><code>number</code></td>
+      <td>上一次滚动位置 X</td>
+    </tr>
+    <tr>
+      <td>options.lastY</td>
+      <td><code>number</code></td>
+      <td>上一次滚动位置 Y</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>返回值</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>direction</td>
+      <td><code>ScrollDirection</code></td>
+      <td>滚动方向：'up' | 'down' | 'left' | 'right' | 'none'</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts`：主入口文件，导出 `getScrollDirection` 函数
+- `interface.ts`：类型定义文件，定义 `ScrollDirection`、`GetScrollDirectionOptions` 等类型
+
+### 核心流程
+
+1. 接收当前位置 `(x, y)` 和上一次位置 `(lastX, lastY)`
+2. 计算水平方向变化量 `deltaX = x - lastX`
+3. 计算垂直方向变化量 `deltaY = y - lastY`
+4. 比较两个方向绝对值，返回变化更大的方向
+5. 若变化量相等，优先返回水平方向
+6. 若没有变化，返回 `'none'`
+
+### 关键技术点
+
+- **纯函数设计**：无副作用，相同输入始终返回相同输出
+- **方向优先级**：垂直方向变化大于水平时优先返回垂直方向，相等时返回水平方向
+- **早返回模式**：使用条件判断快速返回结果，避免深层嵌套

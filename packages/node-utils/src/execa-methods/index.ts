@@ -1,0 +1,8 @@
+export { handleNodeOption, mapNode } from './node'
+export { mergeOptions } from './bind'
+export { isTemplateString, parseTemplates } from './template'
+export { mapCommandAsync, mapCommandSync, parseCommandString } from './command'
+export { mapScriptAsync, deepScriptOptions, setScriptSync } from './script'
+export { execaCoreSync } from './mainSync'
+export { execaCoreAsync } from './mainAsync'
+export { createExeca } from './create'

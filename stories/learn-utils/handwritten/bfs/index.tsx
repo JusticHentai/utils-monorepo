@@ -6,13 +6,13 @@ const bfsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('BFS 广度优先搜索')(res)
+          action('normal')(res)
         }}
       >
-        BFS 广度优先搜索测试
+        normal
       </div>
     </div>
   )

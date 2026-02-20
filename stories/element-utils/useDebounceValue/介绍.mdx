@@ -1,0 +1,101 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useDebounceValue
+
+用来处理值防抖的 Hook。
+
+## 详细介绍
+
+`useDebounceValue` 接收一个频繁变化的值，返回其防抖后的版本。只有当原始值停止变化并超过指定延迟时间后，防抖值才会更新。
+
+它基于 `useDebounce` hook 封装，内部维护一个独立的 state 来存储防抖后的值，当原始值变化时启动防抖定时器，延迟到期后才同步更新。
+
+常用场景：
+- **搜索关键词防抖**：用户停止输入后才用防抖值发起搜索请求，避免每次按键都触发接口调用
+- **表单验证**：输入字段频繁变化时，等稳定后再执行校验逻辑
+- **派生计算优化**：某个值频繁变化但下游计算开销大时，用防抖值控制计算频率
+
+相比 `useDebounceEffect`（控制 effect 执行时机），`useDebounceValue` 更适合需要一个"稳定值"直接用于渲染或传递给子组件的场景。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>-</td>
+      <td>需要防抖的值</td>
+    </tr>
+    <tr>
+      <td>options.delay</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>防抖延迟时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options.immediate</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否在首次触发时立即执行</td>
+    </tr>
+    <tr>
+      <td>options.maxWait</td>
+      <td><code>number</code></td>
+      <td>-</td>
+      <td>最大等待时间（毫秒），超过此时间强制执行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>T</code></td>
+      <td>防抖后的值，类型与输入值相同</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**:
+   - `useDebounceValue/index.ts`：核心入口，组合 `useDebounce` 和 `useState` 实现值防抖
+   - `useDebounce/index.ts`：底层防抖 hook，提供 `run`、`cancel`、`flush`、`isPending` 方法
+
+2. **核心流程**:
+   - 使用 `useState(value)` 初始化防抖值 `debounced`
+   - 通过 `useDebounce` 创建防抖函数 `run`，其回调为 `setDebounced(value)`
+   - 当 `value` 变化时，`useEffect` 调用 `run()` 启动防抖定时器
+   - 延迟到期后执行 `setDebounced(value)`，更新防抖值并触发组件重渲染
+
+3. **关键技术点**:
+   - `useDebounce` 内部通过 `useRef` 存储最新回调，确保 `setDebounced` 始终使用最新的 `value`，解决闭包陈旧问题
+   - 初始值通过 `useState(value)` 同步设置，首次渲染时防抖值与原始值一致
+   - 支持 `UseDebounceOptions` 的所有配置（`delay`、`immediate`、`maxWait`）
+
+4. **数据流向**:
+   - `value 变化` → `useEffect` 触发 → 调用 `run()` 启动防抖 → 延迟到期后 `setDebounced(value)` → `debounced 更新` → 组件重渲染使用新的防抖值

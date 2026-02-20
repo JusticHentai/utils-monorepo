@@ -1,0 +1,54 @@
+import negateDemo from './negateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# negate
+
+创建取反的谓词函数。
+
+## 详细介绍
+
+`negate` 创建一个函数，返回原谓词函数结果的逻辑否定。
+
+**常用场景**：
+- 快速创建反向过滤条件
+- 函数式编程中的逻辑取反
+- 避免编写重复的否定逻辑
+
+## 取反谓词函数
+
+使用 `negate` 创建取反的谓词函数，用于反向过滤。
+
+<CodeOrSourceMdx language="typescript">
+  {negateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>predicate</td>
+      <td><code>(...args) => boolean</code></td>
+      <td>要取反的谓词函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => boolean`
+- 描述：取反后的谓词函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现谓词取反
+2. **核心流程**: 包装原函数 → 调用时取反返回值
+3. **关键技术点**: 闭包包装，逻辑非运算
+4. **数据流向**: 谓词函数 → 创建包装函数 → 调用时取反结果

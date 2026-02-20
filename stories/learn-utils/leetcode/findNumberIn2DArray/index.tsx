@@ -1,11 +1,21 @@
-import { DemoBlock } from '@jqxon/storybook-utils'
+import { action } from 'storybook/actions'
+import '../../../.css/index.css'
 import normalDemo from './normalDemo'
 
-export default function FindNumberIn2DArrayDemo() {
+const findNumberIn2DArrayDemo = () => {
   return (
-    <DemoBlock
-      title="二维数组中的查找"
-      demos={[{ title: '基础示例', fn: normalDemo }]}
-    />
+    <div>
+      <div
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
+        }}
+      >
+        normal
+      </div>
+    </div>
   )
 }
+
+export default findNumberIn2DArrayDemo

@@ -1,0 +1,50 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useUnmount
+
+在组件卸载时执行的 Hook。
+
+## 详细介绍
+
+useUnmount 在组件卸载前执行回调函数，相当于 class 组件的 componentWillUnmount。使用 useLatest 确保总是调用最新的回调函数。
+
+### 使用场景
+
+- 取消订阅
+- 清理定时器
+- 释放资源
+- 记录页面离开
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>fn</td>
+      <td><code>() =&gt; void</code></td>
+      <td>卸载时执行的回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useLatest 保存最新的回调函数
+2. 使用 useEffect 的清理函数实现卸载时执行
+3. 依赖数组为空，清理函数只在卸载时执行

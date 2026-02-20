@@ -1,0 +1,68 @@
+import basicDemo from './basicDemo?raw'
+import nestedDemo from './nestedDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# at
+
+根据给定的路径数组从对象中提取对应的值。
+
+## 详细介绍
+
+`at` 函数接收一个对象和路径数组，返回一个包含对应路径值的数组。支持嵌套路径（如 `a.b.c`）和数组索引（如 `a[0]`）。不存在的路径返回 `undefined`。
+
+**常用场景**：
+- 同时获取对象的多个深层属性值
+- 解构深层嵌套的数据结构
+- 批量读取配置项
+
+## 基础路径取值
+
+按路径取多个值，不存在的路径返回 undefined，空路径返回空数组。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 深层嵌套路径
+
+支持 `a[0].b.c` 形式的深层路径访问。
+
+<CodeOrSourceMdx language="typescript">
+  {nestedDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record&lt;string, unknown&gt;</code></td>
+      <td>要查询的对象</td>
+    </tr>
+    <tr>
+      <td>paths</td>
+      <td><code>string[]</code></td>
+      <td>要获取的属性路径数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown[]`
+- 描述：对应路径值的数组
+
+## 具体实现原理
+
+1. **文件职责**: `at/index.ts` 导出 at 函数
+2. **核心流程**: 遍历路径数组，对每个路径解析为路径片段数组，逐层访问对象
+3. **关键技术点**: 正则表达式解析路径字符串（支持点号和方括号语法）
+4. **数据流向**: 路径字符串 → 正则解析为片段数组 → 逐层访问对象属性 → 收集结果

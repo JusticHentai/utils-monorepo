@@ -1,0 +1,57 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# includes
+
+检查集合中是否包含指定值。
+
+## 详细介绍
+
+`includes` 检查值是否在集合（数组或字符串）中。使用 SameValueZero 比较。支持 fromIndex 指定起始搜索位置。
+
+## 检查包含关系
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[] | string</code></td>
+      <td>集合</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要搜索的值</td>
+    </tr>
+    <tr>
+      <td>fromIndex</td>
+      <td><code>number</code></td>
+      <td>起始位置（默认0）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否包含
+
+## 具体实现原理
+
+1. **文件职责**: `includes/index.ts` 导出 `includes` 函数
+2. **核心流程**: 根据 collection 类型选择数组或字符串的搜索方式
+3. **关键技术点**: SameValueZero 比较、fromIndex 支持
+4. **数据流向**: collection + value → 搜索 → 返回布尔值

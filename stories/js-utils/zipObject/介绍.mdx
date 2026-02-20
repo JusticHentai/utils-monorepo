@@ -1,0 +1,68 @@
+import zipObjectDemo from './zipObjectDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# zipObject
+
+类似于 fromPairs，但接受两个数组
+
+## 详细介绍
+
+`zipObject` 类似于 fromPairs，但接受两个数组。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `zipObject` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {zipObjectDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>props</td>
+      <td><code>unknown</code></td>
+      <td>属性标识符数组</td>
+    </tr>
+    <tr>
+      <td>values</td>
+      <td><code>unknown</code></td>
+      <td>对应的值数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回新对象
+
+## 具体实现原理
+
+1. **文件职责**: `zipObject/index.ts` 导出 zipObject 函数
+2. **核心流程**: 类似于 fromPairs，但接受两个数组
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

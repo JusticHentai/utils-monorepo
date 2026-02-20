@@ -6,13 +6,13 @@ const mergeDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('合并区间')(res)
+          action('normal')(res)
         }}
       >
-        合并区间测试
+        normal
       </div>
     </div>
   )

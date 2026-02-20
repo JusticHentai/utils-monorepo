@@ -1,0 +1,173 @@
+import basicDemo from './basicDemo?raw'
+import multiDemo from './multiDemo?raw'
+import sortByDemo from './sortByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# orderBy
+
+根据指定的迭代函数或属性对集合进行排序。依次按 `iteratees` 中的条件排序：先按第一个条件排，若相等则继续按下一个条件排，以此类推；一旦某个条件能分出先后，就直接返回结果，不再检查后续条件。
+
+## 详细介绍
+
+`orderBy` 和 `sortBy` 函数用于对数组进行排序。
+
+**包含的函数**：
+- `orderBy` - 支持指定升序/降序
+- `sortBy` - 简化版，默认升序
+
+**与原生 sort 的区别**：
+- 不修改原数组
+- 支持多条件排序
+- 支持按属性名或函数排序
+
+**常用场景**：
+- 表格数据排序
+- 列表排序展示
+- 多条件复合排序
+
+## orderBy - 基础排序
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## orderBy - 多条件排序
+
+<CodeOrSourceMdx language="typescript">
+  {multiDemo}
+</CodeOrSourceMdx>
+
+## sortBy - 简化排序
+
+<CodeOrSourceMdx language="typescript">
+  {sortByDemo}
+</CodeOrSourceMdx>
+
+## 数据流解析
+
+以 `orderBy(objects, ["a","b"], ["desc"])` 为例，详细追踪排序过程：
+
+```typescript
+const objects = [
+  { a: 'x', b: 3 },  // [0]
+  { a: 'y', b: 4 },  // [1]
+  { a: 'x', b: 1 },  // [2]
+  { a: 'y', b: 2 },  // [3]
+]
+orderBy(objects, ['a', 'b'], ['desc'])
+```
+
+**第一步：参数解析**
+
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th>值</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>collection</code></td>
+      <td>4 个对象</td>
+      <td>原数组不会被修改</td>
+    </tr>
+    <tr>
+      <td><code>iteratees</code></td>
+      <td><code>["a", "b"]</code></td>
+      <td>先按属性 <code>a</code> 排序，再按属性 <code>b</code> 排序</td>
+    </tr>
+    <tr>
+      <td><code>orders</code></td>
+      <td><code>["desc"]</code></td>
+      <td>只指定了第一个排序方向为降序</td>
+    </tr>
+  </tbody>
+</table>
+
+> 注意 `orders` 长度为 1，而 `iteratees` 长度为 2，第二个排序方向将使用默认值 `SortOrder.ASC`（升序）。
+
+**第二步：遍历 iteratees 确定排序方向**
+
+```
+i=0 → iteratee="a", order=orders[0]="desc"   ✅ 显式指定
+i=1 → iteratee="b", order=orders[1]=undefined → 回退为 SortOrder.ASC  ✅ 默认值
+```
+
+**第三步：sort 比较过程**
+
+以比较 `[0]{a:'x',b:3}` 和 `[1]{a:'y',b:4}` 为例：
+
+```
+轮次 i=0: iteratee="a", order="desc"
+  valueA = 'x', valueB = 'y'
+  'x' < 'y' → comparison = -1
+  comparison !== 0，且 order === "desc" → 返回 -(-1) = 1
+  → 'y' 排在 'x' 前面 ✅（降序）
+```
+
+以比较 `[1]{a:'y',b:4}` 和 `[3]{a:'y',b:2}` 为例：
+
+```
+轮次 i=0: iteratee="a", order="desc"
+  valueA = 'y', valueB = 'y'
+  'y' === 'y' → comparison = 0
+  comparison === 0，继续下一轮
+
+轮次 i=1: iteratee="b", order="asc"（默认值）
+  valueA = 4, valueB = 2
+  4 > 2 → comparison = 1
+  comparison !== 0，且 order === "asc" → 返回 1
+  → 2 排在 4 前面 ✅（升序）
+```
+
+**最终结果**
+
+```typescript
+// 先按 a 降序（y > x），a 相同时按 b 升序（2 < 4，1 < 3）
+[
+  { a: 'y', b: 2 },  // 原 [3]
+  { a: 'y', b: 4 },  // 原 [1]
+  { a: 'x', b: 1 },  // 原 [2]
+  { a: 'x', b: 3 },  // 原 [0]
+]
+```
+
+**核心机制总结**：`orders` 数组与 `iteratees` 数组按索引一一对应，缺省的排序方向默认为升序。降序通过对 `comparison` 取反（`-comparison`）实现。当前一个排序条件的结果为 0（相等）时，才会进入下一个排序条件。
+
+## 参数介绍
+
+### orderBy
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要排序的集合</td>
+    </tr>
+    <tr>
+      <td>iteratees</td>
+      <td><code>(string | Function)[]</code></td>
+      <td>排序依据的属性名或函数</td>
+    </tr>
+    <tr>
+      <td>orders</td>
+      <td><code>('asc' | 'desc')[]</code></td>
+      <td>排序方向</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：排序后的新数组

@@ -6,13 +6,13 @@ const flatDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('数组扁平化')(res)
+          action('normal')(res)
         }}
       >
-        数组扁平化测试
+        normal
       </div>
     </div>
   )

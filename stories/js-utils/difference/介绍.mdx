@@ -1,0 +1,78 @@
+import differenceDemo from './differenceDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# difference
+
+创建差集数组，返回第一个数组中不包含在后续数组中的元素。
+
+## 详细介绍
+
+`difference` 从第一个数组中排除所有在后续数组中出现的值，返回新数组。
+
+### 实现步骤
+
+```ts
+const difference = (array, ...values) => {
+  const excludeSet = new Set(values.flat()) // 1. flat + Set
+  return array.filter(item => !excludeSet.has(item)) // 2. filter
+}
+```
+
+1. **`values.flat()`** — 将多个排除数组展平为一维（如 `[1,2], [3,4]` → `[1,2,3,4]`）
+2. **`new Set(...)`** — 转为 Set，查找时间从 `Array.includes` 的 O(n) 降为 O(1)
+3. **`array.filter(item => !excludeSet.has(item))`** — 过滤掉 Set 中存在的元素
+
+整体时间复杂度：O(n + m)，n 为源数组长度，m 为所有排除值总数。
+
+## 基础用法
+
+点击按钮查看 `difference` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {differenceDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要检查的数组</td>
+    </tr>
+    <tr>
+      <td>...values</td>
+      <td><code>T[][]</code></td>
+      <td>要排除的值数组（支持多个）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：排除后的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `difference/index.ts` 导出 difference 函数
+2. **核心流程**: `values.flat()` 展平所有排除数组 → `new Set()` 构建哈希集合 → `array.filter()` 过滤
+3. **关键技术点**: 使用 `Set` 将查找复杂度从 O(n) 降为 O(1)，`flat()` 合并多个排除数组
+4. **时间复杂度**: O(n + m)，n 为源数组长度，m 为排除值总数

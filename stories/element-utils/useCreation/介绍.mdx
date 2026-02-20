@@ -1,0 +1,103 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useCreation
+
+用于创建只初始化一次的对象，比 useMemo 更稳定。
+
+## 详细介绍
+
+`useCreation` 是 `useMemo` 的替代品，可以保证对象只在依赖变化时重新创建。React 的 `useMemo` 不保证缓存一定不会被丢弃，而 `useCreation` 可以保证。
+
+新版本的 `useCreation` 返回一个 ref 对象，而不是直接返回创建的值，这是为了避免在渲染阶段访问 ref 而导致的 ESLint 警告。
+
+常用场景：
+- 创建昂贵的对象实例
+- 需要保证引用稳定的场景
+- 创建单例模式的对象
+
+## 使用示例
+
+<CodeOrSourceMdx language="tsx">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## useCreation vs useMemo
+
+- **useMemo**: React 可能在内存压力下丢弃缓存，直接返回值
+- **useCreation**: 保证只在依赖变化时重新创建，返回 ref 对象
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>factory</td>
+      <td><code>() =&gt; T</code></td>
+      <td>创建对象的工厂函数</td>
+    </tr>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>依赖数组，依赖变化时重新创建对象</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回一个 `React.MutableRefObject`，其 `current` 属性包含：
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>当前的依赖数组</td>
+    </tr>
+    <tr>
+      <td>obj</td>
+      <td><code>T</code></td>
+      <td>工厂函数创建的对象</td>
+    </tr>
+    <tr>
+      <td>initialized</td>
+      <td><code>boolean</code></td>
+      <td>是否已初始化</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件职责**：
+- `useCreation/index.ts`：主文件，实现 useCreation hook
+- `depsAreSame/index.ts`：依赖比较函数，判断依赖是否变化
+
+**核心流程**：
+1. 使用 `useRef` 存储依赖数组、创建的对象和初始化状态
+2. 在 `useEffect` 中检查依赖是否变化
+3. 依赖变化时调用工厂函数重新创建对象
+4. 返回整个 ref 对象供外部使用
+
+**关键技术点**：
+- `useRef`：保持对象引用在组件生命周期内稳定
+- `useEffect`：在副作用中执行对象创建，避免渲染阶段的问题
+- `depsAreSame`：浅比较依赖数组，使用 `Object.is` 比较每个元素
+
+**数据流向**：
+调用方传入 factory 和 deps → useRef 存储状态 → useEffect 检查并创建 → 返回 ref 对象 → 调用方在 effect 中访问 ref.current.obj

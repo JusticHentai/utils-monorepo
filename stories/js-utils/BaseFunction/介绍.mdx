@@ -1,0 +1,33 @@
+import normalDemo from './normalDemo?raw'
+import sourceCode from '../../../packages/js-utils/src/BaseFunction/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# BaseFunction
+
+BaseFunction 是一个用于表示基础函数的类型。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 类型定义
+
+<CodeOrSourceMdx language="typescript">
+  {sourceCode}
+</CodeOrSourceMdx>
+
+## 泛型参数
+
+### Params
+
+- 类型：`any[]`
+- 默认值：`any[]`
+- 描述：函数参数类型数组
+
+### Return
+
+- 类型：`any`
+- 默认值：`any`
+- 描述：函数返回值类型

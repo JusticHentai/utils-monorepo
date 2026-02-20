@@ -1,38 +1,35 @@
 import numberDemo from './numberDemo?raw'
-import nanDemo from './nanDemo?raw'
-import notNumberDemo from './notNumberDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isNumber
 
-isNumber 是一个用于判断值是否为数字的函数，会排除 NaN。
+判断值是否为数字（排除 NaN）。
 
-## 数字示例
+## 详细介绍
+
+使用 `Object.prototype.toString` 检测值是否为 Number 类型，并排除 NaN。注意：此实现与 lodash 不同，lodash 的 `isNumber(NaN)` 返回 `true`。
+
+## isNumber - 类型检测
 
 <CodeOrSourceMdx language="typescript">
   {numberDemo}
 </CodeOrSourceMdx>
 
-## NaN 示例
-
-<CodeOrSourceMdx language="typescript">
-  {nanDemo}
-</CodeOrSourceMdx>
-
-## 非数字示例
-
-<CodeOrSourceMdx language="typescript">
-  {notNumberDemo}
-</CodeOrSourceMdx>
-
 ## 参数介绍
 
-### obj
-
-- 类型：`any`
-- 描述：要检测的值
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>obj</td><td><code>any</code></td><td>要检测的值</td></tr>
+  </tbody>
+</table>
 
 ### 返回值
+- 类型：`boolean`
+- 描述：如果是数字（不含 NaN）返回 true
 
-- 类型：`obj is number`
-- 描述：如果值是数字（且不是 NaN）则返回 `true`，否则返回 `false`
+## 具体实现原理
+1. **文件职责**: `isNumber/index.ts` 导出 isNumber
+2. **核心流程**: toString 标签检查 + NaN 排除（`obj === obj`）
+3. **关键技术点**: NaN 是唯一不等于自身的值
+4. **数据流向**: value → toString → NaN check → 返回布尔值

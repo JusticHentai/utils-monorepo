@@ -1,4 +1,4 @@
-import minWindow from '@jqxon/learn-utils/leetcode/minWindow'
+import minWindow from '../../../../packages/learn-utils/src/leetcode/minWindow'
 
 export default () => {
   const s = 'ADOBECODEBANC'

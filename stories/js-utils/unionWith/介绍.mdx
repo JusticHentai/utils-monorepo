@@ -1,0 +1,68 @@
+import unionWithDemo from './unionWithDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# unionWith
+
+类似于 union，但可以指定比较器
+
+## 详细介绍
+
+`unionWith` 类似于 union，但可以指定比较器。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `unionWith` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {unionWithDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>arrays</td>
+      <td><code>unknown</code></td>
+      <td>要合并的数组</td>
+    </tr>
+    <tr>
+      <td>comparator</td>
+      <td><code>unknown</code></td>
+      <td>比较器函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回新的并集数组
+
+## 具体实现原理
+
+1. **文件职责**: `unionWith/index.ts` 导出 unionWith 函数
+2. **核心流程**: 类似于 union，但可以指定比较器
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

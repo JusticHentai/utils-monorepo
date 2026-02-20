@@ -1,0 +1,64 @@
+import sliceDemo from './sliceDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# slice
+
+创建数组的切片。
+
+## 详细介绍
+
+`slice` 创建数组的切片，是 `Array.prototype.slice` 的函数式封装。
+
+**常用场景**：
+- 数组截取
+- 分页取数据
+- 不修改原数组的子数组获取
+
+## 数组切片
+
+使用 `slice` 创建数组的切片。
+
+<CodeOrSourceMdx language="typescript">
+  {sliceDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要切片的数组</td>
+    </tr>
+    <tr>
+      <td>start</td>
+      <td><code>number</code></td>
+      <td>起始索引，默认 0</td>
+    </tr>
+    <tr>
+      <td>end</td>
+      <td><code>number</code></td>
+      <td>结束索引（不含）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：数组的切片
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 封装数组 slice 操作
+2. **核心流程**: 调用 Array.prototype.slice 创建子数组
+3. **关键技术点**: 不修改原数组，返回新数组
+4. **数据流向**: 数组 + 起止索引 → slice 操作 → 返回新子数组

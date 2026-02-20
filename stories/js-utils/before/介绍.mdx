@@ -1,0 +1,68 @@
+import beforeDemo from './beforeDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# before
+
+创建一个函数，最多只能调用 n 次
+
+## 详细介绍
+
+`before` 创建一个函数，最多只能调用 n 次。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `before` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {beforeDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>n</td>
+      <td><code>unknown</code></td>
+      <td>在限制前允许调用的次数</td>
+    </tr>
+    <tr>
+      <td>func</td>
+      <td><code>unknown</code></td>
+      <td>要限制的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回新的限制函数
+
+## 具体实现原理
+
+1. **文件职责**: `before/index.ts` 导出 before 函数
+2. **核心流程**: 创建一个函数，最多只能调用 n 次
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

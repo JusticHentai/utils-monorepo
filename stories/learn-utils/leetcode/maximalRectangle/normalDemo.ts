@@ -1,4 +1,4 @@
-// import maximalRectangle from '@jqxon/learn-utils/leetcode/maximalRectangle'
+// import maximalRectangle from '../../../../packages/learn-utils/src/leetcode/maximalRectangle'
 
 export default () => {
   const matrix = [

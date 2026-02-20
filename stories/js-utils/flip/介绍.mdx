@@ -1,0 +1,46 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flip
+
+创建一个翻转接收参数顺序的函数。
+
+## 详细介绍
+
+`flip` 创建一个新函数，调用时将参数顺序反转后传递给原函数。在函数组合和适配器模式中很有用。
+
+## 翻转参数顺序
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>T extends (...args: any[]) =&gt; any</code></td>
+      <td>要翻转参数的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T>`
+
+## 具体实现原理
+
+1. **文件职责**: `flip/index.ts` 导出 `flip` 函数
+2. **核心流程**: 返回新函数，将 args 数组 reverse 后传给原函数
+3. **关键技术点**: `Array.prototype.reverse`、`Function.prototype.apply`
+4. **数据流向**: 参数数组 → reverse → 传递给原函数

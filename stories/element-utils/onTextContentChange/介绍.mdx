@@ -1,0 +1,123 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onTextContentChange
+
+监听文本内容变化。使用 MutationObserver 监听指定元素的文本内容变化。
+
+## 详细介绍
+
+`onTextContentChange` 是基于 `MutationObserver` 封装的文本内容变化监听工具。
+
+**涉及的知识点**：
+- MutationObserver API：浏览器原生的 DOM 变化监听 API
+- characterData 配置：监听文本节点的内容变化
+- 文本节点 vs 元素节点：区分 Text 节点和 Element 节点
+
+**常用场景**：
+- 实时编辑器：监听用户输入的文本变化
+- 内容同步：实时同步文本内容到其他位置
+- 字数统计：实时统计文本长度
+- 输入验证：实时检测文本内容是否合法
+
+**优势**：
+- 精确获取文本旧值和新值
+- 比 input 事件更底层
+- 适用于 contentEditable 元素
+
+**注意事项**：
+- 监听的是 Text 节点的 `data` 属性变化
+- 直接修改 `element.textContent` 会替换整个子树，不会触发 characterData 变化
+- 需要修改已存在的 Text 节点的 `textContent` 或 `nodeValue` 才能触发
+
+## 使用示例
+
+<CodeOrSourceMdx language="tsx">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>Element | null</code></td>
+      <td>要观察的目标元素</td>
+    </tr>
+    <tr>
+      <td>callback</td>
+      <td><code>OnTextContentChangeCallback</code></td>
+      <td>文本变化时的回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnTextContentChangeCallback
+
+```typescript
+type OnTextContentChangeCallback = (
+  oldValue: string | null,
+  newValue: string
+) => void
+```
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止观察</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+- `index.ts` - 主函数实现，封装 MutationObserver 监听逻辑
+- `interface.ts` - 类型定义，定义回调函数类型
+
+### 核心流程
+
+1. 调用 `createMutationObserver` 创建观察器
+2. 配置 `characterData: true` 启用文本内容变化监听
+3. 配置 `characterDataOldValue: true` 保存旧值
+4. 启用 `subtree: true` 监听所有子文本节点
+5. 遍历 mutations，从 mutation 中提取旧值和新值并调用回调
+
+### 关键技术点
+
+- **characterData**：MutationObserver 的配置项，用于监听 Text 节点的 `data` 属性变化
+- **characterDataOldValue**：设为 true 时，mutation.oldValue 会保存变化前的文本值
+- **subtree**：启用后会监听目标元素内所有后代文本节点的变化
+- **CharacterData**：Text 节点的父接口，通过 `(mutation.target as CharacterData).data` 获取新值
+
+### 数据流向
+
+```
+用户修改 Text.textContent
+    ↓
+MutationObserver 捕获 characterData 类型的 mutation
+    ↓
+从 mutation.oldValue 获取旧值
+    ↓
+从 (mutation.target as CharacterData).data 获取新值
+    ↓
+调用用户传入的 callback(oldValue, newValue)
+```

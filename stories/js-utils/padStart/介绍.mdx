@@ -1,0 +1,73 @@
+import padStartDemo from './padStartDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# padStart
+
+如果字符串长度小于 length，则在左侧填充字符
+
+## 详细介绍
+
+`padStart` 如果字符串长度小于 length，则在左侧填充字符。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `padStart` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {padStartDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>unknown</code></td>
+      <td>要填充的字符串</td>
+    </tr>
+    <tr>
+      <td>length</td>
+      <td><code>unknown</code></td>
+      <td>目标长度</td>
+    </tr>
+    <tr>
+      <td>chars</td>
+      <td><code>unknown</code></td>
+      <td>填充字符</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：返回填充后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `padStart/index.ts` 导出 padStart 函数
+2. **核心流程**: 如果字符串长度小于 length，则在左侧填充字符
+3. **关键技术点**: 使用循环遍历
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

@@ -1,28 +1,13 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import { getDemo, setDemo } from './demo'
+import { setDemo, getDemo } from './demo'
 
 const PointMapDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = setDemo()
-
-          action('设置坐标值 1 2 值为 value')(res)
-        }}
-      >
+      <div className="button" onClick={setDemo}>
         设置坐标值
       </div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = getDemo()
-
-          action('获取坐标值 1 2 的值')(res)
-        }}
-      >
+      <div className="button" onClick={getDemo}>
         获取坐标值
       </div>
     </div>

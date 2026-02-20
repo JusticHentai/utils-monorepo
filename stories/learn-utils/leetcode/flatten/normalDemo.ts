@@ -1,4 +1,4 @@
-import flatten from '@jqxon/learn-utils/leetcode/flatten'
+import flatten from '../../../../packages/learn-utils/src/leetcode/flatten'
 
 export default () => {
   // 构建二叉树:

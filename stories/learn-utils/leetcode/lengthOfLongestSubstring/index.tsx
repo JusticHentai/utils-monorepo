@@ -6,13 +6,13 @@ const lengthOfLongestSubstringDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('无重复字符的最长子串')(res)
+          action('normal')(res)
         }}
       >
-        无重复字符的最长子串测试
+        normal
       </div>
     </div>
   )

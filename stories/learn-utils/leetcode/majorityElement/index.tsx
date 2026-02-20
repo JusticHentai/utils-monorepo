@@ -6,13 +6,13 @@ const majorityElementDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('多数元素')(res)
+          action('normal')(res)
         }}
       >
-        多数元素测试
+        normal
       </div>
     </div>
   )

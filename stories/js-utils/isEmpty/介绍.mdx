@@ -1,0 +1,53 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isEmpty
+
+检查值是否为空。
+
+## 详细介绍
+
+`isEmpty` 函数用于检查值是否为"空"。
+
+**空的定义**：
+- `null` 和 `undefined` 为空
+- 空数组 `[]` 为空
+- 空对象 `{}` 为空
+- 空字符串 `''` 为空
+- 空 Map/Set 为空
+- 原始类型（数字、布尔值等）视为空
+
+**常用场景**：
+- 表单验证
+- 条件渲染
+- 数据检查
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>any</code></td>
+      <td>要检查的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否为空

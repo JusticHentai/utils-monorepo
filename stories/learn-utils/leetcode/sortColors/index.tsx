@@ -6,13 +6,13 @@ const sortColorsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('颜色分类')(res)
+          action('normal')(res)
         }}
       >
-        颜色分类（荷兰国旗）
+        normal
       </div>
     </div>
   )

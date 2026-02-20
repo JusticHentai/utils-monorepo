@@ -1,0 +1,44 @@
+import basicDemo from './basicDemo?raw'
+import defaultDemo from './defaultDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# get
+
+根据路径获取对象的属性值。
+
+## 详细介绍
+
+`get` 支持字符串路径（`'a.b.c'`、`'a[0].b'`）和数组路径（`['a', 'b', 'c']`）。当解析值为 `undefined` 时返回指定的默认值。
+
+## get - 路径访问
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## get - 默认值与边界
+
+<CodeOrSourceMdx language="typescript">
+  {defaultDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>object</td><td><code>NestedObject | null | undefined</code></td><td>要查询的对象</td></tr>
+    <tr><td>path</td><td><code>PropertyPath</code></td><td>属性路径</td></tr>
+    <tr><td>defaultValue</td><td><code>T</code></td><td>解析值为 undefined 时的默认值</td></tr>
+  </tbody>
+</table>
+
+### 返回值
+- 类型：`T`
+- 描述：解析到的值或默认值
+
+## 具体实现原理
+1. **文件职责**: `get/index.ts` 导出 get（default）和 toPath（named）
+2. **核心流程**: 解析路径 → 逐层访问属性 → 返回值或默认值
+3. **关键技术点**: 正则解析 `a[0].b` 格式路径，支持字符串和数组路径
+4. **数据流向**: object + path → toPath 解析 → 逐级访问 → 返回结果

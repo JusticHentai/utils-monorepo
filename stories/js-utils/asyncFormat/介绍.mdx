@@ -4,7 +4,30 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # asyncFormat
 
-将 async 函数转为返回 [res, err] 的形式
+将异步函数转为返回 `[result, error]` 元组形式的包装函数。
+
+## 详细介绍
+
+asyncFormat 是一个函数包装器，核心作用是：**将 async 函数的 resolve/reject 转为元组返回，避免 try/catch**。
+
+**涉及的知识点**：
+- 高阶函数：接收函数返回函数
+- Promise 错误处理：try/catch 包装
+- 元组返回：`[data, error]` 形式
+
+**灵感来源**：
+- Go 语言的错误处理风格：`data, err := fn()`
+- await-to-js 库
+
+**常用场景**：
+- API 请求：统一处理成功和失败
+- 文件操作：读写可能失败的操作
+- 批量异步：并行请求时统一收集结果
+
+**优势**：
+- 避免大量 try/catch 嵌套
+- 错误处理更直观
+- TypeScript 类型安全
 
 ## 成功用例
 
@@ -20,21 +43,45 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 ## 参数介绍
 
-### 泛型
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>fn</td>
+      <td><code>(...params: any[]) =&gt; Promise&lt;any&gt;</code></td>
+      <td>需要包装的异步函数</td>
+    </tr>
+  </tbody>
+</table>
 
-- 外部传入 `typeof 函数`, 会自动推导出函数的参数类型和返回值类型
-- 外部函数被限制为 `(...params: any[]) => Promise<any>` 类型
-- 返回值被限制为 `[Awaited<ReturnType<Fn>>, undefined] | [undefined, any]` 类型
+### 返回值
 
-```typescript
-<Fn extends (...params: any[]) => Promise<any>>(
-  fn: Fn
-): ((
-  ...params: Parameters<Fn>
-) => Promise<[Awaited<ReturnType<Fn>>, undefined] | [undefined, any]>) => {
-```
+- 类型：`(...params) => Promise<[data, undefined] | [undefined, error]>`
+- 描述：包装后的函数，返回元组
+  - 成功：`[data, undefined]`
+  - 失败：`[undefined, error]`
 
-### fn
+## 具体实现原理
 
-- 类型：`(...params: any[]) => Promise<any>`
-- 描述：需要转换的 async 函数
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 asyncFormat 函数实现
+
+### 核心流程
+
+1. 返回一个新函数，接收原函数的参数
+2. 调用原函数时用 try/catch 包裹
+3. 成功则返回 `[result, undefined]`
+4. 捕获错误则返回 `[undefined, error]`
+
+### 关键技术点
+
+- 使用泛型 `<Fn extends (...params: any[]) => Promise<any>>` 保留类型
+- `Parameters<Fn>` 推断原函数参数类型
+- `Awaited<ReturnType<Fn>>` 推断 Promise 解析后的类型

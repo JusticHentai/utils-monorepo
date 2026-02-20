@@ -1,0 +1,61 @@
+import indexDemo from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onBFCacheRestore
+
+监听 BFCache（Back-Forward Cache）恢复事件。
+
+## 详细介绍
+
+`onBFCacheRestore` 用于监听页面从 BFCache 恢复的事件。当用户通过浏览器的前进/后退按钮返回页面时，如果页面被缓存在 BFCache 中，会触发此事件。
+
+**涉及的知识点**：
+- BFCache（Back-Forward Cache）：浏览器的一种优化机制，让页面在用户返回时立即恢复
+- `pageshow` 事件：页面显示时触发的事件
+- `event.persisted`：判断页面是否从 BFCache 恢复的标志
+
+**常用场景**：
+- 重新连接 WebSocket：BFCache 恢复后原有连接可能已断开
+- 刷新过期数据：页面可能缓存了过时的数据
+- 重新初始化定时器：原有定时器可能已失效
+- 更新用户登录状态：检查用户是否仍然登录
+
+**注意事项**：
+- BFCache 行为因浏览器而异，某些页面可能不会被缓存
+- 包含 `unload` 事件监听器的页面通常不会被 BFCache 缓存
+- 在 Storybook 等 SPA 环境中无法直接测试，需要真实页面导航
+
+## 使用示例
+
+<CodeOrSourceMdx language="tsx">
+  {indexDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>(event: PageTransitionEvent) =&gt; void</code></td>
+      <td>BFCache 恢复回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回清理函数 `() => void`，调用后停止监听。
+
+## 具体实现原理
+
+1. **核心原理**: 监听 window 的 `pageshow` 事件
+2. **判断条件**: 当 `event.persisted` 为 `true` 时表示从 BFCache 恢复
+3. **使用 createEventListener**: 自动管理事件监听器的添加和移除

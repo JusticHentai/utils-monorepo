@@ -1,22 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import normalDemo from './normalDemo'
+import edgeCaseDemo from './edgeCaseDemo'
+import randomDemo from './randomDemo'
 
-const randomDemo = () => {
+const RandomDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = normalDemo()
-
-          action('生成 1 到 10 之间的随机数')(res)
-        }}
-      >
-        生成 1 到 10 之间的随机数
+      <div className="button" onClick={randomDemo}>
+        生成随机数
+      </div>
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )
 }
 
-export default randomDemo
+export default RandomDemo

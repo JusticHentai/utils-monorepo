@@ -1,4 +1,4 @@
-import maxProfit from '@jqxon/learn-utils/leetcode/maxProfit2'
+import maxProfit from '../../../../packages/learn-utils/src/leetcode/maxProfit2'
 
 export default () => {
   const prices = [1, 2, 3, 0, 2]

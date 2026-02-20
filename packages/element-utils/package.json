@@ -7,13 +7,415 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./behaviorMonitor": {
+      "types": "./dist/behaviorMonitor/index.d.ts",
+      "import": "./dist/behaviorMonitor/index.js"
+    },
+    "./createEventListener": {
+      "types": "./dist/createEventListener/index.d.ts",
+      "import": "./dist/createEventListener/index.js"
+    },
+    "./getElementInfo": {
+      "types": "./dist/getElementInfo/index.d.ts",
+      "import": "./dist/getElementInfo/index.js"
+    },
+    "./getElementSize": {
+      "types": "./dist/getElementSize/index.d.ts",
+      "import": "./dist/getElementSize/index.js"
+    },
+    "./getScrollDirection": {
+      "types": "./dist/getScrollDirection/index.d.ts",
+      "import": "./dist/getScrollDirection/index.js"
+    },
+    "./getScrollPosition": {
+      "types": "./dist/getScrollPosition/index.d.ts",
+      "import": "./dist/getScrollPosition/index.js"
+    },
+    "./getWindowSize": {
+      "types": "./dist/getWindowSize/index.d.ts",
+      "import": "./dist/getWindowSize/index.js"
+    },
+    "./getXPath": {
+      "types": "./dist/getXPath/index.d.ts",
+      "import": "./dist/getXPath/index.js"
+    },
+    "./isAppleDevice": {
+      "types": "./dist/isAppleDevice/index.d.ts",
+      "import": "./dist/isAppleDevice/index.js"
+    },
+    "./isBrowser": {
+      "types": "./dist/isBrowser/index.d.ts",
+      "import": "./dist/isBrowser/index.js"
+    },
+    "./isElement": {
+      "types": "./dist/isElement/index.d.ts",
+      "import": "./dist/isElement/index.js"
+    },
+    "./isHeaders": {
+      "types": "./dist/isHeaders/index.d.ts",
+      "import": "./dist/isHeaders/index.js"
+    },
+    "./isScrollTarget": {
+      "types": "./dist/isScrollTarget/index.d.ts",
+      "import": "./dist/isScrollTarget/index.js"
+    },
+    "./isUrl": {
+      "types": "./dist/isUrl/index.d.ts",
+      "import": "./dist/isUrl/index.js"
+    },
+    "./matchPattern": {
+      "types": "./dist/matchPattern/index.d.ts",
+      "import": "./dist/matchPattern/index.js"
+    },
+    "./onBFCacheRestore": {
+      "types": "./dist/onBFCacheRestore/index.d.ts",
+      "import": "./dist/onBFCacheRestore/index.js"
+    },
+    "./onClickOutside": {
+      "types": "./dist/onClickOutside/index.d.ts",
+      "import": "./dist/onClickOutside/index.js"
+    },
+    "./onKeyPress": {
+      "types": "./dist/onKeyPress/index.d.ts",
+      "import": "./dist/onKeyPress/index.js"
+    },
+    "./onNetworkChange": {
+      "types": "./dist/onNetworkChange/index.d.ts",
+      "import": "./dist/onNetworkChange/index.js"
+    },
+    "./onPageUnload": {
+      "types": "./dist/onPageUnload/index.d.ts",
+      "import": "./dist/onPageUnload/index.js"
+    },
+    "./onScroll": {
+      "types": "./dist/onScroll/index.d.ts",
+      "import": "./dist/onScroll/index.js"
+    },
+    "./onWindowResize": {
+      "types": "./dist/onWindowResize/index.d.ts",
+      "import": "./dist/onWindowResize/index.js"
+    },
+    "./observer": {
+      "types": "./dist/observer/index.d.ts",
+      "import": "./dist/observer/index.js"
+    },
+    "./sessionId": {
+      "types": "./dist/sessionId/index.d.ts",
+      "import": "./dist/sessionId/index.js"
+    },
+    "./supportIntersectionObserver": {
+      "types": "./dist/supportIntersectionObserver/index.d.ts",
+      "import": "./dist/supportIntersectionObserver/index.js"
+    },
+    "./supportMutationObserver": {
+      "types": "./dist/supportMutationObserver/index.d.ts",
+      "import": "./dist/supportMutationObserver/index.js"
+    },
+    "./supportPassiveEvents": {
+      "types": "./dist/supportPassiveEvents/index.d.ts",
+      "import": "./dist/supportPassiveEvents/index.js"
+    },
+    "./supportPerformanceObserver": {
+      "types": "./dist/supportPerformanceObserver/index.d.ts",
+      "import": "./dist/supportPerformanceObserver/index.js"
+    },
+    "./supportRequestAnimationFrame": {
+      "types": "./dist/supportRequestAnimationFrame/index.d.ts",
+      "import": "./dist/supportRequestAnimationFrame/index.js"
+    },
+    "./supportRequestIdleCallback": {
+      "types": "./dist/supportRequestIdleCallback/index.d.ts",
+      "import": "./dist/supportRequestIdleCallback/index.js"
+    },
+    "./supportResizeObserver": {
+      "types": "./dist/supportResizeObserver/index.d.ts",
+      "import": "./dist/supportResizeObserver/index.js"
+    },
+    "./errorMonitor": {
+      "types": "./dist/errorMonitor/index.d.ts",
+      "import": "./dist/errorMonitor/index.js"
+    },
+    "./reporter": {
+      "types": "./dist/reporter/index.d.ts",
+      "import": "./dist/reporter/index.js"
+    },
+    "./requestMonitor": {
+      "types": "./dist/requestMonitor/index.d.ts",
+      "import": "./dist/requestMonitor/index.js"
+    },
+    "./surveillance": {
+      "types": "./dist/surveillance/index.d.ts",
+      "import": "./dist/surveillance/index.js"
+    },
+    "./resourceMonitor": {
+      "types": "./dist/resourceMonitor/index.d.ts",
+      "import": "./dist/resourceMonitor/index.js"
+    },
+    "./formatBytes": {
+      "types": "./dist/formatBytes/index.d.ts",
+      "import": "./dist/formatBytes/index.js"
+    },
+    "./formatStack": {
+      "types": "./dist/formatStack/index.d.ts",
+      "import": "./dist/formatStack/index.js"
+    },
+    "./getMetricRating": {
+      "types": "./dist/getMetricRating/index.d.ts",
+      "import": "./dist/getMetricRating/index.js"
+    },
+    "./getNavigationType": {
+      "types": "./dist/getNavigationType/index.d.ts",
+      "import": "./dist/getNavigationType/index.js"
+    },
+    "./getPageInfo": {
+      "types": "./dist/getPageInfo/index.d.ts",
+      "import": "./dist/getPageInfo/index.js"
+    },
+    "./uniqueId": {
+      "types": "./dist/uniqueId/index.d.ts",
+      "import": "./dist/uniqueId/index.js"
+    },
+    "./onEnterViewport": {
+      "types": "./dist/onEnterViewport/index.d.ts",
+      "import": "./dist/onEnterViewport/index.js"
+    },
+    "./onLeaveViewport": {
+      "types": "./dist/onLeaveViewport/index.d.ts",
+      "import": "./dist/onLeaveViewport/index.js"
+    },
+    "./createLazyLoadObserver": {
+      "types": "./dist/createLazyLoadObserver/index.d.ts",
+      "import": "./dist/createLazyLoadObserver/index.js"
+    },
+    "./onAttributeChange": {
+      "types": "./dist/onAttributeChange/index.d.ts",
+      "import": "./dist/onAttributeChange/index.js"
+    },
+    "./onChildListChange": {
+      "types": "./dist/onChildListChange/index.d.ts",
+      "import": "./dist/onChildListChange/index.js"
+    },
+    "./onTextContentChange": {
+      "types": "./dist/onTextContentChange/index.d.ts",
+      "import": "./dist/onTextContentChange/index.js"
+    },
+    "./onElementResize": {
+      "types": "./dist/onElementResize/index.d.ts",
+      "import": "./dist/onElementResize/index.js"
+    },
+    "./onWidthChange": {
+      "types": "./dist/onWidthChange/index.d.ts",
+      "import": "./dist/onWidthChange/index.js"
+    },
+    "./onHeightChange": {
+      "types": "./dist/onHeightChange/index.d.ts",
+      "import": "./dist/onHeightChange/index.js"
+    },
+    "./onLCP": {
+      "types": "./dist/onLCP/index.d.ts",
+      "import": "./dist/onLCP/index.js"
+    },
+    "./onFID": {
+      "types": "./dist/onFID/index.d.ts",
+      "import": "./dist/onFID/index.js"
+    },
+    "./onCLS": {
+      "types": "./dist/onCLS/index.d.ts",
+      "import": "./dist/onCLS/index.js"
+    },
+    "./onFCP": {
+      "types": "./dist/onFCP/index.d.ts",
+      "import": "./dist/onFCP/index.js"
+    },
+    "./onFP": {
+      "types": "./dist/onFP/index.d.ts",
+      "import": "./dist/onFP/index.js"
+    },
+    "./onINP": {
+      "types": "./dist/onINP/index.d.ts",
+      "import": "./dist/onINP/index.js"
+    },
+    "./longTaskMonitor": {
+      "types": "./dist/longTaskMonitor/index.d.ts",
+      "import": "./dist/longTaskMonitor/index.js"
+    },
+    "./onJank": {
+      "types": "./dist/onJank/index.d.ts",
+      "import": "./dist/onJank/index.js"
+    },
+    "./onTTFB": {
+      "types": "./dist/onTTFB/index.d.ts",
+      "import": "./dist/onTTFB/index.js"
+    },
+    "./observeWebVitals": {
+      "types": "./dist/observeWebVitals/index.d.ts",
+      "import": "./dist/observeWebVitals/index.js"
+    },
+    "./performanceMark": {
+      "types": "./dist/performanceMark/index.d.ts",
+      "import": "./dist/performanceMark/index.js"
+    },
+    "./useLatest": {
+      "types": "./dist/useLatest/index.d.ts",
+      "import": "./dist/useLatest/index.js"
+    },
+    "./useMemoizedFn": {
+      "types": "./dist/useMemoizedFn/index.d.ts",
+      "import": "./dist/useMemoizedFn/index.js"
+    },
+    "./useMount": {
+      "types": "./dist/useMount/index.d.ts",
+      "import": "./dist/useMount/index.js"
+    },
+    "./useUnmount": {
+      "types": "./dist/useUnmount/index.d.ts",
+      "import": "./dist/useUnmount/index.js"
+    },
+    "./useUnmountedRef": {
+      "types": "./dist/useUnmountedRef/index.d.ts",
+      "import": "./dist/useUnmountedRef/index.js"
+    },
+    "./useUpdate": {
+      "types": "./dist/useUpdate/index.d.ts",
+      "import": "./dist/useUpdate/index.js"
+    },
+    "./useCreation": {
+      "types": "./dist/useCreation/index.d.ts",
+      "import": "./dist/useCreation/index.js"
+    },
+    "./useToggle": {
+      "types": "./dist/useToggle/index.d.ts",
+      "import": "./dist/useToggle/index.js"
+    },
+    "./useBoolean": {
+      "types": "./dist/useBoolean/index.d.ts",
+      "import": "./dist/useBoolean/index.js"
+    },
+    "./useSetState": {
+      "types": "./dist/useSetState/index.d.ts",
+      "import": "./dist/useSetState/index.js"
+    },
+    "./useGetState": {
+      "types": "./dist/useGetState/index.d.ts",
+      "import": "./dist/useGetState/index.js"
+    },
+    "./useSafeState": {
+      "types": "./dist/useSafeState/index.d.ts",
+      "import": "./dist/useSafeState/index.js"
+    },
+    "./useResetState": {
+      "types": "./dist/useResetState/index.d.ts",
+      "import": "./dist/useResetState/index.js"
+    },
+    "./usePrevious": {
+      "types": "./dist/usePrevious/index.d.ts",
+      "import": "./dist/usePrevious/index.js"
+    },
+    "./useCounter": {
+      "types": "./dist/useCounter/index.d.ts",
+      "import": "./dist/useCounter/index.js"
+    },
+    "./useMap": {
+      "types": "./dist/useMap/index.d.ts",
+      "import": "./dist/useMap/index.js"
+    },
+    "./useSet": {
+      "types": "./dist/useSet/index.d.ts",
+      "import": "./dist/useSet/index.js"
+    },
+    "./useRafState": {
+      "types": "./dist/useRafState/index.d.ts",
+      "import": "./dist/useRafState/index.js"
+    },
+    "./useUpdateEffect": {
+      "types": "./dist/useUpdateEffect/index.d.ts",
+      "import": "./dist/useUpdateEffect/index.js"
+    },
+    "./useDebounceEffect": {
+      "types": "./dist/useDebounceEffect/index.d.ts",
+      "import": "./dist/useDebounceEffect/index.js"
+    },
+    "./useThrottleEffect": {
+      "types": "./dist/useThrottleEffect/index.d.ts",
+      "import": "./dist/useThrottleEffect/index.js"
+    },
+    "./useDebounceValue": {
+      "types": "./dist/useDebounceValue/index.d.ts",
+      "import": "./dist/useDebounceValue/index.js"
+    },
+    "./useThrottleValue": {
+      "types": "./dist/useThrottleValue/index.d.ts",
+      "import": "./dist/useThrottleValue/index.js"
+    },
+    "./useInterval": {
+      "types": "./dist/useInterval/index.d.ts",
+      "import": "./dist/useInterval/index.js"
+    },
+    "./useTimeout": {
+      "types": "./dist/useTimeout/index.d.ts",
+      "import": "./dist/useTimeout/index.js"
+    },
+    "./useRafInterval": {
+      "types": "./dist/useRafInterval/index.d.ts",
+      "import": "./dist/useRafInterval/index.js"
+    },
+    "./useRafTimeout": {
+      "types": "./dist/useRafTimeout/index.d.ts",
+      "import": "./dist/useRafTimeout/index.js"
+    },
+    "./useLockFn": {
+      "types": "./dist/useLockFn/index.d.ts",
+      "import": "./dist/useLockFn/index.js"
+    },
+    "./useEventListener": {
+      "types": "./dist/useEventListener/index.d.ts",
+      "import": "./dist/useEventListener/index.js"
+    },
+    "./useClickAway": {
+      "types": "./dist/useClickAway/index.d.ts",
+      "import": "./dist/useClickAway/index.js"
+    },
+    "./useHover": {
+      "types": "./dist/useHover/index.d.ts",
+      "import": "./dist/useHover/index.js"
+    },
+    "./useDocumentVisibility": {
+      "types": "./dist/useDocumentVisibility/index.d.ts",
+      "import": "./dist/useDocumentVisibility/index.js"
+    },
+    "./useSize": {
+      "types": "./dist/useSize/index.d.ts",
+      "import": "./dist/useSize/index.js"
+    },
+    "./useScroll": {
+      "types": "./dist/useScroll/index.d.ts",
+      "import": "./dist/useScroll/index.js"
+    },
+    "./useKeyPress": {
+      "types": "./dist/useKeyPress/index.d.ts",
+      "import": "./dist/useKeyPress/index.js"
+    },
+    "./useStorageState": {
+      "types": "./dist/useStorageState/index.d.ts",
+      "import": "./dist/useStorageState/index.js"
+    },
+    "./useConditionalOnce": {
+      "types": "./dist/useConditionalOnce/index.d.ts",
+      "import": "./dist/useConditionalOnce/index.js"
+    }
+  },
   "files": [
     "dist",
     "package.json",
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
+   "build": "NODE_OPTIONS='--max-old-space-size=16384' tsup",
     "dev": "tsup --watch",
     "prepublish": "pnpm build"
   },
@@ -22,18 +424,18 @@
     "prettier": "^3.4.2"
   },
   "devDependencies": {
-    "@swc/core": "^1.10.1",
-    "@swc/helpers": "^0.5.15",
+    "@swc/core": "^1.15.3",
+    "@swc/helpers": "^0.5.17",
     "@types/node": "^24.2.1",
-    "@types/react": "^18.3.5",
-    "@types/react-dom": "^18.3.0",
-    "esbuild": "^0.24.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.27.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "sideEffects": false
 }

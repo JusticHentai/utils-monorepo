@@ -1,0 +1,91 @@
+import initDemo from './initDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onNetworkChange
+
+监听网络状态变化。
+
+## 详细介绍
+
+`onNetworkChange` 用于监听浏览器网络连接状态的变化，当网络断开或恢复时触发回调。
+
+### 底层原理
+
+通过监听 window 的 `online` 和 `offline` 事件来检测网络状态变化。这两个事件是浏览器原生提供的网络状态检测 API。
+
+### 常用场景
+
+- 显示网络状态提示
+- 网络恢复时自动重试请求
+- 离线模式切换
+- 数据同步功能
+
+## 开始监听
+
+调用 `onNetworkChange` 并传入回调函数，当网络状态变化时会触发回调。返回一个清理函数用于停止监听。
+
+<CodeOrSourceMdx language="typescript">
+  {initDemo}
+</CodeOrSourceMdx>
+
+## 停止监听
+
+调用返回的清理函数即可停止监听，释放事件监听器资源。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>(online: boolean) =&gt; void</code></td>
+      <td>网络状态变化回调，参数为是否在线</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>() =&gt; void</code></td>
+      <td>清理函数，调用后停止监听网络状态变化</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**：
+   - `index.ts`：主函数，负责注册和管理事件监听
+   - `interface.ts`：类型定义
+
+2. **核心流程**：
+   - 调用 `createEventListener` 分别监听 `online` 和 `offline` 事件
+   - `online` 事件触发时回调 `callback(true)`
+   - `offline` 事件触发时回调 `callback(false)`
+   - 返回清理函数，调用时移除所有事件监听器
+
+3. **关键技术点**：
+   - 使用 `window.online` 和 `window.offline` 原生事件
+   - 通过 `isBrowser()` 判断运行环境，SSR 安全
+   - 统一的清理函数模式，防止内存泄漏

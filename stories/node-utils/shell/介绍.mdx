@@ -1,0 +1,24 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# shell
+
+shell 是一个用于执行一个或多个 shell 命令的异步函数。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### command
+
+- 类型：`string | string[]`
+- 描述：要执行的命令，可以是单个命令字符串或命令数组
+
+### 返回值
+
+- 类型：`Promise<boolean | boolean[]>`
+- 描述：单个命令返回 boolean，多个命令返回 boolean 数组，表示各命令是否执行成功

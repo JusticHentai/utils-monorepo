@@ -1,0 +1,189 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportIntersectionObserver
+
+检测浏览器是否支持 IntersectionObserver API。IntersectionObserver 用于异步观察目标元素与视口的交叉状态变化。
+
+## 什么是 IntersectionObserver？
+
+IntersectionObserver 是一个浏览器原生 API，用于观察目标元素与其祖先元素或视口之间的交叉状态：
+
+```
+┌─────────────────────────────────────┐
+│           Viewport (视口)            │
+│  ┌──────────────────────────────┐   │
+│  │                              │   │
+│  │    ┌────────────────┐        │   │
+│  │    │  Target Element │ ← 被观察的目标元素
+│  │    │   (目标元素)    │        │   │
+│  │    └────────────────┘        │   │
+│  │                              │   │
+│  └──────────────────────────────┘   │
+│              Root (根元素)           │
+└─────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 IntersectionObserver API。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 IntersectionObserver API</td>
+    </tr>
+  </tbody>
+</table>
+
+## 主要使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>懒加载</td>
+      <td>图片/内容进入视口时才加载</td>
+    </tr>
+    <tr>
+      <td>无限滚动</td>
+      <td>滚动到底部时加载更多内容</td>
+    </tr>
+    <tr>
+      <td>曝光统计</td>
+      <td>统计广告/内容的可见性</td>
+    </tr>
+    <tr>
+      <td>动画触发</td>
+      <td>元素进入视口时播放动画</td>
+    </tr>
+    <tr>
+      <td>视频播放</td>
+      <td>可见时播放，离开时暂停</td>
+    </tr>
+  </tbody>
+</table>
+
+## 原生 API 用法
+
+```typescript
+// 创建观察器
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        console.log('元素进入视口', entry.target)
+        console.log('可见比例:', entry.intersectionRatio)
+      }
+    })
+  },
+  {
+    root: null,        // 根元素，null 表示视口
+    rootMargin: '0px', // 根元素的边距
+    threshold: 0       // 触发回调的阈值 (0-1)
+  }
+)
+
+// 开始观察
+observer.observe(element)
+
+// 停止观察
+observer.unobserve(element)
+
+// 断开所有观察
+observer.disconnect()
+```
+
+## 与传统方案对比
+
+<table>
+  <thead>
+    <tr>
+      <th>传统方案 (scroll + getBoundingClientRect)</th>
+      <th>IntersectionObserver</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>在主线程同步执行，可能造成卡顿</td>
+      <td>异步执行，不阻塞主线程</td>
+    </tr>
+    <tr>
+      <td>需要手动节流/防抖</td>
+      <td>自动优化回调频率</td>
+    </tr>
+    <tr>
+      <td>频繁触发 reflow</td>
+      <td>无 reflow 开销</td>
+    </tr>
+    <tr>
+      <td>代码复杂</td>
+      <td>API 简洁直观</td>
+    </tr>
+  </tbody>
+</table>
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>51+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>55+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>12.1+</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>15+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>❌ 不支持</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+import isBrowser from '../isBrowser'
+
+const supportIntersectionObserver = (): boolean => {
+  return isBrowser() && 'IntersectionObserver' in window
+}
+```
+
+通过检测 `window.IntersectionObserver` 是否存在来判断浏览器支持情况。

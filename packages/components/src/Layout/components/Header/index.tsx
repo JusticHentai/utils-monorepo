@@ -12,7 +12,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>((baseProps, ref) => {
   const { children, ...rest } = useMergeProps<HeaderProps>(baseProps, {}, {})
 
   return (
-    <HeaderStyle ref={ref} {...rest}>
+    <HeaderStyle ref={ref} {...(rest as any)}>
       {children}
     </HeaderStyle>
   )

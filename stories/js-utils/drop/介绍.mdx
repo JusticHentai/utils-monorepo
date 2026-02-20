@@ -1,0 +1,118 @@
+import dropDemo from './dropDemo?raw'
+import dropRightDemo from './dropRightDemo?raw'
+import dropWhileDemo from './dropWhileDemo?raw'
+import dropRightWhileDemo from './dropRightWhileDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# drop
+
+创建一个切片数组，去除数组前面或后面的 n 个元素。
+
+## 详细介绍
+
+`drop` 系列函数用于从数组中移除指定数量的元素，返回新数组，不修改原数组。
+
+**包含的函数**：
+- `drop` - 从数组开头移除 n 个元素
+- `dropRight` - 从数组末尾移除 n 个元素
+- `dropWhile` - 从开头移除元素直到断言返回 false
+- `dropRightWhile` - 从末尾移除元素直到断言返回 false
+
+**常用场景**：
+- 分页数据处理
+- 跳过数组前几项
+- 根据条件过滤数组元素
+
+## drop - 从开头移除
+
+<CodeOrSourceMdx language="typescript">
+  {dropDemo}
+</CodeOrSourceMdx>
+
+## dropRight - 从末尾移除
+
+<CodeOrSourceMdx language="typescript">
+  {dropRightDemo}
+</CodeOrSourceMdx>
+
+## dropWhile - 条件移除开头
+
+<CodeOrSourceMdx language="typescript">
+  {dropWhileDemo}
+</CodeOrSourceMdx>
+
+## dropRightWhile - 条件移除末尾
+
+<CodeOrSourceMdx language="typescript">
+  {dropRightWhileDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### drop / dropRight
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>要移除的元素数量，默认为 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### dropWhile / dropRightWhile
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>Function | Object | string</code></td>
+      <td>断言函数、匹配对象或属性名</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：处理后的新数组
+
+## 具体实现原理
+
+### 核心流程
+
+1. **drop**: 使用 `slice(n)` 截取从索引 n 开始的元素
+2. **dropRight**: 使用 `slice(0, -n)` 截取除最后 n 个元素外的部分
+3. **dropWhile**: 从开头遍历，找到第一个不满足断言的索引，返回该索引后的元素
+4. **dropRightWhile**: 从末尾遍历，找到第一个不满足断言的索引，返回该索引前的元素
+
+### 关键技术点
+
+- 使用 `Array.prototype.slice()` 进行数组切片
+- 断言函数支持多种形式（函数、对象匹配、属性名）
+- 返回新数组，保证不可变性

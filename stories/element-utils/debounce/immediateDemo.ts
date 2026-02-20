@@ -1,17 +1,22 @@
+import { action } from 'storybook/actions'
 import debounce from '../../../packages/element-utils/src/debounce'
 
-const immediateDemo = () => {
-  const fn = debounce({
-    cb: () => {
-      console.log('立即执行回调')
-      return '立即执行回调'
-    },
+let fn: (() => void) | null = null
+
+export const initImmediateDemo = () => {
+  fn = debounce({
+    cb: () => action('防抖回调执行')(),
     duration: 1000,
     immediate: true,
   })
-
-  fn()
-  return '立即执行回调，1秒内再次调用会重新计时'
+  action('初始化防抖函数（立即执行）')()
 }
 
-export default immediateDemo
+export const runImmediateDemo = () => {
+  if (!fn) {
+    action('请先初始化')()
+    return
+  }
+  fn()
+  action('触发防抖函数')()
+}

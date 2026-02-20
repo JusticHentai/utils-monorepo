@@ -1,0 +1,73 @@
+import basicDemo from './basicDemo?raw'
+import stepDemo from './stepDemo?raw'
+import rightDemo from './rightDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# range
+
+创建一个包含指定范围数字的数组。
+
+## 详细介绍
+
+`range` 函数用于生成数字序列数组，类似 Python 的 range 函数。
+
+**包含的函数**：
+- `range` - 升序生成
+- `rangeRight` - 降序生成
+
+**常用场景**：
+- 循环指定次数
+- 生成索引数组
+- 创建分页页码
+
+## 基础范围
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 自定义步长
+
+<CodeOrSourceMdx language="typescript">
+  {stepDemo}
+</CodeOrSourceMdx>
+
+## rangeRight - 降序
+
+<CodeOrSourceMdx language="typescript">
+  {rightDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>start</td>
+      <td><code>number</code></td>
+      <td>起始值（单参数时作为 end，start 默认 0）</td>
+    </tr>
+    <tr>
+      <td>end</td>
+      <td><code>number</code></td>
+      <td>结束值（不含）</td>
+    </tr>
+    <tr>
+      <td>step</td>
+      <td><code>number</code></td>
+      <td>步长，默认自动判断</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number[]`
+- 描述：数字数组

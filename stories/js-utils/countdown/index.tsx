@@ -9,7 +9,7 @@ const CountdownDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button"
+        className="button"
         onClick={() => {
           clearRef.current = startCountDownDemo()
         }}
@@ -17,7 +17,7 @@ const CountdownDemo = () => {
         开始倒计时 5 秒
       </div>
       <div
-        className="storybook-button"
+        className="button"
         onClick={() => {
           clearCountdownDemo(clearRef.current)
         }}

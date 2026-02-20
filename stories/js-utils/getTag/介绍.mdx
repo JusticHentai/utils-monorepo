@@ -1,0 +1,135 @@
+import basicDemo from './basicDemo?raw'
+import builtinTypesDemo from './builtinTypesDemo?raw'
+import typeofCompareDemo from './typeofCompareDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getTag
+
+获取值的内部类型标签，返回形如 `'[object Type]'` 的字符串。
+
+## 详细介绍
+
+`getTag` 是类型检测的基础工具，封装了 `Object.prototype.toString.call`。
+
+**为什么不用 `typeof`？** 因为 `typeof` 对很多类型都返回 `'object'`：
+
+```
+typeof null        // 'object'  ← 著名的 JS bug
+typeof []          // 'object'
+typeof new Date()  // 'object'
+typeof /abc/       // 'object'
+typeof new Map()   // 'object'
+```
+
+而 `Object.prototype.toString.call` 能精确区分所有内置类型，因为它读取对象内部的 `[[Class]]` 标签：
+
+```
+getTag(null)        // '[object Null]'
+getTag([])          // '[object Array]'
+getTag(new Date())  // '[object Date]'
+getTag(/abc/)       // '[object RegExp]'
+getTag(new Map())   // '[object Map]'
+```
+
+被 `isEqual`、`isError`、`isTypedArray`、`isArray`、`isMap` 等 17 个类型检测工具内部使用。
+
+## 基础类型检测
+
+检测原始类型和常见类型的标签。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 内置对象类型
+
+检测各种内置对象（Date、Map、Set、Error 等）的标签。
+
+<CodeOrSourceMdx language="typescript">
+  {builtinTypesDemo}
+</CodeOrSourceMdx>
+
+## 对比 typeof 的局限
+
+展示 `typeof` 对多种类型都返回 `'object'`，而 `getTag` 能精确区分。
+
+<CodeOrSourceMdx language="typescript">
+  {typeofCompareDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要获取类型标签的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：类型标签字符串，格式为 `'[object Type]'`
+
+### 常见返回值对照表
+
+<table>
+  <thead>
+    <tr>
+      <th>输入值</th>
+      <th>返回值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>'hello'</code></td><td><code>'[object String]'</code></td></tr>
+    <tr><td><code>123</code></td><td><code>'[object Number]'</code></td></tr>
+    <tr><td><code>true</code></td><td><code>'[object Boolean]'</code></td></tr>
+    <tr><td><code>null</code></td><td><code>'[object Null]'</code></td></tr>
+    <tr><td><code>undefined</code></td><td><code>'[object Undefined]'</code></td></tr>
+    <tr><td><code>Symbol()</code></td><td><code>'[object Symbol]'</code></td></tr>
+    <tr><td><code>[]</code></td><td><code>'[object Array]'</code></td></tr>
+    <tr><td><code>{'{}'}</code></td><td><code>'[object Object]'</code></td></tr>
+    <tr><td><code>new Date()</code></td><td><code>'[object Date]'</code></td></tr>
+    <tr><td><code>/abc/</code></td><td><code>'[object RegExp]'</code></td></tr>
+    <tr><td><code>new Map()</code></td><td><code>'[object Map]'</code></td></tr>
+    <tr><td><code>new Set()</code></td><td><code>'[object Set]'</code></td></tr>
+    <tr><td><code>new Error()</code></td><td><code>'[object Error]'</code></td></tr>
+    <tr><td><code>() =&gt; {'{}'}</code></td><td><code>'[object Function]'</code></td></tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+实现只有一行：`Object.prototype.toString.call(value)`
+
+### 为什么用 `Object.prototype.toString` 而不是直接 `.toString()`？
+
+```js
+[1,2].toString()        // '1,2'  ← Array 自己重写了 toString
+new Date().toString()   // 'Tue Feb 17 2026 ...'  ← Date 也重写了
+```
+
+很多类型都重写了 `toString`，返回的是人类可读的字符串，不是类型标签。
+
+而 `Object.prototype.toString` 是**原始版本**，它会读取对象内部的 `Symbol.toStringTag` 或 `[[Class]]` 属性，返回统一格式的 `'[object Type]'`。
+
+### 为什么用 `.call(value)`？
+
+因为我们要调用的是 `Object.prototype` 上的 `toString`，但要让它作用在 `value` 上（改变 `this` 指向）：
+
+```js
+// 等价于让 value 作为 this 去调用 Object.prototype.toString
+Object.prototype.toString.call(value)
+// 而不是
+value.toString()  // 这会调用 value 自己的 toString，结果不同
+```

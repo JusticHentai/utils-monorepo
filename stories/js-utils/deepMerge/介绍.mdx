@@ -1,12 +1,46 @@
 import normalDemo from './normalDemo?raw'
 import arrayDemo from './arrayDemo?raw'
+import typeDemo from './typeDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # deepMerge
 
-deepMerge 是一个用于深度合并对象的函数，支持对象和数组的深度合并。
+深度合并两个对象或数组，支持完整的 TypeScript 类型推断。
+
+## 详细介绍
+
+deepMerge 是一个对象深度合并函数，核心作用是：**将源对象的属性递归合并到目标对象，支持嵌套对象和数组**。
+
+**涉及的知识点**：
+- 递归遍历：处理嵌套对象和数组
+- 类型判断：区分对象、数组、原始值
+- TypeScript 条件类型：实现精确的类型推断
+
+**与 Object.assign / 展开运算符的区别**：
+- `Object.assign` 只进行浅合并，嵌套对象会被覆盖
+- `deepMerge` 递归合并嵌套对象，保留两者的属性
+
+**常用场景**：
+- 配置合并：默认配置与用户配置合并
+- 状态更新：深层更新 Redux/Vuex 状态
+- API 响应处理：合并分页数据
+- 主题定制：基础主题与自定义主题合并
+
+**优势**：
+- 递归合并嵌套结构
+- TypeScript 类型安全
+- 智能处理空值
+
+## 合并规则
+
+1. 两者都是对象：递归合并每个属性，同名属性 source 覆盖 target
+2. 两者都是数组：按索引递归合并每个元素
+3. 类型不同或 source 有值：优先使用 source
+4. source 为空（null/undefined/空字符串等）：保留 target
 
 ## 对象合并示例
+
+演示嵌套对象合并和同名属性覆盖，返回类型自动推断。
 
 <CodeOrSourceMdx language="typescript">
   {normalDemo}
@@ -14,23 +48,96 @@ deepMerge 是一个用于深度合并对象的函数，支持对象和数组的�
 
 ## 数组合并示例
 
+按索引合并数组，嵌套对象递归合并。
+
 <CodeOrSourceMdx language="typescript">
   {arrayDemo}
 </CodeOrSourceMdx>
 
+## 类型推断示例
+
+演示 `DeepMerge` 类型的使用，支持完整的类型安全。
+
+<CodeOrSourceMdx language="typescript">
+  {typeDemo}
+</CodeOrSourceMdx>
+
 ## 参数介绍
 
-### obj
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>T extends object</code></td>
+      <td>目标对象，合并结果会写入此对象</td>
+    </tr>
+    <tr>
+      <td>source</td>
+      <td><code>S extends object</code></td>
+      <td>源对象，提供要合并的属性</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`Record<string, any>`
-- 描述：目标对象
+## 返回值
 
-### source
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>DeepMerge&lt;T, S&gt;</code></td>
+      <td>合并后的对象，类型自动推断包含两者所有属性</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`Record<string, any>`
-- 描述：源对象
+## 类型定义
 
-### 返回值
+<table>
+  <thead>
+    <tr>
+      <th>类型名</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>DeepMerge&lt;T, S&gt;</code></td>
+      <td>递归合并类型，将 Source 的属性合并到 Target，同名属性使用 Source 类型</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`Record<string, any>`
-- 描述：合并后的对象
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 主函数实现，递归合并逻辑
+- `interface.ts` - `DeepMerge` 类型定义，递归条件类型
+
+### 核心流程
+
+1. 判断 target 和 source 是否都是对象/数组
+2. 如果都是对象：递归合并每个属性
+3. 如果都是数组：按索引递归合并元素
+4. 如果类型不同或 source 有值：使用 source
+5. 如果 source 为空：保留 target
+
+### 关键技术点
+
+- 使用 `Object.assign` 创建基础合并结果
+- 递归调用自身处理嵌套结构
+- 数组按索引对位合并，而非 concat
+- `DeepMerge<T, S>` 使用条件类型递归推断

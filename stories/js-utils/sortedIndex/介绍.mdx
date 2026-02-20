@@ -1,0 +1,73 @@
+import sortedIndexDemo from './sortedIndexDemo?raw'
+import sortedIndexByDemo from './sortedIndexByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sortedIndex
+
+使用二分查找确定插入位置。
+
+## 详细介绍
+
+`sortedIndex` 系列函数使用二分查找确定值在已排序数组中的插入位置。包含 By、Of、Last 等变体。
+
+**常用场景**：
+- 有序数组的高效插入
+- 二分查找定位
+- 维护排序数组
+
+## 查找插入位置
+
+使用 `sortedIndex` 在已排序数组中查找值应插入的最低索引。
+
+<CodeOrSourceMdx language="typescript">
+  {sortedIndexDemo}
+</CodeOrSourceMdx>
+
+## 按迭代器查找位置
+
+使用 `sortedIndexBy` 按迭代器提取的值确定插入位置。
+
+<CodeOrSourceMdx language="typescript">
+  {sortedIndexByDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>已排序的数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>要查找插入位置的值</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) => K</code></td>
+      <td>迭代器函数（By 变体使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：值应插入的索引位置
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 sortedIndex 系列六个函数
+2. **核心流程**: 二分查找 → 比较中间值 → 缩小范围 → 返回插入位置
+3. **关键技术点**: 二分查找算法，By 变体先通过迭代器转换再比较
+4. **数据流向**: 已排序数组 + 值 → 二分查找 → 返回索引

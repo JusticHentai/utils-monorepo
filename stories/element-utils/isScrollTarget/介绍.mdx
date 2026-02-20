@@ -1,0 +1,89 @@
+import windowDemo from './windowDemo?raw'
+import elementDemo from './elementDemo?raw'
+import eventTargetDemo from './eventTargetDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isScrollTarget
+
+判断目标是否为可滚动元素（Window 或 Element），用于类型守卫和滚动事件处理。
+
+## 详细介绍
+
+`isScrollTarget` 是一个类型守卫函数，用于判断传入的 `EventTarget` 是否为有效的滚动目标。
+
+在处理滚动事件时，事件的 `target` 或 `currentTarget` 属性返回的是 `EventTarget` 类型，但滚动相关的 API（如 `scrollTop`、`scrollLeft`、`scrollX`、`scrollY`）只存在于 `Window` 和 `Element` 上。此函数帮助我们安全地进行类型收窄，确保后续操作的类型安全。
+
+**使用场景**：
+- 滚动事件回调中判断事件目标
+- 需要从 `EventTarget` 收窄到 `ScrollTarget` 类型时
+- 配合 `getScrollPosition` 等滚动相关工具使用
+
+## 检测 Window 对象
+
+Window 对象是最常见的滚动容器，代表整个浏览器窗口的滚动。
+
+<CodeOrSourceMdx language="typescript">
+  {windowDemo}
+</CodeOrSourceMdx>
+
+## 检测 Element 对象
+
+任何 DOM 元素都可以成为滚动容器，只要设置了 `overflow: auto/scroll` 样式。
+
+<CodeOrSourceMdx language="typescript">
+  {elementDemo}
+</CodeOrSourceMdx>
+
+## 检测其他 EventTarget
+
+对于不是 Window 或 Element 的 EventTarget（如自定义事件目标），函数返回 false。
+
+<CodeOrSourceMdx language="typescript">
+  {eventTargetDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>EventTarget</code></td>
+      <td>要判断的事件目标</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>target is ScrollTarget</code></td>
+      <td>类型谓词，为 true 时 target 被收窄为 Window | Element</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件职责**：
+- `index.ts`: 导出 `isScrollTarget` 类型守卫函数
+
+**核心流程**：
+1. 检查 target 是否等于 window 对象
+2. 检查 target 是否是 Element 的实例
+3. 满足任一条件返回 true，TypeScript 自动收窄类型
+
+**关键技术点**：
+- 使用 TypeScript 的类型谓词 `target is ScrollTarget` 实现类型守卫
+- 通过 `instanceof Element` 判断是否为 DOM 元素
+- 复用 `ScrollTarget` 类型定义，与 `getScrollPosition` 保持一致
+
+**数据流向**：
+```
+EventTarget → isScrollTarget() → boolean (类型守卫)
+                                    ↓
+                            target 被收窄为 ScrollTarget
+```

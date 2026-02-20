@@ -4,7 +4,27 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # truncate
 
-truncate 是一个用于截断字符串并添加省略号的函数，省略号包含在总长度中。
+截断字符串并添加省略号的函数。
+
+## 详细介绍
+
+truncate 是一个字符串处理函数，核心作用是：**当字符串超过指定长度时，截断并在末尾添加省略号 `...`**。
+
+**涉及的知识点**：
+- String.prototype.slice()：截取字符串
+- 长度计算：省略号占用 3 个字符
+
+**常用场景**：
+- 列表标题：限制标题显示长度
+- 卡片描述：截断过长的描述文字
+- 表格单元格：防止内容溢出
+- 消息预览：显示消息摘要
+- 文件名显示：长文件名的截断展示
+
+**优势**：
+- 简单直接，一个函数解决截断问题
+- 省略号计入总长度，确保输出长度不超过 maxLength
+- 短字符串不处理，避免不必要的操作
 
 ## 截断示例
 
@@ -20,17 +40,53 @@ truncate 是一个用于截断字符串并添加省略号的函数，省略号�
 
 ## 参数介绍
 
-### str
-
-- 类型：`string`
-- 描述：原始字符串
-
-### maxLength
-
-- 类型：`number`
-- 描述：最大长度（包含省略号的 3 个字符）
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>options.str</td>
+      <td><code>string</code></td>
+      <td>要截断的原始字符串</td>
+    </tr>
+    <tr>
+      <td>options.maxLength</td>
+      <td><code>number</code></td>
+      <td>最大长度（包含省略号的 3 个字符）</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
 - 类型：`string`
 - 描述：截断后的字符串
+
+## 注意事项
+
+1. **省略号长度**: 省略号 `...` 占用 3 个字符，会被计算在 `maxLength` 内
+2. **边界处理**: 当字符串长度小于等于 `maxLength` 时，返回原字符串
+3. **最小长度**: 建议 `maxLength` 至少为 4，否则可能出现只有省略号的情况
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 truncate 函数实现
+
+### 核心流程
+
+1. 判断 `str.length <= maxLength`，是则直接返回原字符串
+2. 否则截取前 `maxLength - 3` 个字符
+3. 拼接省略号 `...` 后返回
+
+### 关键技术点
+
+- 实现：`str.slice(0, maxLength - 3) + '...'`
+- 使用 `slice` 而非 `substring`，更简洁
+- 省略号固定为 3 个字符 `...`

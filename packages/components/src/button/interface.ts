@@ -1,19 +1,53 @@
 import { HTMLProps, MouseEvent, ReactNode } from 'react'
 import BaseProps from '../types/BaseProps'
 
+/** 按钮类型 */
+export enum BtnType {
+  Primary = 'primary',
+  Secondary = 'secondary',
+  Dashed = 'dashed',
+  Text = 'text',
+  Outline = 'outline',
+  Default = 'default',
+}
+
+/** 按钮尺寸 */
+export enum BtnSize {
+  Mini = 'mini',
+  Small = 'small',
+  Default = 'default',
+  Large = 'large',
+}
+
+/** 按钮状态 */
+export enum BtnStatus {
+  Default = 'default',
+  Warning = 'warning',
+  Error = 'error',
+  Success = 'success',
+}
+
+/** 按钮形状 */
+export enum BtnShape {
+  Circle = 'circle',
+  Round = 'round',
+  Square = 'square',
+  Default = 'default',
+}
+
 export interface ButtonProps extends BaseProps {
   // 按钮尺寸 迷你 小 大 默认
-  size?: 'mini' | 'small' | 'large' | 'default'
+  size?: BtnSize | `${BtnSize}`
   // 按钮形状 圆形 全圆角 方形 默认 square
-  shape?: 'circle' | 'round' | 'square' | 'default'
+  shape?: BtnShape | `${BtnShape}`
   // 是否禁用
   disabled?: boolean
   // 自定义的按钮类型 主要按钮、次级按钮、虚框按钮、文字按钮、线性按钮，`default` 为次级按钮
-  type?: 'primary' | 'secondary' | 'dashed' | 'text' | 'outline' | 'default'
+  type?: BtnType | `${BtnType}`
   // 按钮原生 html 类型
   htmlType?: 'button'
   // 按钮状态 警告 危险 成功 默认
-  status?: 'warning' | 'error' | 'success' | 'default'
+  status?: BtnStatus | `${BtnStatus}`
   // 点击回调函数
   onClick?: (e: MouseEvent<HTMLButtonElement>) => void
   // 设置按钮的图标

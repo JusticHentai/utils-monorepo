@@ -3,7 +3,28 @@ import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # sleep
 
-sleep 是一个用于睡眠指定时间的异步函数。
+异步睡眠函数，用于暂停代码执行指定时间。
+
+## 详细介绍
+
+sleep 是一个简单但非常实用的异步工具函数，核心作用是：**让代码"暂停"执行一段时间，然后继续**。
+
+**涉及的知识点**：
+- Promise：实现异步等待机制
+- setTimeout：定时触发 resolve
+- async/await：配合使用实现同步风格的延迟
+
+**常用场景**：
+- 轮询等待：每隔一段时间检查某个状态
+- 动画间隔：控制连续动画帧之间的间隔
+- 请求限流：限制 API 调用频率
+- 调试延迟：模拟网络延迟或慢速操作
+- 重试间隔：失败后等待一段时间再重试
+
+**优势**：
+- 代码简洁，一行实现延迟
+- 基于 Promise，可配合 async/await 使用
+- 不阻塞主线程，性能友好
 
 ## 使用示例
 
@@ -13,12 +34,43 @@ sleep 是一个用于睡眠指定时间的异步函数。
 
 ## 参数介绍
 
-### time
-
-- 类型：`number`
-- 描述：睡眠时间，单位：毫秒
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>time</td>
+      <td><code>number</code></td>
+      <td>睡眠时间，单位：毫秒</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
 - 类型：`Promise<void>`
-- 描述：睡眠后的 Promise
+- 描述：睡眠结束后 resolve 的 Promise
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 sleep 函数实现
+
+### 核心流程
+
+1. 调用 `sleep(time)` 返回一个 Promise
+2. Promise 内部创建 setTimeout 定时器
+3. 定时器到期后调用 resolve，Promise 完成
+4. await 等待的代码继续执行
+
+### 关键技术点
+
+- 实现：`new Promise((resolve) => setTimeout(resolve, time))`
+- 利用 Promise + setTimeout 组合，将"等待"包装为可 await 的异步操作
+- resolve 不传参数，返回 `Promise<void>`

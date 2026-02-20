@@ -1,0 +1,63 @@
+import toSafeIntegerDemo from './toSafeIntegerDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toSafeInteger
+
+将 value 转换为安全整数
+
+## 详细介绍
+
+`toSafeInteger` 将 value 转换为安全整数。
+
+**常用场景**：
+- 数据类型标准化
+- 用户输入处理
+- 跨模块数据传递前的格式统一
+
+## 基础用法
+
+点击按钮查看 `toSafeInteger` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {toSafeIntegerDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要转换的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回转换后的安全整数
+
+## 具体实现原理
+
+1. **文件职责**: `toSafeInteger/index.ts` 导出 toSafeInteger 函数
+2. **核心流程**: 将 value 转换为安全整数
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

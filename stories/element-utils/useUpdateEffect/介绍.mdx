@@ -1,0 +1,44 @@
+import basicDemo from './basicDemo.tsx?raw'
+import cleanupDemo from './cleanupDemo.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useUpdateEffect
+
+useUpdateEffect 是一个 React Hook，功能与 useEffect 相同，但首次渲染时不执行，仅在依赖更新时才执行。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 带清理函数
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### effect
+
+- 类型：`EffectCallback`
+- 描述：副作用函数，与 useEffect 的回调函数相同，可返回清理函数
+
+### deps
+
+- 类型：`DependencyList`
+- 描述：依赖数组，与 useEffect 的依赖数组相同
+
+## 实现原理
+
+useUpdateEffect 通过 `useRef` 标记是否是首次渲染：
+
+1. 首次渲染时，`isFirstRenderRef.current` 为 `true`，不执行 effect，只将标记设为 `false`
+2. 后续依赖更新时，`isFirstRenderRef.current` 为 `false`，正常执行 effect
+
+## 使用场景
+
+- 监听数据变化但不需要在初始化时执行
+- 表单字段变化时触发验证（不需要首次渲染时验证）
+- 数据更新时发送请求（不需要首次加载时发送）

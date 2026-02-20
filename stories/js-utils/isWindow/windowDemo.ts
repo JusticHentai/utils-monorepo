@@ -1,7 +1,9 @@
+import { action } from 'storybook/actions'
 import isWindow from '../../../packages/js-utils/src/isWindow'
 
 const windowDemo = () => {
-  return isWindow(window)
+  const res = isWindow(window)
+  action('检测 window 对象')(res)
 }
 
 export default windowDemo

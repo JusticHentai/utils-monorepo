@@ -1,0 +1,139 @@
+import basicDemo from './basicDemo?raw'
+import navigationTypesDemo from './navigationTypesDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getNavigationType
+
+获取当前页面的导航类型，用于性能监控和用户行为分析。
+
+## 详细介绍
+
+`getNavigationType` 是一个用于检测页面如何被加载的工具函数，基于 Navigation Timing API。
+
+**核心功能：**
+- 检测 5 种导航类型，使用 TypeScript 枚举提供类型安全
+- 智能识别 BFCache（Back-Forward Cache）恢复场景
+- 支持 SSR 环境，服务端返回默认值
+
+**应用场景：**
+- 性能监控：区分首次加载和缓存加载，准确计算性能指标
+- 用户行为分析：了解用户如何到达页面
+- A/B 测试：排除刷新和后退访问的干扰
+- 预渲染优化：检测预渲染页面的激活情况
+
+**导航类型说明：**
+
+<table>
+  <thead>
+    <tr>
+      <th>枚举值</th>
+      <th>字符串值</th>
+      <th>触发方式</th>
+      <th>典型场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Navigate</td>
+      <td>'navigate'</td>
+      <td>点击链接、输入 URL</td>
+      <td>正常访问</td>
+    </tr>
+    <tr>
+      <td>Reload</td>
+      <td>'reload'</td>
+      <td>F5、Ctrl+R、刷新按钮</td>
+      <td>用户刷新</td>
+    </tr>
+    <tr>
+      <td>BackForward</td>
+      <td>'back-forward'</td>
+      <td>浏览器前进/后退按钮</td>
+      <td>历史导航</td>
+    </tr>
+    <tr>
+      <td>BackForwardCache</td>
+      <td>'back-forward-cache'</td>
+      <td>从 BFCache 恢复</td>
+      <td>快速后退</td>
+    </tr>
+    <tr>
+      <td>Prerender</td>
+      <td>'prerender'</td>
+      <td>Speculation Rules API</td>
+      <td>预加载激活</td>
+    </tr>
+  </tbody>
+</table>
+
+## 获取当前导航类型
+
+获取当前页面的导航类型，使用枚举值进行类型安全的比较。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 查看所有导航类型
+
+展示所有支持的导航类型及其含义，使用枚举作为对象键。
+
+<CodeOrSourceMdx language="typescript">
+  {navigationTypesDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>（无参数）</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>NavigationType</code></td>
+      <td>NavigationType.Navigate | .Reload | .BackForward | .BackForwardCache | .Prerender</td>
+    </tr>
+  </tbody>
+</table>
+
+### 枚举定义
+
+```typescript
+enum NavigationType {
+  Navigate = 'navigate',
+  Reload = 'reload',
+  BackForward = 'back-forward',
+  BackForwardCache = 'back-forward-cache',
+  Prerender = 'prerender',
+}
+```
+
+## 具体实现原理
+
+**文件职责：**
+- `index.ts`: 主函数，实现导航类型检测逻辑
+- `interface.ts`: NavigationType 枚举定义
+
+**核心流程：**
+1. 检查是否在浏览器环境，SSR 环境返回 `NavigationType.Navigate`
+2. 通过 `performance.getEntriesByType('navigation')` 获取导航信息
+3. 检查 BFCache 恢复：
+   - `document.wasDiscarded` 为 true
+   - 或 `type === 'back_forward'` 且 `transferSize === 0`
+4. 根据 `navigation.type` 返回对应枚举值
+
+**关键技术点：**
+- 使用 TypeScript 枚举确保类型安全
+- 使用 Navigation Timing Level 2 API
+- BFCache 检测通过 `transferSize === 0` 判断（无网络传输）
+- `document.wasDiscarded` 检测页面是否被丢弃后恢复

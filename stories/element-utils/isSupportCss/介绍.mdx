@@ -1,14 +1,21 @@
-import basicDemo from '../../../packages/element-utils/src/isSupportCss/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import gridDemo from './gridDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isSupportCss
 
-isSupportCss 是一个用于判断浏览器是否支持某些 CSS 属性的函数。
+判断浏览器是否支持某些 CSS 属性。
 
-## 基础示例
+## 检测 flex 支持
 
 <CodeOrSourceMdx language="typescript">
   {basicDemo}
+</CodeOrSourceMdx>
+
+## 检测 grid 支持
+
+<CodeOrSourceMdx language="typescript">
+  {gridDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
@@ -21,10 +28,4 @@ isSupportCss 是一个用于判断浏览器是否支持某些 CSS 属性的函�
 ### 返回值
 
 - 类型：`boolean`
-- 描述：如果所有 CSS 属性都支持，返回 true，否则返回 false
-
-## 特点
-
-- 优先使用 CSS.supports API
-- 降级使用创建元素检测的方式
-- 支持同时检测多个 CSS 属性
+- 描述：如果所有 CSS 属性都支持返回 true，否则返回 false

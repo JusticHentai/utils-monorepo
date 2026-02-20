@@ -1,0 +1,68 @@
+import basicDemo from './basicDemo?raw'
+import nestedDemo from './nestedDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# concat
+
+创建一个新数组，将原数组与其他数组或值连接。
+
+## 详细介绍
+
+`concat` 将原数组与额外的值或数组连接成一个新数组。数组参数会被展开一层（浅展开），非数组值直接追加。原数组不会被修改。
+
+**常用场景**：
+- 合并多个数据源
+- 不可变数据更新
+- 构建新数组而不修改原数组
+
+## 基础连接
+
+展示连接值和数组、不修改原数组、无参浅克隆。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 嵌套与稀疏数组
+
+只展开一层数组；稀疏数组的空位被当作 undefined。
+
+<CodeOrSourceMdx language="typescript">
+  {nestedDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>原数组</td>
+    </tr>
+    <tr>
+      <td>...values</td>
+      <td><code>(T | T[])[]</code></td>
+      <td>要连接的值或数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：连接后的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `concat/index.ts` 导出 concat 函数
+2. **核心流程**: 展开原数组 → 遍历 values → 数组展开一层，非数组直接 push → 返回新数组
+3. **关键技术点**: `Array.isArray` 判断，展开运算符
+4. **数据流向**: 原数组浅拷贝 → 遍历追加 → 返回新数组

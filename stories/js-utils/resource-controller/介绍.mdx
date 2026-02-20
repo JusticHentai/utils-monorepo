@@ -1,58 +1,622 @@
 import addDemo from './addDemo?raw'
 import addImmediatelyDemo from './addImmediatelyDemo?raw'
+import priorityDemo from './priorityDemo?raw'
+import autoProcessDemo from './autoProcessDemo?raw'
+import concurrencyDemo from './concurrencyDemo?raw'
+import realConcurrencyDemo from './realConcurrencyDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import { Mermaid } from '../../.components/Mermaid'
 
 # ResourceController
 
-ResourceController 是一个用于管理资源加载的类，支持优先级队列和立即加载。
+ResourceController 是一个高性能的异步资源管理器，支持优先级队列、并发限制、动态队列和资源去重。
 
-## 添加资源并加载示例
+## 🚀 核心特性
+
+- **🎯 优先级队列**：按优先级顺序加载资源，数值越小优先级越高
+- **⚡ 并发限制**：控制同时加载的资源数量，避免资源竞争
+- **🔄 动态队列**：支持运行时添加新任务，自动按优先级插入
+- **🛡️ 资源去重**：相同名称的资源只会加载一次
+- **🤖 自动处理**：可启用自动处理模式，添加任务后立即开始执行
+- **📊 状态监控**：实时查看运行状态和并发情况
+
+## 🏗️ 架构设计
+
+ResourceController 采用分层架构设计，职责清晰：
+
+<Mermaid chart={`
+graph TB
+    A[ResourceController] --> B[QueueProcessor]
+    A --> C[LoadQueue]
+    A --> D[ResourceMap]
+    
+    B --> E[并发控制]
+    B --> F[任务调度]
+    B --> G[优先级处理]
+    
+    C --> H[priorityGroups Map]
+    C --> I[sortedPriorities Array]
+    
+    D --> J[Promise Controllers]
+    
+    subgraph "核心组件"
+        A
+        B
+        C
+        D
+    end
+    
+    subgraph "数据结构"
+        H
+        I
+        J
+    end
+    
+    subgraph "功能模块"
+        E
+        F
+        G
+    end
+`} />
+
+## ⚙️ 核心实现原理
+
+### 异步执行机制
+
+ResourceController 的核心在于 `processQueue` 方法的异步执行机制。当外部调用 `await processQueue()` 时，会等待整个 `async` 函数执行完毕，包括：
+
+- **所有同步代码**：函数内的变量赋值、条件判断等
+- **所有 await 语句**：每个 `await` 都会暂停执行，等待 Promise 完成
+- **所有循环（while、for 等）**：循环会完整执行直到条件不满足
+- **函数的 return 语句**：显式或隐式的返回
+
+### 并发控制策略
+
+<Mermaid chart={`
+sequenceDiagram
+    participant User as 用户代码
+    participant RC as ResourceController
+    participant QP as QueueProcessor
+    participant Tasks as 任务队列
+    
+    User->>RC: await processQueue()
+    RC->>QP: 开始处理队列
+    
+    loop 直到队列为空且无运行任务
+        QP->>Tasks: 塞入任务到最大并发数
+        Note over QP: 启动任务1、任务2、任务3...
+        QP->>QP: Promise.race(runningTasks + newTaskNotifier)
+        Note over QP: 等待任务完成或新任务通知
+        QP-->>QP: 任务2完成 或 收到新任务通知
+        QP->>Tasks: 补充下一个任务4
+        Note over QP: 保持最大并发数
+    end
+    
+    QP->>RC: 所有任务完成
+    RC->>User: 返回结果
+`} />
+
+**核心策略：**
+1. **任务填充**：每次循环都会将任务队列填充到最大并发数
+2. **竞争等待**：使用 `Promise.race()` 等待任意一个任务完成**或新任务通知**
+3. **动态补充**：任务完成后或收到新任务通知后立即启动下一个任务，保持最大并发利用率
+4. **循环终止**：只有当队列为空且没有运行中任务时才结束
+
+### 动态任务添加机制
+
+为了解决自动处理模式下新任务无法立即执行的问题，ResourceController 实现了**任务添加通知机制**：
+
+<Mermaid chart={`
+sequenceDiagram
+    participant User as 用户代码
+    participant RC as ResourceController
+    participant QP as QueueProcessor
+    participant PL as 处理循环
+    
+    User->>RC: 添加任务1
+    RC->>QP: processQueue() 开始处理
+    QP->>PL: 启动处理循环
+    
+    Note over PL: 任务1正在执行...
+    
+    User->>RC: 添加任务2 (5秒后)
+    RC->>QP: processQueue() 检测到正在处理
+    QP->>QP: notifyTaskAdded() 发送通知
+    QP-->>PL: 唤醒等待循环
+    PL->>PL: 立即检查并启动任务2
+    
+    Note over PL: 任务1、任务2并发执行
+`} />
+
+**核心机制：**
+1. **通知器设计**：使用 Promise 作为通知器，支持异步唤醒
+2. **防重入优化**：正在处理时不直接返回，而是发送通知
+3. **立即响应**：处理循环收到通知后立即检查新任务
+4. **并发保证**：新任务能够立即占用空闲的并发槽位
+
+### 详细执行流程
+
+```typescript
+// 外部调用
+await processQueue(queue, resourceMap)
+  ↓
+// processQueue 内部执行
+while (hasTasksToProcess(queue) || runningTasks.size > 0) {
+  // 1. 塞入任务到最大并发数
+  startNewTasks() // 启动任务1、任务2、任务3（假设maxConcurrency=3）
+    ↓
+  // 2. 等待任意任务完成或新任务通知
+  await Promise.race([
+    ...taskPromises,           // 现有任务的 Promise
+    newTaskNotifierPromise     // 新任务通知 Promise
+  ])
+    ↓ 
+  // 3. 假设任务2完成 或 收到新任务通知，立即补充任务4
+  startNewTasks() // 现在运行：任务1、任务3、任务4
+    ↓
+  // 4. 继续等待下一个任务完成或新任务通知
+  await Promise.race([task1.promise, task3.promise, task4.promise, newTaskNotifier])
+}
+// 5. 所有任务完成，while循环结束
+// 6. 函数返回，外部await结束
+```
+
+## 🔍 实际问题与解决方案
+
+### 问题1：自动处理模式下新任务延迟执行
+**问题描述：** 在自动处理模式下，当有任务正在执行时，新添加的任务需要等待当前任务完成后才能开始执行，无法充分利用并发能力。
+
+**解决方案：** **动态任务添加机制**
+- 使用任务添加通知器，让正在运行的处理循环能够立即感知新任务
+- 通过 `Promise.race()` 同时等待任务完成和新任务通知
+- 新任务添加后立即唤醒处理循环，实现即时响应
+
+### 问题2：高并发场景下的性能瓶颈
+**问题描述：** 在高并发场景下，频繁的任务调度和优先级查找可能成为性能瓶颈，影响整体执行效率。
+
+**解决方案：** **性能优化原理**
+- 使用 `Map<priority, ResourceOptions[]>` 实现 O(1) 优先级组查找
+- 维护 `sortedPriorities` 数组避免重复排序
+- 二分查找插入新优先级，复杂度 O(log n)
+
+### 问题3：异步任务的生命周期管理复杂
+**问题描述：** 异步任务的启动、执行、完成、清理等生命周期管理复杂，容易出现内存泄漏或状态不一致。
+
+**解决方案：** **异步执行机制 + 自动清理机制**
+- 外部 `await` 确保所有任务完成后才返回
+- 任务完成后自动从运行列表中移除
+- 空优先级组自动删除，避免内存泄漏
+
+### 问题4：并发数控制不够灵活
+**问题描述：** 固定的并发数限制无法适应不同场景的需求，可能导致资源浪费或过度竞争。
+
+**解决方案：** **并发控制策略**
+- 动态填充任务到最大并发数，充分利用并发能力
+- 任务完成立即补充下一个任务，无空闲时间
+- 支持运行时调整最大并发数
+
+### 问题5：优先级任务调度不够高效
+**问题描述：** 在大量不同优先级任务混合的场景下，如何高效地按优先级顺序执行任务是一个挑战。
+
+**解决方案：** **优先级队列优化**
+- 按优先级分组存储，避免全局排序
+- 维护有序优先级列表，O(1) 获取最高优先级
+- 二分查找插入新优先级，保持有序性
+
+## 📋 完整执行流程
+
+### 1. 添加任务流程
+
+<Mermaid chart={`
+flowchart TD
+    Start([用户调用 add/addAndLoadImmediately]) --> Check{资源是否已存在?}
+    Check -->|是| Skip[跳过，避免重复]
+    Check -->|否| AddQueue[addToQueue: 添加到优先级队列]
+    
+    AddQueue --> CreateController[createPromiseController: 创建资源控制器]
+    CreateController --> AutoCheck{是否启用自动处理?}
+    
+    AutoCheck -->|是| ProcessCheck{processQueue 正在处理中?}
+    AutoCheck -->|否| Wait[等待手动调用 load]
+    
+    ProcessCheck -->|是| NotifyTask[notifyTaskAdded: 发送新任务通知]
+    ProcessCheck -->|否| StartProcess[立即开始处理队列]
+    
+    NotifyTask --> WakeUpLoop[唤醒处理循环，立即检查新任务]
+    StartProcess --> ProcessQueue[QueueProcessor.processQueue]
+    Wait --> ManualLoad[用户调用 load] --> ProcessQueue
+    
+    Skip --> End([结束])
+    ProcessQueue --> End
+    WakeUpLoop --> End
+`} />
+
+### 2. 队列处理流程
+
+<Mermaid chart={`
+flowchart TD
+    Start([processQueue 开始]) --> Processing{正在处理中?}
+    Processing -->|是| NotifyAndReturn[notifyTaskAdded: 发送通知并返回]
+    Processing -->|否| SetFlag[设置 isProcessing = true]
+    
+    SetFlag --> Loop{队列有任务 OR 有运行中任务?}
+    Loop -->|否| Finish[设置 isProcessing = false]
+    Loop -->|是| StartTasks[startNewTasks: 启动新任务]
+    
+    StartTasks --> CheckRunning{有运行中任务?}
+    CheckRunning -->|否| ContinueLoop[继续下一轮循环] --> Loop
+    CheckRunning -->|是| WaitAny[waitForAnyTaskCompletionOrNewTask: 等待任务完成或新任务通知]
+    
+    WaitAny --> ContinueLoop
+    Finish --> End([结束])
+    NotifyAndReturn --> End
+`} />
+
+### 3. 任务启动流程
+
+<Mermaid chart={`
+flowchart TD
+    Start([startNewTasks 开始]) --> CheckLimit{运行任务数 < 最大并发数?}
+    CheckLimit -->|否| End([结束])
+    CheckLimit -->|是| GetNext[getNextTask: 获取下一个任务]
+    
+    GetNext --> HasTask{有可用任务?}
+    HasTask -->|否| End
+    HasTask -->|是| StartTask[startTask: 启动单个任务]
+    
+    StartTask --> CreatePromise[createTaskPromise: 创建任务 Promise]
+    CreatePromise --> RecordTask[记录到 runningTasks]
+    RecordTask --> SetCleanup[设置完成后自动清理]
+    SetCleanup --> CheckLimit
+`} />
+
+### 4. 优先级队列管理
+
+<Mermaid chart={`
+flowchart TD
+    Start([addToQueue 开始]) --> GetPriority[获取优先级 priority ?? Infinity]
+    GetPriority --> CheckGroup{优先级组是否存在?}
+    
+    CheckGroup -->|是| AddToGroup[添加到现有组]
+    CheckGroup -->|否| CreateGroup[创建新优先级组]
+    
+    CreateGroup --> InsertPriority[insertPriorityInOrder: 二分查找插入位置]
+    InsertPriority --> UpdateSorted[更新 sortedPriorities 数组]
+    
+    AddToGroup --> End([结束])
+    UpdateSorted --> End
+`} />
+
+## 🔧 核心函数详解
+
+### ResourceController 主要方法
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>作用</th>
+      <th>在流程中的位置</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>add()</code></td>
+      <td>添加资源到队列</td>
+      <td>流程入口，负责资源注册</td>
+    </tr>
+    <tr>
+      <td><code>load()</code></td>
+      <td>手动开始处理队列</td>
+      <td>触发队列处理流程</td>
+    </tr>
+    <tr>
+      <td><code>addAndLoadImmediately()</code></td>
+      <td>添加并立即处理</td>
+      <td>组合操作，添加后立即处理</td>
+    </tr>
+    <tr>
+      <td><code>enableAutoProcess()</code></td>
+      <td>启用自动处理模式</td>
+      <td>控制处理策略</td>
+    </tr>
+    <tr>
+      <td><code>addToQueue()</code></td>
+      <td>内部队列添加逻辑</td>
+      <td>核心添加逻辑，处理去重和队列管理</td>
+    </tr>
+    <tr>
+      <td><code>getStatus()</code></td>
+      <td>获取运行状态</td>
+      <td>监控和调试</td>
+    </tr>
+  </tbody>
+</table>
+
+### QueueProcessor 核心方法
+
+<table>
+  <thead>
+    <tr>
+      <th>方法</th>
+      <th>作用</th>
+      <th>在流程中的位置</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>processQueue()</code></td>
+      <td>主处理循环</td>
+      <td>队列处理的核心控制器</td>
+    </tr>
+    <tr>
+      <td><code>startNewTasks()</code></td>
+      <td>启动新任务直到并发限制</td>
+      <td>并发控制的关键方法</td>
+    </tr>
+    <tr>
+      <td><code>getNextTask()</code></td>
+      <td>按优先级获取下一个任务</td>
+      <td>优先级调度的实现</td>
+    </tr>
+    <tr>
+      <td><code>startTask()</code></td>
+      <td>启动单个任务</td>
+      <td>任务执行的入口</td>
+    </tr>
+    <tr>
+      <td><code>createTaskPromise()</code></td>
+      <td>创建任务 Promise</td>
+      <td>实际执行用户的 loadFn</td>
+    </tr>
+    <tr>
+      <td><code>waitForAnyTaskCompletionOrNewTask()</code></td>
+      <td>等待任务完成或新任务通知</td>
+      <td>增强的并发控制等待机制</td>
+    </tr>
+    <tr>
+      <td><code>notifyTaskAdded()</code></td>
+      <td>发送新任务添加通知</td>
+      <td>动态任务添加的通知机制</td>
+    </tr>
+  </tbody>
+</table>
+
+### 辅助工具函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>作用</th>
+      <th>算法复杂度</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>addToQueue()</code></td>
+      <td>添加资源到优先级队列</td>
+      <td>O(log n) - 二分查找插入</td>
+    </tr>
+    <tr>
+      <td><code>insertPriorityInOrder()</code></td>
+      <td>维护有序优先级列表</td>
+      <td>O(log n) - 二分查找 + O(n) - 数组插入</td>
+    </tr>
+    <tr>
+      <td><code>createPromiseController()</code></td>
+      <td>创建 Promise 控制器</td>
+      <td>O(1)</td>
+    </tr>
+  </tbody>
+</table>
+
+## 📊 数据结构设计
+
+### LoadQueue 结构
+```typescript
+interface LoadQueue {
+  priorityGroups: Map<number, ResourceOptions[]>  // 优先级 -> 任务数组
+  sortedPriorities: number[]                      // 已排序的优先级列表
+}
+```
+
+**设计优势：**
+- `Map` 提供 O(1) 的优先级组查找
+- `sortedPriorities` 避免每次都排序，保持 O(1) 的最高优先级获取
+- 支持动态添加，新优先级通过二分查找 O(log n) 插入
+
+### ResourceMap 结构
+```typescript
+type ResourceMap = Record<string, Resource>
+
+interface Resource {
+  resolve: Function    // Promise 解锁函数
+  promise: Promise     // 等待 Promise
+  current?: any       // 结果数据
+}
+```
+
+**设计优势：**
+- 每个资源都有独立的 Promise 控制器
+- 支持多个消费者同时等待同一资源
+- 结果缓存，避免重复加载
+
+## 💡 使用示例
+
+### 基础用法
 
 <CodeOrSourceMdx language="typescript">
   {addDemo}
 </CodeOrSourceMdx>
 
-## 立即添加并加载资源示例
+### 立即加载
 
 <CodeOrSourceMdx language="typescript">
   {addImmediatelyDemo}
 </CodeOrSourceMdx>
 
-## 参数介绍
+### 优先级演示
 
-### 泛型
+<CodeOrSourceMdx language="typescript">
+  {priorityDemo}
+</CodeOrSourceMdx>
 
-ResourceController 是一个类，不需要泛型参数。
+### 自动处理模式演示
 
-### add
+<CodeOrSourceMdx language="typescript">
+  {autoProcessDemo}
+</CodeOrSourceMdx>
 
-- 类型：`(options: ResourceOptions) => void`
-- 描述：添加资源到加载队列
-  - `name`: 资源名称
-  - `loadFn`: 加载函数，返回 Promise
-  - `priority?`: 优先级，数字越大优先级越高
+### 并发限制演示
 
-### load
+<CodeOrSourceMdx language="typescript">
+  {concurrencyDemo}
+</CodeOrSourceMdx>
 
-- 类型：`() => Promise<void>`
-- 描述：加载队列中的所有资源
+### 真实并发控制演示
 
-### addImmediately
+<CodeOrSourceMdx language="typescript">
+  {realConcurrencyDemo}
+</CodeOrSourceMdx>
 
-- 类型：`(options: ResourceOptions) => Promise<void>`
-- 描述：立即添加并加载资源
+## 🎯 API 参考
 
-### loadImmediately
+### 构造函数
 
-- 类型：`() => Promise<void>`
-- 描述：立即加载队列中的资源
+```typescript
+new ResourceController(options?: ResourceControllerOptions)
+```
 
-### reset
+**参数：**
+- `options.maxConcurrency?`: 最大并发数，默认为 3
 
-- 类型：`() => void`
-- 描述：重置资源控制器，清空所有队列和资源映射
+### 核心方法
 
-### resourceMap
+#### add(options: `ResourceOptions`)
+- **作用**：添加资源到队列，不立即执行
+- **参数**：
+  - `name`: 资源名称（必填，用于去重）
+  - `loadFn`: 加载函数（必填，必须自己处理错误）
+  - `priority?`: 优先级（可选，数值越小优先级越高）
 
-- 类型：`ResourceMap`
-- 描述：资源映射表，key 为资源名称，value 为资源对象
+#### load(): `Promise<void>`
+- **作用**：开始处理队列中的所有资源
+- **特点**：按优先级顺序，支持并发限制
+
+#### addAndLoadImmediately(options: `ResourceOptions`): `Promise<void>`
+- **作用**：添加资源并立即开始处理队列
+- **适用场景**：需要尽快获取的资源
+
+### 高级功能
+
+#### enableAutoProcess() / disableAutoProcess()
+- **作用**：启用/禁用自动处理模式
+- **自动模式**：添加任务后自动开始处理，无需手动调用 load()
+
+#### setMaxConcurrency(maxConcurrency: `number`)
+- **作用**：动态调整最大并发数
+- **实时生效**：立即影响后续任务调度
+
+#### getStatus(): `StatusObject`
+- **作用**：获取详细的运行状态信息
+- **返回信息**：
+  - 当前并发数和最大并发数
+  - 运行中的任务列表
+  - 队列中待处理任务数
+  - 是否启用自动处理等
+
+#### reset()
+- **作用**：重置控制器，清空所有状态
+- **注意**：会中断所有进行中的任务
+
+### 属性
+
+#### resourceMap: `ResourceMap`
+- **作用**：资源映射表，存储所有资源的状态
+- **用法**：通过 `controller.resourceMap[name].promise` 等待资源加载完成
+
+## ⚠️ 重要注意事项
+
+### 错误处理责任
+**传入的 `loadFn` 必须自己处理完所有错误，不应该抛出未捕获的异常。**
+
+```typescript
+// ✅ 正确：自己处理错误
+loadFn: async () => {
+  try {
+    const result = await fetchData()
+    return result
+  } catch (error) {
+    console.error('加载失败:', error)
+    return null // 或其他默认值
+  }
+}
+
+// ❌ 错误：抛出未捕获异常
+loadFn: async () => {
+  const result = await fetchData() // 可能抛出异常
+  return result
+}
+```
+
+### 性能考虑
+- **并发数设置**：根据实际场景调整，避免过高导致资源竞争
+- **优先级设计**：合理设计优先级，避免低优先级任务饥饿
+- **资源去重**：利用资源名称去重特性，避免重复加载
+
+## 🎯 使用场景
+
+### 图片预加载管理
+```typescript
+const imageController = new ResourceController({ maxConcurrency: 3 })
+
+// 高优先级：首屏图片
+imageController.add({
+  name: 'hero-image',
+  loadFn: () => loadImage('/hero.jpg'),
+  priority: 1
+})
+
+// 低优先级：懒加载图片
+imageController.add({
+  name: 'lazy-image',
+  loadFn: () => loadImage('/lazy.jpg'),
+  priority: 3
+})
+```
+
+### API 请求管理
+```typescript
+const apiController = new ResourceController({ maxConcurrency: 5 })
+apiController.enableAutoProcess()
+
+// 紧急数据
+apiController.add({
+  name: 'user-info',
+  loadFn: () => fetchUserInfo(),
+  priority: 0
+})
+
+// 普通数据
+apiController.add({
+  name: 'recommendations',
+  loadFn: () => fetchRecommendations(),
+  priority: 2
+})
+```
+
+### 文件下载队列
+```typescript
+const downloadController = new ResourceController({ maxConcurrency: 2 })
+
+files.forEach((file, index) => {
+  downloadController.add({
+    name: file.name,
+    loadFn: () => downloadFile(file.url),
+    priority: file.isImportant ? 1 : 2
+  })
+})
+
+await downloadController.load()
+```

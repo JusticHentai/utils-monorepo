@@ -1,4 +1,4 @@
-import numSquares from '@jqxon/learn-utils/leetcode/numSquares'
+import numSquares from '../../../../packages/learn-utils/src/leetcode/numSquares'
 
 export default () => {
   const n = 12

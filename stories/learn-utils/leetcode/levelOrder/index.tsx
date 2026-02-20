@@ -6,13 +6,13 @@ const levelOrderDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('二叉树层序遍历')(res)
+          action('normal')(res)
         }}
       >
-        二叉树层序遍历
+        normal
       </div>
     </div>
   )

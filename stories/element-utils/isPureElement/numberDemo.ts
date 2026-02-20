@@ -1,8 +1,9 @@
+import { action } from 'storybook/actions'
 import isPureElement from '../../../packages/element-utils/src/isPureElement'
 
 const numberDemo = () => {
   const result = isPureElement(123)
-  return { isPure: result, type: 'number' }
+  action('数字是纯元素')({ isPure: result, type: 'number' })
 }
 
 export default numberDemo

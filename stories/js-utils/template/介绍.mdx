@@ -1,0 +1,397 @@
+import templateDemo from './templateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# template
+
+创建编译后的模板函数。
+
+## 详细介绍
+
+`template` 创建编译后的模板函数，类似简化版的 EJS/lodash 模板引擎。
+
+**支持三种语法**：
+
+<table>
+  <thead>
+    <tr>
+      <th>语法</th>
+      <th>作用</th>
+      <th>示例</th>
+      <th>输出</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>&lt;%= %&gt;</code></td>
+      <td>直接输出（不转义）</td>
+      <td><code>&lt;%= user %&gt;</code>，user 为 <code>fred</code></td>
+      <td><code>fred</code></td>
+    </tr>
+    <tr>
+      <td><code>&lt;%- %&gt;</code></td>
+      <td>HTML 转义输出（防 XSS）</td>
+      <td><code>&lt;%- value %&gt;</code>，value 为 <code>&lt;script&gt;</code></td>
+      <td><code>&amp;lt;script&amp;gt;</code></td>
+    </tr>
+    <tr>
+      <td><code>&lt;% %&gt;</code></td>
+      <td>执行语句（控制流）</td>
+      <td><code>&lt;% if (show) {'{ }'}%&gt;...&lt;% {'{ }'} %&gt;</code></td>
+      <td>条件渲染内容</td>
+    </tr>
+  </tbody>
+</table>
+
+**编译流程**：
+
+### 场景一：直接输出 interpolate
+
+模板：<code>{'\'hello <%= user %>!\''}</code>，数据：<code>{'{ user: \'fred\' }'}</code>
+
+**Step 1 — 合并正则生成 matcher**
+
+**为什么要合并？** 三种语法需要在同一次遍历中识别，如果分三次正则匹配，无法保证处理顺序和静态文本的正确切割。合并为一个正则后，`string.replace` 一次遍历就能按出现顺序依次处理所有标记。
+
+将 `escape`、`interpolate`、`evaluate` 三个正则的 `.source` 用 `|` 拼接，末尾加 `|$` 确保能匹配到字符串结尾（用于收集最后一段静态文本）：
+
+```text
+/<%-([\s\S]+?)%>|<%=([\s\S]+?)%>|<%([\s\S]+?)%>|$/g
+```
+
+各部分说明：
+
+```text
+<%-([\s\S]+?)%>   escape 组：匹配 <%- ... %>，捕获组1 提取中间内容
+                   用于 HTML 转义输出，防止 XSS
+
+<%=([\s\S]+?)%>   interpolate 组：匹配 <%= ... %>，捕获组2 提取中间内容
+                   用于直接输出变量值（不转义）
+
+<%([\s\S]+?)%>    evaluate 组：匹配 <% ... %>，捕获组3 提取中间内容
+                   用于执行 JS 语句（if/for 等控制流）
+
+$                  匹配字符串结尾，触发最后一次回调，用于收集最后一段静态文本
+
+[\s\S]+?           匹配任意字符（含换行），+? 非贪婪，确保匹配最近的 %>
+|                  三种语法按优先级排列：escape > interpolate > evaluate
+                   因为 <% 是 <%= 和 <%- 的前缀，必须让更长的模式先匹配
+g                  全局匹配，遍历模板中的所有标记
+```
+
+**Step 2 — 遍历模板，逐段拼接函数体源码**
+
+`string.replace(matcher, ...)` 配合 `/g` 全局正则，会由 JS 引擎自动从左到右逐个匹配，每次命中都调用回调函数——等价于一个引擎驱动的循环，无需手动写 `while` 或 `for`。这里不关心 `replace` 的返回值（替换结果被丢弃），只利用回调的**副作用**来拼接 `source` 变量。
+
+每次匹配时回调：
+
+```text
+初始 source: "__p += '"
+
+source 的本质：
+  source 变量存储的不是模板的输出结果，而是一段【将要被 new Function 编译的 JS 源码】。
+  这段源码的职责是：执行时把模板渲染结果拼接到 __p 变量中。
+  所以 source 以 "__p += '" 开头，意思是生成一行 JS 代码的开头：
+    __p += '后续的静态文本和动态表达式会拼接在这里...';
+  最终 source 会被传给 new Function() 编译为真正可执行的函数。
+
+  简单说：source 是"生成代码的代码"，__p += '...' 是生成的目标代码。
+
+  例如模板 'hi <%= name %>!' 的 source 拼接过程：
+    初始:          __p += '
+    追加静态文本:   __p += 'hi          ← 'hi' 直接拼进字符串字面量
+    遇到 <%= %>:   __p += 'hi' + (name) + '   ← 闭合引号 → 插入表达式 → 重新开启引号
+    追加静态文本:   __p += 'hi' + (name) + '!'  ← '!' 继续拼进字符串
+    闭合:          __p += 'hi ' + (name) + '!';  ← 最终闭合
+
+  闭合后的 source 经过 Step 3 包装，传给 new Function 编译为可执行函数：
+
+    var __t, __p = '', __e = __escapeHtml;   ← 声明：__p 输出缓冲，初始为空串
+    with(obj) {                               ← 使 obj 的属性可直接当变量名访问
+      __p += 'hi ' + (name) + '!';           ← 上面拼出的 source 就在这里执行
+    }
+    return __p;                               ← 返回拼接好的结果字符串
+
+    with(obj) 的作用：
+      with 会把 obj 添加到作用域链的顶部。在 with 块内访问变量时，
+      JS 引擎会先在 obj 中查找，找到就用 obj 的属性值，找不到再往外层作用域查找。
+      这样模板中写 name 就等价于 obj.name，不需要给每个变量加 obj. 前缀。
+
+      如果不用 with，生成的代码就必须是：
+        __p += 'hi ' + (obj.name) + '!';
+      模板引擎在拼接 source 时就需要额外处理变量引用，逻辑会复杂很多。
+      with 把这个问题交给 JS 引擎的作用域机制自动解决。
+
+      注意：with 在严格模式下被禁用，所以 template 生成的函数不能用于严格模式环境。
+      这也是 lodash 等库的 template 函数的已知限制。
+
+    编译：new Function('obj', '__escapeHtml', 上面这段源码)
+    等价于：function(obj, __escapeHtml) { var __t, __p = ''; ... return __p; }
+
+    调用：fn({ name: 'tom' }, escapeHtml)
+      → with({ name: 'tom' }) 使 name 直接解析为 'tom'
+      → __p += 'hi ' + 'tom' + '!'
+      → __p = 'hi tom!'
+      → return 'hi tom!'
+
+  可以看到，source 就是一条不断"开-闭-开"的字符串拼接语句，
+  静态文本在引号内，动态表达式在引号外用 + 连接。
+
+offset 是怎么来的？
+  offset 是 String.prototype.replace 回调函数的内置参数，
+  由 JS 引擎在正则匹配时自动提供，表示当前匹配项在原字符串中的起始位置（从 0 开始）。
+
+  以模板 'hello <%= user %>!' 为例，正则引擎的匹配过程：
+    原字符串: h e l l o   < % = _ u s e r _ % >  !
+    位置:     0 1 2 3 4 5 6 7 8 9 ...          20
+
+    正则引擎从位置 0 开始扫描，逐字符尝试匹配 matcher 中的模式。
+    位置 0~5 都不匹配任何模式（不是 <% 开头），继续前进。
+    位置 6 匹配到 '<%= user %>'（interpolate 模式命中），此时：
+      match  = '<%= user %>'
+      offset = 6              ← 匹配的起始位置，由引擎自动传入
+    继续扫描，位置 20 开始没有更多标记，直到字符串末尾。
+    末尾 $ 匹配空字符串，offset = 21（字符串长度）。
+
+  所以 offset 不是我们计算的，是 replace 的回调机制自带的。
+  我们利用 offset 配合 index（上次处理的结束位置）来 slice 出两个标记之间的静态文本。
+
+第 1 次匹配: <%= user %> (offset=6)
+
+  回调参数：
+    match            = '<%= user %>'   （完整匹配的字符串）
+    escapeValue      = undefined       （捕获组1 未命中，不是 <%- %>）
+    interpolateValue = ' user '        （捕获组2 命中，<%= 和 %> 之间的内容）
+    evaluateValue    = undefined       （捕获组3 未命中，不是 <% %>）
+    offset           = 6               （匹配在原字符串中的起始位置）
+
+  ① 提取静态文本：string.slice(index, offset) = string.slice(0, 6) = 'hello '
+     index=0 是上一次处理结束的位置，offset=6 是本次标记的起始位置，
+     两者之间的 [0, 6) 就是还没拼进 source 的纯文本。
+
+     拼接前 source: __p += '
+     拼接后 source: __p += 'hello 
+     （'hello ' 直接追加到当前未闭合的字符串字面量中）
+
+  ② 转义静态文本中的特殊字符：
+     'hello ' 中没有 ' \ \r \n 等需要转义的字符，所以原样追加。
+     如果静态文本是 "it's"，则 ' 会被转为 \'，避免破坏字符串字面量的引号配对。
+
+  ③ 更新 index：index = offset + match.length = 6 + 14 = 20
+     '<%= user %>' 长度为 14，下一次从位置 20 开始提取静态文本。
+
+  ④ 判断哪个捕获组命中：interpolateValue = ' user '（不为 undefined）
+     进入 interpolate 分支，生成直接输出代码：
+     source += "' + ((__t = ( user )) == null ? '' : __t) + '"
+
+     拆解这段拼接：
+       '           → 闭合之前的字符串字面量
+       +           → JS 字符串拼接运算符
+       ((__t = ( user )) == null ? '' : __t)
+                   → 先将 user 的值赋给临时变量 __t，
+                     如果 __t 为 null 或 undefined，输出空字符串 ''，
+                     否则输出 __t 本身。这样避免页面上出现 'null' 或 'undefined' 文字。
+       +           → 继续拼接
+       '           → 重新开启字符串字面量，为后续静态文本做准备
+
+     拼接后 source: __p += 'hello ' + ((__t = ( user )) == null ? '' : __t) + '
+
+  当前 source 的状态（末尾引号未闭合，等待下一段静态文本追加）：
+    __p += 'hello ' + ((__t = ( user )) == null ? '' : __t) + '
+
+第 2 次匹配: $ (offset=21, 字符串结尾)
+
+  回调参数：
+    match            = ''              （$ 匹配空字符串）
+    escapeValue      = undefined
+    interpolateValue = undefined
+    evaluateValue    = undefined
+    offset           = 21              （字符串长度，即结尾位置）
+
+  ① 提取静态文本：string.slice(20, 21) = '!'
+     上一次 index=20，当前 offset=21，[20, 21) 之间的 '!' 是最后一段纯文本。
+
+     拼接后 source: __p += 'hello ' + ((__t = ( user )) == null ? '' : __t) + '!'
+
+  ② 三个捕获组都为 undefined，不追加任何动态代码。
+     $ 的作用仅仅是触发最后一次回调来收集末尾的静态文本。
+
+  最终 source（末尾引号仍未闭合，将在 Step 3 中闭合）：
+    __p += 'hello ' + ((__t = ( user )) == null ? '' : __t) + '!'
+```
+
+**Step 3 — 包装 source**
+
+```javascript
+// 闭合字符串拼接
+source += "';\n"
+// 用 with(obj) 包裹，使 user 可直接作为变量访问（无需 obj.user）
+source = 'with(obj) {\n' + source + '}\n'
+// 声明变量 __t(临时值) __p(输出缓冲) __e(转义函数)
+source = "var __t, __p = '', __e = __escapeHtml;\n" + source + 'return __p;\n'
+```
+
+最终生成的源码：
+
+```javascript
+var __t, __p = '', __e = __escapeHtml;
+with(obj) {
+  __p += 'hello ' + ((__t = ( user )) == null ? '' : __t) + '!';
+}
+return __p;
+```
+
+**Step 4 — 编译执行**
+
+<code>{'new Function(\'obj\', \'__escapeHtml\', source)'}</code> 编译为函数，传入 <code>{'{ user: \'fred\' }'}</code> 执行：
+- `with(obj)` 使 `user` 解析为 `'fred'`
+- `__t = 'fred'`，不为 null → 拼接 `'hello ' + 'fred' + '!'`
+- 返回 `'hello fred!'`
+
+---
+
+### 场景二：HTML 转义输出 escape
+
+模板：<code>{'\'<b><%- value %></b>\''}</code>，数据：<code>{'{ value: \'<script>\' }'}</code>
+
+**遍历过程**：
+
+```text
+第 1 次匹配: <%- value %> (offset=3)
+  ├─ 静态文本: '<b>'
+  ├─ escapeValue = ' value '（捕获组1 命中）
+  │  → source += "' + __e( value ) + '"
+  │  __e 即 escapeHtml 函数，会将 & < > " ' 转为 HTML 实体。
+  │  为什么要转义？防止用户输入的内容被浏览器当作 HTML 执行（XSS 攻击）。
+  │  例如 value='<script>alert(1)</script>' 会被转为安全的文本显示。
+  └─ index 移动到 19
+
+第 2 次匹配: $ (offset=23)
+  └─ 静态文本: '</b>'
+```
+
+最终生成的源码：
+
+```javascript
+var __t, __p = '', __e = __escapeHtml;
+with(obj) {
+  __p += '<b>' + __e( value ) + '</b>';
+}
+return __p;
+```
+
+**执行过程**：
+- `value` = `'<script>'`
+- `__e('<script>')` → `escapeHtml` 将 `<` 转为 `&lt;`，`>` 转为 `&gt;`
+- 返回 <code>{'\'<b>&lt;script&gt;</b>\''}</code>
+
+---
+
+### 场景三：执行语句 evaluate
+
+模板：<code>{'\'<% users.forEach(user => { %><li><%- user %></li><% }) %>\''}</code>
+
+数据：<code>{'{ users: [\'fred\', \'barney\'] }'}</code>
+
+**遍历过程**：
+
+```text
+第 1 次匹配: <% users.forEach(user => { %> (offset=0)
+  ├─ 无静态文本（offset=0）
+  ├─ evaluateValue = ' users.forEach(user => { '（捕获组3 命中）
+  │  → source += "';\n users.forEach(user => { ;\n__p += '"
+  │  为什么要先闭合再重开？evaluate 插入的是可执行 JS 代码（不是值），
+  │  所以需要：① 先用 '; 闭合当前字符串拼接语句 → ② 插入 JS 代码 →
+  │  ③ 再用 __p += ' 开启新的字符串拼接，为后续内容做准备。
+  │  这样 forEach 的循环体就能正常执行，每轮都往 __p 追加内容。
+  └─ index 移动到 30
+
+第 2 次匹配: <%- user %> (offset=34)
+  ├─ 静态文本: '<li>'
+  ├─ escapeValue = ' user '（捕获组1 命中，转义输出）
+  │  → source += "' + __e( user ) + '"
+  │  这里的 user 是 forEach 回调的参数，每轮循环值不同。
+  └─ index 移动到 48
+
+第 3 次匹配: <% }) %> (offset=53)
+  ├─ 静态文本: '</li>'
+  ├─ evaluateValue = ' }) '（捕获组3 命中）
+  │  → source += "';\n }) ;\n__p += '"
+  │  闭合 forEach 回调的花括号，结束循环体。
+  └─ index 移动到 63
+
+第 4 次匹配: $ (offset=63)
+  └─ 无静态文本（模板已遍历完毕）
+```
+
+最终生成的源码：
+
+```javascript
+var __t, __p = '', __e = __escapeHtml;
+with(obj) {
+  __p += '';
+  users.forEach(user => { ;
+  __p += '<li>' + __e( user ) + '</li>';
+   }) ;
+  __p += '';
+}
+return __p;
+```
+
+**执行过程**：
+- `forEach` 遍历 `['fred', 'barney']`
+- 第 1 轮：拼接 `'<li>fred</li>'`
+- 第 2 轮：拼接 `'<li>fred</li><li>barney</li>'`
+- 返回 <code>{'\'<li>fred</li><li>barney</li>\''}</code>
+
+**常用场景**：
+- 字符串模板渲染
+- 邮件/通知模板生成
+- 服务端 HTML 渲染
+
+## 模板编译与渲染
+
+使用 `template` 创建并执行模板函数。
+
+<CodeOrSourceMdx language="typescript">
+  {templateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>模板字符串</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>TemplateOptions</code></td>
+      <td>可选配置，包含 interpolate、escape、evaluate 三个 RegExp 属性</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(data) => string`
+- 描述：编译后的模板函数
+
+## 具体实现原理
+
+1. **第一步**：定义 `escapeHtml` 函数，将 `& < > " '` 替换为 HTML 实体，供 escape 语法调用
+2. **第二步**：将三种正则的 `.source` 用 `|` 合并为一个 matcher，末尾加 `|$` 确保匹配到字符串结尾
+3. **第三步**：用 `string.replace(matcher, ...)` 遍历模板，将静态文本和动态标记逐段拼接为 JS 函数体源码
+   - escape 语法 → `__p += __e(val)`（转义输出）
+   - interpolate 语法 → `__p += ((__t = (val)) == null ? '' : __t)`（直接输出，null 转空串）
+   - evaluate 语法 → 中断字符串拼接，插入可执行代码，再恢复拼接
+4. **第四步**：用 `with(obj)` 包裹源码，使 `data` 的属性可直接作为变量名访问
+5. **第五步**：`new Function('obj', '__escapeHtml', source)` 编译源码为渲染函数，返回闭包

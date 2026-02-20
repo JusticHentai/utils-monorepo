@@ -1,0 +1,73 @@
+import unionDemo from './unionDemo?raw'
+import unionByDemo from './unionByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# union
+
+创建多个数组的并集。
+
+## 详细介绍
+
+`union` 创建包含所有唯一值的并集数组。`unionBy` 支持迭代器，`unionWith` 支持比较器。
+
+**常用场景**：
+- 合并去重多个数组
+- 数据集合并
+- 标签/分类合并
+
+## 数组并集
+
+使用 `union` 创建多个数组的并集（去重）。
+
+<CodeOrSourceMdx language="typescript">
+  {unionDemo}
+</CodeOrSourceMdx>
+
+## unionBy 和 unionWith
+
+使用 `unionBy`（迭代器去重）和 `unionWith`（比较器去重）。
+
+<CodeOrSourceMdx language="typescript">
+  {unionByDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>...arrays</td>
+      <td><code>T[][]</code></td>
+      <td>要合并的数组</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) => K</code></td>
+      <td>迭代器（unionBy 使用）</td>
+    </tr>
+    <tr>
+      <td>comparator</td>
+      <td><code>(a, b) => boolean</code></td>
+      <td>比较器（unionWith 使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：合并去重后的数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 union、unionBy、unionWith
+2. **核心流程**: 扁平化所有数组 → 按规则去重
+3. **关键技术点**: union 用 Set 去重，unionBy 先迭代器映射再去重，unionWith 用比较器
+4. **数据流向**: 多个数组 → 扁平化 → 去重 → 返回结果数组

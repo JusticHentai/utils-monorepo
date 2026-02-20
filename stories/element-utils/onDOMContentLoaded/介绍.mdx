@@ -1,0 +1,47 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onDOMContentLoaded
+
+在 DOMContentLoaded 时执行回调。
+
+## 详细介绍
+
+`onDOMContentLoaded` 用于监听浏览器 `DOMContentLoaded` 事件。如果 DOM 尚在加载（`document.readyState === 'loading'`），则注册事件监听；否则立即执行回调。
+
+基于 `createEventListener` 封装，返回清理函数用于移除监听。常用于需要在 DOM 解析完成后执行初始化逻辑的场景，比纯 `DOMContentLoaded` 更安全，不会因为注册时机晚于事件触发而遗漏。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>(e: Event) =&gt; void</code></td>
+      <td>DOMContentLoaded 触发时的回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回 `() => void` 清理函数，调用后移除事件监听。
+
+## 具体实现原理
+
+1. **文件职责**：`index.ts` 判断 `document.readyState` 决定是监听还是立即执行
+2. **核心流程**：readyState 为 `loading` 时通过 `createEventListener` 注册监听，否则手动构造 Event 并立即调用 callback
+3. **关键技术点**：通过检查 `readyState` 避免事件已触发后注册监听导致回调永远不执行的问题

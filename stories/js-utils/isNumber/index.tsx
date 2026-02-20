@@ -1,44 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import nanDemo from './nanDemo'
-import notNumberDemo from './notNumberDemo'
+import edgeCaseDemo from './edgeCaseDemo'
 import numberDemo from './numberDemo'
 
-const isNumberDemo = () => {
+const IsNumberDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = numberDemo()
-
-          action('检测数字 123')(res)
-        }}
-      >
-        检测数字 123
+      <div className="button" onClick={numberDemo}>
+        isNumber - 类型检测
       </div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = nanDemo()
-
-          action('检测 NaN')(res)
-        }}
-      >
-        检测 NaN
-      </div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = notNumberDemo()
-
-          action('检测字符串 "123"')(res)
-        }}
-      >
-        检测字符串 "123"
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )
 }
 
-export default isNumberDemo
+export default IsNumberDemo

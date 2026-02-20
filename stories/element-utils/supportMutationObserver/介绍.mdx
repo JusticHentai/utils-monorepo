@@ -1,0 +1,217 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportMutationObserver
+
+检测浏览器是否支持 MutationObserver API。MutationObserver 用于监听 DOM 树的变化。
+
+## 什么是 MutationObserver？
+
+MutationObserver 是一个浏览器原生 API，用于异步观察 DOM 树的变化：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    DOM 变化监听                              │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   [DOM 变化事件]                                             │
+│       ↓                                                     │
+│   ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    │
+│   │ 子节点增删   │    │ 属性变化    │    │ 文本内容变化 │    │
+│   │ childList  │    │ attributes │    │ characterData│    │
+│   └─────────────┘    └─────────────┘    └─────────────┘    │
+│       ↓                   ↓                   ↓            │
+│                   MutationObserver                         │
+│                         ↓                                  │
+│                   回调函数执行                               │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 MutationObserver API。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 MutationObserver API</td>
+    </tr>
+  </tbody>
+</table>
+
+## 主要使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DOM 监控</td>
+      <td>监听页面元素的动态变化</td>
+    </tr>
+    <tr>
+      <td>第三方库集成</td>
+      <td>响应其他库对 DOM 的修改</td>
+    </tr>
+    <tr>
+      <td>表单验证</td>
+      <td>监听表单元素的属性变化</td>
+    </tr>
+    <tr>
+      <td>自动化测试</td>
+      <td>等待 DOM 变化完成</td>
+    </tr>
+    <tr>
+      <td>编辑器实现</td>
+      <td>追踪用户的编辑操作</td>
+    </tr>
+  </tbody>
+</table>
+
+## 原生 API 用法
+
+```typescript
+// 创建观察器
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach(mutation => {
+    console.log('变化类型:', mutation.type)
+    console.log('目标元素:', mutation.target)
+    
+    if (mutation.type === 'childList') {
+      console.log('新增节点:', mutation.addedNodes)
+      console.log('删除节点:', mutation.removedNodes)
+    }
+    
+    if (mutation.type === 'attributes') {
+      console.log('变化属性:', mutation.attributeName)
+      console.log('旧值:', mutation.oldValue)
+    }
+  })
+})
+
+// 开始观察
+observer.observe(targetNode, {
+  childList: true,      // 监听子节点增删
+  attributes: true,     // 监听属性变化
+  characterData: true,  // 监听文本内容变化
+  subtree: true,        // 监听后代节点
+  attributeOldValue: true  // 记录属性旧值
+})
+
+// 停止观察
+observer.disconnect()
+```
+
+## 监听配置选项
+
+<table>
+  <thead>
+    <tr>
+      <th>选项</th>
+      <th>类型</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>childList</td>
+      <td><code>boolean</code></td>
+      <td>监听子节点的增加或删除</td>
+    </tr>
+    <tr>
+      <td>attributes</td>
+      <td><code>boolean</code></td>
+      <td>监听元素属性的变化</td>
+    </tr>
+    <tr>
+      <td>characterData</td>
+      <td><code>boolean</code></td>
+      <td>监听文本节点内容的变化</td>
+    </tr>
+    <tr>
+      <td>subtree</td>
+      <td><code>boolean</code></td>
+      <td>监听所有后代节点</td>
+    </tr>
+    <tr>
+      <td>attributeOldValue</td>
+      <td><code>boolean</code></td>
+      <td>记录属性变化前的旧值</td>
+    </tr>
+    <tr>
+      <td>characterDataOldValue</td>
+      <td><code>boolean</code></td>
+      <td>记录文本变化前的旧值</td>
+    </tr>
+    <tr>
+      <td>attributeFilter</td>
+      <td><code>string[]</code></td>
+      <td>只监听指定的属性</td>
+    </tr>
+  </tbody>
+</table>
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>26+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>14+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>7+</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>12+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>11</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+import isBrowser from '../isBrowser'
+
+const supportMutationObserver = (): boolean => {
+  return isBrowser() && 'MutationObserver' in window
+}
+```
+
+通过检测 `window.MutationObserver` 是否存在来判断浏览器支持情况。

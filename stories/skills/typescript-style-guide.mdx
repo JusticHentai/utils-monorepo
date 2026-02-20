@@ -1,0 +1,62 @@
+import TypescriptStyleGuide from '../../skills/typescript-style-guide/SKILL.md?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# typescript-style-guide
+
+- TypeScript 代码规范技能
+
+## SKILL.md
+
+<details>
+<summary>点击展开 SKILL.md 源码</summary>
+
+<CodeOrSourceMdx language="markdown">
+  {TypescriptStyleGuide}
+</CodeOrSourceMdx>
+
+</details>
+
+## 技能详解
+
+### 概述
+
+在编写或修改 TypeScript（`.ts` / `.tsx`）文件时自动应用的代码规范，包含 16 大类规则，确保代码风格统一。
+
+### 核心规则分类
+
+#### 1. 命名规范
+- **变量/函数**：`camelCase`
+- **类/接口/类型**：`PascalCase`
+- **常量**：`UPPER_SNAKE_CASE`
+- **布尔值**：`is/has/can/should` 前缀
+
+#### 2. 类型系统
+- 优先利用类型推断，减少冗余标注
+- 禁止使用 `any`，使用 `unknown` 替代
+- 对象用 `interface`，联合/工具类型用 `type`
+
+#### 3. 函数设计
+- 参数 ≤ 3 个，多参数使用对象
+- 单一职责原则
+- **一个文件一个主函数**，`export default` 导出
+- 多余的辅助逻辑拆分到 `core/xxx.ts`
+
+#### 4. 错误处理（重要）
+- **禁止抛出错误**（`throw`）
+- 使用 `[res, err]` 元组模式返回结果
+- 成功：`[data, null]`，失败：`[null, Error]`
+
+#### 5. 模块组织
+- 仅使用 ESM（`import/export`）
+- import 分组排列
+- **禁止无意义的 `index.ts` 转发**
+
+#### 6. 其他关键规则
+- **禁止 `switch` 语句**，使用 Guard Clause
+- `async/await` 处理异步，`Promise.all` 并行执行
+- `const` 优先，禁用 `var`
+- 模板字符串替代字符串拼接
+
+### 参考文件
+
+- `references/full-guide.md`：包含所有规则的完整 Good/Bad Case 示例

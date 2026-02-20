@@ -1,4 +1,4 @@
-import getIntersectionNode from '@jqxon/learn-utils/leetcode/getIntersectionNode'
+import getIntersectionNode from '../../../../packages/learn-utils/src/leetcode/getIntersectionNode'
 
 export default () => {
   // 创建相交链表

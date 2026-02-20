@@ -1,0 +1,105 @@
+import windowScrollDemo from './windowScrollDemo?raw'
+import elementScrollDemo from './elementScrollDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getScrollPosition
+
+获取目标元素的滚动位置，支持 Window 和 Element 两种滚动容器。
+
+## 详细介绍
+
+`getScrollPosition` 用于获取滚动容器的当前滚动位置，返回包含水平（x）和垂直（y）坐标的对象。
+
+在 Web 开发中，获取滚动位置是常见需求，但 Window 和 Element 获取滚动位置的 API 不同：
+- **Window**: 使用 `scrollX/scrollY` 或 `pageXOffset/pageYOffset`
+- **Element**: 使用 `scrollLeft/scrollTop`
+
+此函数统一了这两种场景的 API，提供一致的返回格式。
+
+**使用场景**：
+- 实现滚动监听功能
+- 记录和恢复滚动位置
+- 实现滚动相关的动画效果
+- 判断元素是否滚动到特定位置
+
+## 获取 Window 滚动位置
+
+获取整个页面的滚动位置，通常用于监听页面级滚动。
+
+<CodeOrSourceMdx language="typescript">
+  {windowScrollDemo}
+</CodeOrSourceMdx>
+
+## 获取 Element 滚动位置
+
+获取可滚动元素的滚动位置，用于监听局部滚动容器。
+
+<CodeOrSourceMdx language="typescript">
+  {elementScrollDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>ScrollTarget</code></td>
+      <td>滚动目标，可以是 Window 或 Element</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>ScrollPosition</code></td>
+      <td>滚动位置对象，包含 x（水平）和 y（垂直）坐标</td>
+    </tr>
+  </tbody>
+</table>
+
+### 类型定义
+
+```typescript
+/** 滚动位置 */
+interface ScrollPosition {
+  /** 水平滚动位置 */
+  x: number
+  /** 垂直滚动位置 */
+  y: number
+}
+
+/** 滚动目标类型 */
+type ScrollTarget = Window | Element
+```
+
+## 具体实现原理
+
+**文件职责**：
+- `index.ts`: 导出 `getScrollPosition` 函数
+- `interface.ts`: 定义 `ScrollPosition` 和 `ScrollTarget` 类型
+
+**核心流程**：
+1. 使用 `isWindow` 判断目标是否为 Window 对象
+2. 如果是 Window，使用 `scrollX/scrollY` 或兼容性写法 `pageXOffset/pageYOffset`
+3. 如果是 Element，使用 `scrollLeft/scrollTop`
+4. 返回统一格式的 `{ x, y }` 对象
+
+**关键技术点**：
+- 复用 `@justichentai/js-utils/isWindow` 进行类型判断
+- 使用 `||` 运算符提供 `pageXOffset/pageYOffset` 兼容性支持（针对旧版浏览器）
+- 统一返回格式，简化调用方代码
+
+**数据流向**：
+```
+ScrollTarget → isWindow() 判断
+                   ↓
+        Window: scrollX/scrollY
+        Element: scrollLeft/scrollTop
+                   ↓
+            ScrollPosition { x, y }
+```

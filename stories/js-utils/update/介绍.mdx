@@ -1,0 +1,64 @@
+import updateDemo from './updateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# update
+
+使用更新函数修改对象路径上的值。
+
+## 详细介绍
+
+`update` 使用更新函数修改对象指定路径的值（原地修改）。`updateWith` 支持自定义中间值创建。
+
+**常用场景**：
+- 基于当前值更新属性
+- 深层嵌套值的增量更新
+- 不可变更新模式
+
+## 路径值更新
+
+使用 `update` 通过更新函数修改指定路径的值。
+
+<CodeOrSourceMdx language="typescript">
+  {updateDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要修改的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径</td>
+    </tr>
+    <tr>
+      <td>updater</td>
+      <td><code>(value) => unknown</code></td>
+      <td>更新函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：修改后的原对象
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 update 和 updateWith
+2. **核心流程**: 解析路径 → 获取当前值 → 调用更新函数 → 设置新值
+3. **关键技术点**: 路径解析，get + set 组合操作
+4. **数据流向**: 对象 + 路径 + 更新函数 → 获取当前值 → 更新 → 设置回去

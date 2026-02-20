@@ -1,14 +1,21 @@
-import basicDemo from '../../../packages/element-utils/src/isElementChildren/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import notChildDemo from './notChildDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isElementChildren
 
-isElementChildren 是一个用于判断某个元素是否是另一个元素的子元素的函数。
+判断某个元素是否是另一个元素的子元素。
 
 ## 基础示例
 
 <CodeOrSourceMdx language="typescript">
   {basicDemo}
+</CodeOrSourceMdx>
+
+## 非子元素判断
+
+<CodeOrSourceMdx language="typescript">
+  {notChildDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
@@ -26,9 +33,4 @@ isElementChildren 是一个用于判断某个元素是否是另一个元素的�
 ### 返回值
 
 - 类型：`boolean`
-- 描述：如果 children 是 element 的子元素，返回 true，否则返回 false
-
-## 特点
-
-- 递归遍历 DOM 树判断父子关系
-- 处理了空值情况，避免报错
+- 描述：如果 children 是 element 的子元素返回 true，否则返回 false

@@ -1,0 +1,126 @@
+import localStorageDemo from './localStorageDemo?raw'
+import sessionStorageDemo from './sessionStorageDemo?raw'
+import customSerializerDemo from './customSerializerDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useStorageState
+
+将 React 状态持久化到 `localStorage` 或 `sessionStorage` 的 Hook，支持自定义序列化、跨标签页同步和错误处理。
+
+## 详细介绍
+
+`useStorageState` 是一个将 React `useState` 与 Web Storage API 结合的 Hook。它在状态更新时自动同步到存储中，并在组件初始化时从存储恢复数据。
+
+该工具导出了两个预配置的 Hook：
+- **useLocalStorageState** — 基于 `localStorage`，数据在浏览器关闭后仍然保留
+- **useSessionStorageState** — 基于 `sessionStorage`，数据在标签页关闭后清除
+
+适用场景包括：用户偏好设置持久化、表单草稿自动保存、主题切换状态记忆等。
+
+## useLocalStorageState 基础用法
+
+将状态持久化到 `localStorage`，刷新页面后值仍然保留。底层通过 `localStorage.setItem` 存储序列化后的值，初始化时通过 `localStorage.getItem` 恢复。当值设为 `undefined` 时，会调用 `removeItem` 清除对应 key。
+
+<CodeOrSourceMdx language="typescript">
+  {localStorageDemo}
+</CodeOrSourceMdx>
+
+## useSessionStorageState 用法
+
+与 `useLocalStorageState` 使用方式完全一致，区别在于数据存储在 `sessionStorage` 中，适用于需要会话级别持久化的场景（如临时表单数据）。
+
+<CodeOrSourceMdx language="typescript">
+  {sessionStorageDemo}
+</CodeOrSourceMdx>
+
+## 自定义序列化
+
+默认使用 `JSON.stringify` / `JSON.parse` 进行序列化。通过 `serializer` 和 `deserializer` 选项可以自定义编码方式，实现加密存储、压缩存储等需求。`onError` 回调处理序列化/反序列化过程中的异常。
+
+<CodeOrSourceMdx language="typescript">
+  {customSerializerDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>key</td>
+      <td><code>string</code></td>
+      <td>存储键名</td>
+    </tr>
+    <tr>
+      <td>options.defaultValue</td>
+      <td><code>T | (() =&gt; T)</code></td>
+      <td>默认值，支持函数式初始化</td>
+    </tr>
+    <tr>
+      <td>options.listenStorageChange</td>
+      <td><code>boolean</code></td>
+      <td>是否监听存储变化来同步状态，默认 false</td>
+    </tr>
+    <tr>
+      <td>options.serializer</td>
+      <td><code>(value: T) =&gt; string</code></td>
+      <td>自定义序列化函数，默认 JSON.stringify</td>
+    </tr>
+    <tr>
+      <td>options.deserializer</td>
+      <td><code>(value: string) =&gt; T</code></td>
+      <td>自定义反序列化函数，默认 JSON.parse</td>
+    </tr>
+    <tr>
+      <td>options.onError</td>
+      <td><code>(error: unknown) =&gt; void</code></td>
+      <td>错误处理回调，默认 console.error</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>返回值</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>[0] state</td>
+      <td><code>T</code></td>
+      <td>当前状态值</td>
+    </tr>
+    <tr>
+      <td>[1] setState</td>
+      <td><code>(value: T | ((prev?: T) =&gt; T)) =&gt; void</code></td>
+      <td>更新状态并同步到存储</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **工厂模式**: `createUseStorageState` 是一个工厂函数，接收 `getStorage` 参数返回 Hook。`useLocalStorageState` 和 `useSessionStorageState` 分别传入 `() => localStorage` 和 `() => sessionStorage`。
+
+2. **状态初始化**: 组件挂载时通过 `getStoredValue` 从存储中读取已有值，如果不存在则使用 `defaultValue`。
+
+3. **状态同步**: 调用 `setState` 时同时更新 React 状态和 Storage。值为 `undefined` 时调用 `removeItem` 删除存储项。
+
+4. **跨组件同步**: 更新时通过 `dispatchEvent(new CustomEvent(SYNC_STORAGE_EVENT_NAME))` 发送自定义事件，同页面内其他使用相同 key 的 Hook 通过 `useEventListener` 监听该事件来同步状态。
+
+5. **跨标签页同步**: 通过监听原生 `storage` 事件实现跨标签页的数据同步（`storage` 事件只在其他标签页触发）。
+
+6. **Key 变更处理**: 使用 `useUpdateEffectHook` 监听 key 变化，key 改变时重新从存储中读取对应值。
+
+7. **稳定引用**: 通过 `useMemoizedFn` 包装 `updateState`，确保返回的 setter 函数引用稳定，避免不必要的重渲染。

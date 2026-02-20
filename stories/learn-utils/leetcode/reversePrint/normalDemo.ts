@@ -1,4 +1,4 @@
-import reversePrint from '@jqxon/learn-utils/leetcode/reversePrint'
+import reversePrint from '../../../../packages/learn-utils/src/leetcode/reversePrint'
 
 export default () => {
   // 创建链表: 1 -> 3 -> 2

@@ -1,3 +1,9 @@
+/**
+ * 深度可选
+ * @param T 目标对象
+ * @param K 路径
+ * @returns 深度可选后的对象
+ */
 type DeepOptional<T, K extends Array<string | number | symbol>> =
   // 最后一层路径：仅将该属性变为可选
   K extends [infer F]

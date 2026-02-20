@@ -12,17 +12,15 @@ const useDebounce = <T extends (...args: any[]) => any>(
 ): UseDebounceReturn<T> => {
   const { delay, immediate = false, maxWait } = options
 
-  if (delay < 0) {
-    throw new Error('delay must be a non-negative number')
-  }
-
-  if (maxWait !== undefined && maxWait < delay) {
-    throw new Error('maxWait must be greater than or equal to delay')
-  }
+  // 参数有效性标记
+  const isValidParams =
+    delay >= 0 && (maxWait === undefined || maxWait >= delay)
 
   // 使用 ref 存储最新的回调函数，解决闭包问题
   const callbackRef = useRef<T>(callback)
-  callbackRef.current = callback
+  useEffect(() => {
+    callbackRef.current = callback
+  })
 
   // 定时器引用
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -93,6 +91,11 @@ const useDebounce = <T extends (...args: any[]) => any>(
    */
   const run = useCallback(
     (...args: Parameters<T>) => {
+      // 参数无效时不执行
+      if (!isValidParams) {
+        return
+      }
+
       lastArgsRef.current = args
 
       // 清除之前的延迟定时器
@@ -101,12 +104,15 @@ const useDebounce = <T extends (...args: any[]) => any>(
       }
 
       // 立即执行模式
-      if (immediate && !hasCalledRef.current) {
-        hasCalledRef.current = true
-        callbackRef.current(...args)
-        lastArgsRef.current = null
+      if (immediate) {
+        if (!hasCalledRef.current) {
+          // 首次触发，立即执行
+          hasCalledRef.current = true
+          callbackRef.current(...args)
+          lastArgsRef.current = null
+        }
 
-        // 设置定时器，在 delay 后重置 hasCalledRef
+        // 重置冷却定时器，delay 后恢复可再次立即执行的状态
         timerRef.current = setTimeout(() => {
           hasCalledRef.current = false
           timerRef.current = null
@@ -128,7 +134,7 @@ const useDebounce = <T extends (...args: any[]) => any>(
         invokeCallback()
       }, delay)
     },
-    [delay, immediate, maxWait, invokeCallback]
+    [delay, immediate, maxWait, isValidParams, invokeCallback]
   )
 
   // 组件卸载时清除定时器

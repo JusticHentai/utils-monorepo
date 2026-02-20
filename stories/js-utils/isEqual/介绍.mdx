@@ -1,0 +1,68 @@
+import basicDemo from './basicDemo?raw'
+import objectDemo from './objectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isEqual
+
+深度比较两个值是否相等。
+
+## 详细介绍
+
+`isEqual` 函数用于深度比较两个值，支持比较对象、数组、Date、RegExp 等类型。
+
+**支持的类型**：
+- 原始类型（使用 SameValueZero 比较）
+- 对象和数组（递归比较）
+- Date 和 RegExp
+- Map 和 Set
+- Buffer 和 TypedArray
+
+**与 === 的区别**：
+- `===` 只比较引用
+- `isEqual` 深度比较内容
+
+**常用场景**：
+- 状态变化检测
+- 缓存键比较
+- 测试断言
+
+## 基础比较
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 深度对象比较
+
+<CodeOrSourceMdx language="typescript">
+  {objectDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>any</code></td>
+      <td>要比较的值</td>
+    </tr>
+    <tr>
+      <td>other</td>
+      <td><code>any</code></td>
+      <td>另一个要比较的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否相等

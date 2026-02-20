@@ -1,25 +1,30 @@
-import debounce from '@/anim/debounce'
+import debounce from '../../debounce'
+import { ResizeOptions } from '../interface'
 import update from './update'
 
 /**
- * 设置 resize 事件
+ * 设置 resize 和 orientationchange 事件, 返回清理函数
  */
-const setResizeEvent = (options: Options) => {
+const setResizeEvent = (options: ResizeOptions): (() => void) => {
   const { debounce: duration } = options
 
-  if (!duration) {
-    window.addEventListener('resize', () => update(options))
+  const handler = !duration
+    ? () => update(options)
+    : debounce({
+        cb: update,
+        duration,
+        immediate: false,
+      })
 
-    return
+  const resizeHandler = () => handler(options)
+
+  window.addEventListener('resize', resizeHandler)
+  window.addEventListener('orientationchange', resizeHandler)
+
+  return () => {
+    window.removeEventListener('resize', resizeHandler)
+    window.removeEventListener('orientationchange', resizeHandler)
   }
-
-  const debounceUpdate = debounce({
-    cb: update,
-    duration,
-    immediate: false,
-  })
-
-  window.addEventListener('resize', () => debounceUpdate(options))
 }
 
 export default setResizeEvent

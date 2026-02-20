@@ -1,5 +1,5 @@
-import { classNames as cs } from '@justichentai/element-utils'
 import { useMemo } from 'react'
+import cs from '../_util/classNames'
 import BaseProps from '../types/BaseProps'
 
 export default function useMergeProps<PropsType extends BaseProps>(

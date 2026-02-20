@@ -6,13 +6,13 @@ const generateParenthesisDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('括号生成')(res)
+          action('normal')(res)
         }}
       >
-        括号生成 n=3
+        normal
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import minMeetingRooms from '@jqxon/learn-utils/leetcode/minMeetingRooms'
+import minMeetingRooms from '../../../../packages/learn-utils/src/leetcode/minMeetingRooms'
 
 export default () => {
   const intervals = [

@@ -1,4 +1,4 @@
-import buildTree from '@jqxon/learn-utils/leetcode/buildTree'
+import buildTree from '../../../../packages/learn-utils/src/leetcode/buildTree'
 
 export default () => {
   const preorder = [3, 9, 20, 15, 7]

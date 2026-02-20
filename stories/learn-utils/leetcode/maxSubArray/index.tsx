@@ -6,13 +6,13 @@ const maxSubArrayDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('最大子数组和')(res)
+          action('normal')(res)
         }}
       >
-        最大子数组和测试
+        normal
       </div>
     </div>
   )

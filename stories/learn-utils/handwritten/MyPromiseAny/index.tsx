@@ -6,13 +6,13 @@ const MyPromiseAnyDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
-        onClick={async () => {
-          const res = await normalDemo()
-          action('Promise.any 任一成功')(res)
+        className="button"
+        onClick={() => {
+          const res = normalDemo()
+          action('normal')(res)
         }}
       >
-        Promise.any 任一成功测试
+        normal
       </div>
     </div>
   )

@@ -1,0 +1,98 @@
+import aryDemo from './aryDemo?raw'
+import defaultAndNestedDemo from './defaultAndNestedDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# ary
+
+创建一个最多接受 n 个参数的函数，忽略多余参数。
+
+## 详细介绍
+
+`ary(func, n)` 用于限制传递给函数的参数数量。在函数式编程中，当函数作为高阶函数的回调时（如 `map`），可能会收到不需要的额外参数，`ary` 可以避免这个问题。
+
+最经典的场景是 `['6', '8', '10'].map(parseInt)` 的问题：
+
+`Array.prototype.map` 的回调会接收三个参数 `(value, index, array)`，而 `parseInt` 的签名是 `parseInt(string, radix)`，这意味着 `map` 传递的 `index` 会被 `parseInt` 当作 `radix`（进制）使用：
+
+<table>
+  <thead>
+    <tr>
+      <th>调用次数</th>
+      <th>map 传给回调的参数</th>
+      <th>parseInt 接收到的参数</th>
+      <th>结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>第 1 次</td>
+      <td><code>'6', 0, [...]</code></td>
+      <td><code>parseInt('6', 0)</code> — radix=0 按十进制解析</td>
+      <td><code>6</code></td>
+    </tr>
+    <tr>
+      <td>第 2 次</td>
+      <td><code>'8', 1, [...]</code></td>
+      <td><code>parseInt('8', 1)</code> — radix=1 无效进制</td>
+      <td><code>NaN</code></td>
+    </tr>
+    <tr>
+      <td>第 3 次</td>
+      <td><code>'10', 2, [...]</code></td>
+      <td><code>parseInt('10', 2)</code> — radix=2 按二进制解析</td>
+      <td><code>2</code></td>
+    </tr>
+  </tbody>
+</table>
+
+使用 `ary(parseInt, 1)` 后，只传第 1 个参数 `value`，`radix` 不会被错误传入，结果为 `[6, 8, 10]`。
+
+## 限制参数数量
+
+<CodeOrSourceMdx language="typescript">
+  {aryDemo}
+</CodeOrSourceMdx>
+
+## 默认值与嵌套用法
+
+不传 n 时默认使用 `func.length`；嵌套使用 `ary` 时，较小的 cap 生效。
+
+<CodeOrSourceMdx language="typescript">
+  {defaultAndNestedDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>T extends (...args: any[]) =&gt; any</code></td>
+      <td>要限制参数的函数</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>最大参数数量，默认为 func.length</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T>`
+- 描述：参数受限的新函数
+
+## 具体实现原理
+
+1. **文件职责**: `ary/index.ts` 导出 ary（default）和 unary（named）
+2. **核心流程**: 返回新函数，内部对 arguments 进行 slice 截取前 n 个后调用原函数
+3. **关键技术点**: `Array.prototype.slice` 截取参数
+4. **数据流向**: 新函数接收参数 → 截取前 n 个 → 传递给原函数

@@ -6,13 +6,13 @@ const threeSumDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('三数之和')(res)
+          action('normal')(res)
         }}
       >
-        三数之和 [-1,0,1,2,-1,-4]
+        normal
       </div>
     </div>
   )

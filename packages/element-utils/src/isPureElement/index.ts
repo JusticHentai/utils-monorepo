@@ -1,21 +1,11 @@
-import { JSXElementConstructor, ReactElement, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 /**
  * 判断 el 是否是纯元素
  * @param el 元素
  * @returns 是否是纯元素
  */
-const isPureElement = (
-  el:
-    | string
-    | number
-    | boolean
-    | ReactElement<any, string | JSXElementConstructor<any>>
-    | Iterable<ReactNode>
-    | React.ReactPortal
-    | null
-    | undefined
-): el is string | number => {
+const isPureElement = (el: ReactNode): el is string | number => {
   return typeof el === 'string' || typeof el === 'number'
 }
 

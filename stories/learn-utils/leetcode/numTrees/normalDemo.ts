@@ -1,4 +1,4 @@
-import numTrees from '@jqxon/learn-utils/leetcode/numTrees'
+import numTrees from '../../../../packages/learn-utils/src/leetcode/numTrees'
 
 export default () => {
   const n = 3

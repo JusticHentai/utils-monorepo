@@ -1,0 +1,232 @@
+import copyDemo from './copyDemo?raw'
+import ensureDirDemo from './ensureDirDemo?raw'
+import ensureFileDemo from './ensureFileDemo?raw'
+import moveDemo from './moveDemo?raw'
+import pathExistsDemo from './pathExistsDemo?raw'
+import readWriteJsonDemo from './readWriteJsonDemo?raw'
+import outputFileDemo from './outputFileDemo?raw'
+import removeDemo from './removeDemo?raw'
+import emptyDirDemo from './emptyDirDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# fs-extra
+
+fs-extra 是 Node.js 内置 `fs` 模块的增强版，提供了更多实用的文件系统操作方法。
+
+## 详细介绍
+
+fs-extra 在标准 Node.js fs 模块的基础上，添加了许多便捷的文件系统操作方法，如：
+- 递归复制/移动文件和目录
+- 确保文件/目录存在（自动创建父目录）
+- JSON 文件的读写操作
+- 清空/删除目录
+
+这些方法都提供了异步和同步两种版本，使用 Promise API，方便与 async/await 配合使用。
+
+**主要特性**：
+- 完全兼容原生 `fs` 模块
+- 所有异步方法支持 Promise
+- 自动处理跨设备移动
+- 智能创建缺失的父目录
+
+**新的导入方式**（模块化拆分）：
+```typescript
+// 从主包导入
+import { copy, ensureDir, readJson } from '@justichentai/node-utils'
+
+// 从子路径导入（推荐，支持 tree-shaking）
+import { copy, copySync } from '@justichentai/node-utils/fs-copy'
+import ensureDir from '@justichentai/node-utils/fs-ensureDir'
+import { readJson, writeJson } from '@justichentai/node-utils/fs-readJson'
+```
+
+## 复制文件/目录 (copy)
+
+复制文件或目录，支持递归复制和过滤函数。
+
+<CodeOrSourceMdx language="typescript">
+  {copyDemo}
+</CodeOrSourceMdx>
+
+## 确保目录存在 (ensureDir)
+
+确保目录存在，如果目录结构不存在则创建它。别名：`mkdirs`、`mkdirp`。
+
+<CodeOrSourceMdx language="typescript">
+  {ensureDirDemo}
+</CodeOrSourceMdx>
+
+## 确保文件存在 (ensureFile)
+
+确保文件存在，如果文件所在目录不存在则创建它们。
+
+<CodeOrSourceMdx language="typescript">
+  {ensureFileDemo}
+</CodeOrSourceMdx>
+
+## 移动文件/目录 (move)
+
+移动文件或目录，即使跨设备也可以（内部使用 copy + remove）。
+
+<CodeOrSourceMdx language="typescript">
+  {moveDemo}
+</CodeOrSourceMdx>
+
+## 检查路径是否存在 (pathExists)
+
+检查文件或目录是否存在，使用 `fs.access` 实现。
+
+<CodeOrSourceMdx language="typescript">
+  {pathExistsDemo}
+</CodeOrSourceMdx>
+
+## 读写 JSON 文件 (readJson/writeJson)
+
+方便地读取和写入 JSON 文件，支持格式化选项。
+
+<CodeOrSourceMdx language="typescript">
+  {readWriteJsonDemo}
+</CodeOrSourceMdx>
+
+## 输出文件 (outputFile/outputJson)
+
+写入文件，如果父目录不存在则自动创建。
+
+<CodeOrSourceMdx language="typescript">
+  {outputFileDemo}
+</CodeOrSourceMdx>
+
+## 删除文件/目录 (remove)
+
+删除文件或目录（包括内容），如果路径不存在则静默忽略。
+
+<CodeOrSourceMdx language="typescript">
+  {removeDemo}
+</CodeOrSourceMdx>
+
+## 清空目录 (emptyDir)
+
+清空目录内容，保留目录本身。如果目录不存在则创建它。
+
+<CodeOrSourceMdx language="typescript">
+  {emptyDirDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### CopyOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>overwrite</td>
+      <td><code>boolean</code></td>
+      <td>是否覆盖已存在的文件/目录，默认 true</td>
+    </tr>
+    <tr>
+      <td>errorOnExist</td>
+      <td><code>boolean</code></td>
+      <td>当 overwrite 为 false 且目标存在时是否抛出错误，默认 false</td>
+    </tr>
+    <tr>
+      <td>dereference</td>
+      <td><code>boolean</code></td>
+      <td>是否解引用符号链接，默认 false</td>
+    </tr>
+    <tr>
+      <td>preserveTimestamps</td>
+      <td><code>boolean</code></td>
+      <td>是否保留原始时间戳，默认 false</td>
+    </tr>
+    <tr>
+      <td>filter</td>
+      <td><code>(src, dest) =&gt; boolean | Promise&lt;boolean&gt;</code></td>
+      <td>过滤函数，返回 true 复制，false 忽略</td>
+    </tr>
+  </tbody>
+</table>
+
+### MoveOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>overwrite</td>
+      <td><code>boolean</code></td>
+      <td>是否覆盖已存在的文件/目录，默认 false</td>
+    </tr>
+  </tbody>
+</table>
+
+### WriteJsonOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>spaces</td>
+      <td><code>number | string</code></td>
+      <td>缩进空格数或缩进字符串</td>
+    </tr>
+    <tr>
+      <td>EOL</td>
+      <td><code>string</code></td>
+      <td>行尾字符，默认 '\n'</td>
+    </tr>
+    <tr>
+      <td>replacer</td>
+      <td><code>function | array</code></td>
+      <td>JSON.stringify 的 replacer 参数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件结构**：
+- `fs-copy/` - 复制操作（异步/同步）
+- `fs-emptyDir/` - 清空目录
+- `fs-ensureDir/` - 确保目录存在
+- `fs-ensureFile/` - 确保文件存在
+- `fs-ensureLink/` - 确保硬链接存在
+- `fs-ensureSymlink/` - 确保符号链接存在
+- `fs-move/` - 移动操作
+- `fs-outputFile/` - 输出文件
+- `fs-outputJson/` - 输出 JSON
+- `fs-pathExists/` - 路径存在检查
+- `fs-readJson/` - 读取 JSON
+- `fs-remove/` - 删除操作
+- `fs-writeJson/` - 写入 JSON
+- `fs-utils/` - 工具函数
+
+**核心流程**：
+1. copy/move 操作会先检查源和目标路径的有效性
+2. 递归处理目录时使用异步迭代器并行处理
+3. 跨设备移动时自动降级为 copy + remove
+4. ensure* 方法会自动创建缺失的父目录
+
+**关键技术点**：
+- 使用 Node.js 原生 `fs/promises` API
+- 支持 BigInt 模式的文件状态检查（用于大文件）
+- 符号链接的智能处理
+- 跨平台兼容性处理（Windows 路径字符检查）

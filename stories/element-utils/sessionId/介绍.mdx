@@ -1,0 +1,58 @@
+import getSessionIdDemo from './getSessionIdDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sessionId
+
+生成并获取会话 ID 的工具函数，同一会话内保持不变。
+
+## 获取会话ID
+
+首次调用时生成唯一 ID 并存储到 sessionStorage，后续调用返回相同的 ID。适用于需要在同一会话内追踪用户的场景。
+
+<CodeOrSourceMdx language="typescript">
+  {getSessionIdDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>-</td>
+      <td>-</td>
+      <td>无参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>string</code></td>
+      <td>会话 ID，同一会话内多次调用返回相同值</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+- 使用 sessionStorage 存储会话 ID，key 为 `__session_id__`
+- 首次调用时检查 sessionStorage 中是否存在 ID
+- 如果不存在，调用 `uniqueId()` 生成新 ID 并存储
+- 如果已存在，直接返回已存储的 ID
+- 会话结束（标签页关闭）后，sessionStorage 清空，下次会话将生成新的 ID

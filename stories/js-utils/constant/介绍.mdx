@@ -1,0 +1,47 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# constant
+
+创建一个返回常量值的函数。
+
+## 详细介绍
+
+`constant` 创建一个无论如何调用都返回相同值的函数。在函数式编程中常作为默认回调或占位函数使用，例如 `Array.from({ length: 3 }, constant(0))` 创建全零数组。
+
+## 创建常量函数
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>要返回的常量值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`() => T`
+- 描述：始终返回给定值的函数
+
+## 具体实现原理
+
+1. **文件职责**: `constant/index.ts` 导出 `constant` 函数
+2. **核心流程**: 通过闭包捕获传入的值，返回一个始终返回该值的函数
+3. **关键技术点**: 闭包
+4. **数据流向**: value → 闭包捕获 → 返回的函数始终返回 value

@@ -1,0 +1,37 @@
+import gitTagDemo from './gitTagDemo?raw'
+import gitUpdateDemo from './gitUpdateDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# git
+
+git 模块提供了常用的 git 操作封装。
+
+## gitTag - 创建并推送 tag
+
+<CodeOrSourceMdx language="typescript">
+  {gitTagDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `tag`: `string` - tag 名称
+
+### 返回值
+
+- `Promise<boolean>` - 是否有失败的命令
+
+## gitUpdate - git 更新三连
+
+执行 `git add .`、`git commit -m "message"` 和 `git push` 三个命令。
+
+<CodeOrSourceMdx language="typescript">
+  {gitUpdateDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `message`: `string` (可选) - commit 信息，默认为 `'fix: 普通更新'`
+
+### 返回值
+
+- `Promise<boolean[]>` - 三个命令的执行结果数组

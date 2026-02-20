@@ -6,13 +6,13 @@ const dfsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('DFS 深度优先搜索')(res)
+          action('normal')(res)
         }}
       >
-        DFS 深度优先搜索测试
+        normal
       </div>
     </div>
   )

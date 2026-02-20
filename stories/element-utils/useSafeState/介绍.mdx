@@ -1,0 +1,88 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useSafeState
+
+安全的 useState，组件卸载后不再更新 state，避免内存泄漏警告。
+
+## 详细介绍
+
+`useSafeState` 在组件卸载后会忽略状态更新，避免内存泄漏警告。
+
+**涉及的知识点**：
+- React 状态更新机制
+- 组件生命周期
+- 内存泄漏防护
+
+**常用场景**：
+- 异步操作后更新状态（如 API 请求）
+- 组件可能在异步操作完成前被卸载
+- 需要避免 "Can't perform a React state update on an unmounted component" 警告
+
+**优势**：
+- 自动处理组件卸载情况
+- API 与 useState 完全一致
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialState</td>
+      <td><code>S | (() =&gt; S)</code></td>
+      <td>-</td>
+      <td>初始状态</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>state</td>
+      <td><code>S</code></td>
+      <td>当前状态</td>
+    </tr>
+    <tr>
+      <td>setSafeState</td>
+      <td><code>Dispatch&lt;SetStateAction&lt;S&gt;&gt;</code></td>
+      <td>安全的设置状态函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useUnmountedRef 追踪组件挂载状态
+2. 调用 setSafeState 时检查组件是否已卸载
+3. 如果已卸载则忽略本次状态更新
+
+### 注意事项
+
+- 虽然 React 18 移除了这个警告，但在某些场景下使用 `useSafeState` 仍然是好的实践
+- 如果你的代码需要在组件卸载后执行清理逻辑，应该使用 `useEffect` 的清理函数

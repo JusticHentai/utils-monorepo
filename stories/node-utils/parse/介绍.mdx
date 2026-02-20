@@ -1,0 +1,39 @@
+import parseCommandDemo from './parseCommandDemo?raw'
+import parseFileNameDemo from './parseFileNameDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# parse
+
+parse 模块提供了一系列解析工具函数。
+
+## parseCommand - 解析命令参数
+
+用于解析命令字符串中的必选参数（`<param>`）和可选参数（`[param]`）。
+
+<CodeOrSourceMdx language="typescript">
+  {parseCommandDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `command`: `string` - 命令字符串
+
+### 返回值
+
+- `{ required: string[], optional: string[] }` - 解析后的必选和可选参数数组
+
+## parseFileName - 解析文件名
+
+用于解析文件路径，获取文件名和扩展名。
+
+<CodeOrSourceMdx language="typescript">
+  {parseFileNameDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `filePath`: `string` - 文件路径
+
+### 返回值
+
+- `{ name: string, extend: string }` - 文件名和扩展名

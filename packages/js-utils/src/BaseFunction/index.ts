@@ -1,5 +1,8 @@
+/**
+ * 基础函数类型
+ */
 type BaseFunction<Params extends any[] = any[], Return = any> = (
   ...params: Params
-) => Promise<Return>
+) => Return
 
 export default BaseFunction

@@ -1,0 +1,108 @@
+import assignInDemo from './assignInDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# assignIn
+
+类似于 assign，但包括继承的属性
+
+## 详细介绍
+
+`assignIn` 与 `assign` 功能类似，核心区别在于**遍历属性的方式不同**：
+
+- `assign` 使用 `Object.keys(source)` —— 只遍历来源对象**自身的可枚举属性**
+- `assignIn` 使用 `for...in` —— 遍历来源对象**自身 + 继承的可枚举属性**
+
+### assign vs assignIn 对比
+
+```ts
+function Foo() { this.a = 1 }
+Foo.prototype.b = 2
+
+const source = new Foo()
+// source 自身属性: { a: 1 }
+// source 原型链上的属性: { b: 2 }
+
+assign({}, source)    // => { a: 1 }       — 只拷贝自身属性
+assignIn({}, source)  // => { a: 1, b: 2 } — 同时拷贝继承属性
+```
+
+### 实现差异
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>遍历方式</th>
+      <th>遍历范围</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>assign</code></td>
+      <td><code>for (const key of Object.keys(source))</code></td>
+      <td>仅自身可枚举属性</td>
+    </tr>
+    <tr>
+      <td><code>assignIn</code></td>
+      <td><code>for (const key in source)</code></td>
+      <td>自身 + 继承的可枚举属性</td>
+    </tr>
+  </tbody>
+</table>
+
+**常用场景**：
+- 需要拷贝通过构造函数原型链继承的属性时，使用 `assignIn`
+- 只需要拷贝对象自身属性时，使用 `assign`
+
+## 基础用法
+
+点击按钮查看 `assignIn` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {assignInDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>目标对象</td>
+    </tr>
+    <tr>
+      <td>sources</td>
+      <td><code>unknown</code></td>
+      <td>来源对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`unknown`
+- 描述：返回目标对象
+
+## 具体实现原理
+
+1. **文件职责**: `assignIn/index.ts` 导出 assignIn 函数
+2. **核心流程**: 遍历所有来源对象，通过 `for...in` 将每个来源的自身及继承的可枚举属性赋值到目标对象上
+3. **关键技术点**: 使用 `for...in` 循环（而非 `Object.keys()`），使得原型链上的可枚举属性也会被拷贝
+4. **与 assign 的唯一代码差异**: `for (const key in source)` vs `for (const key of Object.keys(source))`

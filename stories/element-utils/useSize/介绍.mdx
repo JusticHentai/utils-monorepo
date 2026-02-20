@@ -1,0 +1,75 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useSize
+
+监听 DOM 节点尺寸变化的 Hook。
+
+## 详细介绍
+
+useSize 使用 ResizeObserver API 实时监听元素的尺寸变化，返回元素的 width 和 height。适用于需要响应元素尺寸变化的场景。
+
+### 使用场景
+
+- 响应式布局
+- 图表自适应
+- 图片裁剪区域
+- 虚拟列表高度计算
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>BasicTarget</code></td>
+      <td>目标元素（ref 或 DOM 元素）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>width</td>
+      <td><code>number</code></td>
+      <td>元素宽度（clientWidth）</td>
+    </tr>
+    <tr>
+      <td>height</td>
+      <td><code>number</code></td>
+      <td>元素高度（clientHeight）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useRafState 管理尺寸状态（使用 requestAnimationFrame 优化）
+2. 创建 ResizeObserver 实例监听目标元素
+3. 尺寸变化时更新状态
+4. 组件卸载时断开观察器

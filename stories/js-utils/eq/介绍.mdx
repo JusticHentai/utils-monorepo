@@ -1,0 +1,111 @@
+import eqDemo from './eqDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# eq
+
+使用 SameValueZero 算法比较两个值是否相等。
+
+## 详细介绍
+
+`eq` 与 `===` 严格相等几乎相同，唯一区别是对 **NaN** 的处理：
+
+- `===`：`NaN === NaN` 为 `false`
+- `eq`：`eq(NaN, NaN)` 为 `true`
+
+这就是 [SameValueZero](https://tc39.es/ecma262/#sec-samevaluezero) 算法，也是 `Map`、`Set`、`Array.includes` 内部使用的比较方式。
+
+### NaN 检测原理
+
+```ts
+if (value !== value && other !== other) {
+  return true
+}
+```
+
+JavaScript 中 `NaN` 是**唯一一个不等于自身的值**：
+
+<table>
+  <thead>
+    <tr>
+      <th>表达式</th>
+      <th>结果</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>NaN !== NaN</code></td>
+      <td><code>true</code></td>
+      <td>NaN 不等于自身</td>
+    </tr>
+    <tr>
+      <td><code>value !== value</code></td>
+      <td>仅当 value 为 NaN 时为 <code>true</code></td>
+      <td>利用这个特性检测 NaN</td>
+    </tr>
+    <tr>
+      <td><code>1 !== 1</code></td>
+      <td><code>false</code></td>
+      <td>其他值都等于自身</td>
+    </tr>
+  </tbody>
+</table>
+
+因此 `value !== value && other !== other` 等价于「两者都是 NaN」，此时返回 `true`。
+
+**常用场景**：
+- 需要将 NaN 视为相等的比较场景
+- lodash 内部许多方法（如 `indexOf`、`includes`）的基础比较
+
+## 基础用法
+
+点击按钮查看 `eq` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {eqDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>第一个值</td>
+    </tr>
+    <tr>
+      <td>other</td>
+      <td><code>unknown</code></td>
+      <td>第二个值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：两个值 SameValueZero 相等时返回 true
+
+## 具体实现原理
+
+1. **文件职责**: `eq/index.ts` 导出 eq 函数
+2. **核心流程**: 先检查两者是否都是 NaN（`value !== value && other !== other`），是则返回 true；否则使用 `===` 比较
+3. **关键技术点**: 利用 NaN 是唯一不等于自身的值这一特性来检测 NaN
+4. **与 === 的区别**: 仅 `NaN` 处理不同，`0 === -0` 仍为 true（SameValueZero 不区分 ±0）

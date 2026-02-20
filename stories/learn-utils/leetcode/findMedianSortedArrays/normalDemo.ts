@@ -1,4 +1,4 @@
-import findMedianSortedArrays from '@jqxon/learn-utils/leetcode/findMedianSortedArrays'
+import findMedianSortedArrays from '../../../../packages/learn-utils/src/leetcode/findMedianSortedArrays'
 
 export default () => {
   const nums1 = [1, 3]

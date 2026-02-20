@@ -1,0 +1,68 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useLatest
+
+返回当前最新值的 ref，用于解决闭包问题。
+
+## 详细介绍
+
+useLatest 通过 useRef 保存值的引用，每次渲染时更新 ref.current，使得在任何时候通过 ref.current 都能获取到最新的值，有效解决 useEffect、useCallback 等 Hook 中的闭包陈旧问题。
+
+### 使用场景
+
+- 在 useEffect 中获取最新的 props 或 state
+- 在 useCallback 中避免闭包问题
+- 定时器回调中获取最新值
+- 事件处理函数中获取最新值
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>需要获取最新值的变量</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>React.MutableRefObject&lt;T&gt;</code></td>
+      <td>包含最新值的 ref 对象</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useRef 创建一个 ref 对象
+2. 每次渲染时将 value 赋值给 ref.current
+3. 返回 ref 对象
+4. 由于 ref 对象引用不变，可以在任何地方通过 ref.current 获取最新值

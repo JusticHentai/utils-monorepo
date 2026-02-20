@@ -1,4 +1,4 @@
-import findNumberIn2DArray from '@jqxon/learn-utils/leetcode/findNumberIn2DArray'
+import findNumberIn2DArray from '../../../../packages/learn-utils/src/leetcode/findNumberIn2DArray'
 
 export default () => {
   const matrix = [

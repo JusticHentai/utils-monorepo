@@ -4,11 +4,14 @@ import { BuildUrlOptions, ParsedUrl, ParseUrlOptions } from './interface'
  * 解析 URL 字符串
  * 提取查询参数和路径片段
  */
-const parseUrl = (url: string, options: ParseUrlOptions = {}): ParsedUrl => {
+const parseUrl = (
+  url: string,
+  options: ParseUrlOptions = {}
+): ParsedUrl | null => {
   const { decode = true, arrayFormat = true } = options
 
   if (!url || typeof url !== 'string') {
-    throw new Error('url must be a non-empty string')
+    return null
   }
 
   let parsedUrl: URL
@@ -21,7 +24,7 @@ const parseUrl = (url: string, options: ParseUrlOptions = {}): ParsedUrl => {
     try {
       parsedUrl = new URL(`https://${url}`)
     } catch {
-      throw new Error(`Invalid URL: ${url}`)
+      return null
     }
   }
 
@@ -155,7 +158,7 @@ export const getQueryParam = (
 ): string | null => {
   try {
     const parsed = parseUrl(url, { decode })
-    const value = parsed.query[key]
+    const value = parsed?.query[key]
 
     if (value === undefined) {
       return null
@@ -177,7 +180,7 @@ export const getQueryParams = (
 ): string[] => {
   try {
     const parsed = parseUrl(url, { decode, arrayFormat: true })
-    const value = parsed.query[key]
+    const value = parsed?.query[key]
 
     if (value === undefined) {
       return []
@@ -196,26 +199,26 @@ export const setQueryParam = (
   url: string,
   key: string,
   value: string | number | boolean
-): string => {
+): string | null => {
   try {
     const parsedUrl = new URL(url)
     parsedUrl.searchParams.set(key, String(value))
     return parsedUrl.toString()
   } catch {
-    throw new Error(`Invalid URL: ${url}`)
+    return null
   }
 }
 
 /**
  * 删除查询参数
  */
-export const removeQueryParam = (url: string, key: string): string => {
+export const removeQueryParam = (url: string, key: string): string | null => {
   try {
     const parsedUrl = new URL(url)
     parsedUrl.searchParams.delete(key)
     return parsedUrl.toString()
   } catch {
-    throw new Error(`Invalid URL: ${url}`)
+    return null
   }
 }
 

@@ -43,7 +43,9 @@ class Animation {
    * @param times 播放次数，没传就是循环
    */
   start = (times?: number) => {
-    this.rafId && cancelAnimationFrame(this.rafId)
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+    }
 
     this.initialTime = Date.now()
     this.initialFrame = 0
@@ -55,31 +57,28 @@ class Animation {
 
   /**
    * 继续播放
-   * 初始时间要更新下，初始帧数和当前帧不变
+   * 初始时间要更新，初始帧设为当前帧
    */
   resume = () => {
+    // 避免重复调用产生多个 raf 循环
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+    }
+
     this.initialTime = Date.now()
+    // 从当前帧继续，而不是从 initialFrame 重新计算
+    this.initialFrame = this.currentFrame
     this.rafId = requestAnimationFrame(this.render)
   }
 
   /**
    * 停止播放
-   * 停止时要重算下初始帧, 后续算次数需要
    */
   pause = () => {
-    const { frameCount, duration } = this.options
-    const { initialFrame, initialTime, rafId } = this
-
-    rafId && cancelAnimationFrame(rafId)
-
-    const { nextFrame, completedTimes } = calcCurrentFrame({
-      initialFrame,
-      initialTime,
-      duration,
-      frameCount,
-    })
-
-    this.initialFrame = nextFrame + completedTimes * frameCount
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+      this.rafId = undefined
+    }
   }
 
   /**
@@ -126,7 +125,7 @@ class Animation {
     // 绘制当前帧
     paintFrame({
       canvas: canvasEl,
-      frameCanvas: frameList[nextFrame],
+      frameBitmap: frameList[nextFrame],
       width,
       height,
     })

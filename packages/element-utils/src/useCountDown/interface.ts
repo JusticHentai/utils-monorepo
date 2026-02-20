@@ -1,7 +1,7 @@
 /**
  * 倒计时 Hook 参数
  */
-export interface UseCountDownProps {
+export interface UseCountDownOptions {
   initialSeconds: number
 }
 

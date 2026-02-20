@@ -1,0 +1,68 @@
+import sortedIndexOfDemo from './sortedIndexOfDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sortedIndexOf
+
+类似于 indexOf，但使用二分查找（数组必须已排序）
+
+## 详细介绍
+
+`sortedIndexOf` 类似于 indexOf，但使用二分查找（数组必须已排序）。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `sortedIndexOf` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {sortedIndexOfDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>已排序的数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要搜索的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回值的索引，否则返回 -1
+
+## 具体实现原理
+
+1. **文件职责**: `sortedIndexOf/index.ts` 导出 sortedIndexOf 函数
+2. **核心流程**: 类似于 indexOf，但使用二分查找（数组必须已排序）
+3. **关键技术点**: 直接计算并返回结果
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

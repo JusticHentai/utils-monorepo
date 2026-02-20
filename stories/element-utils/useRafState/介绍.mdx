@@ -1,0 +1,117 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useRafState
+
+在 requestAnimationFrame 中更新 state，适合高频更新场景。
+
+## 详细介绍
+
+`useRafState` 使用 requestAnimationFrame 来调度状态更新，适合高频更新场景。
+
+**涉及的知识点**：
+- requestAnimationFrame API
+- React 状态更新调度
+
+**常用场景**：
+- 鼠标移动追踪
+- 滚动位置更新
+- 拖拽操作
+- 其他高频更新的 UI 状态
+
+**优势**：
+- 自动合并高频更新
+- 与屏幕刷新同步
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialState</td>
+      <td><code>S | (() =&gt; S)</code></td>
+      <td>-</td>
+      <td>初始状态</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>state</td>
+      <td><code>S</code></td>
+      <td>当前状态</td>
+    </tr>
+    <tr>
+      <td>setRafState</td>
+      <td><code>Dispatch&lt;SetStateAction&lt;S&gt;&gt;</code></td>
+      <td>设置状态函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 与 useState 对比
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>useRafState</th>
+      <th>useState</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>更新时机</td>
+      <td>下一帧开始</td>
+      <td>立即调度</td>
+    </tr>
+    <tr>
+      <td>高频更新</td>
+      <td>✅ 自动合并</td>
+      <td>❌ 每次触发渲染</td>
+    </tr>
+    <tr>
+      <td>性能</td>
+      <td>✅ 更优</td>
+      <td>一般</td>
+    </tr>
+    <tr>
+      <td>适用场景</td>
+      <td>高频更新</td>
+      <td>一般场景</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 调用 setRafState 时取消上一个待执行的更新
+2. 在下一帧开始时执行状态更新
+3. 组件卸载时自动取消待执行的更新

@@ -1,33 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import notObjectDemo from './notObjectDemo'
+import edgeCaseDemo from './edgeCaseDemo'
 import objectDemo from './objectDemo'
 
-const isObjectDemo = () => {
+const IsObjectDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = objectDemo()
-
-          action('检测对象 { a: 1 }')(res)
-        }}
-      >
-        检测对象 {`{ a: 1 }`}
+      <div className="button" onClick={objectDemo}>
+        isObject - 类型检测
       </div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = notObjectDemo()
-
-          action('检测数组 [1, 2, 3]')(res)
-        }}
-      >
-        检测数组 [1, 2, 3]
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )
 }
 
-export default isObjectDemo
+export default IsObjectDemo

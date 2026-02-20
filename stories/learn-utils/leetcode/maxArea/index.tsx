@@ -6,13 +6,13 @@ const maxAreaDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('盛最多水的容器')(res)
+          action('normal')(res)
         }}
       >
-        盛最多水的容器
+        normal
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import longestConsecutive from '@jqxon/learn-utils/leetcode/longestConsecutive'
+import longestConsecutive from '../../../../packages/learn-utils/src/leetcode/longestConsecutive'
 
 export default () => {
   const nums = [100, 4, 200, 1, 3, 2]

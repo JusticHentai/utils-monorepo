@@ -1,7 +1,7 @@
 import Animation from './core/Animation'
 import calcFrameState from './core/calcFrameState'
 import canvasClearness from './core/canvasClearness'
-import createFrameCanvas from './core/createFrameCanvas'
+import createFrameBitmap from './core/createFrameCanvas'
 import loadImage from './core/loadImage'
 import { Options } from './interface'
 
@@ -16,7 +16,7 @@ class FrameAnimation {
     height: 0,
   }
   frameList: Array<{
-    canvas: HTMLCanvasElement
+    bitmap: ImageBitmap
     left: number
     top: number
   }> = []
@@ -53,21 +53,23 @@ class FrameAnimation {
       height,
     }
 
-    // 创建 Canvas -------------------------------------------------------------
-    this.frameList = frameList.map((frame) => {
-      const frameCanvas = createFrameCanvas({
-        width,
-        height,
-        left: frame.left,
-        top: frame.top,
-        imageEl: imageElement,
-      })
+    // 创建 ImageBitmap -------------------------------------------------------------
+    const bitmapList = await Promise.all(
+      frameList.map((frame) =>
+        createFrameBitmap({
+          width,
+          height,
+          left: frame.left,
+          top: frame.top,
+          imageEl: imageElement,
+        })
+      )
+    )
 
-      return {
-        canvas: frameCanvas,
-        ...frame,
-      }
-    })
+    this.frameList = frameList.map((frame, index) => ({
+      bitmap: bitmapList[index],
+      ...frame,
+    }))
   }
 
   /**
@@ -88,7 +90,7 @@ class FrameAnimation {
 
     el.appendChild(canvas)
 
-    const frameList = this.frameList.map((frame) => frame.canvas)
+    const frameList = this.frameList.map((frame) => frame.bitmap)
 
     // 创建动画实例
     return new Animation({

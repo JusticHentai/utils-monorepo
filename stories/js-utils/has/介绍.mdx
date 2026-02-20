@@ -1,0 +1,52 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# has
+
+检查对象是否有指定路径的直接属性。
+
+## 详细介绍
+
+`has` 检查对象是否拥有指定路径的直接（自有）属性。`hasIn` 则包括继承属性。支持嵌套路径（如 `a.b.c`）和数组索引。
+
+## 检查属性路径
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>unknown</code></td>
+      <td>要检查的对象</td>
+    </tr>
+    <tr>
+      <td>path</td>
+      <td><code>string | string[]</code></td>
+      <td>属性路径</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否存在
+
+## 具体实现原理
+
+1. **文件职责**: `has/index.ts` 导出 has（default）和 hasIn（named）
+2. **核心流程**: 解析路径字符串为数组，逐层检查属性是否存在
+3. **关键技术点**: hasOwnProperty vs `in` 操作符
+4. **数据流向**: 路径解析 → 逐层深入对象 → 检查属性存在性 → 返回布尔值

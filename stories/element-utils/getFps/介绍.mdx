@@ -1,24 +1,94 @@
-import sourceCode from '../../../packages/element-utils/src/getFps.ts/index.ts?raw'
+import basicDemo from './basicDemo?raw'
+import monitorDemo from './monitorDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # getFps
 
-getFps 是一个用于获取当前浏览器帧率（FPS）的异步函数。
+获取当前浏览器帧率（FPS）的工具，支持单次测量和持续监控。
 
-## 源码
+## 详细介绍
+
+getFps 是一个性能检测工具，核心作用是：**测量浏览器的实际渲染帧率**。
+
+**涉及的知识点**：
+- `requestAnimationFrame`：浏览器渲染循环
+- 高精度时间戳：`performance.now()`
+- 帧率计算：帧数 / 时间
+
+**FPS 的意义**：
+- 60 FPS：流畅动画的标准（每帧约 16.67ms）
+- 30 FPS：可接受的最低帧率
+- < 30 FPS：明显卡顿
+
+**常用场景**：
+- 性能监控：实时显示页面帧率
+- 自适应降级：低帧率时简化动画
+- 调试工具：定位性能瓶颈
+- 游戏开发：监控渲染性能
+
+**优势**：
+- 使用 RAF 测量，结果准确
+- 支持单次测量和持续监控两种模式
+- 返回清理函数，便于停止监控
+
+## 单次测量示例
 
 <CodeOrSourceMdx language="typescript">
-  {sourceCode}
+  {basicDemo}
 </CodeOrSourceMdx>
 
-## 返回值
+## 持续监控示例
 
-- 类型：`Promise<number>`
-- 描述：返回 1 秒内的帧数（FPS）
+<CodeOrSourceMdx language="typescript">
+  {monitorDemo}
+</CodeOrSourceMdx>
 
-## 特点
+## API
 
-- 使用 requestAnimationFrame 计算帧率
-- 异步函数，等待 1 秒后返回结果
-- 可用于性能监控和调试
-- 帮助判断是否需要降级动画效果
+### getFps()
+
+单次测量 FPS，返回 `Promise<number>`
+
+### createFpsMonitor(onUpdate)
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>onUpdate</td>
+      <td><code>(fps: number) =&gt; void</code></td>
+      <td>FPS 更新时的回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`() => void`
+- 描述：返回停止监控的函数
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 getFps 和 createFpsMonitor 函数
+
+### 核心流程
+
+1. 记录起始时间 `startTime`
+2. 使用 `requestAnimationFrame` 循环，计数帧数
+3. 达到 1 秒后计算：`帧数 * 1000 / (当前时间 - 起始时间)`
+4. 返回计算得到的 FPS 值
+
+### 关键技术点
+
+- 使用 `performance.now()` 获取高精度时间戳
+- 公式：`fps = frames * 1000 / elapsedMs`
+- 持续监控模式：每秒计算一次并调用回调
+- 使用 `cancelAnimationFrame` 停止监控

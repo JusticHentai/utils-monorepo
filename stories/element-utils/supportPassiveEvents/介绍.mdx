@@ -1,0 +1,209 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportPassiveEvents
+
+检测浏览器是否支持被动事件监听器（Passive Event Listeners）。Passive 选项可以显著提升滚动性能。
+
+## 什么是 Passive Event Listeners？
+
+当使用 `addEventListener` 时，可以传入 `{ passive: true }` 选项，告诉浏览器：**这个事件处理器不会调用 `preventDefault()`**。
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    没有 Passive 时                           │
+├─────────────────────────────────────────────────────────────┤
+│  用户触摸滚动 → 浏览器等待 JS 执行 → 才能开始滚动            │
+│                    ↑                                         │
+│            浏览器不知道你会不会调用 preventDefault()          │
+│            所以必须等待，造成滚动卡顿                         │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                    使用 Passive 后                           │
+├─────────────────────────────────────────────────────────────┤
+│  用户触摸滚动 → 浏览器立即开始滚动 + JS 并行执行             │
+│                    ↑                                         │
+│            浏览器知道不会 preventDefault()，无需等待          │
+│            滚动更流畅                                        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 passive 事件监听选项。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 passive 事件监听选项</td>
+    </tr>
+  </tbody>
+</table>
+
+## 性能对比
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>无 Passive</th>
+      <th>有 Passive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>触摸滚动响应</td>
+      <td>延迟 100-300ms</td>
+      <td>立即响应</td>
+    </tr>
+    <tr>
+      <td>滚动帧率</td>
+      <td>可能掉帧</td>
+      <td>稳定 60fps</td>
+    </tr>
+    <tr>
+      <td>用户体验</td>
+      <td>卡顿感</td>
+      <td>流畅</td>
+    </tr>
+  </tbody>
+</table>
+
+## 实际使用示例
+
+```typescript
+import supportPassiveEvents from '@justichentai/element-utils/supportPassiveEvents'
+
+const passiveSupported = supportPassiveEvents()
+const options = passiveSupported ? { passive: true } : false
+
+document.addEventListener('touchstart', onTouchStart, options)
+document.addEventListener('touchmove', onTouchMove, options)
+document.addEventListener('wheel', onWheel, options)
+```
+
+## 适用的事件类型
+
+<table>
+  <thead>
+    <tr>
+      <th>事件</th>
+      <th>推荐使用 Passive</th>
+      <th>原因</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>touchstart</td>
+      <td>✅ 是</td>
+      <td>提升移动端滚动性能</td>
+    </tr>
+    <tr>
+      <td>touchmove</td>
+      <td>✅ 是</td>
+      <td>提升移动端滚动性能</td>
+    </tr>
+    <tr>
+      <td>wheel</td>
+      <td>✅ 是</td>
+      <td>提升鼠标滚轮性能</td>
+    </tr>
+    <tr>
+      <td>scroll</td>
+      <td>✅ 是</td>
+      <td>滚动事件本身不可取消</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>❌ 否</td>
+      <td>可能需要 preventDefault</td>
+    </tr>
+    <tr>
+      <td>submit</td>
+      <td>❌ 否</td>
+      <td>可能需要阻止表单提交</td>
+    </tr>
+  </tbody>
+</table>
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>51+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>49+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>10+</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>16+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>❌ 不支持</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+const supportPassiveEvents = (): boolean => {
+  let supportsPassive = false
+  try {
+    const opts = Object.defineProperty({}, 'passive', {
+      get() {
+        supportsPassive = true
+        return true
+      },
+    })
+    window.addEventListener('testPassive', null as any, opts)
+    window.removeEventListener('testPassive', null as any, opts)
+  } catch {
+    supportsPassive = false
+  }
+  return supportsPassive
+}
+```
+
+通过创建带有 getter 的选项对象，如果浏览器访问了 `passive` 属性，说明支持该特性。
+
+## 注意事项
+
+⚠️ **在 passive 监听器中调用 `preventDefault()` 会被忽略并在控制台输出警告**：
+
+```
+Unable to preventDefault inside passive event listener invocation.
+```
+
+如果你确实需要阻止默认行为，不要使用 `{ passive: true }`。

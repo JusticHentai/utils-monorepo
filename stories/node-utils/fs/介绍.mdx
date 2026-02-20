@@ -1,0 +1,93 @@
+import cdDemo from './cdDemo?raw'
+import copyDemo from './copyDemo?raw'
+import existsDemo from './existsDemo?raw'
+import mdDemo from './mdDemo?raw'
+import rmDemo from './rmDemo?raw'
+import readDemo from './readDemo?raw'
+import writeDemo from './writeDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# fs
+
+fs 模块提供了一系列文件系统操作工具，基于 fs-extra 封装，带有 loading 提示和日志输出。
+
+## cd - 切换目录
+
+<CodeOrSourceMdx language="typescript">
+  {cdDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 目标目录路径，传入 `-` 可切换回原始目录
+- 返回值: `Promise<boolean>` - 是否切换成功
+
+## copy - 复制文件/目录
+
+<CodeOrSourceMdx language="typescript">
+  {copyDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `sourcePath`: `string` - 源路径
+- `targetPath`: `string` - 目标路径
+- 返回值: `Promise<boolean>` - 是否复制成功
+
+> 注意：自动过滤 node_modules 和 dist 目录
+
+## exists - 检测是否存在
+
+<CodeOrSourceMdx language="typescript">
+  {existsDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 目录路径
+- 返回值: `Promise<boolean>` - 是否存在
+
+## md - 创建目录
+
+<CodeOrSourceMdx language="typescript">
+  {mdDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 目录路径
+- 返回值: `Promise<boolean>` - 是否创建成功
+
+## rm - 删除目录
+
+<CodeOrSourceMdx language="typescript">
+  {rmDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 目录路径
+- 返回值: `Promise<boolean>` - 是否删除成功
+
+## read - 读取文件
+
+<CodeOrSourceMdx language="typescript">
+  {readDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 文件路径
+- 返回值: `Promise<string>` - 文件内容
+
+## write - 写入文件
+
+<CodeOrSourceMdx language="typescript">
+  {writeDemo}
+</CodeOrSourceMdx>
+
+### 参数
+
+- `dirname`: `string` - 文件路径
+- `data`: `string` - 要写入的内容
+- 返回值: `Promise<boolean>` - 是否写入成功

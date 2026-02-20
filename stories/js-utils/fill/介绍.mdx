@@ -1,0 +1,71 @@
+import basicDemo from './basicDemo?raw'
+import rangeDemo from './rangeDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# fill
+
+使用指定值填充数组从 start 到 end（不含）的元素。
+
+## 详细介绍
+
+`fill` 函数用于使用指定值填充数组的指定范围，会修改原数组。
+
+**常用场景**：
+- 初始化数组
+- 重置数组元素
+- 创建指定长度和默认值的数组
+
+## 基础填充
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 范围填充
+
+<CodeOrSourceMdx language="typescript">
+  {rangeDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要填充的数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>用来填充的值</td>
+    </tr>
+    <tr>
+      <td>start</td>
+      <td><code>number</code></td>
+      <td>起始位置，默认为 0</td>
+    </tr>
+    <tr>
+      <td>end</td>
+      <td><code>number</code></td>
+      <td>结束位置（不含），默认为数组长度</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：修改后的数组（原数组）
+
+## 具体实现原理
+
+使用原生 `Array.prototype.fill()` 方法实现，支持负数索引。

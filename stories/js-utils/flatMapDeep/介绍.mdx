@@ -1,0 +1,122 @@
+import flatMapDeepDemo from './flatMapDeepDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flatMapDeep
+
+映射集合并将结果**完全递归**扁平化
+
+## 与 flatMap 的区别
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>扁平化层级</th>
+      <th><code>[1, 2]</code> + <code>n =&gt; [[[n * 2]]]</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>flatMap</code></td>
+      <td>只扁平一层</td>
+      <td><code>[[2]], [[4]]</code></td>
+    </tr>
+    <tr>
+      <td><code>flatMapDeep</code></td>
+      <td>完全递归扁平化</td>
+      <td><code>[2, 4]</code></td>
+    </tr>
+  </tbody>
+</table>
+
+`flatMap` 等价于 `map` + `flatten`（一层），而 `flatMapDeep` 等价于 `map` + `flattenDeep`（递归到底）。
+
+**常用场景**：
+- iteratee 返回多层嵌套数组，需要完全展开
+- 树形结构遍历并收集所有叶子节点
+- 递归数据转换后需要扁平化结果
+
+## 基础用法
+
+点击按钮对比 `flatMap` 和 `flatMapDeep` 在处理多层嵌套时的差异。
+
+<CodeOrSourceMdx language="typescript">
+  {flatMapDeepDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要迭代的集合</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T, index: number, collection: T[]) =&gt; R | R[]</code></td>
+      <td>每次迭代调用的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`R[]`
+- 描述：返回新的完全扁平化数组
+
+## 具体实现原理
+
+以 `flatMapDeep([1, 2], n => [[[n * 2]]])` 为例：
+
+**第一步：遍历集合，调用 iteratee 收集映射结果**
+
+```
+collection = [1, 2]
+
+i=0: iteratee(1) => [[[2]]]   → result.push([[[2]]])
+i=1: iteratee(2) => [[[4]]]   → result.push([[[4]]])
+
+result = [ [[[2]]], [[[4]]] ]
+```
+
+**第二步：将 result 传入 `flattenDeep` 完全递归扁平化**
+
+```
+flattenDeep([ [[[2]]], [[[4]]] ])
+
+层级展开过程：
+[ [[[2]]], [[[4]]] ]   → 第 1 层：[ [[2]], [[4]] ]
+                       → 第 2 层：[ [2], [4] ]
+                       → 第 3 层：[ 2, 4 ]
+
+最终返回：[2, 4]
+```
+
+**对比 flatMap 的差异（同样的输入）**
+
+```
+flatMap([1, 2], n => [[[n * 2]]])
+
+映射结果相同：result = [ [[[2]]], [[[4]]] ]
+但只扁平一层：flatten([ [[[2]]], [[[4]]] ]) => [ [[2]], [[4]] ]
+
+最终返回：[ [[2]], [[4]] ]  ← 内部嵌套仍然保留
+```

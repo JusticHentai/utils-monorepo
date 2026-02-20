@@ -7,20 +7,13 @@ export interface Options {
 }
 
 /**
- * 创建帧 Canvas
- * 拿到对应帧的位置，截取图片这部分帧绘制到 canvas 上
+ * 创建帧 ImageBitmap
+ * 使用 createImageBitmap 直接裁剪，比 canvas drawImage 性能更好
  */
-const createFrameCanvas = (options: Options) => {
+const createFrameBitmap = async (options: Options): Promise<ImageBitmap> => {
   const { width, height, left, top, imageEl } = options
 
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-
-  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
-  ctx.drawImage(imageEl, left, top, width, height, 0, 0, width, height)
-
-  return canvas
+  return createImageBitmap(imageEl, left, top, width, height)
 }
 
-export default createFrameCanvas
+export default createFrameBitmap

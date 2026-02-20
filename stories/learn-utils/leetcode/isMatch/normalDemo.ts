@@ -1,4 +1,4 @@
-import isMatch from '@jqxon/learn-utils/leetcode/isMatch'
+import isMatch from '../../../../packages/learn-utils/src/leetcode/isMatch'
 
 export default () => {
   const testCases = [

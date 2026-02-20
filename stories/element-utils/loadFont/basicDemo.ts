@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import loadFont from '../../../packages/element-utils/src/loadFont'
 
 const basicDemo = async () => {
@@ -7,10 +8,11 @@ const basicDemo = async () => {
   )
 
   if (err) {
-    return { success: false, error: err.message }
+    action('加载字体')({ success: false, error: err.message })
+    return
   }
 
-  return { success: true, fontFamily: font?.family }
+  action('加载字体')({ success: true, fontFamily: font?.family })
 }
 
 export default basicDemo

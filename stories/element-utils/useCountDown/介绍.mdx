@@ -1,68 +1,161 @@
-import sourceCode from '../../../packages/element-utils/src/useCountDown/index.ts?raw'
+import indexTsx from './index.tsx?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # useCountDown
 
-useCountDown 是一个 React Hook，用于实现倒计时功能，支持开始、暂停、恢复、重启等操作。
+倒计时 Hook，支持开始、暂停、恢复、重启等操作。
 
-## 源码
+## 详细介绍
 
-<CodeOrSourceMdx language="typescript">
-  {sourceCode}
+`useCountDown` 是一个功能完整的倒计时 Hook，提供精确的秒级倒计时功能。
+
+### 核心特性
+
+- **状态管理**: 支持空闲、运行中、暂停三种状态
+- **精确计时**: 基于时间差计算，避免定时器累积误差
+- **完整控制**: 提供开始、暂停、恢复、重启、结束等操作
+- **自动清理**: 组件卸载时自动清除定时器
+
+### 使用场景
+
+- 验证码倒计时
+- 活动倒计时
+- 考试/答题限时
+- 游戏倒计时
+- 任意需要倒计时的场景
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
-### UseCountDownProps
+### 入参 UseCountDownOptions
 
-#### initialSeconds
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialSeconds</td>
+      <td><code>number</code></td>
+      <td>初始倒计时秒数</td>
+    </tr>
+  </tbody>
+</table>
 
-- 类型：`number`
-- 描述：初始倒计时秒数
+### 返回值
 
-## 返回值
+<table>
+  <thead>
+    <tr>
+      <th>返回值</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>remainingSeconds</td>
+      <td><code>number</code></td>
+      <td>剩余秒数</td>
+    </tr>
+    <tr>
+      <td>countDownStatus</td>
+      <td><code>COUNT_DOWN_STATUS</code></td>
+      <td>当前计时状态（IDLE=0, RUNNING=1, PAUSED=2）</td>
+    </tr>
+    <tr>
+      <td>startCountdown</td>
+      <td><code>() =&gt; void</code></td>
+      <td>启动倒计时</td>
+    </tr>
+    <tr>
+      <td>pauseCountdown</td>
+      <td><code>() =&gt; void</code></td>
+      <td>暂停倒计时</td>
+    </tr>
+    <tr>
+      <td>resumeCountdown</td>
+      <td><code>() =&gt; void</code></td>
+      <td>恢复倒计时</td>
+    </tr>
+    <tr>
+      <td>restartCountdown</td>
+      <td><code>() =&gt; void</code></td>
+      <td>重新开始倒计时（重置为初始值）</td>
+    </tr>
+    <tr>
+      <td>endCountdown</td>
+      <td><code>() =&gt; void</code></td>
+      <td>结束倒计时</td>
+    </tr>
+  </tbody>
+</table>
 
-### remainingSeconds
+## 具体实现原理
 
-- 类型：`number`
-- 描述：剩余秒数
+### 文件职责
 
-### countDownStatus
+- `index.ts`: Hook 主逻辑，管理倒计时状态和定时器
+- `interface.ts`: 类型定义，包含 `COUNT_DOWN_STATUS` 枚举和 `UseCountDownOptions` 接口
 
-- 类型：`COUNT_DOWN_STATUS`
-- 描述：当前计时状态
-  - `IDLE`：空闲状态
-  - `RUNNING`：运行中
-  - `PAUSED`：已暂停
+### 核心流程
 
-### startCountdown
+1. **初始化**: 设置初始秒数，状态为 IDLE
+2. **启动**: 记录启动时间，启动 setInterval 定时器
+3. **计时**: 每秒计算时间差，更新剩余时间
+4. **暂停/恢复**: 清除/重启定时器，保留剩余毫秒数
+5. **结束**: 清除定时器，重置状态为 IDLE
 
-- 类型：`() => void`
-- 描述：启动倒计时
+### 关键技术点
 
-### pauseCountdown
+#### 1. 使用 ref 避免闭包问题
 
-- 类型：`() => void`
-- 描述：暂停倒计时
+```ts
+const statusRef = useRef<COUNT_DOWN_STATUS>(COUNT_DOWN_STATUS.IDLE)
+const remainingMsRef = useRef<number>(initialSeconds * 1000)
+```
 
-### resumeCountdown
+状态和剩余时间使用 ref 存储，确保在定时器回调中能获取到最新值。
 
-- 类型：`() => void`
-- 描述：恢复倒计时
+#### 2. 基于时间差的精确计时
 
-### restartCountdown
+```ts
+const now = Date.now()
+const elapsed = now - lastTickTimeRef.current
+lastTickTimeRef.current = now
 
-- 类型：`() => void`
-- 描述：重新开始倒计时
+remainingMsRef.current = Math.max(0, remainingMsRef.current - elapsed)
+```
 
-### endCountdown
+不依赖定时器的固定间隔，而是计算实际经过的时间，避免定时器累积误差。
 
-- 类型：`() => void`
-- 描述：结束倒计时
+#### 3. 毫秒级存储，秒级显示
 
-## 特点
+```ts
+remainingMsRef.current = initialSeconds * 1000  // 内部用毫秒
+const newSeconds = Math.ceil(remainingMsRef.current / 1000)  // 显示用秒
+```
 
-- 支持暂停和恢复
-- 使用 ref 避免闭包问题
-- 组件卸载时自动清除定时器
-- 精确计时，基于时间差计算
+内部使用毫秒存储剩余时间，支持暂停后精确恢复；对外显示使用秒，符合用户预期。
+
+#### 4. 状态机控制
+
+```ts
+// 启动时检查状态
+if (statusRef.current === COUNT_DOWN_STATUS.RUNNING) return
+if (statusRef.current === COUNT_DOWN_STATUS.IDLE) {
+  // 重置剩余时间
+}
+// PAUSED 状态直接启动
+```
+
+通过状态机控制各操作的执行条件，避免重复启动或无效操作。

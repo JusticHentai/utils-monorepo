@@ -1,0 +1,58 @@
+import everyDemo from './everyDemo?raw'
+import someDemo from './someDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# every
+
+检测所有元素是否都满足谓词函数，同时提供 `some` 检测是否有任意元素满足。
+
+## 详细介绍
+
+`every` 遍历集合，当所有元素的谓词函数都返回 true 时返回 true。`some` 只要有一个元素满足即返回 true。支持数组和对象集合，以及多种谓词简写形式。
+
+## every - 全部满足
+
+<CodeOrSourceMdx language="typescript">
+  {everyDemo}
+</CodeOrSourceMdx>
+
+## some - 任一满足
+
+<CodeOrSourceMdx language="typescript">
+  {someDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要检测的集合</td>
+    </tr>
+    <tr>
+      <td>predicate</td>
+      <td><code>(value: T) =&gt; boolean</code></td>
+      <td>谓词函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+
+## 具体实现原理
+
+1. **文件职责**: `every/index.ts` 导出 every（default）和 some（named）
+2. **核心流程**: 遍历集合元素，every 遇到 false 立即返回 false，some 遇到 true 立即返回 true
+3. **关键技术点**: 短路求值优化性能
+4. **数据流向**: 集合元素 → 逐个调用谓词 → 短路判断 → 返回布尔值

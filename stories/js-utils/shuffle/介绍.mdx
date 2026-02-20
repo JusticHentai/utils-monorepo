@@ -1,0 +1,54 @@
+import shuffleDemo from './shuffleDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# shuffle
+
+打乱数组顺序。
+
+## 详细介绍
+
+`shuffle` 使用 Fisher-Yates 洗牌算法创建一个打乱顺序的新数组。
+
+**常用场景**：
+- 随机排序
+- 洗牌算法
+- 随机展示列表
+
+## 数组洗牌
+
+使用 `shuffle` 创建随机排序的新数组。
+
+<CodeOrSourceMdx language="typescript">
+  {shuffleDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>T[]</code></td>
+      <td>要打乱的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：打乱顺序的新数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现 Fisher-Yates 洗牌
+2. **核心流程**: 复制数组 → 从后往前遍历 → 随机交换元素位置
+3. **关键技术点**: Fisher-Yates 算法保证均匀随机分布，不修改原数组
+4. **数据流向**: 原数组 → 复制 → 随机交换 → 返回新数组

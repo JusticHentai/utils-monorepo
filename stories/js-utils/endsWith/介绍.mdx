@@ -1,0 +1,64 @@
+import endsWithDemo from './endsWithDemo?raw'
+import startsWithDemo from './startsWithDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# endsWith
+
+检查字符串是否以指定字符串结尾，同时提供 `startsWith` 检查开头。
+
+## 详细介绍
+
+`endsWith` 检查字符串是否以给定目标字符串结尾，可选指定检查的位置。`startsWith` 检查是否以给定目标字符串开头。两者均支持指定位置参数。
+
+## endsWith - 检查结尾
+
+<CodeOrSourceMdx language="typescript">
+  {endsWithDemo}
+</CodeOrSourceMdx>
+
+## startsWith - 检查开头
+
+<CodeOrSourceMdx language="typescript">
+  {startsWithDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要检查的字符串</td>
+    </tr>
+    <tr>
+      <td>target</td>
+      <td><code>string</code></td>
+      <td>目标字符串</td>
+    </tr>
+    <tr>
+      <td>position</td>
+      <td><code>number</code></td>
+      <td>检查的位置（可选）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：是否匹配
+
+## 具体实现原理
+
+1. **文件职责**: `endsWith/index.ts` 导出 endsWith（default）和 startsWith（named）
+2. **核心流程**: 根据 position 截取字符串的相应部分，检查是否与 target 匹配
+3. **关键技术点**: `String.prototype.slice` 截取、`String.prototype.indexOf` 比较
+4. **数据流向**: string + position → 截取目标区域 → 与 target 比较 → 返回布尔值

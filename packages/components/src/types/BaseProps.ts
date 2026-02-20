@@ -1,14 +1,13 @@
-import { DetailedHTMLProps, HTMLAttributes, ReactNode } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 
 /**
  * 基础类型
+ * 组件 props 的基础约束，只保留通用属性
  */
-type BaseProps = Omit<
-  DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>,
-  'className' | 'ref'
-> & {
+type BaseProps = {
   children?: ReactNode // 子元素
-  className?: string | string[] // 类名
+  className?: string | string[] // 类名（支持数组）
+  style?: CSSProperties // 样式
   ignoreGlobalComponentProps?: boolean // 是否忽略全局 props
 }
 

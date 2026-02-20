@@ -6,13 +6,13 @@ const uniquePathsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('不同路径')(res)
+          action('normal')(res)
         }}
       >
-        不同路径测试
+        normal
       </div>
     </div>
   )

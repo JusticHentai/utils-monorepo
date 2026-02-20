@@ -1,0 +1,64 @@
+import splitDemo from './splitDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# split
+
+按分隔符拆分字符串。
+
+## 详细介绍
+
+`split` 按分隔符拆分字符串，是 `String.prototype.split` 的函数式封装。
+
+**常用场景**：
+- CSV 数据解析
+- URL 参数解析
+- 文本行分割
+
+## 字符串拆分
+
+使用 `split` 按分隔符拆分字符串。
+
+<CodeOrSourceMdx language="typescript">
+  {splitDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要拆分的字符串</td>
+    </tr>
+    <tr>
+      <td>separator</td>
+      <td><code>string | RegExp</code></td>
+      <td>分隔符</td>
+    </tr>
+    <tr>
+      <td>limit</td>
+      <td><code>number</code></td>
+      <td>可选，最大分割数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string[]`
+- 描述：拆分后的字符串数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 封装字符串 split
+2. **核心流程**: 调用 String.prototype.split
+3. **关键技术点**: 支持字符串和正则分隔符，limit 限制返回数量
+4. **数据流向**: 字符串 + 分隔符 → split → 返回字符串数组

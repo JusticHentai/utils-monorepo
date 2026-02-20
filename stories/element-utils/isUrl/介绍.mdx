@@ -1,0 +1,62 @@
+import basicDemo from './basicDemo?raw'
+import stringDemo from './stringDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isUrl
+
+判断传入的值是否是 `URL` 实例。
+
+## 详细介绍
+
+`isUrl` 是一个类型守卫函数，使用 `instanceof URL` 判断目标是否为浏览器原生 `URL` 对象实例。
+
+`URL` 是 Web API 提供的接口，用于解析、构造和编码 URL。在 Fetch API 中，请求的 `input` 参数可以是 `string`、`URL` 或 `Request` 对象，因此需要通过类型判断来正确提取 URL 字符串。
+
+常用于请求监控、路由处理等需要区分 URL 类型的场景。
+
+## 检测 URL 实例
+
+传入通过 `new URL()` 构造的对象，返回 `true`，同时 TypeScript 会将类型收窄为 `URL`。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 检测非 URL 类型
+
+传入字符串、数字、null、普通对象等非 `URL` 实例的值，均返回 `false`。
+
+<CodeOrSourceMdx language="typescript">
+  {stringDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>obj</td>
+      <td><code>unknown</code></td>
+      <td>待判断的值</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否为 URL 实例，同时作为 <code>obj is URL</code> 类型守卫</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**: `isUrl/index.ts` 为唯一源码文件，提供类型守卫函数
+2. **核心流程**: 使用 `instanceof URL` 检查对象是否为 `URL` 构造函数的实例
+3. **关键技术点**: TypeScript 类型谓词 `obj is URL`，在返回 `true` 时自动收窄类型
+4. **数据流向**: 传入任意值 → `instanceof` 判断 → 返回布尔值并收窄类型

@@ -1,0 +1,226 @@
+import basicDemo from './basicDemo?raw'
+import autoUnitDemo from './autoUnitDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# formatBytes
+
+将字节数格式化为可读字符串，支持自动单位选择和指定单位输出。
+
+## 详细介绍
+
+`formatBytes` 是一个用于格式化字节数的工具函数，常用于展示文件大小、内存使用量等场景。
+
+**核心功能：**
+- 自动选择最合适的单位（B、KB、MB、GB、TB、PB）
+- 支持指定输出单位
+- 可配置小数位数
+- 返回结构化结果，包含数值、单位和格式化字符串
+
+**应用场景：**
+- 文件大小展示
+- 内存使用量监控
+- 网络流量统计
+- 存储空间展示
+
+## 基础用法
+
+基础的字节格式化，支持指定小数位数和输出单位。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 自动单位选择
+
+工具会自动选择最合适的单位，避免显示过大或过小的数值。
+
+<CodeOrSourceMdx language="typescript">
+  {autoUnitDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>bytes</td>
+      <td><code>number</code></td>
+      <td>需要格式化的字节数</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>FormatBytesOptions</code></td>
+      <td>配置选项（可选）</td>
+    </tr>
+  </tbody>
+</table>
+
+## FormatBytesOptions 配置
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>decimals</td>
+      <td><code>number</code></td>
+      <td>2</td>
+      <td>小数位数</td>
+    </tr>
+    <tr>
+      <td>unit</td>
+      <td><code>ByteUnit</code></td>
+      <td>-</td>
+      <td>指定输出单位，不传则自动选择</td>
+    </tr>
+  </tbody>
+</table>
+
+## FormatBytesResult 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>number</code></td>
+      <td>格式化后的数值</td>
+    </tr>
+    <tr>
+      <td>unit</td>
+      <td><code>ByteUnit</code></td>
+      <td>单位（B、KB、MB、GB、TB、PB）</td>
+    </tr>
+    <tr>
+      <td>formatted</td>
+      <td><code>string</code></td>
+      <td>格式化后的字符串（如 "1.50 MB"）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 枚举定义
+
+```typescript
+enum ByteUnit {
+  B = 'B',
+  KB = 'KB',
+  MB = 'MB',
+  GB = 'GB',
+  TB = 'TB',
+  PB = 'PB',
+}
+```
+
+## 具体实现原理
+
+**文件职责：**
+- `index.ts`: 主函数，实现字节格式化逻辑
+- `interface.ts`: ByteUnit 枚举和配置类型定义
+
+**核心流程：**
+1. 处理边界情况（0 和负数）
+2. 如果指定了单位，直接使用指定单位计算
+3. 否则使用**对数计算**直接定位合适的单位
+4. 返回结构化结果，包含数值、单位和格式化字符串
+
+### 对数计算 vs 循环遍历
+
+<table>
+  <thead>
+    <tr>
+      <th>实现方式</th>
+      <th>时间复杂度</th>
+      <th>代码示例</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>循环遍历</td>
+      <td>O(n)</td>
+      <td><code>while (value &gt;= 1024) &#123; value /= 1024; i++ &#125;</code></td>
+      <td>逐级除以 1024，最多遍历 6 次</td>
+    </tr>
+    <tr>
+      <td><strong>对数计算</strong></td>
+      <td><strong>O(1)</strong></td>
+      <td><code>Math.floor(Math.log(bytes) / LOG_1024)</code></td>
+      <td>一步计算，无需遍历</td>
+    </tr>
+  </tbody>
+</table>
+
+**对数计算核心公式：**
+
+```typescript
+// 预计算常量，避免重复运算
+const LOG_1024 = Math.log(1024)
+
+// 使用对数换底公式直接计算单位索引
+const unitIndex = Math.floor(Math.log(bytes) / LOG_1024)
+```
+
+**计算示例：**
+
+以 `1048576` 字节（1MB）为例：
+
+```
+unitIndex = floor(log(1048576) / log(1024))
+         = floor(13.86... / 6.93...)
+         = floor(2)
+         = 2
+```
+
+索引 2 对应 `UNITS[2]` = `MB`，直接定位到正确单位。
+
+**为什么预计算 `LOG_1024`：**
+
+`Math.log(1024)` 是固定值（约 6.931），每次调用函数都重新计算是浪费。将其预计算为常量，运行时直接使用，节省一次对数运算。
+
+<table>
+  <thead>
+    <tr>
+      <th>方式</th>
+      <th>代码</th>
+      <th>每次调用运算次数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>未预处理</td>
+      <td><code>Math.log(bytes) / Math.log(1024)</code></td>
+      <td>2 次对数运算</td>
+    </tr>
+    <tr>
+      <td><strong>预处理</strong></td>
+      <td><code>Math.log(bytes) / LOG_1024</code></td>
+      <td><strong>1 次对数运算</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+**关键技术点：**
+- 使用 1024 作为单位换算基数（二进制标准）
+- 使用对数计算 O(1) 直接定位单位，参考 [filesize.js](https://github.com/avoidwork/filesize.js)、[pretty-bytes](https://github.com/sindresorhus/pretty-bytes) 等流行库的实现
+- 通过 `toFixed()` 控制小数位数
+- 使用枚举确保单位值的类型安全

@@ -1,4 +1,4 @@
-import sortList from '@jqxon/learn-utils/leetcode/sortList'
+import sortList from '../../../../packages/learn-utils/src/leetcode/sortList'
 
 export default () => {
   // 创建链表: 4 -> 2 -> 1 -> 3

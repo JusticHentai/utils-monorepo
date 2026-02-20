@@ -4,18 +4,23 @@ export enum RESIZE_TYPE {
   BOTH,
 }
 
-export interface Options {
+export interface ResizeOptions {
   preset?: {
     width?: number
     height?: number
   }
   type?: RESIZE_TYPE
-  cb?: (ctx: Options & { ratio: number }) => any
+  cb?: (ctx: ResizeOptions & { ratio: number }) => any
   debounce?: number
   /**
    * body 是否设置全屏高度
    */
   fullScreen?: boolean
+  /**
+   * 最大缩放比例, 默认 1 (大屏不放大)
+   * 设置为 Infinity 则不限制放大
+   */
+  maxRatio?: number
 }
 
 export const defaultOptions = {
@@ -24,4 +29,5 @@ export const defaultOptions = {
     height: 1080,
   },
   type: RESIZE_TYPE.BOTH,
+  maxRatio: 1,
 }

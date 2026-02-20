@@ -1,0 +1,54 @@
+import basicDemo from './basicDemo?raw'
+import arrayDemo from './arrayDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# castArray
+
+如果 value 不是数组，则将其转换为数组。
+
+## 详细介绍
+
+`castArray` 确保值总是以数组形式存在。如果传入的值已经是数组，直接返回原数组；否则将值包装在数组中。常用于函数参数标准化，确保内部逻辑可以统一按数组处理。
+
+## 非数组转数组
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 数组保持不变
+
+<CodeOrSourceMdx language="typescript">
+  {arrayDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T | T[]</code></td>
+      <td>要转换的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：转换后的数组
+
+## 具体实现原理
+
+1. **文件职责**: `castArray/index.ts` 导出 `castArray` 函数
+2. **核心流程**: 检查值是否为数组，是则直接返回，否则包装为单元素数组
+3. **关键技术点**: `Array.isArray` 类型判断
+4. **数据流向**: 输入值 → isArray 判断 → 返回原数组或 [value]

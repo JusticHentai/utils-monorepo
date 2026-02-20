@@ -1,4 +1,4 @@
-import maximalSquare from '@jqxon/learn-utils/leetcode/maximalSquare'
+import maximalSquare from '../../../../packages/learn-utils/src/leetcode/maximalSquare'
 
 export default () => {
   const matrix = [

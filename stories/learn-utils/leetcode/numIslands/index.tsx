@@ -6,13 +6,13 @@ const numIslandsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('岛屿数量')(res)
+          action('normal')(res)
         }}
       >
-        岛屿数量测试
+        normal
       </div>
     </div>
   )

@@ -1,0 +1,35 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# functions
+
+返回对象自身的函数属性名数组。
+
+## 详细介绍
+
+`functions` 返回对象自身可枚举属性中类型为函数的键名。`functionsIn` 包含继承的属性。
+
+## functions / functionsIn - 获取函数属性名
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>object</td><td><code>Record&lt;string, unknown&gt;</code></td><td>要检查的对象</td></tr>
+  </tbody>
+</table>
+
+### 返回值
+- 类型：`string[]`
+- 描述：函数属性名数组
+
+## 具体实现原理
+1. **文件职责**: `functions/index.ts` 导出 functions（default）和 functionsIn（named）
+2. **核心流程**: 遍历对象属性，筛选 typeof 为 function 的键
+3. **关键技术点**: Object.keys 获取自身属性，for...in 获取继承属性
+4. **数据流向**: object → 遍历键 → typeof 检查 → 返回函数名数组

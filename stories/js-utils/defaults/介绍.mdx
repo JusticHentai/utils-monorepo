@@ -1,0 +1,59 @@
+import defaultsDemo from './defaultsDemo?raw'
+import defaultsDeepDemo from './defaultsDeepDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# defaults
+
+分配来源属性到目标对象，不覆盖已有属性。
+
+## 详细介绍
+
+`defaults` 将源对象的属性分配到目标对象，但不会覆盖目标对象上已存在的属性。`defaultsDeep` 是递归版本，会深层合并。常用于为配置对象提供默认值。
+
+## defaults - 浅层默认值
+
+<CodeOrSourceMdx language="typescript">
+  {defaultsDemo}
+</CodeOrSourceMdx>
+
+## defaultsDeep - 深层默认值
+
+<CodeOrSourceMdx language="typescript">
+  {defaultsDeepDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>T</code></td>
+      <td>目标对象</td>
+    </tr>
+    <tr>
+      <td>sources</td>
+      <td><code>Partial&lt;T&gt;[]</code></td>
+      <td>来源对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：修改后的目标对象
+
+## 具体实现原理
+
+1. **文件职责**: `defaults/index.ts` 导出 defaults（default）和 defaultsDeep（named）
+2. **核心流程**: 遍历源对象属性，仅当目标属性值为 undefined 时才赋值
+3. **关键技术点**: 属性存在性检查，递归合并（deep版本）
+4. **数据流向**: 源对象属性 → 检查目标是否已有 → 无则赋值 → 返回目标对象

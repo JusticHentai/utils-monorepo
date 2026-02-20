@@ -1,0 +1,59 @@
+import roundDemo from './roundDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# round
+
+数值舍入函数集。
+
+## 详细介绍
+
+提供 `ceil`（向上舍入）、`floor`（向下舍入）、`round`（四舍五入）函数，均支持精度参数。
+
+**常用场景**：
+- 价格计算（保留小数位）
+- 数据展示格式化
+- 数学运算精度控制
+
+## 数值舍入
+
+使用 `ceil`、`floor`、`round` 进行不同方式的数值舍入。
+
+<CodeOrSourceMdx language="typescript">
+  {roundDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>number</td>
+      <td><code>number</code></td>
+      <td>要舍入的数值</td>
+    </tr>
+    <tr>
+      <td>precision</td>
+      <td><code>number</code></td>
+      <td>精度位数，默认 0，负数表示小数点前</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：舍入后的数值
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 ceil、floor、round 三个函数
+2. **核心流程**: 根据精度参数计算倍数 → 乘以倍数 → 执行舍入 → 除以倍数
+3. **关键技术点**: 精度处理（10 的幂次方），支持负精度
+4. **数据流向**: 数值 + 精度 → 放大 → 舍入 → 缩小 → 返回结果

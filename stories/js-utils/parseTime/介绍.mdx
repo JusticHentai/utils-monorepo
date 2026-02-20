@@ -1,0 +1,68 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# parseTime
+
+parseTime 是一个用于解析时间戳的函数，将时间戳解析为年、月、日、时、分、秒各个时间组成部分。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### time
+
+- 类型：`number`
+- 描述：时间戳（毫秒级）
+
+## 返回值 ParseTimeResult
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>time</code></td>
+      <td><code>number</code></td>
+      <td>原始时间戳</td>
+    </tr>
+    <tr>
+      <td><code>year</code></td>
+      <td><code>number</code></td>
+      <td>年</td>
+    </tr>
+    <tr>
+      <td><code>month</code></td>
+      <td><code>number</code></td>
+      <td>月（1-12）</td>
+    </tr>
+    <tr>
+      <td><code>day</code></td>
+      <td><code>number</code></td>
+      <td>日（1-31）</td>
+    </tr>
+    <tr>
+      <td><code>hour</code></td>
+      <td><code>number</code></td>
+      <td>小时（0-23）</td>
+    </tr>
+    <tr>
+      <td><code>minutes</code></td>
+      <td><code>number</code></td>
+      <td>分钟（0-59）</td>
+    </tr>
+    <tr>
+      <td><code>second</code></td>
+      <td><code>number</code></td>
+      <td>秒（0-59）</td>
+    </tr>
+  </tbody>
+</table>

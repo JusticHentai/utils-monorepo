@@ -1,0 +1,85 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onClickOutside
+
+监听元素外部的点击事件。
+
+## 详细介绍
+
+`onClickOutside` 用于检测用户是否点击了指定元素的外部区域。这是实现下拉菜单、模态框等组件自动关闭功能的常用工具。
+
+常用场景：
+- 下拉菜单点击外部关闭
+- 模态框/弹窗点击外部关闭
+- 自定义 Select 组件
+- Popover/Tooltip 组件
+
+## 使用示例
+
+```typescript
+import onClickOutside from '@justichentai/element-utils/onClickOutside'
+
+const dropdown = document.querySelector('.dropdown')
+
+const stop = onClickOutside(dropdown, (event) => {
+  console.log('点击了下拉框外部')
+  // 关闭下拉框
+})
+
+// 停止监听
+stop()
+```
+
+## 忽略特定元素
+
+```typescript
+const stop = onClickOutside(
+  modal,
+  () => closeModal(),
+  { ignore: ['.modal-trigger', toggleButton] }
+)
+```
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>Element | Element[] | null</code></td>
+      <td>目标元素或元素数组</td>
+    </tr>
+    <tr>
+      <td>callback</td>
+      <td><code>(event: MouseEvent) =&gt; void</code></td>
+      <td>点击外部时的回调</td>
+    </tr>
+    <tr>
+      <td>options.ignore</td>
+      <td><code>(string | Element)[]</code></td>
+      <td>忽略的元素（支持选择器字符串）</td>
+    </tr>
+    <tr>
+      <td>options.capture</td>
+      <td><code>boolean</code></td>
+      <td>是否在捕获阶段触发，默认 true</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回清理函数 `() => void`。
+
+## 具体实现原理
+
+1. **使用 composedPath**: 获取事件传播路径，准确判断点击位置
+2. **支持 ignore 选项**: 通过选择器或元素引用忽略特定元素
+3. **默认使用捕获阶段**: 确保在冒泡前处理事件

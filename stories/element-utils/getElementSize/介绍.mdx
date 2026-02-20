@@ -1,0 +1,182 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# getElementSize
+
+获取 DOM 元素的当前尺寸（宽度和高度）。通过 `getBoundingClientRect` API 获取元素的实际渲染尺寸。
+
+## 什么是 getBoundingClientRect？
+
+`getBoundingClientRect` 是浏览器原生 API，返回元素的大小及其相对于视口的位置：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       视口 (Viewport)                        │
+│                                                             │
+│    ┌─────────────────────────────────────┐                  │
+│    │           Element                   │                  │
+│    │   ┌───────────────────────────┐     │                  │
+│    │   │      Content Box          │     │  ← height        │
+│    │   │                           │     │                  │
+│    │   └───────────────────────────┘     │                  │
+│    │           ← width →                 │                  │
+│    └─────────────────────────────────────┘                  │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础用法
+
+获取指定元素的宽高信息，元素为 null 时返回 `{ width: 0, height: 0 }`。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>element</td>
+      <td><code>Element | null</code></td>
+      <td>目标 DOM 元素，可以为 null</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>{"{ width: number; height: number }"}</code></td>
+      <td>元素尺寸信息</td>
+    </tr>
+  </tbody>
+</table>
+
+## 使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>响应式布局</td>
+      <td>获取容器尺寸进行布局计算</td>
+    </tr>
+    <tr>
+      <td>动画计算</td>
+      <td>基于元素尺寸计算动画参数</td>
+    </tr>
+    <tr>
+      <td>Canvas 适配</td>
+      <td>根据容器尺寸设置 Canvas 大小</td>
+    </tr>
+    <tr>
+      <td>碰撞检测</td>
+      <td>获取元素尺寸进行碰撞判断</td>
+    </tr>
+    <tr>
+      <td>虚拟列表</td>
+      <td>计算可视区域可容纳的项数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 典型示例
+
+```typescript
+import getElementSize from '@justichentai/element-utils/getElementSize'
+
+// 获取元素尺寸
+const element = document.querySelector('.container')
+const { width, height } = getElementSize(element)
+
+// 根据尺寸调整 Canvas
+const canvas = document.querySelector('canvas')
+if (canvas && element) {
+  const { width, height } = getElementSize(element)
+  canvas.width = width
+  canvas.height = height
+}
+
+// 安全处理可能为 null 的元素
+const maybeNull = document.querySelector('.maybe-not-exist')
+const size = getElementSize(maybeNull)
+// size 始终有值: { width: 0, height: 0 } 或实际尺寸
+```
+
+## 与 ResizeObserver 配合使用
+
+```typescript
+import getElementSize from '@justichentai/element-utils/getElementSize'
+import { onElementResize } from '@justichentai/element-utils/observer'
+
+const element = document.querySelector('.resizable')
+
+// 获取初始尺寸
+let currentSize = getElementSize(element)
+console.log('初始尺寸:', currentSize)
+
+// 监听尺寸变化
+onElementResize(element, ({ width, height }) => {
+  currentSize = { width, height }
+  console.log('尺寸变化:', currentSize)
+})
+```
+
+## 检测原理
+
+```typescript
+const getElementSize = (
+  element: Element | null
+): { width: number; height: number } => {
+  if (!element) return { width: 0, height: 0 }
+
+  const rect = element.getBoundingClientRect()
+  return {
+    width: rect.width,
+    height: rect.height,
+  }
+}
+```
+
+- 使用 `getBoundingClientRect` 获取元素的边界矩形
+- 返回值包含元素的实际渲染尺寸（包括边框和内边距）
+- 当元素为 null 时安全返回 `{ width: 0, height: 0 }`
+
+## 注意事项
+
+<table>
+  <thead>
+    <tr>
+      <th>注意点</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>触发回流</td>
+      <td><code>getBoundingClientRect</code> 会触发浏览器回流，频繁调用可能影响性能</td>
+    </tr>
+    <tr>
+      <td>包含边框</td>
+      <td>返回的尺寸包含元素的 border 和 padding</td>
+    </tr>
+    <tr>
+      <td>小数精度</td>
+      <td>返回值可能是小数，如需整数请自行处理</td>
+    </tr>
+    <tr>
+      <td>隐藏元素</td>
+      <td><code>display: none</code> 的元素返回 0</td>
+    </tr>
+  </tbody>
+</table>

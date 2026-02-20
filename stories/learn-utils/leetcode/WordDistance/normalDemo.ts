@@ -1,4 +1,4 @@
-import { WordDistance } from '@jqxon/learn-utils/leetcode/WordDistance'
+import { WordDistance } from '../../../../packages/learn-utils/src/leetcode/WordDistance'
 
 export default () => {
   const wordsDict = ['practice', 'makes', 'perfect', 'coding', 'makes']

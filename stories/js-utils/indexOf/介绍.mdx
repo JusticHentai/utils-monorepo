@@ -1,0 +1,57 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# indexOf
+
+返回首次找到值的索引。同时提供 lastIndexOf。
+
+## 详细介绍
+
+`indexOf` 在数组中查找值的第一个索引。`lastIndexOf` 从右开始查找。找不到返回 -1。
+
+## 查找索引
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>要搜索的值</td>
+    </tr>
+    <tr>
+      <td>fromIndex</td>
+      <td><code>number</code></td>
+      <td>起始位置</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：索引（-1为未找到）
+
+## 具体实现原理
+
+1. **文件职责**: `indexOf/index.ts` 导出 indexOf（default）和 lastIndexOf（named）
+2. **核心流程**: 遍历数组，SameValueZero 比较找到第一个/最后一个匹配
+3. **关键技术点**: 正向/逆向遍历、fromIndex 支持负数
+4. **数据流向**: 数组 → 遍历比较 → 返回匹配索引

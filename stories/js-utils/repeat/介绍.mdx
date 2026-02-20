@@ -1,0 +1,59 @@
+import repeatDemo from './repeatDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# repeat
+
+重复字符串 n 次。
+
+## 详细介绍
+
+`repeat` 将字符串重复指定次数。
+
+**常用场景**：
+- 生成重复模式
+- 字符串填充
+- 分隔线生成
+
+## 字符串重复
+
+使用 `repeat` 将字符串重复指定次数。
+
+<CodeOrSourceMdx language="typescript">
+  {repeatDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要重复的字符串</td>
+    </tr>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>重复次数，默认 1</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：重复后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现字符串重复
+2. **核心流程**: 将字符串重复 n 次拼接
+3. **关键技术点**: 处理边界情况（0次、负数、非整数）
+4. **数据流向**: 字符串 + 次数 → 重复拼接 → 返回结果

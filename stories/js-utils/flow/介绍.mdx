@@ -1,0 +1,54 @@
+import flowDemo from './flowDemo?raw'
+import flowRightDemo from './flowRightDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flow
+
+依次调用函数数组，前者返回值作为后者参数。同时提供 `flowRight`（从右到左）和 `compose` 别名。
+
+## 详细介绍
+
+`flow` 创建一个函数管道（pipe），将多个函数从左到右组合。调用时，第一个函数接收所有参数，后续函数接收前一个函数的返回值。`flowRight` 从右到左组合（等同于数学中的函数组合）。
+
+## flow - 从左到右组合
+
+<CodeOrSourceMdx language="typescript">
+  {flowDemo}
+</CodeOrSourceMdx>
+
+## flowRight - 从右到左组合
+
+<CodeOrSourceMdx language="typescript">
+  {flowRightDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>funcs</td>
+      <td><code>Function[]</code></td>
+      <td>要组合的函数数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => T`
+- 描述：组合后的函数
+
+## 具体实现原理
+
+1. **文件职责**: `flow/index.ts` 导出 flow（default）、flowRight、compose
+2. **核心流程**: 使用 reduce 链式调用函数数组，每次将前一个返回值作为下一个的参数
+3. **关键技术点**: `Array.prototype.reduce` 实现管道
+4. **数据流向**: 初始参数 → func1 → result1 → func2 → result2 → ... → 最终结果

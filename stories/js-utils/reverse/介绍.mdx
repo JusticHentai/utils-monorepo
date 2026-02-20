@@ -1,0 +1,54 @@
+import reverseDemo from './reverseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# reverse
+
+反转数组（原地修改）。
+
+## 详细介绍
+
+`reverse` 反转数组元素顺序，直接修改并返回原数组。
+
+**常用场景**：
+- 数组倒序显示
+- 栈操作
+- 时间线倒序
+
+## 数组反转
+
+使用 `reverse` 原地反转数组。
+
+<CodeOrSourceMdx language="typescript">
+  {reverseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要反转的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：反转后的原数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 封装数组反转
+2. **核心流程**: 调用 Array.prototype.reverse 原地修改
+3. **关键技术点**: 原地修改，返回同一数组引用
+4. **数据流向**: 数组 → 反转操作 → 返回同一引用

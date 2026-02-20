@@ -1,0 +1,45 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# kebabCase
+
+转换字符串为短横线命名格式（kebab-case）。
+
+## 详细介绍
+
+`kebabCase` 函数将字符串转换为短横线分隔的小写格式。
+
+**常用场景**：
+- CSS 类名生成
+- URL slug 生成
+- HTML 属性名转换
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要转换的字符串</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：短横线格式的字符串

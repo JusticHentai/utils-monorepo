@@ -1,52 +1,74 @@
-import normalDemo from './normalDemo?raw'
-import minDemo from './minDemo?raw'
-import maxDemo from './maxDemo?raw'
-import borderDemo from './borderDemo?raw'
+import basicDemo from './basicDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # clamp
 
-clamp 是一个用于将数值限制在最小值和最大值之间的函数。
+将数值限制在指定范围内。
 
-## 正常示例
+## 详细介绍
+
+`clamp` 将数值约束在 `[min, max]` 区间内。值在范围内时原样返回，超出范围时返回对应边界值。支持只限制最小值或只限制最大值。当 `min > max` 时会自动交换。
+
+**常用场景**：
+- 滑块/进度条范围限制
+- 游戏中角色坐标/血量约束
+- 动画进度值 0-1 限制
+- 表单数字输入范围校验
+
+## 基础范围限制
+
+范围内的值不变，超出范围的值被限制到边界。
 
 <CodeOrSourceMdx language="typescript">
-  {normalDemo}
+  {basicDemo}
 </CodeOrSourceMdx>
 
-## 最小值示例
+## 边界情况
+
+只限制单侧、小数处理、min > max 自动交换。
 
 <CodeOrSourceMdx language="typescript">
-  {minDemo}
-</CodeOrSourceMdx>
-
-## 最大值示例
-
-<CodeOrSourceMdx language="typescript">
-  {maxDemo}
-</CodeOrSourceMdx>
-
-## 边界场景示例
-
-<CodeOrSourceMdx language="typescript">
-  {borderDemo}
+  {edgeCaseDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
-### value
-
-- 类型：`number`
-- 描述：要限制的数值
-
-### min
-- 类型：`number`
-- 描述：最小值
-
-### max
-- 类型：`number`
-- 描述：最大值
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>number</code></td>
+      <td>要限制的数值</td>
+    </tr>
+    <tr>
+      <td>min</td>
+      <td><code>number</code></td>
+      <td>最小值边界（可选）</td>
+    </tr>
+    <tr>
+      <td>max</td>
+      <td><code>number</code></td>
+      <td>最大值边界（可选）</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
+
 - 类型：`number`
-- 描述：限制在最小值和最大值之间的数值
+- 描述：限制在范围内的数值
+
+## 具体实现原理
+
+1. **文件职责**: `clamp/index.ts` 导出 clamp 函数
+2. **核心流程**: 判断 min/max 是否同时存在 → 同时存在时自动处理 min > max → 使用 Math.min/Math.max 限制
+3. **关键技术点**: `Math.min`、`Math.max` 组合实现区间限制
+4. **数据流向**: 输入 {value, min, max} → 计算有效边界 → 返回限制后的值

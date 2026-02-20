@@ -1,0 +1,154 @@
+import startDemo from './startDemo?raw'
+import stopDemo from './stopDemo?raw'
+import triggerJankDemo from './triggerJankDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onJank
+
+检测页面卡顿的工具函数，当帧间隔超过阈值时触发回调。
+
+## 详细介绍
+
+`onJank` 是一个基于 `requestAnimationFrame` 的卡顿检测工具。它通过持续监测帧间隔时间来判断页面是否发生卡顿。
+
+**核心知识点：**
+- **requestAnimationFrame**：浏览器在下次重绘之前调用的回调函数，通常每秒 60 次（约 16.67ms 一帧）
+- **卡顿定义**：当两帧之间的间隔超过设定阈值（默认 100ms）时，认为发生了卡顿
+- **performance.now()**：返回高精度时间戳，用于精确测量时间间隔
+
+**使用场景：**
+- 性能监控：实时监测页面卡顿情况
+- 问题定位：帮助开发者发现性能瓶颈
+- 用户体验优化：根据卡顿数据调整页面复杂度
+
+## 开始监听卡顿
+
+调用 `onJank` 传入回调函数，当检测到卡顿时会触发回调，返回停止监听的函数。
+
+<CodeOrSourceMdx language="typescript">
+  {startDemo}
+</CodeOrSourceMdx>
+
+## 停止监听
+
+调用返回的停止函数可以清理 `requestAnimationFrame`，停止卡顿检测。
+
+<CodeOrSourceMdx language="typescript">
+  {stopDemo}
+</CodeOrSourceMdx>
+
+## 模拟卡顿
+
+通过同步阻塞主线程来模拟卡顿，用于测试卡顿检测功能。
+
+<CodeOrSourceMdx language="typescript">
+  {triggerJankDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 入参
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>JankCallback</code></td>
+      <td>卡顿回调函数，接收 JankInfo 对象</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>OnJankOptions</code></td>
+      <td>可选配置项</td>
+    </tr>
+  </tbody>
+</table>
+
+### OnJankOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>threshold</td>
+      <td><code>number</code></td>
+      <td>100</td>
+      <td>卡顿阈值（毫秒），帧间隔超过此值触发回调</td>
+    </tr>
+  </tbody>
+</table>
+
+### JankInfo（回调参数）
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>duration</td>
+      <td><code>number</code></td>
+      <td>卡顿持续时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>timestamp</td>
+      <td><code>number</code></td>
+      <td>卡顿发生时的时间戳</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>StopListening</code></td>
+      <td>停止监听函数，调用后会取消 requestAnimationFrame</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件职责：**
+- `index.ts`：主入口，导出 `onJank` 函数
+- `interface.ts`：类型定义，包含 JankInfo、JankCallback、OnJankOptions 等
+
+**核心流程：**
+1. 初始化时记录当前时间戳 `lastFrameTime`
+2. 启动 `requestAnimationFrame` 循环
+3. 每一帧计算与上一帧的时间差 `frameDuration`
+4. 如果 `frameDuration` 超过阈值，触发回调并传递卡顿信息
+5. 更新 `lastFrameTime` 为当前时间
+6. 返回停止函数，调用时取消 `requestAnimationFrame`
+
+**关键技术点：**
+- 使用 `performance.now()` 获取高精度时间戳
+- 通过 `requestAnimationFrame` 实现持续监测
+- 闭包保存状态（lastFrameTime、rafId）
+- 返回清理函数实现资源释放

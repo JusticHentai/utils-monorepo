@@ -28,6 +28,14 @@ const tsConfig = tsEslint.config({
       { allowConstantExport: true },
     ],
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+      },
+    ],
   },
 })
 

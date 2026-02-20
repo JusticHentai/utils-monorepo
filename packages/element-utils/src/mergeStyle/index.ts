@@ -1,8 +1,8 @@
 import { isObject } from '@justichentai/js-utils'
 import { CSSProperties } from 'react'
-import { Args } from './interface'
+import { MergeStyleArg } from './interface'
 
-const mergeStyles = (...args: Args[]): CSSProperties => {
+const mergeStyles = (...args: MergeStyleArg[]): CSSProperties => {
   const res: CSSProperties = {}
 
   for (const arg of args) {

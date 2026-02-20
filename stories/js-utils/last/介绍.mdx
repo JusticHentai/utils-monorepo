@@ -1,0 +1,45 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# last
+
+获取数组的最后一个元素。
+
+## 详细介绍
+
+`last` 函数用于获取数组的最后一个元素。
+
+**常用场景**：
+- 获取列表的最后一项
+- 取出栈顶元素（不移除）
+- 获取最新的数据项
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要查询的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | undefined`
+- 描述：数组的最后一个元素，空数组返回 undefined

@@ -1,4 +1,4 @@
-import isDAG from '@jqxon/learn-utils/leetcode/isDAG'
+import isDAG from '../../../../packages/learn-utils/src/leetcode/isDAG'
 
 export default () => {
   // 有向无环图

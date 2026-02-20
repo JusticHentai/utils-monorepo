@@ -1,0 +1,63 @@
+import invertDemo from './invertDemo?raw'
+import invertByDemo from './invertByDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# invert
+
+创建一个键值反转的对象。
+
+## 详细介绍
+
+`invert` 函数将对象的键和值互换，生成一个新对象。`invertBy` 类似但结果值为数组，支持自定义迭代器。
+
+**常用场景**：
+- 构建反向查找映射
+- 枚举值与名称的双向映射
+- 数据结构转换
+
+## 基础键值反转
+
+使用 `invert` 将对象的键和值互换。如果有重复值，后面的键会覆盖前面的。
+
+<CodeOrSourceMdx language="typescript">
+  {invertDemo}
+</CodeOrSourceMdx>
+
+## invertBy 分组反转
+
+使用 `invertBy` 将具有相同值的键分组到数组中，并支持自定义迭代器。
+
+<CodeOrSourceMdx language="typescript">
+  {invertByDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要反转的对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`Record<string, string>` / `Record<string, string[]>`
+- 描述：键值反转后的新对象
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 invert 和 invertBy 两个函数
+2. **核心流程**: 遍历对象属性，将值作为新键、原键作为新值
+3. **关键技术点**: Object.keys 遍历，invertBy 使用数组收集同值的键
+4. **数据流向**: 输入对象 → 遍历键值对 → 构建反转映射 → 返回新对象

@@ -1,19 +1,18 @@
 /**
- * 将 sourceUrl 的查询参数加到 targetUrl 中
- * @param sourceUrl 源 URL
+ * 将 sourceUrl 的查询参数合并到 targetUrl 中
+ * @param sourceUrl 源 URL（提取其查询参数）
  * @param targetUrl 目标 URL
- * @returns 添加查询参数后的 targetUrl
+ * @returns 合并查询参数后的 targetUrl
  */
 const mergeQueryParams = (sourceUrl: string, targetUrl: string): string => {
-  const currentParams = new URLSearchParams(sourceUrl)
+  const sourceUrlObj = new URL(sourceUrl)
+  const targetUrlObj = new URL(targetUrl)
 
-  const url = new URL(targetUrl)
-
-  currentParams.forEach((value, key) => {
-    url.searchParams.set(key, value)
+  sourceUrlObj.searchParams.forEach((value, key) => {
+    targetUrlObj.searchParams.set(key, value)
   })
 
-  return url.toString()
+  return targetUrlObj.toString()
 }
 
 export default mergeQueryParams

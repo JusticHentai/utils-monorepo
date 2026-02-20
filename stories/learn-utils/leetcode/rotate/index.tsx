@@ -6,13 +6,13 @@ const rotateDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('旋转图像')(res)
+          action('normal')(res)
         }}
       >
-        旋转图像 90°
+        normal
       </div>
     </div>
   )

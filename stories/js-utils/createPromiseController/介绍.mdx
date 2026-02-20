@@ -1,0 +1,118 @@
+import basicDemo from './basicDemo?raw'
+import imageLoadDemo from './imageLoadDemo?raw'
+import eventWaitDemo from './eventWaitDemo?raw'
+import rejectDemo from './rejectDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# createPromiseController
+
+创建可手动控制的 Promise，将 resolve/reject 暴露出来。
+
+## 详细介绍
+
+createPromiseController 是一个 Promise 控制器工厂函数，核心作用是：**创建一个 Promise，同时暴露其 resolve 和 reject 函数，允许外部手动控制 Promise 的状态**。
+
+**涉及的知识点**：
+- Promise 构造器：executor 中的 resolve/reject
+- 闭包：将内部函数暴露到外部
+- Deferred 模式：jQuery 时代的经典异步模式
+
+**类似实现**：
+- Promise.withResolvers()：ES2024 新增的原生方法
+- jQuery.Deferred()：jQuery 的延迟对象
+
+**常用场景**：
+- 资源加载控制：等待外部资源加载完成
+- 事件等待：等待某个事件触发后继续执行
+- 流程控制：手动控制异步流程的执行时机
+- 状态同步：在复杂异步场景中同步不同组件的状态
+
+**优势**：
+- 将 Promise 的控制权从内部转移到外部
+- TypeScript 泛型支持，类型安全
+- API 简洁，易于理解和使用
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 图片加载示例
+
+<CodeOrSourceMdx language="typescript">
+  {imageLoadDemo}
+</CodeOrSourceMdx>
+
+## 事件等待示例
+
+<CodeOrSourceMdx language="typescript">
+  {eventWaitDemo}
+</CodeOrSourceMdx>
+
+## Promise 拒绝示例
+
+<CodeOrSourceMdx language="typescript">
+  {rejectDemo}
+</CodeOrSourceMdx>
+
+## API 参数
+
+### 泛型参数
+
+#### T
+- 类型：`any`
+- 默认值：`void`
+- 描述：Promise 解决值的类型
+
+### 返回值
+
+返回一个 `PromiseController<T>` 对象，包含以下属性：
+
+#### resolve
+- 类型：`(value: T | PromiseLike<T>) => void`
+- 描述：完成通知函数，调用后会解决 Promise
+
+#### reject
+- 类型：`(reason?: any) => void`
+- 描述：拒绝通知函数，调用后会拒绝 Promise
+
+#### promise
+- 类型：`Promise<T>`
+- 描述：受控的 Promise，可以通过 resolve/reject 手动控制其状态
+
+## 类型定义
+
+```typescript
+interface PromiseController<T = void> {
+  resolve: (value: T | PromiseLike<T>) => void
+  reject: (reason?: any) => void
+  promise: Promise<T>
+}
+```
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 createPromiseController 函数和类型定义
+
+### 核心流程
+
+1. 创建空的 resolve/reject 引用
+2. 创建 Promise，将 executor 中的 resolve/reject 赋值给外部引用
+3. 返回包含 promise、resolve、reject 的对象
+
+### 关键技术点
+
+- 利用闭包捕获 Promise 构造器内的 resolve/reject
+- 泛型 `<T>` 支持指定 resolve 值的类型
+- 实现类似于：
+```typescript
+let resolve, reject
+const promise = new Promise((res, rej) => {
+  resolve = res
+  reject = rej
+})
+return { promise, resolve, reject }
+```

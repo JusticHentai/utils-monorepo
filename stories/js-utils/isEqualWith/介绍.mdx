@@ -1,0 +1,64 @@
+import isEqualWithDemo from './isEqualWithDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isEqualWith
+
+使用自定义比较器深度比较两个值是否相等。
+
+## 详细介绍
+
+`isEqualWith` 类似于 `isEqual`，但允许传入自定义比较函数来定制比较逻辑。
+
+**常用场景**：
+- 忽略某些属性的对象比较
+- 自定义类型的相等性判断
+- 精度比较（如浮点数近似相等）
+
+## 自定义比较器
+
+使用 `isEqualWith` 传入自定义比较函数，实现特殊的相等性判断逻辑。
+
+<CodeOrSourceMdx language="typescript">
+  {isEqualWithDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要比较的第一个值</td>
+    </tr>
+    <tr>
+      <td>other</td>
+      <td><code>unknown</code></td>
+      <td>要比较的第二个值</td>
+    </tr>
+    <tr>
+      <td>customizer</td>
+      <td><code>(objValue, othValue, key?, object?, other?) => boolean | undefined</code></td>
+      <td>自定义比较函数，返回 undefined 时使用默认比较</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`boolean`
+- 描述：两个值是否相等
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现带自定义比较器的深度相等比较
+2. **核心流程**: 先调用自定义比较器 → 返回 undefined 时递归使用默认比较
+3. **关键技术点**: 递归比较数组和对象，自定义比较器的回退机制
+4. **数据流向**: 两个值 + 比较器 → 自定义比较 → 默认深度比较 → 返回布尔值

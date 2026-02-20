@@ -1,0 +1,53 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# compact
+
+创建一个新数组，移除所有假值元素。
+
+## 详细介绍
+
+`compact` 函数用于过滤数组中的假值（falsy values）。
+
+**假值包括**：
+- `false`
+- `null`
+- `0`
+- `""`（空字符串）
+- `undefined`
+- `NaN`
+
+**常用场景**：
+- 清理数组中的无效数据
+- 过滤空值
+- 数据预处理
+
+## 基础示例
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要处理的数组</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：移除假值后的新数组

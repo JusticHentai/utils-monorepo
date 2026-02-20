@@ -1,0 +1,64 @@
+import zhCNDemo from './zhCNDemo?raw'
+import enUSDemo from './enUSDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# formatDateByLocale
+
+formatDateByLocale 是一个用于将时间戳格式化为指定地区和时区的日期时间字符串的函数。
+
+## 中文格式 + 上海时区示例
+
+<CodeOrSourceMdx language="typescript">
+  {zhCNDemo}
+</CodeOrSourceMdx>
+
+## 英文格式 + 纽约时区示例
+
+<CodeOrSourceMdx language="typescript">
+  {enUSDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### options
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>必填</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ts</code></td>
+      <td><code>number</code></td>
+      <td>是</td>
+      <td>时间戳（毫秒）</td>
+    </tr>
+    <tr>
+      <td><code>locale</code></td>
+      <td><code>Intl.LocalesArgument</code></td>
+      <td>否</td>
+      <td>地区标识符，影响日期格式显示方式，默认 'zh-CN'</td>
+    </tr>
+    <tr>
+      <td><code>timeZone</code></td>
+      <td><code>string</code></td>
+      <td>否</td>
+      <td>时区标识符，影响时间转换，如 'Asia/Shanghai'、'America/New_York'</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：格式化后的日期时间字符串，如 "2024.01.01 12:00:00"
+
+## locale 与 timeZone 的区别
+
+- **locale**：影响日期的**显示格式**（如日期顺序、分隔符）
+- **timeZone**：影响时间的**实际值**（转换到指定时区的时间）

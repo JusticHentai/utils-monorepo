@@ -1,0 +1,222 @@
+import basicDemo from './basicDemo?raw'
+import scrollDemo from './scrollDemo?raw'
+import dynamicHeightDemo from './dynamicHeightDemo?raw'
+import scrollToIndexDemo from './scrollToIndexDemo?raw'
+import resetDemo from './resetDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# createVirtualList
+
+创建虚拟列表实例，用于高效计算大数据量列表在滚动时的可见项范围，支持动态高度。
+
+## 详细介绍
+
+虚拟列表（Virtual List）是一种前端性能优化技术，核心思想是**只渲染当前视口内可见的列表项**，而不是一次性渲染全部数据。当列表数据量达到上千甚至上万条时，全量渲染会导致大量 DOM 节点堆积，引发严重的性能问题（卡顿、内存暴涨）。
+
+`createVirtualList` 提供了一个纯计算层的虚拟列表引擎，它不依赖任何 UI 框架，只负责根据滚动位置（scrollTop）计算出当前应该渲染哪些项、每项的偏移量和高度，以及整个列表的总高度。使用者拿到计算结果后自行渲染 DOM，从而实现框架无关的虚拟滚动。
+
+主要特性：
+- **动态高度支持**：每项高度可以不同，通过 `updateItemHeight` 动态更新实际高度
+- **二分查找定位**：使用二分查找算法快速定位起始索引，时间复杂度 O(log n)
+- **缓冲区机制**：通过 `overScan` 参数在可见区域上下额外渲染缓冲项，防止快速滚动时出现空白
+- **滚动到指定位置**：支持通过索引计算 scrollTop，实现跳转到指定项
+
+## 基础用法
+
+创建虚拟列表实例，传入数据、容器高度和预估项高度，调用 `calculateVisibleItems` 获取当前可见项：
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 滚动计算
+
+模拟不同滚动位置下的可见项变化，展示 `calculateVisibleItems` 如何根据 scrollTop 返回不同的可见区间：
+
+<CodeOrSourceMdx language="typescript">
+  {scrollDemo}
+</CodeOrSourceMdx>
+
+## 动态高度
+
+演示 `updateItemHeight` 更新实际测量高度后，总高度和可见项范围的变化。在实际场景中，列表项渲染后通过 DOM 测量获取真实高度，再反馈给虚拟列表引擎：
+
+<CodeOrSourceMdx language="typescript">
+  {dynamicHeightDemo}
+</CodeOrSourceMdx>
+
+## 滚动到指定索引
+
+使用 `getScrollTopForIndex` 计算跳转到指定项所需的 scrollTop 值，常用于"回到顶部"或"跳转到第 N 项"功能：
+
+<CodeOrSourceMdx language="typescript">
+  {scrollToIndexDemo}
+</CodeOrSourceMdx>
+
+## 重置测量数据
+
+使用 `reset` 方法清除所有已缓存的高度测量数据，使所有项恢复为预估高度。常用于列表数据源发生变化后需要重新计算的场景：
+
+<CodeOrSourceMdx language="typescript">
+  {resetDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### VirtualListOptions（配置项）
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>必填</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>items</td>
+      <td><code>T[]</code></td>
+      <td>是</td>
+      <td>列表数据数组</td>
+    </tr>
+    <tr>
+      <td>containerHeight</td>
+      <td><code>number</code></td>
+      <td>是</td>
+      <td>容器可视区域高度（px）</td>
+    </tr>
+    <tr>
+      <td>estimatedItemHeight</td>
+      <td><code>number</code></td>
+      <td>是</td>
+      <td>预估的每项高度（px），用于未测量项的初始计算</td>
+    </tr>
+    <tr>
+      <td>overScan</td>
+      <td><code>number</code></td>
+      <td>否</td>
+      <td>缓冲区项数，默认 3。在可见区域上下额外渲染的项数，防止快速滚动时出现空白</td>
+    </tr>
+  </tbody>
+</table>
+
+### VirtualListInstance（返回实例方法）
+
+<table>
+  <thead>
+    <tr>
+      <th>方法名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>calculateVisibleItems</td>
+      <td><code>(scrollTop: number) =&gt; VirtualListResult&lt;T&gt;</code></td>
+      <td>根据滚动位置计算当前可见项列表、总高度、起止索引</td>
+    </tr>
+    <tr>
+      <td>updateItemHeight</td>
+      <td><code>(index: number, height: number) =&gt; void</code></td>
+      <td>更新指定项的实际测量高度</td>
+    </tr>
+    <tr>
+      <td>getTotalHeight</td>
+      <td><code>() =&gt; number</code></td>
+      <td>获取列表总高度（已测量项用实际值，未测量项用预估值）</td>
+    </tr>
+    <tr>
+      <td>getScrollTopForIndex</td>
+      <td><code>(index: number) =&gt; number</code></td>
+      <td>获取滚动到指定索引所需的 scrollTop 值</td>
+    </tr>
+    <tr>
+      <td>reset</td>
+      <td><code>() =&gt; void</code></td>
+      <td>重置所有高度测量数据，恢复为预估值</td>
+    </tr>
+  </tbody>
+</table>
+
+### VirtualListResult（计算结果）
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>visibleItems</td>
+      <td><code>VirtualItem&lt;T&gt;[]</code></td>
+      <td>当前可见项数组，每项包含 data、index、offset、height</td>
+    </tr>
+    <tr>
+      <td>totalHeight</td>
+      <td><code>number</code></td>
+      <td>列表总高度</td>
+    </tr>
+    <tr>
+      <td>startIndex</td>
+      <td><code>number</code></td>
+      <td>可见区域起始索引（含缓冲区）</td>
+    </tr>
+    <tr>
+      <td>endIndex</td>
+      <td><code>number</code></td>
+      <td>可见区域结束索引（含缓冲区）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 文件职责
+
+| 文件 | 职责 |
+|------|------|
+| `index.ts` | **入口文件**。负责参数校验、创建 `measurements` 高度缓存 Map，将各 core 模块组装为 `VirtualListInstance` 实例返回 |
+| `interface.ts` | **类型定义**。定义所有 TypeScript 接口：配置项、测量信息、计算结果、虚拟项、实例方法 |
+| `core/getItemHeight.ts` | **获取项高度**。从 measurements 缓存中查找已测量的实际高度，未命中则返回预估高度 `estimatedItemHeight` |
+| `core/getItemOffset.ts` | **计算项偏移量**。从第 0 项开始累加每项高度，得到目标项的顶部偏移位置（top offset） |
+| `core/getTotalHeight.ts` | **计算总高度**。遍历所有项并累加高度，用于设置滚动容器的内容区总高度 |
+| `core/findStartIndex.ts` | **二分查找起始索引**。使用二分查找算法，根据 scrollTop 快速定位第一个在视口内的列表项索引，时间复杂度 O(log n) |
+| `core/calculateVisibleItems.ts` | **核心计算模块**。组合调用 findStartIndex、getItemOffset、getItemHeight、getTotalHeight，计算出完整的可见项列表及元信息 |
+| `core/updateItemHeight.ts` | **更新项高度**。将 DOM 实际测量的高度写入 measurements 缓存，包含索引、高度、偏移量 |
+| `core/getScrollTopForIndex.ts` | **索引定位**。计算跳转到指定索引时需要的 scrollTop 值，本质是调用 getItemOffset |
+
+### 核心流程
+
+1. **初始化**：`createVirtualList` 接收配置，创建一个 `Map<number, ItemMeasurement>` 作为高度缓存，闭包共享给所有方法
+2. **计算可见项**：`calculateVisibleItems(scrollTop)` 先用二分查找定位起始索引，再向下累加高度直到超出视口，前后各扩展 overScan 个缓冲项
+3. **动态高度更新**：渲染后通过 `updateItemHeight` 将实际 DOM 高度写入缓存，下次计算时自动使用实际值
+4. **重新计算**：数据源变化时调用 `reset` 清空缓存，所有项恢复为预估高度
+
+### 关键技术点
+
+- **二分查找**：`findStartIndex` 对有序的偏移量序列进行二分搜索，避免从头遍历，在大数据量下性能优势明显
+- **预估高度 + 实际高度混合策略**：未测量的项使用预估值，已测量的项使用实际值，兼顾初始渲染速度和后续精确度
+- **缓冲区（overScan）**：在可见区域上下各多渲染若干项，平滑快速滚动时的视觉体验
+
+### 数据流向
+
+```
+用户滚动 → scrollTop
+  → calculateVisibleItems(scrollTop)
+    → findStartIndex(scrollTop)          // 二分查找定位起始项
+      → getItemOffset(mid) + getItemHeight(mid)  // 逐项计算偏移和高度
+    → 向下累加高度 → 确定 endIndex       // 确定可见区域终点
+    → 构建 visibleItems[]                // 组装每项的 data/index/offset/height
+    → getTotalHeight()                   // 计算内容区总高
+  → 返回 { visibleItems, totalHeight, startIndex, endIndex }
+
+DOM 渲染后 → 测量实际高度
+  → updateItemHeight(index, height)     // 写入 measurements 缓存
+  → 下次滚动时 getItemHeight 返回实际值  // 自动使用缓存的真实高度
+```

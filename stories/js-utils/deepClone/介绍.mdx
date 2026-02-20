@@ -1,11 +1,55 @@
 import normalDemo from './normalDemo?raw'
 import circularDemo from './circularDemo?raw'
 import dateDemo from './dateDemo?raw'
+import regExpDemo from './regExpDemo?raw'
+import arrayDemo from './arrayDemo?raw'
+import symbolDemo from './symbolDemo?raw'
+import mapDemo from './mapDemo?raw'
+import setDemo from './setDemo?raw'
+import arrayBufferDemo from './arrayBufferDemo?raw'
+import typedArrayDemo from './typedArrayDemo?raw'
+import dataViewDemo from './dataViewDemo?raw'
+import errorDemo from './errorDemo?raw'
+import mixedDemo from './mixedDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # deepClone
 
-deepClone 是一个用于深拷贝对象的函数，支持处理循环引用、Date、RegExp 等特殊类型。
+深拷贝函数，支持多种数据类型和循环引用。
+
+## 详细介绍
+
+deepClone 是一个功能完善的深拷贝函数，核心作用是：**创建一个与原对象完全独立的副本，修改副本不会影响原对象**。
+
+**涉及的知识点**：
+- 递归遍历：处理嵌套对象结构
+- WeakMap：存储已拷贝对象，处理循环引用
+- 类型判断：识别不同数据类型采用不同拷贝策略
+
+**与 JSON.parse(JSON.stringify()) 的区别**：
+- JSON 方式不支持：函数、undefined、Symbol、循环引用、Date、RegExp、Map、Set 等
+- 本函数支持上述所有类型
+
+**常用场景**：
+- 状态管理：创建不可变数据副本
+- 撤销/重做：保存历史状态快照
+- 表单重置：恢复初始数据
+- 数据隔离：避免意外修改原数据
+
+**优势**：
+- 支持几乎所有 JavaScript 数据类型
+- 正确处理循环引用，不会无限递归
+- 使用 WeakMap 避免内存泄漏
+
+## 支持的类型
+
+- 普通对象、数组
+- Date、RegExp
+- Symbol 键
+- Map、Set
+- ArrayBuffer、TypedArray（Uint8Array、Int32Array 等）、DataView
+- Error（TypeError、RangeError 等）
+- 循环引用
 
 ## 普通对象示例
 
@@ -25,6 +69,66 @@ deepClone 是一个用于深拷贝对象的函数，支持处理循环引用、D
   {dateDemo}
 </CodeOrSourceMdx>
 
+## RegExp 对象示例
+
+<CodeOrSourceMdx language="typescript">
+  {regExpDemo}
+</CodeOrSourceMdx>
+
+## 数组示例
+
+<CodeOrSourceMdx language="typescript">
+  {arrayDemo}
+</CodeOrSourceMdx>
+
+## Symbol 键示例
+
+<CodeOrSourceMdx language="typescript">
+  {symbolDemo}
+</CodeOrSourceMdx>
+
+## Map 示例
+
+<CodeOrSourceMdx language="typescript">
+  {mapDemo}
+</CodeOrSourceMdx>
+
+## Set 示例
+
+<CodeOrSourceMdx language="typescript">
+  {setDemo}
+</CodeOrSourceMdx>
+
+## ArrayBuffer 示例
+
+<CodeOrSourceMdx language="typescript">
+  {arrayBufferDemo}
+</CodeOrSourceMdx>
+
+## TypedArray 示例
+
+<CodeOrSourceMdx language="typescript">
+  {typedArrayDemo}
+</CodeOrSourceMdx>
+
+## DataView 示例
+
+<CodeOrSourceMdx language="typescript">
+  {dataViewDemo}
+</CodeOrSourceMdx>
+
+## Error 示例
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 混合类型示例
+
+<CodeOrSourceMdx language="typescript">
+  {mixedDemo}
+</CodeOrSourceMdx>
+
 ## 参数介绍
 
 ### obj
@@ -37,7 +141,73 @@ deepClone 是一个用于深拷贝对象的函数，支持处理循环引用、D
 - 类型：`WeakMap<any, any>`
 - 描述：用于处理循环引用的内部参数，默认值为 `new WeakMap()`
 
+#### 为什么使用 WeakMap 而非 Map？
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>WeakMap</th>
+      <th>Map</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>键类型</td>
+      <td>只能是对象</td>
+      <td>任意类型</td>
+    </tr>
+    <tr>
+      <td>键引用</td>
+      <td>弱引用，不阻止垃圾回收</td>
+      <td>强引用，阻止垃圾回收</td>
+    </tr>
+    <tr>
+      <td>可遍历</td>
+      <td>否（无 size、keys、values）</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td>内存管理</td>
+      <td>键对象无其他引用时自动回收</td>
+      <td>需手动 delete 或 clear</td>
+    </tr>
+  </tbody>
+</table>
+
+深拷贝场景选择 WeakMap 的原因：
+1. 深拷贝的键一定是对象（需要处理循环引用的都是对象）
+2. 深拷贝完成后，hash 中存储的原对象映射不再需要，WeakMap 允许这些对象被垃圾回收，避免内存泄漏
+3. 深拷贝只需要 get/set/has 操作，不需要遍历
+
 ### 返回值
 
 - 类型：`any`
 - 描述：深拷贝后的对象
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 deepClone 函数实现和类型处理逻辑
+
+### 核心流程
+
+1. 检查 hash 中是否已存在该对象（处理循环引用）
+2. 判断值的类型（使用 `Object.prototype.toString.call()`）
+3. 根据类型采用不同拷贝策略：
+   - 原始类型：直接返回
+   - Date/RegExp：使用构造函数创建新实例
+   - Map/Set：创建新实例并递归拷贝元素
+   - ArrayBuffer/TypedArray/DataView：使用 slice 或构造函数
+   - Error：创建同类型 Error 实例
+   - 对象/数组：递归拷贝属性
+4. 拷贝前将原对象和副本存入 hash
+5. 递归处理嵌套结构
+
+### 关键技术点
+
+- WeakMap 存储 `原对象 -> 副本` 映射，检测到已存在则返回副本
+- Symbol 属性使用 `Object.getOwnPropertySymbols()` 获取
+- TypedArray 使用 `new obj.constructor(obj)` 创建
+- ArrayBuffer 使用 `slice(0)` 复制底层数据

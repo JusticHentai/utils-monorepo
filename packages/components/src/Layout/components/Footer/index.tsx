@@ -14,7 +14,7 @@ const Footer = forwardRef<HTMLDivElement, FooterProps>((baseProps, ref) => {
   const { children, ...rest } = useMergeProps<FooterProps>(baseProps, {}, {})
 
   return (
-    <FooterStyle ref={ref} {...rest}>
+    <FooterStyle ref={ref} {...(rest as any)}>
       {children}
     </FooterStyle>
   )

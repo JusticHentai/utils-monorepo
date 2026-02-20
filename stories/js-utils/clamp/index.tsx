@@ -1,55 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import borderDemo from './borderDemo'
-import maxDemo from './maxDemo'
-import minDemo from './minDemo'
-import normalDemo from './normalDemo'
+import basicDemo from './basicDemo'
+import edgeCaseDemo from './edgeCaseDemo'
 
-const clampDemo = () => {
+const ClampDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = maxDemo()
-
-          action('value 110 限制在 0 100 之间')(res)
-        }}
-      >
-        value 110 限制在 0 100 之间
+      <div className="button" onClick={basicDemo}>
+        clamp - 基础范围限制
       </div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = minDemo()
-
-          action('value -10 限制在 0 100 之间')(res)
-        }}
-      >
-        value -10 限制在 0 100 之间
-      </div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = normalDemo()
-
-          action('value 50 限制在 0 100 之间')(res)
-        }}
-      >
-        value 50 限制在 0 100 之间
-      </div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = borderDemo()
-
-          action('value 10 限制在 0 0 之间')(res)
-        }}
-      >
-        value 10 限制在 0 0 之间
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况
       </div>
     </div>
   )
 }
 
-export default clampDemo
+export default ClampDemo

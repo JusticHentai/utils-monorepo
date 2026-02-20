@@ -6,13 +6,13 @@ const findKthLargestDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('数组中的第K个最大元素')(res)
+          action('normal')(res)
         }}
       >
-        第K个最大元素
+        normal
       </div>
     </div>
   )

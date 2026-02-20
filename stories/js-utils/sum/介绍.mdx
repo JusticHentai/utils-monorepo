@@ -1,0 +1,59 @@
+import sumDemo from './sumDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sum
+
+计算数组元素的和。
+
+## 详细介绍
+
+`sum` 计算数组中所有值的和。`sumBy` 支持通过迭代器提取数值后求和。
+
+**常用场景**：
+- 数值汇总
+- 订单金额计算
+- 统计数据求和
+
+## 数组求和
+
+使用 `sum` 和 `sumBy` 计算数组元素的和。
+
+<CodeOrSourceMdx language="typescript">
+  {sumDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>number[] | T[]</code></td>
+      <td>要求和的数组</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>(value: T) => number</code></td>
+      <td>迭代器函数（sumBy 使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：数组元素的总和
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 sum 和 sumBy
+2. **核心流程**: 遍历数组 → 累加每个元素（sumBy 先通过迭代器转换）
+3. **关键技术点**: reduce 累加，sumBy 先映射再求和
+4. **数据流向**: 数组 → 遍历累加 → 返回总和

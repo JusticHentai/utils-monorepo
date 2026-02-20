@@ -6,13 +6,13 @@ const searchDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('搜索旋转排序数组')(res)
+          action('normal')(res)
         }}
       >
-        搜索旋转排序数组
+        normal
       </div>
     </div>
   )

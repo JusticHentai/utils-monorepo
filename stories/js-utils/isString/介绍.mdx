@@ -1,31 +1,35 @@
 import stringDemo from './stringDemo?raw'
-import notStringDemo from './notStringDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isString
 
-isString 是一个用于判断值是否为字符串的函数。
+判断值是否为字符串。
 
-## 字符串示例
+## 详细介绍
+
+使用 `Object.prototype.toString.call(obj)` 检测值是否为 `[object String]` 类型。
+
+## isString - 类型检测
 
 <CodeOrSourceMdx language="typescript">
   {stringDemo}
 </CodeOrSourceMdx>
 
-## 非字符串示例
-
-<CodeOrSourceMdx language="typescript">
-  {notStringDemo}
-</CodeOrSourceMdx>
-
 ## 参数介绍
 
-### obj
-
-- 类型：`any`
-- 描述：要检测的值
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>obj</td><td><code>any</code></td><td>要检测的值</td></tr>
+  </tbody>
+</table>
 
 ### 返回值
+- 类型：`boolean`
+- 描述：如果是字符串返回 true
 
-- 类型：`obj is string`
-- 描述：如果值是字符串则返回 `true`，否则返回 `false`
+## 具体实现原理
+1. **文件职责**: `isString/index.ts` 导出 isString
+2. **核心流程**: `Object.prototype.toString.call(obj)` 标签检查
+3. **关键技术点**: 匹配 `[object String]` 标签
+4. **数据流向**: value → toString → 比较标签 → 返回布尔值

@@ -1,9 +1,9 @@
-import basicDemo from '../../../packages/element-utils/src/loadFont/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # loadFont
 
-loadFont 是一个用于异步加载字体并添加到 document.fonts 中的函数。
+异步加载字体并添加到 document.fonts 中。
 
 ## 基础示例
 
@@ -29,9 +29,3 @@ loadFont 是一个用于异步加载字体并添加到 document.fonts 中的函�
 - 描述：返回一个元组
   - 第一个元素：加载成功时返回 FontFace 对象，失败时为 undefined
   - 第二个元素：加载失败时返回 Error，成功时为 undefined
-
-## 特点
-
-- 使用 FontFace API 加载字体
-- 自动将字体添加到 document.fonts 中
-- 支持异步加载，便于处理加载状态

@@ -1,12 +1,12 @@
 import { isArray, isObject, isString } from '@justichentai/js-utils'
-import { Arg } from './interface'
+import { MergeClassArg } from './interface'
 
 /**
  * 合并多种类型的 class 名称
- * @param {...Arg} args - 可接受字符串/数组/对象等多种类型参数
+ * @param {...MergeClassArg} args - 可接受字符串/数组/对象等多种类型参数
  * @returns {string} 合并去重后的 class 字符串
  */
-const mergeClass = (...args: Arg[]): string => {
+const mergeClass = (...args: MergeClassArg[]): string => {
   let classNames: string[] = []
 
   for (const arg of args) {
@@ -29,7 +29,9 @@ const mergeClass = (...args: Arg[]): string => {
     // 处理对象类型（键值为真时保留键名）
     if (isObject(arg)) {
       Object.keys(arg).forEach((k) => {
-        arg[k] && classNames.push(k)
+        if (arg[k]) {
+          classNames.push(k)
+        }
       })
     }
   }

@@ -38,7 +38,7 @@ const Col = forwardRef<HTMLDivElement, ColProps>((baseProps, ref) => {
   return (
     <ColStyle
       ref={ref}
-      {...rest}
+      {...(rest as any)}
       $paddingHorizontal={paddingHorizontal}
       $paddingVertical={paddingVertical}
       $span={$span}

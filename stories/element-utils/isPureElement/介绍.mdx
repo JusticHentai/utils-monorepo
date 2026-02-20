@@ -1,14 +1,28 @@
-import basicDemo from '../../../packages/element-utils/src/isPureElement/demo.ts?raw'
+import stringDemo from './stringDemo?raw'
+import numberDemo from './numberDemo?raw'
+import reactElementDemo from './objectDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # isPureElement
 
-isPureElement 是一个用于判断 React 子元素是否是纯元素（string 或 number）的函数。
+判断 React 子元素是否是纯元素（string 或 number）。
 
-## 基础示例
+## 字符串判断
 
 <CodeOrSourceMdx language="typescript">
-  {basicDemo}
+  {stringDemo}
+</CodeOrSourceMdx>
+
+## 数字判断
+
+<CodeOrSourceMdx language="typescript">
+  {numberDemo}
+</CodeOrSourceMdx>
+
+## React 元素判断
+
+<CodeOrSourceMdx language="typescript">
+  {reactElementDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
@@ -20,11 +34,5 @@ isPureElement 是一个用于判断 React 子元素是否是纯元素（string �
 
 ### 返回值
 
-- 类型：`boolean`
-- 描述：如果元素是 string 或 number 类型，返回 true，否则返回 false
-
-## 特点
-
-- 使用 TypeScript 类型守卫
-- 适用于 React 组件中判断子元素类型
-- 常用于合并相邻的纯文本节点
+- 类型：`el is string | number`
+- 描述：如果元素是 string 或 number 类型返回 true，否则返回 false

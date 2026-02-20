@@ -6,13 +6,13 @@ const MinStackDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('最小栈')(res)
+          action('normal')(res)
         }}
       >
-        最小栈测试
+        normal
       </div>
     </div>
   )

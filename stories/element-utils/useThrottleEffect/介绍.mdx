@@ -1,0 +1,106 @@
+import indexTsx from './index.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# useThrottleEffect
+
+为 `useEffect` 增加节流能力的 Hook。
+
+## 详细介绍
+
+`useThrottleEffect` 对 useEffect 进行节流处理，限制 effect 的执行频率。
+
+**涉及的知识点**：
+- useEffect 的依赖监听
+- 节流（throttle）机制
+
+**常用场景**：
+- 监听输入变化并执行副作用，但需要限制执行频率
+- 高频更新时避免过于频繁的副作用执行
+- 需要节流触发的 effect 逻辑
+
+**优势**：
+- 固定频率执行 effect
+- 提供持续反馈
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>effect</td>
+      <td><code>EffectCallback</code></td>
+      <td>-</td>
+      <td>执行函数</td>
+    </tr>
+    <tr>
+      <td>deps</td>
+      <td><code>DependencyList</code></td>
+      <td>-</td>
+      <td>依赖数组</td>
+    </tr>
+    <tr>
+      <td>options.wait</td>
+      <td><code>number</code></td>
+      <td><code>1000</code></td>
+      <td>等待时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td>options.leading</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在延迟开始前执行</td>
+    </tr>
+    <tr>
+      <td>options.trailing</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否在延迟结束后执行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 与 useDebounceEffect 对比
+
+<table>
+  <thead>
+    <tr>
+      <th>Hook</th>
+      <th>行为</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>useThrottleEffect</code></td>
+      <td>固定频率执行</td>
+      <td>需要持续反馈的场景</td>
+    </tr>
+    <tr>
+      <td><code>useDebounceEffect</code></td>
+      <td>停止触发后执行</td>
+      <td>最终值确定后执行的场景</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useThrottleFn 创建节流函数
+2. 在 deps 变化时调用节流函数
+3. 节流函数内部执行实际 effect

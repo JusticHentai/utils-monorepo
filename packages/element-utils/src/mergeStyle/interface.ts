@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
 
-export type Args =
+export type MergeStyleArg =
   | CSSProperties
   | null
   | undefined

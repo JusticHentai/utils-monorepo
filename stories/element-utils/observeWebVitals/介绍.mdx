@@ -1,0 +1,347 @@
+import basicDemo from './basicDemo?raw'
+import lcpDemo from './lcpDemo?raw'
+import inpDemo from './inpDemo?raw'
+import clsDemo from './clsDemo?raw'
+import fcpDemo from './fcpDemo?raw'
+import ttfbDemo from './ttfbDemo?raw'
+import fpDemo from './fpDemo?raw'
+import fidDemo from './fidDemo?raw'
+import cleanupDemo from './cleanupDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# observeWebVitals
+
+一次性监控所有 Web Vitals 核心性能指标，返回包含 rating、delta、id 等完整信息的 Metric 对象。
+
+## 详细介绍
+
+`observeWebVitals` 是一个统一的 Web Vitals 监控工具，内部引用了各个独立的性能监控函数（`onLCP`、`onFID`、`onCLS`、`onFCP`、`onINP`、`onTTFB`、`onFP`），提供一站式的性能指标收集能力。
+
+**Web Vitals 是什么？**
+
+Web Vitals 是 Google 提出的一组衡量网页用户体验的核心指标，用于量化页面加载速度、交互响应性和视觉稳定性。
+
+**支持的指标：**
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>全称</th>
+      <th>含义</th>
+      <th>核心指标</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>LCP</strong></td>
+      <td>Largest Contentful Paint</td>
+      <td>最大内容绘制时间</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>INP</strong></td>
+      <td>Interaction to Next Paint</td>
+      <td>交互到下一帧绘制</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td><strong>CLS</strong></td>
+      <td>Cumulative Layout Shift</td>
+      <td>累积布局偏移</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>FCP</td>
+      <td>First Contentful Paint</td>
+      <td>首次内容绘制</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>TTFB</td>
+      <td>Time to First Byte</td>
+      <td>首字节时间</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>FP</td>
+      <td>First Paint</td>
+      <td>首次绘制</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>FID</td>
+      <td>First Input Delay</td>
+      <td>首次输入延迟（已被 INP 取代）</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+**应用场景：**
+- 前端性能监控系统
+- 用户体验分析
+- 性能优化效果验证
+- Core Web Vitals 达标检测
+
+## 监控所有指标
+
+使用 `observeWebVitals` 一次性监控所有 Web Vitals 指标，返回包含完整信息的 `WebVitalsMetric` 对象。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 只监控 LCP
+
+通过 `observeWebVitals` 监控并过滤出 LCP 指标。LCP 衡量页面主要内容的加载速度，良好的 LCP 应在 2.5 秒内完成。
+
+<CodeOrSourceMdx language="typescript">
+  {lcpDemo}
+</CodeOrSourceMdx>
+
+## 只监控 INP
+
+通过 `observeWebVitals` 监控并过滤出 INP 指标。INP 测量用户交互后页面响应的延迟，良好的 INP 应在 200ms 以内。
+
+<CodeOrSourceMdx language="typescript">
+  {inpDemo}
+</CodeOrSourceMdx>
+
+## 只监控 CLS
+
+通过 `observeWebVitals` 监控并过滤出 CLS 指标。CLS 衡量页面视觉稳定性，良好的 CLS 分数应低于 0.1。
+
+<CodeOrSourceMdx language="typescript">
+  {clsDemo}
+</CodeOrSourceMdx>
+
+## 只监控 FCP
+
+通过 `observeWebVitals` 监控并过滤出 FCP 指标。FCP 衡量首次内容绘制时间，良好的 FCP 应在 1.8 秒内完成。
+
+<CodeOrSourceMdx language="typescript">
+  {fcpDemo}
+</CodeOrSourceMdx>
+
+## 只监控 TTFB
+
+通过 `observeWebVitals` 监控并过滤出 TTFB 指标。TTFB 衡量服务器响应时间，良好的 TTFB 应在 800ms 以内。
+
+<CodeOrSourceMdx language="typescript">
+  {ttfbDemo}
+</CodeOrSourceMdx>
+
+## 只监控 FP
+
+通过 `observeWebVitals` 监控并过滤出 FP 指标。FP 衡量首次绘制时间，良好的 FP 应在 1 秒内完成。
+
+<CodeOrSourceMdx language="typescript">
+  {fpDemo}
+</CodeOrSourceMdx>
+
+## 只监控 FID
+
+通过 `observeWebVitals` 监控并过滤出 FID 指标。FID 衡量首次输入延迟，良好的 FID 应在 100ms 以内。注意：FID 已被 INP 取代。
+
+<CodeOrSourceMdx language="typescript">
+  {fidDemo}
+</CodeOrSourceMdx>
+
+## 停止监控
+
+调用返回的停止函数可以清理所有监听器，释放资源。
+
+<CodeOrSourceMdx language="typescript">
+  {cleanupDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>WebVitalsCallback</code></td>
+      <td>指标回调函数</td>
+    </tr>
+    <tr>
+      <td>options</td>
+      <td><code>ObserveWebVitalsOptions</code></td>
+      <td>配置选项（可选）</td>
+    </tr>
+    <tr>
+      <td>返回值</td>
+      <td><code>() =&gt; void</code></td>
+      <td>停止监控函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## ObserveWebVitalsOptions 配置
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>reportAllChanges</td>
+      <td><code>boolean</code></td>
+      <td>false</td>
+      <td>是否报告所有变化（针对 LCP、CLS、INP）</td>
+    </tr>
+    <tr>
+      <td>durationThreshold</td>
+      <td><code>number</code></td>
+      <td>40</td>
+      <td>INP 持续时间阈值（ms）</td>
+    </tr>
+  </tbody>
+</table>
+
+## WebVitalsMetric 回调参数
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td><code>METRIC_NAME</code></td>
+      <td>指标名称（LCP、INP、CLS 等）</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>number</code></td>
+      <td>指标值</td>
+    </tr>
+    <tr>
+      <td>rating</td>
+      <td><code>METRIC_RATING</code></td>
+      <td>指标评级（good、needs-improvement、poor）</td>
+    </tr>
+    <tr>
+      <td>delta</td>
+      <td><code>number</code></td>
+      <td>与上次值的差值</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td><code>string</code></td>
+      <td>唯一标识符</td>
+    </tr>
+    <tr>
+      <td>navigationType</td>
+      <td><code>NAVIGATION_TYPE</code></td>
+      <td>导航类型（navigate、reload、back-forward 等）</td>
+    </tr>
+    <tr>
+      <td>entries</td>
+      <td><code>PerformanceEntry[]</code></td>
+      <td>相关的所有性能条目</td>
+    </tr>
+  </tbody>
+</table>
+
+## 独立监控函数
+
+每个指标都可以单独导入使用，回调返回完整的 Metric 对象（包含 rating、delta、id 等信息）：
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>监控指标</th>
+      <th>回调参数类型</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>onLCP</code></td>
+      <td>LCP</td>
+      <td><code>LCPMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onINP</code></td>
+      <td>INP</td>
+      <td><code>INPMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onCLS</code></td>
+      <td>CLS</td>
+      <td><code>CLSMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onFCP</code></td>
+      <td>FCP</td>
+      <td><code>FCPMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onTTFB</code></td>
+      <td>TTFB</td>
+      <td><code>TTFBMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onFP</code></td>
+      <td>FP</td>
+      <td><code>FPMetric</code></td>
+    </tr>
+    <tr>
+      <td><code>onFID</code></td>
+      <td>FID</td>
+      <td><code>FIDMetric</code></td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+**文件职责：**
+- `observeWebVitals/index.ts`: 主函数，统一调用各指标监控函数，返回停止函数
+- `observeWebVitals/interface.ts`: WebVitalsMetric 和配置类型定义
+- `onLCP/index.ts`: LCP 监控实现，监听 largest-contentful-paint
+- `onINP/index.ts`: INP 监控实现，使用 P98 算法计算
+- `onCLS/index.ts`: CLS 监控实现，累积计算布局偏移
+- `onFCP/index.ts`: FCP 监控实现，监听 paint 事件
+- `onTTFB/index.ts`: TTFB 监控实现，获取导航时间
+- `onFP/index.ts`: FP 监控实现，监听首次绘制
+- `onFID/index.ts`: FID 监控实现，监听首次输入
+
+**核心流程：**
+1. 检查浏览器是否支持对应的 PerformanceObserver entryType
+2. 为每个支持的指标创建独立的监听器
+3. 创建基础 Metric 对象，包含 id、navigationType 等
+4. 指标触发时计算 value、delta、rating，更新 entries
+5. 调用回调函数返回完整的 WebVitalsMetric
+6. 返回停止函数，调用时批量清理所有监听器
+
+**关键技术点：**
+- 使用 `supportEntryType` 检查浏览器兼容性
+- 使用 `createPerformanceObserver` 工厂函数创建监听器
+- 支持 `buffered: true` 获取历史条目
+- 使用 `getMetricRating` 计算指标评级
+- 使用 `onBFCacheRestore` 处理 BFCache 恢复场景
+- INP 使用第 98 百分位算法计算最终值
+
+**数据流向：**
+```
+supportEntryType 检查 → PerformanceObserver → 独立监控函数(onLCP等) → Metric 对象 → 回调函数
+```

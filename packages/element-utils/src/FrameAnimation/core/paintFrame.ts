@@ -1,6 +1,6 @@
 export interface Options {
   canvas: HTMLCanvasElement
-  frameCanvas: HTMLCanvasElement
+  frameBitmap: ImageBitmap
   width: number
   height: number
 }
@@ -10,14 +10,14 @@ export interface Options {
  * 帧直接填满实例 canvas
  */
 const paintFrame = (options: Options) => {
-  const { canvas, frameCanvas, width, height } = options
+  const { canvas, frameBitmap, width, height } = options
   const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
 
   // 清除画布
   ctx.clearRect(0, 0, width, height)
 
   // 绘制帧
-  ctx.drawImage(frameCanvas, 0, 0, width, height)
+  ctx.drawImage(frameBitmap, 0, 0, width, height)
 }
 
 export default paintFrame

@@ -1,33 +1,18 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import notStringDemo from './notStringDemo'
+import edgeCaseDemo from './edgeCaseDemo'
 import stringDemo from './stringDemo'
 
-const isStringDemo = () => {
+const IsStringDemo = () => {
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          const res = stringDemo()
-
-          action('检测字符串 "hello"')(res)
-        }}
-      >
-        检测字符串 "hello"
+      <div className="button" onClick={stringDemo}>
+        isString - 类型检测
       </div>
-      <div
-        className="storybook-button"
-        onClick={() => {
-          const res = notStringDemo()
-
-          action('检测数字 123')(res)
-        }}
-      >
-        检测数字 123
+      <div className="button" onClick={edgeCaseDemo}>
+        边界情况验证
       </div>
     </div>
   )
 }
 
-export default isStringDemo
+export default IsStringDemo

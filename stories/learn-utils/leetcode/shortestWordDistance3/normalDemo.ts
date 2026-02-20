@@ -1,4 +1,4 @@
-import { shortestWordDistance } from '@jqxon/learn-utils/leetcode/shortestWordDistance3'
+import { shortestWordDistance } from '../../../../packages/learn-utils/src/leetcode/shortestWordDistance3'
 
 export default () => {
   const wordsDict = ['practice', 'makes', 'perfect', 'coding', 'makes']

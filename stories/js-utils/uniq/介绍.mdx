@@ -1,0 +1,74 @@
+import basicDemo from './basicDemo?raw'
+import uniqByDemo from './uniqByDemo?raw'
+import uniqWithDemo from './uniqWithDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# uniq
+
+创建一个去重后的数组副本。
+
+## 详细介绍
+
+`uniq` 系列函数用于数组去重，保留首次出现的元素。
+
+**包含的函数**：
+- `uniq` - SameValueZero 比较去重
+- `uniqBy` - 按迭代函数返回值去重
+- `uniqWith` - 自定义比较器去重
+
+**常用场景**：
+- 数组去重
+- 按属性去重对象数组
+- 自定义去重逻辑
+
+## uniq - 基础去重
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## uniqBy - 按属性去重
+
+<CodeOrSourceMdx language="typescript">
+  {uniqByDemo}
+</CodeOrSourceMdx>
+
+## uniqWith - 自定义比较
+
+<CodeOrSourceMdx language="typescript">
+  {uniqWithDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>T[]</code></td>
+      <td>要去重的数组</td>
+    </tr>
+    <tr>
+      <td>iteratee</td>
+      <td><code>Function | string</code></td>
+      <td>迭代函数或属性名（uniqBy）</td>
+    </tr>
+    <tr>
+      <td>comparator</td>
+      <td><code>Function</code></td>
+      <td>比较函数（uniqWith）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T[]`
+- 描述：去重后的新数组

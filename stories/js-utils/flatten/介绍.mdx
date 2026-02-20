@@ -1,0 +1,69 @@
+import basicDemo from './basicDemo?raw'
+import deepDemo from './deepDemo?raw'
+import depthDemo from './depthDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# flatten
+
+将嵌套数组展开为平坦数组。
+
+## 详细介绍
+
+`flatten` 系列函数用于展开嵌套数组。
+
+**包含的函数**：
+- `flatten` - 展开一层
+- `flattenDeep` - 完全展开所有嵌套
+- `flattenDepth` - 指定展开深度
+
+**常用场景**：
+- 处理嵌套数据结构
+- 合并多层数组
+- 数据扁平化
+
+## flatten - 展开一层
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## flattenDeep - 完全展开
+
+<CodeOrSourceMdx language="typescript">
+  {deepDemo}
+</CodeOrSourceMdx>
+
+## flattenDepth - 指定深度
+
+<CodeOrSourceMdx language="typescript">
+  {depthDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>any[]</code></td>
+      <td>要展开的数组</td>
+    </tr>
+    <tr>
+      <td>depth</td>
+      <td><code>number</code></td>
+      <td>展开深度（flattenDepth）</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`any[]`
+- 描述：展开后的新数组

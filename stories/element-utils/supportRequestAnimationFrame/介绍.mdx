@@ -1,0 +1,279 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportRequestAnimationFrame
+
+检测浏览器是否支持 requestAnimationFrame API。requestAnimationFrame 用于创建流畅的动画效果。
+
+## 什么是 requestAnimationFrame？
+
+requestAnimationFrame 是一个浏览器原生 API，用于在下一次重绘之前执行动画回调：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    动画帧时间线 (60fps)                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  帧1        帧2        帧3        帧4        帧5            │
+│   │          │          │          │          │            │
+│   ▼          ▼          ▼          ▼          ▼            │
+│  ─●──────────●──────────●──────────●──────────●─────→ 时间  │
+│   │          │          │          │          │            │
+│ 16.67ms   16.67ms    16.67ms    16.67ms    16.67ms         │
+│   │          │          │          │          │            │
+│ 回调执行   回调执行   回调执行   回调执行   回调执行          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前浏览器是否支持 requestAnimationFrame API，并演示动画帧执行。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否支持 requestAnimationFrame API</td>
+    </tr>
+  </tbody>
+</table>
+
+## 与 setTimeout 对比
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>setTimeout</th>
+      <th>requestAnimationFrame</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>执行时机</td>
+      <td>固定时间间隔</td>
+      <td>与显示器刷新率同步</td>
+    </tr>
+    <tr>
+      <td>后台标签页</td>
+      <td>继续执行</td>
+      <td>自动暂停，节省资源</td>
+    </tr>
+    <tr>
+      <td>帧率</td>
+      <td>不稳定，可能跳帧</td>
+      <td>稳定 60fps</td>
+    </tr>
+    <tr>
+      <td>精确度</td>
+      <td>受任务队列影响</td>
+      <td>高精度时间戳</td>
+    </tr>
+    <tr>
+      <td>电池消耗</td>
+      <td>持续消耗</td>
+      <td>更省电</td>
+    </tr>
+  </tbody>
+</table>
+
+## 主要使用场景
+
+<table>
+  <thead>
+    <tr>
+      <th>场景</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CSS 动画替代</td>
+      <td>需要 JS 控制的复杂动画</td>
+    </tr>
+    <tr>
+      <td>Canvas 动画</td>
+      <td>游戏、数据可视化</td>
+    </tr>
+    <tr>
+      <td>滚动效果</td>
+      <td>平滑滚动、视差效果</td>
+    </tr>
+    <tr>
+      <td>DOM 动画</td>
+      <td>元素位置、尺寸动画</td>
+    </tr>
+    <tr>
+      <td>性能监控</td>
+      <td>FPS 计算、性能统计</td>
+    </tr>
+  </tbody>
+</table>
+
+## 原生 API 用法
+
+```typescript
+// 基础动画循环
+function animate(timestamp) {
+  // timestamp 是高精度时间戳
+  updateAnimation(timestamp)
+  renderFrame()
+  
+  // 继续下一帧
+  requestAnimationFrame(animate)
+}
+
+// 开始动画
+const animationId = requestAnimationFrame(animate)
+
+// 停止动画
+cancelAnimationFrame(animationId)
+```
+
+## 基于时间的动画示例
+
+```typescript
+import supportRequestAnimationFrame from '@justichentai/element-utils/supportRequestAnimationFrame'
+
+if (supportRequestAnimationFrame()) {
+  const element = document.querySelector('.box')
+  const duration = 1000 // 动画持续 1 秒
+  let startTime = null
+
+  function animate(timestamp) {
+    if (!startTime) startTime = timestamp
+    
+    const elapsed = timestamp - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    
+    // 应用缓动函数
+    const easeProgress = easeOutCubic(progress)
+    
+    // 更新位置 (0 -> 300px)
+    element.style.transform = `translateX(${easeProgress * 300}px)`
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate)
+    }
+  }
+
+  requestAnimationFrame(animate)
+}
+
+// 缓动函数
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3)
+}
+```
+
+## FPS 计算示例
+
+```typescript
+let frameCount = 0
+let lastTime = performance.now()
+let fps = 0
+
+function calculateFPS(timestamp) {
+  frameCount++
+  
+  if (timestamp - lastTime >= 1000) {
+    fps = frameCount
+    frameCount = 0
+    lastTime = timestamp
+    console.log(`FPS: ${fps}`)
+  }
+  
+  requestAnimationFrame(calculateFPS)
+}
+
+requestAnimationFrame(calculateFPS)
+```
+
+## 浏览器兼容性
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>支持版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chrome</td>
+      <td>10+</td>
+    </tr>
+    <tr>
+      <td>Firefox</td>
+      <td>4+</td>
+    </tr>
+    <tr>
+      <td>Safari</td>
+      <td>6+</td>
+    </tr>
+    <tr>
+      <td>Edge</td>
+      <td>12+</td>
+    </tr>
+    <tr>
+      <td>IE</td>
+      <td>10+</td>
+    </tr>
+  </tbody>
+</table>
+
+## 检测原理
+
+```typescript
+import isBrowser from '../isBrowser'
+
+const supportRequestAnimationFrame = (): boolean => {
+  return isBrowser() && 'requestAnimationFrame' in window
+}
+```
+
+通过检测 `window.requestAnimationFrame` 是否存在来判断浏览器支持情况。
+
+## 性能优化技巧
+
+<table>
+  <thead>
+    <tr>
+      <th>技巧</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>避免在回调中创建对象</td>
+      <td>减少 GC 压力</td>
+    </tr>
+    <tr>
+      <td>使用 transform 而非 left/top</td>
+      <td>触发 GPU 加速</td>
+    </tr>
+    <tr>
+      <td>合并多个动画到一个回调</td>
+      <td>减少回调次数</td>
+    </tr>
+    <tr>
+      <td>页面不可见时停止动画</td>
+      <td>使用 visibilitychange 事件</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,683 @@
+import basicDemo from './basicDemo?raw'
+import webVitalsDemo from './webVitalsDemo?raw'
+import paintMetricsDemo from './paintMetricsDemo?raw'
+import errorDemo from './errorDemo?raw'
+import requestDemo from './requestDemo?raw'
+import resourceDemo from './resourceDemo?raw'
+import behaviorDemo from './behaviorDemo?raw'
+import fpsDemo from './fpsDemo?raw'
+import jankDemo from './jankDemo?raw'
+import longTaskDemo from './longTaskDemo?raw'
+import lifecycleDemo from './lifecycleDemo?raw'
+import updateConfigDemo from './updateConfigDemo?raw'
+import shouldSampleDemo from './shouldSampleDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# Surveillance
+
+Surveillance 是一个功能完善的前端性能监控工具，基于现代 Performance API 实现，支持 Web Vitals 核心指标、资源加载、长任务、FPS、卡顿、错误、网络请求、用户行为和页面生命周期监控。
+
+## 详细介绍
+
+`Surveillance` 是一个前端监控聚合类，通过 `new Surveillance(config)` 创建实例，配置各类监控选项后调用 `start()` 启动监控。
+
+**构造阶段**：构造函数通过 `deepMerge({ ...DEFAULT_CONFIG }, userConfig)` 将用户配置与默认配置深度合并，随后依次初始化以下 9 个子监控器实例和 1 个上报器：
+
+- **Reporter** - 数据上报器，根据 `reportUrl`、`reportMethod`、`batchSize`、`reportInterval`、`appId` 等配置创建，内部使用 `createBatch` 实现批量聚合上报，支持 beacon/fetch/xhr/img 四种发送方式，自动在 `beforeunload` 和 `visibilitychange(hidden)` 时 flush 缓冲区
+- **ErrorMonitor** - 传入 `jsError`/`resourceError`/`promiseError`/`errorFilter` 配置；同时将 `requestError` 配置传给 RequestMonitor 的 `onError` 回调
+- **PageLifecycleMonitor** - 无参构造，通过 `observe()` 时按枚举值键名查找用户传入的 handler 或 `DEFAULT_HANDLERS`
+- **JankMonitor** - 传入 `performance.jankThreshold`（默认 100ms）作为卡顿判定阈值
+- **WebVitalsMonitor** - 传入 `reportAllChanges: false`，内部通过 `supportEntryType` 检测浏览器能力后选择性注册 LCP/FID/CLS/FCP/FP/INP/TTFB 7 个观测器
+- **FpsMonitor** - 无参构造，通过 `requestAnimationFrame` 循环每秒计算帧率
+- **LongTaskMonitor** - 无参构造，基于 `PerformanceObserver` 监听 `longtask` 类型条目
+- **ResourceMonitor** - 传入 `performance.resourceFilter` 作为资源过滤函数
+- **BehaviorMonitor** - 传入 `click`/`scroll`/`input`/`routeChange`/`maxBehaviors` 配置
+- **RequestMonitor** - 传入 `onRequest` 回调（直接调用 `reporter.report(REPORT_TYPE.REQUEST, request)`）、`onError` 回调（当 `error.requestError` 启用时）、`ignoreUrls`、`timeoutThreshold`
+
+**启动阶段**：`start()` 依次检查三个前置条件—— `running` 不为 true（防止重复启动）、`config.enabled` 为 true、`shouldSample(sampleRate)` 返回 true。通过后，按模块分组启动：
+1. **性能监控**（`performance.enabled`）：按开关逐一启动 webVitals → resource → longTask → fps → jank → navigation（通过 `onWindowLoaded` 延迟到页面加载完成后上报导航指标）
+2. **错误监控**（`error.enabled`）：调用 `errorMonitor.observe(errorCallback)`，errorCallback 内部执行上报并触发 `hooks.onError` 钩子
+3. **请求监控**（`request.enabled`）：分别调用 `requestMonitor.observeXHR()` 和 `requestMonitor.observeFetch()` 劫持原生 API
+4. **行为监控**（`behavior.enabled`）：调用 `behaviorMonitor.observe(callback)` 注册点击/滚动/输入/路由/可见性监听
+5. **生命周期监控**（`lifecycle.enabled`）：调用 `pageLifecycleMonitor.observe()` 注册 14 种页面事件监听
+
+每个子监控器的 `observe()` 返回一个停止函数，统一收集到 `stoppers` 数组中。
+
+**停止阶段**：`stop()` 遍历并执行 `stoppers` 数组中所有停止函数后清空数组，额外调用 `requestMonitor.stop()` 恢复被劫持的原生 `XMLHttpRequest` 和 `fetch` API。
+
+**上报流程**：各子监控器的回调中调用 `reporter.report(type, data)`，Reporter 为每条数据附加 `appId`、`sessionId`（基于 `sessionStorage` 的会话 ID）、`pageId`（基于 `uniqueId` 的页面唯一标识）、`timestamp` 和 `pageInfo`（URL/标题/referrer 等），然后推入 `createBatch` 缓冲区。当缓冲数量达到 `batchSize` 或等待时间达到 `reportInterval` 时触发批量发送。发送前执行 `beforeReport` 钩子（返回 false 则丢弃），发送后执行 `afterReport` 钩子。
+
+## 基础用法
+
+通过 `new Surveillance(config)` 创建监控实例，调用 `start()` 启动全量监控。构造时 `deepMerge({ ...DEFAULT_CONFIG }, userConfig)` 深度合并配置（默认开启 performance/error/request，关闭 behavior 和 lifecycle）。`start()` 内部执行三重守卫检查：`running` 状态 → `config.enabled` → `shouldSample(sampleRate)` 采样命中判断，全部通过后才启动子监控器。可通过 `updateConfig()` 运行时深度合并新配置并重建 Reporter，通过 `stop()` 遍历所有 stopper 停止监控并恢复被劫持的原生 API。实例上直接暴露所有子监控器引用（如 `longTaskMonitor.getStats()`、`behaviorMonitor.getBehaviors()`），便于按需获取监控数据。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## Web Vitals 监控
+
+`WebVitalsMonitor` 是一个 class，通过 `new WebVitalsMonitor(options)` 构造，`options.reportAllChanges` 控制是否在指标每次变化时都回调（默认仅在最终值确定时回调）。调用 `observe(callback)` 时，内部通过 `supportEntryType()` 逐一检测浏览器是否支持对应的 `PerformanceObserver` entryType，按支持情况注册以下 7 个独立观测器：
+
+- **onLCP** — 监听 `largest-contentful-paint` 类型，在 `visibilitychange(hidden)` 时停止监听以锁定最终值，支持 BFCache 恢复后重新计算
+- **onFID** — 监听 `first-input` 类型，记录首次用户输入的处理延迟
+- **onCLS** — 监听 `layout-shift` 类型，采用会话窗口算法（两次偏移间隔 ≤1s 且窗口总时长 ≤5s）累计布局偏移分数，排除有 `hadRecentInput` 的条目
+- **onFCP** — 监听 `paint` 类型，提取 `first-contentful-paint` 条目
+- **onFP** — 同样监听 `paint` 类型，提取 `first-paint` 条目
+- **onINP** — 监听 `event` 类型（可配置 `durationThreshold`），维护所有交互条目并取第 98 百分位作为 INP 值
+- **onTTFB** — 直接从 `PerformanceNavigationTiming` 中读取 `responseStart` 计算
+
+每个观测器返回停止函数，`WebVitalsMonitor` 统一收集到 `stoppers` 数组，调用 `stop()` 时全部清理。每个指标回调时携带 `{ name, value, rating, delta, id, navigationType, entries }` 完整信息。
+
+<CodeOrSourceMdx language="typescript">
+  {webVitalsDemo}
+</CodeOrSourceMdx>
+
+## 错误监控
+
+`ErrorMonitor` 是一个 class，通过构造参数配置 4 种错误类型的开关（默认 `jsError`/`resourceError`/`promiseError` 开启，`consoleError` 关闭）和 `errorFilter` 过滤函数。调用 `observe(callback)` 时，内部按开关分别注册：
+
+- **observeJSError** — 通过 `window.addEventListener('error', handler)` 冒泡阶段捕获 JS 运行时错误，提取 `message`、`filename`、`lineno`、`colno`、`stack` 信息
+- **observeResourceError** — 通过 `window.addEventListener('error', handler, true)` 捕获阶段监听（因为资源加载失败事件不会冒泡），检查 `event.target` 是否为 HTMLElement 来区分资源错误与 JS 错误
+- **observePromiseError** — 通过 `window.addEventListener('unhandledrejection', handler)` 捕获未处理的 Promise 拒绝
+- **observeConsoleError** — 劫持 `console.error` 方法，捕获开发者手动输出的错误信息
+
+每条错误在传递给用户回调前，先经过 `errorFilter` 过滤（返回 false 则丢弃）。在 Surveillance 中，错误回调 `errorCallback` 会同时执行 `reporter.report(REPORT_TYPE.ERROR, error)` 上报和 `hooks.onError?.(error)` 钩子通知。
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 请求监控
+
+`RequestMonitor` 通过劫持原生 API 实现无侵入式网络请求监控，构造时传入 `onRequest`（请求完成回调）、`onError`（请求错误回调）、`ignoreUrls`（URL 过滤列表）和 `timeoutThreshold`（超时阈值，默认 30000ms）。
+
+- **observeXHR** — 劫持 `XMLHttpRequest.prototype` 的 `open`（记录 method/url）、`send`（记录 startTime 和请求体）、`setRequestHeader`（记录请求头），在 `loadend`/`timeout`/`error` 事件中收集完整请求信息（status/duration/responseSize/success 等）。通过 `ignoreUrls` 匹配跳过自身上报请求，防止监控死循环
+- **observeFetch** — 劫持 `window.fetch`，在请求前记录 startTime，请求完成后通过 `response.clone().blob().size` 获取响应体大小。同样支持 `ignoreUrls` 过滤
+
+内部维护 `requests` 数组存储所有已完成请求，提供 `getStats()` 统计方法（成功/失败数、平均耗时、慢请求数——超过 3000ms 视为慢请求、按状态码分组计数），`getRequests()` 获取完整请求列表，`clear()` 清空记录。`stop()` 恢复被劫持的原生 API 原型方法。在 Surveillance 中，`onRequest` 回调直接执行 `reporter.report(REPORT_TYPE.REQUEST, request)` 上报。
+
+<CodeOrSourceMdx language="typescript">
+  {requestDemo}
+</CodeOrSourceMdx>
+
+## 资源监控
+
+`ResourceMonitor` 基于 `PerformanceObserver` 监控 `resource` 类型条目，构造时可传入 `filter` 函数过滤不需要监控的资源。提供以下 API：
+
+- **observe(callback)** — 创建 `PerformanceObserver` 监听 `resource` 类型条目，每当新资源加载完成时解析 `PerformanceResourceTiming` 为 `ResourceMetrics`（包含 name/initiatorType/duration/transferSize/encodedBodySize/decodedBodySize 等字段），经过 `filter` 过滤后触发回调。在 Surveillance 中通过 `PERFORMANCE_TYPE.RESOURCE` 类型上报
+- **getMetrics()** — 调用 `performance.getEntriesByType('resource')` 获取当前页面所有已加载资源的完整性能数据列表，经 `filter` 过滤后返回
+- **getStats()** — 对 `getMetrics()` 结果按 `initiatorType`（script/css/img/font/xmlhttprequest/fetch 等）分组统计，计算每种类型的数量、总耗时、平均耗时
+- **getSlowResources(threshold)** — 筛选 `duration` 超过阈值（默认 1000ms）的慢资源
+- **getLargeResources(threshold)** — 筛选 `transferSize` 超过阈值（默认 300KB）的大资源
+
+<CodeOrSourceMdx language="typescript">
+  {resourceDemo}
+</CodeOrSourceMdx>
+
+## 绘制指标 (FP/FCP)
+
+`getPaintMetrics()` 基于 Paint Timing API 获取首次绘制和首次内容绘制时间。内部流程：
+
+1. 调用 `performance.getEntriesByType('navigation')` 获取 `PerformanceNavigationTiming`，读取 `fetchStart` 作为基准时间
+2. 调用 `performance.getEntriesByType('paint')` 获取绘制条目，分别查找 `name === 'first-paint'` 和 `name === 'first-contentful-paint'` 的条目
+3. 计算 `FP = firstPaint.startTime - navigation.fetchStart`、`FCP = firstContentfulPaint.startTime - navigation.fetchStart`
+4. 通过 `getMetricRating(METRIC_NAME.FP, FP)` 和 `getMetricRating(METRIC_NAME.FCP, FCP)` 给出 good/needs-improvement/poor 评级（FP 阈值：≤1000ms good / ≤2500ms needs-improvement / >2500ms poor；FCP 阈值：≤1800ms / ≤3000ms / >3000ms）
+
+如果 `performance` API 不可用或缺少任一条目则返回 `undefined`。
+
+<CodeOrSourceMdx language="typescript">
+  {paintMetricsDemo}
+</CodeOrSourceMdx>
+
+## 行为监控
+
+`BehaviorMonitor` 是一个 class，构造时传入 `click`/`scroll`/`input`/`routeChange`（均默认 true）和 `maxBehaviors`（默认 100）配置。内部维护 `running` 标志防止重复 observe，以及 `behaviors` 行为记录数组。
+
+调用 `observe(callback)` 时，按配置注册以下 5 种监听器（可见性监听始终开启）：
+
+- **observeClick** — 监听 `document` 的 `click` 事件，记录点击目标的 `tagName`/`id`/`className`/`innerText`/`xpath`
+- **observeScroll** — 监听 `window` 的 `scroll` 事件（带节流），记录滚动位置 `scrollX`/`scrollY`
+- **observeInput** — 监听 `document` 的 `input` 事件，记录输入目标和输入值（可配置脱敏）
+- **observeRouteChange** — 监听 `popstate` 和 `hashchange` 事件，并劫持 `history.pushState`/`replaceState` 记录路由变化
+- **observeVisibility** — 监听 `visibilitychange` 事件，记录页面可见/隐藏状态变化
+
+每条行为记录包含 `{ type, timestamp, pageUrl, target?, data? }`。新行为先写入 `behaviors` 数组，若超过 `maxBehaviors` 则 `slice(-maxBehaviors)` 保留最新记录，再触发用户回调。在 Surveillance 中通过 `reporter.report(REPORT_TYPE.BEHAVIOR, [behavior])` 上报。
+
+额外提供 `trackCustom(name, data)` 方法手动记录自定义行为（`type: 'custom'`），`getBehaviors()` 获取完整行为列表快照，`clear()` 清空记录。
+
+<CodeOrSourceMdx language="typescript">
+  {behaviorDemo}
+</CodeOrSourceMdx>
+
+## FPS 监控
+
+`FpsMonitor` 是一个 class，无参构造。调用 `observe(onUpdate)` 时启动 `requestAnimationFrame` 循环：
+
+1. 初始化 `frameCount = 0`、`lastTime = performance.now()`
+2. 每帧回调中 `frameCount++`，检查 `performance.now() - lastTime` 是否 ≥ 1000ms
+3. 达到 1 秒时计算 `fps = Math.round((frameCount * 1000) / elapsed)`，触发 `onUpdate(fps)` 回调，然后重置计数器和时间基准
+4. 继续 `requestAnimationFrame(tick)` 循环
+
+`stop()` 通过 `cancelAnimationFrame(animationId)` 停止循环。FPS 60 为理想值，30 以下时用户会明显感知卡顿。另外模块还导出 `getFps()` 函数（返回 Promise），用于单次测量 1 秒内的 FPS 值。在 Surveillance 中通过 `PERFORMANCE_TYPE.FPS` 类型上报每秒帧率。
+
+<CodeOrSourceMdx language="typescript">
+  {fpsDemo}
+</CodeOrSourceMdx>
+
+## 卡顿监控
+
+`JankMonitor` 是一个 class，构造时传入 `threshold`（默认 `DEFAULT_JANK_THRESHOLD` = 100ms）。调用 `observe(callback)` 时启动 `requestAnimationFrame` 循环：
+
+1. 记录上一帧时间 `lastFrameTime = performance.now()`
+2. 每帧回调中计算 `frameDuration = currentTime - lastFrameTime`
+3. 若 `frameDuration > threshold`，触发 `callback({ duration: frameDuration, timestamp: currentTime })`，报告本次卡顿的持续时长和发生时间
+4. 更新 `lastFrameTime = currentTime`，继续循环
+
+与 FPS 监控的区别：FPS 监控关注每秒的整体帧率，卡顿监控关注的是单次异常帧间隔。例如 1 秒内有 59 帧正常 + 1 帧耗时 200ms，FPS 仍显示约 55fps，但卡顿监控会精确捕获到这次 200ms 的卡顿事件。在 Surveillance 中通过 `PERFORMANCE_TYPE.JANK` 类型上报。
+
+<CodeOrSourceMdx language="typescript">
+  {jankDemo}
+</CodeOrSourceMdx>
+
+## 长任务监控
+
+`LongTaskMonitor` 是一个 class，内部维护 `longTaskEntries` 数组缓存所有已捕获的长任务。调用 `observe(callback, options)` 时：
+
+1. 通过 `supportEntryType('longtask')` 检测浏览器是否支持 Long Task API，不支持则 `console.warn` 并返回空 stopper
+2. 若 `options.reportExisting` 为 true（默认），先遍历已缓存条目回调一次（用于新 observer 启动时获取历史数据）
+3. 创建 `PerformanceObserver` 监听 `longtask` 类型条目，每条经过 `threshold`（默认 `DEFAULT_LONG_TASK_THRESHOLD` = 50ms）过滤后，解析为 `LongTaskMetrics`（`name`/`startTime`/`duration`/`attribution`），写入缓存并触发回调
+
+提供以下分析方法：
+- **getStats()** — 优先使用缓存条目，若缓存为空则从 `performance.getEntriesByType('longtask')` 回退获取，计算统计信息：`count`（长任务数量）、`totalDuration`（总持续时间）、`maxDuration`（最大持续时间）、`avgDuration`（平均持续时间）
+- **calculateTBT(fcpTime?, ttiTime?)** — 计算 Total Blocking Time：遍历 `[fcpTime, ttiTime]`（默认 `[0, performance.now()]`）范围内的长任务，对每条任务取 `duration - 50ms` 的阻塞时间求和。TBT 是 Lighthouse 评分的核心指标之一
+- **getEntries()** — 返回缓存条目的快照副本
+- **clear()** — 清空缓存
+
+在 Surveillance 中传入 `performance.longTaskThreshold` 作为阈值，通过 `PERFORMANCE_TYPE.LONG_TASK` 类型上报。
+
+<CodeOrSourceMdx language="typescript">
+  {longTaskDemo}
+</CodeOrSourceMdx>
+
+## 生命周期监控
+
+`PageLifecycleMonitor` 是一个 class，构造时可传入 `PageLifecycleHandlers` 对象（键为 `PAGE_LIFECYCLE_EVENT` 枚举值字符串如 `'DOMContentLoaded'`/`'load'` 等，值为对应的处理函数）。调用 `observe()` 时：
+
+1. 先通过 `isBrowser()` 检测运行环境，SSR 环境下直接触发 `handlers['ssr']` 并返回空 stopper
+2. 浏览器环境下依次注册以下 14 种事件监听器，每个监听器返回 cleanup 函数收集到 `cleanupFns` 数组：
+   - `onDOMContentLoaded` → 触发 `handlers['DOMContentLoaded']`
+   - `onWindowLoaded` → 触发 `handlers['load']`（内部通过 `await sleep(0)` 延迟一个宏任务，确保性能条目写入完毕）
+   - `onPageUnload` → 触发 `handlers['beforeunload']`（`capture: false`）
+   - `onUnload` → 触发 `handlers['unload']`
+   - `onPageShow` → 触发 `handlers['pageshow']`
+   - `onPageHide` → 触发 `handlers['pagehide']`
+   - `visibility` → 可见/隐藏时均触发 `handlers['visibilitychange']`
+   - `onWindowFocus` → 触发 `handlers['focus']`
+   - `onWindowBlur` → 触发 `handlers['blur']`
+   - `onNetworkChange` → 在线时触发 `handlers['online']`，离线时触发 `handlers['offline']`
+   - `onPopState` → 触发 `handlers['popstate']`
+   - `onHashChange` → 触发 `handlers['hashchange']`
+   - `onPageFreeze` → 触发 `handlers['freeze']`（Page Lifecycle API）
+   - `onPageResume` → 触发 `handlers['resume']`（Page Lifecycle API）
+
+内部通过 `getHandler(event)` 方法查找处理器：优先使用用户传入的 `handlers[event]`，未定义时回退到 `DEFAULT_HANDLERS[event]`（默认为空函数）。`stop()` 遍历所有 cleanup 函数并清空。
+
+<CodeOrSourceMdx language="typescript">
+  {lifecycleDemo}
+</CodeOrSourceMdx>
+
+## 动态更新配置
+
+`updateConfig(newConfig)` 方法内部执行 `this.config = deepMerge(this.config, newConfig)` 对配置进行深度合并——只覆盖传入的字段，保留其他已有配置不变（如只传 `{ sampleRate: 0.5 }` 不会影响 performance/error 等配置）。合并完成后立即调用 `this.reporter = this.createReporter()` 重新创建 Reporter 实例，使新的上报配置（`reportUrl`、`reportMethod`、`batchSize`、`reportInterval`、`appId`、`hooks.beforeReport`/`afterReport`）生效。
+
+注意：`updateConfig` 只更新配置和重建 Reporter，不会自动重启已停止的子监控器。如果需要修改子监控器的运行时行为（如开启之前关闭的 FPS 监控），需要先 `stop()` 再 `start()` 重新启动。适用于 A/B 测试、灰度发布、运行时切换上报地址等场景。
+
+<CodeOrSourceMdx language="typescript">
+  {updateConfigDemo}
+</CodeOrSourceMdx>
+
+## 采样率判断
+
+`shouldSample(sampleRate)` 是一个纯函数，实现极简的采样率控制：
+
+1. `sampleRate >= 1` → 直接返回 `true`（全量采集）
+2. `sampleRate <= 0` → 直接返回 `false`（不采集）
+3. `0 < sampleRate < 1` → 返回 `Math.random() < sampleRate`（随机采样）
+
+默认 `sampleRate = 1`（全量）。Surveillance 在 `start()` 中调用 `this.shouldSample()`（内部转发为 `shouldSample(this.config.sampleRate)`），若返回 false 则直接 return 不启动任何子监控器，从根源上避免不必要的性能开销。注意采样判断只在 `start()` 时执行一次，一旦启动后不会中途改变采样状态。
+
+<CodeOrSourceMdx language="typescript">
+  {shouldSampleDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### Surveillance 构造参数
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>appId</td>
+      <td><code>string</code></td>
+      <td>-</td>
+      <td>应用 ID</td>
+    </tr>
+    <tr>
+      <td>enabled</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否启用监控</td>
+    </tr>
+    <tr>
+      <td>sampleRate</td>
+      <td><code>number</code></td>
+      <td><code>1</code></td>
+      <td>采样率 (0-1)</td>
+    </tr>
+    <tr>
+      <td>reportUrl</td>
+      <td><code>string</code></td>
+      <td>-</td>
+      <td>数据上报地址</td>
+    </tr>
+    <tr>
+      <td>reportMethod</td>
+      <td><code>'beacon' | 'fetch' | 'xhr' | 'img'</code></td>
+      <td><code>'beacon'</code></td>
+      <td>上报方式</td>
+    </tr>
+    <tr>
+      <td>batchSize</td>
+      <td><code>number</code></td>
+      <td><code>10</code></td>
+      <td>批量上报阈值</td>
+    </tr>
+    <tr>
+      <td>reportInterval</td>
+      <td><code>number</code></td>
+      <td><code>5000</code></td>
+      <td>上报间隔 (ms)</td>
+    </tr>
+    <tr>
+      <td>performance.webVitals</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控 Web Vitals</td>
+    </tr>
+    <tr>
+      <td>performance.resource</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控资源加载</td>
+    </tr>
+    <tr>
+      <td>performance.longTask</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控长任务</td>
+    </tr>
+    <tr>
+      <td>performance.longTaskThreshold</td>
+      <td><code>number</code></td>
+      <td><code>50</code></td>
+      <td>长任务阈值 (ms)</td>
+    </tr>
+    <tr>
+      <td>performance.fps</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否监控 FPS</td>
+    </tr>
+    <tr>
+      <td>performance.jank</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否监控卡顿</td>
+    </tr>
+    <tr>
+      <td>performance.jankThreshold</td>
+      <td><code>number</code></td>
+      <td><code>100</code></td>
+      <td>卡顿阈值 (ms)</td>
+    </tr>
+    <tr>
+      <td>performance.navigation</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否上报导航性能</td>
+    </tr>
+    <tr>
+      <td>error.jsError</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控 JS 错误</td>
+    </tr>
+    <tr>
+      <td>error.resourceError</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控资源加载错误</td>
+    </tr>
+    <tr>
+      <td>error.promiseError</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控 Promise 错误</td>
+    </tr>
+    <tr>
+      <td>error.requestError</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控请求错误</td>
+    </tr>
+    <tr>
+      <td>error.errorFilter</td>
+      <td><code>(error: ErrorInfo) =&gt; boolean</code></td>
+      <td>-</td>
+      <td>错误过滤函数</td>
+    </tr>
+    <tr>
+      <td>request.xhr</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控 XHR</td>
+    </tr>
+    <tr>
+      <td>request.fetch</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控 Fetch</td>
+    </tr>
+    <tr>
+      <td>request.ignoreUrls</td>
+      <td><code>(string | RegExp)[]</code></td>
+      <td><code>[]</code></td>
+      <td>忽略的 URL</td>
+    </tr>
+    <tr>
+      <td>request.timeoutThreshold</td>
+      <td><code>number</code></td>
+      <td><code>30000</code></td>
+      <td>超时阈值 (ms)</td>
+    </tr>
+    <tr>
+      <td>behavior.click</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控点击</td>
+    </tr>
+    <tr>
+      <td>behavior.scroll</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控滚动</td>
+    </tr>
+    <tr>
+      <td>behavior.input</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控输入</td>
+    </tr>
+    <tr>
+      <td>behavior.routeChange</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>是否监控路由变化</td>
+    </tr>
+    <tr>
+      <td>behavior.maxBehaviors</td>
+      <td><code>number</code></td>
+      <td><code>100</code></td>
+      <td>最大行为记录数</td>
+    </tr>
+    <tr>
+      <td>lifecycle.enabled</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>是否启用生命周期监控</td>
+    </tr>
+    <tr>
+      <td>hooks.beforeReport</td>
+      <td><code>(data: ReportData) =&gt; ReportData | false</code></td>
+      <td>-</td>
+      <td>上报前处理钩子</td>
+    </tr>
+    <tr>
+      <td>hooks.afterReport</td>
+      <td><code>(data: ReportData, success: boolean) =&gt; void</code></td>
+      <td>-</td>
+      <td>上报后处理钩子</td>
+    </tr>
+    <tr>
+      <td>hooks.onError</td>
+      <td><code>(error: ErrorInfo) =&gt; void</code></td>
+      <td>-</td>
+      <td>错误处理钩子</td>
+    </tr>
+    <tr>
+      <td>hooks.onMetric</td>
+      <td><code>(metric: Metric) =&gt; void</code></td>
+      <td>-</td>
+      <td>性能指标处理钩子</td>
+    </tr>
+  </tbody>
+</table>
+
+### Surveillance 实例方法和属性
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>start()</td>
+      <td><code>void</code></td>
+      <td>启动监控</td>
+    </tr>
+    <tr>
+      <td>stop()</td>
+      <td><code>void</code></td>
+      <td>停止监控</td>
+    </tr>
+    <tr>
+      <td>updateConfig(config)</td>
+      <td><code>void</code></td>
+      <td>动态更新配置（深度合并）</td>
+    </tr>
+    <tr>
+      <td>getNavigationMetrics()</td>
+      <td><code>NavigationMetrics | undefined</code></td>
+      <td>获取导航性能指标</td>
+    </tr>
+    <tr>
+      <td>getPageInfo()</td>
+      <td><code>PageInfo</code></td>
+      <td>获取页面信息</td>
+    </tr>
+    <tr>
+      <td>getPaintMetrics()</td>
+      <td><code>PaintMetrics | undefined</code></td>
+      <td>获取绘制性能指标（FP/FCP）</td>
+    </tr>
+    <tr>
+      <td>running</td>
+      <td><code>boolean</code></td>
+      <td>当前运行状态</td>
+    </tr>
+    <tr>
+      <td>config</td>
+      <td><code>SurveillanceConfig</code></td>
+      <td>当前配置</td>
+    </tr>
+    <tr>
+      <td>reporter</td>
+      <td><code>Reporter</code></td>
+      <td>上报器实例</td>
+    </tr>
+    <tr>
+      <td>webVitalsMonitor</td>
+      <td><code>WebVitalsMonitor</code></td>
+      <td>Web Vitals 监控器</td>
+    </tr>
+    <tr>
+      <td>errorMonitor</td>
+      <td><code>ErrorMonitor</code></td>
+      <td>错误监控器</td>
+    </tr>
+    <tr>
+      <td>requestMonitor</td>
+      <td><code>RequestMonitor</code></td>
+      <td>请求监控器</td>
+    </tr>
+    <tr>
+      <td>behaviorMonitor</td>
+      <td><code>BehaviorMonitor</code></td>
+      <td>行为监控器</td>
+    </tr>
+    <tr>
+      <td>resourceMonitor</td>
+      <td><code>ResourceMonitor</code></td>
+      <td>资源监控器</td>
+    </tr>
+    <tr>
+      <td>longTaskMonitor</td>
+      <td><code>LongTaskMonitor</code></td>
+      <td>长任务监控器</td>
+    </tr>
+    <tr>
+      <td>fpsMonitor</td>
+      <td><code>FpsMonitor</code></td>
+      <td>FPS 监控器</td>
+    </tr>
+    <tr>
+      <td>jankMonitor</td>
+      <td><code>JankMonitor</code></td>
+      <td>卡顿监控器</td>
+    </tr>
+    <tr>
+      <td>pageLifecycleMonitor</td>
+      <td><code>PageLifecycleMonitor</code></td>
+      <td>生命周期监控器</td>
+    </tr>
+  </tbody>
+</table>
+
+### Web Vitals 阈值
+
+<table>
+  <thead>
+    <tr>
+      <th>指标</th>
+      <th>Good</th>
+      <th>Needs Improvement</th>
+      <th>Poor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LCP</td>
+      <td>&le;2500ms</td>
+      <td>&le;4000ms</td>
+      <td>&gt;4000ms</td>
+    </tr>
+    <tr>
+      <td>FID</td>
+      <td>&le;100ms</td>
+      <td>&le;300ms</td>
+      <td>&gt;300ms</td>
+    </tr>
+    <tr>
+      <td>CLS</td>
+      <td>&le;0.1</td>
+      <td>&le;0.25</td>
+      <td>&gt;0.25</td>
+    </tr>
+    <tr>
+      <td>FCP</td>
+      <td>&le;1800ms</td>
+      <td>&le;3000ms</td>
+      <td>&gt;3000ms</td>
+    </tr>
+    <tr>
+      <td>INP</td>
+      <td>&le;200ms</td>
+      <td>&le;500ms</td>
+      <td>&gt;500ms</td>
+    </tr>
+    <tr>
+      <td>TTFB</td>
+      <td>&le;800ms</td>
+      <td>&le;1800ms</td>
+      <td>&gt;1800ms</td>
+    </tr>
+    <tr>
+      <td>FP</td>
+      <td>&le;1000ms</td>
+      <td>&le;2500ms</td>
+      <td>&gt;2500ms</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**：
+   - `index.ts`：`Surveillance` 聚合类，统一协调性能、错误、请求、行为、生命周期五大监控模块。声明 9 个子监控器为 `readonly` 属性，维护 `stoppers` 数组管理生命周期，暴露 `start()`/`stop()`/`updateConfig()` 以及 `getNavigationMetrics()`/`getPageInfo()`/`getPaintMetrics()` 公共方法
+   - `interface.ts`：包含所有类型定义（`SurveillanceConfig`、`Metric`、`ErrorInfo`、`RequestInfo`、`BehaviorInfo` 等）、`DEFAULT_CONFIG` 默认配置常量、`WEB_VITALS_THRESHOLDS` 阈值常量、全局类型扩展（`Navigator.connection`、`Performance.memory`、`Document.wasDiscarded`）以及从其他模块重新导出的类型
+
+2. **构造阶段详细流程**：
+   - `deepMerge({ ...DEFAULT_CONFIG }, userConfig)` — 先浅拷贝 DEFAULT_CONFIG 防止污染原始对象，再深度合并用户配置
+   - `createReporter()` — 根据合并后的配置创建 Reporter 实例，传入 `reportUrl`/`reportMethod`/`batchSize`/`reportInterval`/`appId`/`beforeReport`/`afterReport`
+   - 依次 `new` 9 个子监控器，各自接收对应配置切片：ErrorMonitor（错误类型开关+过滤器）、PageLifecycleMonitor（无参）、JankMonitor（卡顿阈值）、WebVitalsMonitor（reportAllChanges）、FpsMonitor（无参）、LongTaskMonitor（无参）、ResourceMonitor（资源过滤器）、BehaviorMonitor（行为类型开关+上限）、RequestMonitor（请求回调+URL 过滤+超时阈值）
+   - RequestMonitor 的 `onRequest` 回调在构造时就绑定了 `reporter.report(REPORT_TYPE.REQUEST, request)`，即请求完成时直接上报；`onError` 回调仅在 `error.requestError` 配置开启时传入
+
+3. **start() 启动详细流程**：
+   - 三重守卫：`if (this.running) return` → `if (!this.config.enabled) return` → `if (!this.shouldSample()) return`
+   - 设置 `this.running = true`
+   - 解构 `{ performance, error, request, behavior, lifecycle }` 配置
+   - 性能监控组（`performance?.enabled`）：
+     - `webVitals` → `webVitalsMonitor.observe(callback)` — callback 内 `reportPerformance(PERFORMANCE_TYPE.WEB_VITALS, metric)` + `hooks.onMetric?.(metric)`
+     - `resource` → `resourceMonitor.observe(callback)` — callback 内 `reportPerformance(PERFORMANCE_TYPE.RESOURCE, resources)`
+     - `longTask` → `longTaskMonitor.observe(callback, { threshold })` — callback 内 `reportPerformance(PERFORMANCE_TYPE.LONG_TASK, task)`
+     - `fps` → `fpsMonitor.observe(callback)` — callback 内 `reportPerformance(PERFORMANCE_TYPE.FPS, fps)`
+     - `jank` → `jankMonitor.observe(callback)` — callback 内 `reportPerformance(PERFORMANCE_TYPE.JANK, jankInfo)`
+     - `navigation !== false` → `onWindowLoaded(() => reportPerformance(PERFORMANCE_TYPE.NAVIGATION, getNavigationMetrics()))` — 等待页面 load 后再获取导航指标
+   - 错误监控（`error?.enabled`）：`errorMonitor.observe(errorCallback)` — errorCallback 内 `reporter.report(REPORT_TYPE.ERROR, error)` + `hooks.onError?.(error)`
+   - 请求监控（`request?.enabled`）：分别调用 `requestMonitor.observeXHR()` 和 `requestMonitor.observeFetch()` 劫持原生 API
+   - 行为监控（`behavior?.enabled`）：`behaviorMonitor.observe(callback)` — callback 内 `reporter.report(REPORT_TYPE.BEHAVIOR, [behavior])`
+   - 生命周期监控（`lifecycle?.enabled`）：`pageLifecycleMonitor.observe()` — 注册 14 种页面事件
+
+4. **stop() 停止详细流程**：
+   - `if (!this.running) return` 防止重复停止
+   - `this.running = false`
+   - `this.stoppers.forEach((fn) => fn())` 逐一调用所有 stopper（取消 PerformanceObserver、cancelAnimationFrame、removeEventListener 等）
+   - `this.stoppers.length = 0` 清空数组
+   - `this.requestMonitor.stop()` 额外调用恢复被劫持的 `XMLHttpRequest.prototype` 和 `window.fetch` 原型
+
+5. **上报数据结构**：
+   - 每条上报数据由 Reporter 自动附加元信息：`{ type, appId, sessionId, pageId, timestamp, pageInfo: { url, title, referrer, ... }, data }`
+   - `sessionId` 基于 `sessionStorage` 生成的会话级唯一 ID（同一标签页生命周期内不变）
+   - `pageId` 基于 `uniqueId()` 生成的页面级唯一 ID（每次创建 Reporter 时生成新值）
+   - 性能数据额外包装为 `{ metricType: PERFORMANCE_TYPE, metrics: ... }` 结构
+
+6. **批量上报机制**：
+   - Reporter 内部使用 `createBatch<ReportData>(send, { batchSize, batchDelay })` 创建批处理器
+   - `report()` 调用 `batch.add([reportData])` 将数据推入缓冲区
+   - 当缓冲数量达到 `batchSize`（默认 10）或等待时间达到 `batchDelay`（= `reportInterval`，默认 5000ms）时触发 `send(items)` 批量发送
+   - `immediate = true` 时跳过缓冲直接发送（用于关键错误等场景）
+   - `bindLifecycle()` 在 `beforeunload` 和 `visibilitychange(hidden)` 时自动 `batch.flush()` 确保数据不丢失
+   - 发送前逐条执行 `beforeReport` 钩子（返回 false 丢弃该条），发送后逐条执行 `afterReport(item, success)` 钩子

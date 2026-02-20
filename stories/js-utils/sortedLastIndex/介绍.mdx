@@ -1,0 +1,68 @@
+import sortedLastIndexDemo from './sortedLastIndexDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# sortedLastIndex
+
+类似于 sortedIndex，但返回最高索引位置
+
+## 详细介绍
+
+`sortedLastIndex` 类似于 sortedIndex，但返回最高索引位置。
+
+**常用场景**：
+- 数据处理和转换
+- 功能组合和增强
+- 简化常见操作
+
+## 基础用法
+
+点击按钮查看 `sortedLastIndex` 的基本使用效果。
+
+<CodeOrSourceMdx language="typescript">
+  {sortedLastIndexDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证各种边界条件下的行为表现。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>array</td>
+      <td><code>unknown</code></td>
+      <td>已排序的数组</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td><code>unknown</code></td>
+      <td>要评估的值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：返回 value 应该插入的最高索引
+
+## 具体实现原理
+
+1. **文件职责**: `sortedLastIndex/index.ts` 导出 sortedLastIndex 函数
+2. **核心流程**: 类似于 sortedIndex，但返回最高索引位置
+3. **关键技术点**: 使用 Math 内置方法
+4. **数据流向**: 接收参数 → 处理逻辑 → 返回结果

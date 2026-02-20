@@ -1,0 +1,47 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# onHashChange
+
+监听 URL hash 变化事件。
+
+## 详细介绍
+
+`onHashChange` 封装了 `window` 上的 `hashchange` 事件监听。当 URL 的 hash 部分发生变化时触发回调，回调参数为 `HashChangeEvent`，包含 `oldURL` 和 `newURL`。
+
+基于 `createEventListener` 封装，返回清理函数。常用于 SPA 中基于 hash 的路由变化监听。
+
+## 基础用法
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>callback</td>
+      <td><code>(e: HashChangeEvent) =&gt; void</code></td>
+      <td>hash 变化时的回调函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+返回 `() => void` 清理函数。
+
+## 具体实现原理
+
+1. **文件职责**：`index.ts` 封装 `createEventListener(window, 'hashchange', callback)`
+2. **核心流程**：注册 hashchange 事件监听，hash 变化时触发回调
+3. **关键技术点**：`HashChangeEvent` 提供 `oldURL` 和 `newURL` 用于对比变化

@@ -36,7 +36,7 @@ const Row = forwardRef<HTMLDivElement, RowProps>((baseProps, ref) => {
   return (
     <RowStyle
       ref={ref}
-      {...rest}
+      {...(rest as any)}
       $marginVertical={marginVertical}
       $justify={justify}
       $align={align}

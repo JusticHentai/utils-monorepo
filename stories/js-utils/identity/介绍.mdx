@@ -1,0 +1,53 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# identity
+
+返回接收到的第一个参数。
+
+## 详细介绍
+
+`identity` 看似无用，实际上是函数式编程中非常重要的基础工具，主要用作**默认回调/占位函数**：
+
+- **默认 iteratee**：很多工具函数需要接收转换函数，`identity` 作为默认值表示"不做任何转换"，如 `sortBy(arr)` 不传 iteratee 时按原值排序
+- **过滤假值**：`[0, 1, false, 2, '', 3].filter(identity)` => `[1, 2, 3]`
+- **函数组合占位**：在 `flow`/`pipe` 中作为无操作环节，如 `flow(parse, needFormat ? format : identity, serialize)`
+
+本质上是函数式编程的"零元素"——不改变任何东西，但让接口保持统一。
+
+## 返回自身
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>T</code></td>
+      <td>任意值</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T`
+- 描述：传入的值
+
+## 具体实现原理
+
+1. **文件职责**: `identity/index.ts` 导出 `identity` 函数
+2. **核心流程**: 直接返回第一个参数
+3. **关键技术点**: 函数式编程的恒等函数
+4. **数据流向**: value → 直接返回 value

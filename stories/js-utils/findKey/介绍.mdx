@@ -1,0 +1,36 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# findKey
+
+返回第一个满足谓词函数的属性的键名。
+
+## 详细介绍
+
+`findKey` 遍历对象属性，返回第一个谓词函数返回 true 的键名。`findLastKey` 从后向前遍历。找不到时返回 `undefined`。
+
+## findKey / findLastKey - 查找键名
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead><tr><th>参数名</th><th>类型</th><th>描述</th></tr></thead>
+  <tbody>
+    <tr><td>object</td><td><code>Record&lt;string, unknown&gt;</code></td><td>要搜索的对象</td></tr>
+    <tr><td>predicate</td><td><code>(value, key, object) =&gt; boolean</code></td><td>谓词函数</td></tr>
+  </tbody>
+</table>
+
+### 返回值
+- 类型：`string | undefined`
+- 描述：找到的键名或 undefined
+
+## 具体实现原理
+1. **文件职责**: `findKey/index.ts` 导出 findKey（default）和 findLastKey（named）
+2. **核心流程**: 遍历 Object.keys，返回第一个谓词返回 true 的键
+3. **关键技术点**: findLastKey 反向遍历 keys 数组
+4. **数据流向**: object + predicate → 遍历键 → 谓词匹配 → 返回键名

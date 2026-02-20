@@ -1,0 +1,371 @@
+import basicDemo from './basicDemo?raw'
+import dollarDemo from './dollarDemo?raw'
+import syncDemo from './syncDemo?raw'
+import commandDemo from './commandDemo?raw'
+import nodeDemo from './nodeDemo?raw'
+import optionsDemo from './optionsDemo?raw'
+import errorDemo from './errorDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# execa
+
+execa 是一个强大的子进程执行库，提供比原生 `child_process` 更好的开发体验。
+
+## 详细介绍
+
+execa 是什么：
+- 一个现代化的子进程执行工具
+- 基于 Node.js 的 `child_process` 模块封装
+- 提供 Promise API 和同步 API
+
+涉及的知识点：
+- Node.js 子进程管理
+- 命令行参数解析
+- 进程间通信 (IPC)
+- 信号处理和优雅终止
+
+使用场景：
+- 执行 shell 命令
+- 运行外部脚本
+- 构建 CLI 工具
+- 自动化任务
+
+主要优势：
+- 模板字符串语法，书写更简洁
+- 自动解析命令字符串
+- 详细的错误信息
+- 支持 verbose 日志
+- TypeScript 类型完整
+
+## 基本用法
+
+使用 `execa` 执行命令，支持传统调用和模板字符串两种方式。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## $ 脚本语法
+
+`$` 是一个便捷的脚本执行器，默认继承 stdin 并优先使用本地安装的二进制文件。
+
+<CodeOrSourceMdx language="typescript">
+  {dollarDemo}
+</CodeOrSourceMdx>
+
+## 同步执行
+
+使用 `execaSync` 和 `execaCommandSync` 同步执行命令。
+
+<CodeOrSourceMdx language="typescript">
+  {syncDemo}
+</CodeOrSourceMdx>
+
+## 命令字符串
+
+使用 `execaCommand` 直接执行命令字符串，自动解析为命令和参数。
+
+<CodeOrSourceMdx language="typescript">
+  {commandDemo}
+</CodeOrSourceMdx>
+
+## Node.js 脚本执行
+
+使用 `execaNode` 专门执行 Node.js 脚本。
+
+<CodeOrSourceMdx language="typescript">
+  {nodeDemo}
+</CodeOrSourceMdx>
+
+## 选项配置
+
+execa 支持丰富的配置选项。
+
+<CodeOrSourceMdx language="typescript">
+  {optionsDemo}
+</CodeOrSourceMdx>
+
+## 错误处理
+
+execa 提供详细的错误信息。
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## API 参考
+
+### 导出的函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数名</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>execa</code></td>
+      <td>执行命令，返回 Promise</td>
+    </tr>
+    <tr>
+      <td><code>execaSync</code></td>
+      <td>同步执行命令</td>
+    </tr>
+    <tr>
+      <td><code>execaCommand</code></td>
+      <td>执行命令字符串，自动解析参数</td>
+    </tr>
+    <tr>
+      <td><code>execaCommandSync</code></td>
+      <td>同步执行命令字符串</td>
+    </tr>
+    <tr>
+      <td><code>execaNode</code></td>
+      <td>执行 Node.js 脚本</td>
+    </tr>
+    <tr>
+      <td><code>$</code></td>
+      <td>脚本执行器，支持模板字符串</td>
+    </tr>
+    <tr>
+      <td><code>parseCommandString</code></td>
+      <td>解析命令字符串为命令和参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 常用选项
+
+<table>
+  <thead>
+    <tr>
+      <th>选项</th>
+      <th>类型</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>cwd</code></td>
+      <td><code>string | URL</code></td>
+      <td><code>process.cwd()</code></td>
+      <td>工作目录</td>
+    </tr>
+    <tr>
+      <td><code>env</code></td>
+      <td><code>object</code></td>
+      <td><code>process.env</code></td>
+      <td>环境变量</td>
+    </tr>
+    <tr>
+      <td><code>timeout</code></td>
+      <td><code>number</code></td>
+      <td><code>0</code></td>
+      <td>超时时间（毫秒）</td>
+    </tr>
+    <tr>
+      <td><code>verbose</code></td>
+      <td><code>'none' | 'short' | 'full'</code></td>
+      <td><code>'none'</code></td>
+      <td>日志级别</td>
+    </tr>
+    <tr>
+      <td><code>encoding</code></td>
+      <td><code>string</code></td>
+      <td><code>'utf8'</code></td>
+      <td>输出编码</td>
+    </tr>
+    <tr>
+      <td><code>reject</code></td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>失败时是否 reject</td>
+    </tr>
+    <tr>
+      <td><code>shell</code></td>
+      <td><code>boolean | string</code></td>
+      <td><code>false</code></td>
+      <td>是否在 shell 中运行</td>
+    </tr>
+    <tr>
+      <td><code>stdin</code></td>
+      <td><code>string</code></td>
+      <td><code>'pipe'</code></td>
+      <td>stdin 配置</td>
+    </tr>
+    <tr>
+      <td><code>stdout</code></td>
+      <td><code>string</code></td>
+      <td><code>'pipe'</code></td>
+      <td>stdout 配置</td>
+    </tr>
+    <tr>
+      <td><code>stderr</code></td>
+      <td><code>string</code></td>
+      <td><code>'pipe'</code></td>
+      <td>stderr 配置</td>
+    </tr>
+    <tr>
+      <td><code>stripFinalNewline</code></td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+      <td>去除末尾换行符</td>
+    </tr>
+    <tr>
+      <td><code>preferLocal</code></td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+      <td>优先使用本地二进制</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值属性
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>stdout</code></td>
+      <td><code>string | Uint8Array</code></td>
+      <td>标准输出</td>
+    </tr>
+    <tr>
+      <td><code>stderr</code></td>
+      <td><code>string | Uint8Array</code></td>
+      <td>标准错误</td>
+    </tr>
+    <tr>
+      <td><code>exitCode</code></td>
+      <td><code>number</code></td>
+      <td>退出码</td>
+    </tr>
+    <tr>
+      <td><code>failed</code></td>
+      <td><code>boolean</code></td>
+      <td>是否失败</td>
+    </tr>
+    <tr>
+      <td><code>timedOut</code></td>
+      <td><code>boolean</code></td>
+      <td>是否超时</td>
+    </tr>
+    <tr>
+      <td><code>isCanceled</code></td>
+      <td><code>boolean</code></td>
+      <td>是否被取消</td>
+    </tr>
+    <tr>
+      <td><code>isTerminated</code></td>
+      <td><code>boolean</code></td>
+      <td>是否被信号终止</td>
+    </tr>
+    <tr>
+      <td><code>command</code></td>
+      <td><code>string</code></td>
+      <td>执行的命令</td>
+    </tr>
+    <tr>
+      <td><code>escapedCommand</code></td>
+      <td><code>string</code></td>
+      <td>转义后的命令</td>
+    </tr>
+    <tr>
+      <td><code>durationMs</code></td>
+      <td><code>number</code></td>
+      <td>执行时间（毫秒）</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+### 模块结构
+
+execa 拆分为多个独立模块：
+
+1. **execa-types**: 类型定义模块
+   - 定义所有共享类型：Options、Result、CommonOptions 等
+   - 包含常量：BINARY_ENCODINGS、FD_SPECIFIC_OPTIONS、DEFAULT_OPTIONS
+
+2. **execa-methods**: 核心方法模块
+   - `create.ts`: 创建 execa 方法的工厂函数
+   - `mainAsync.ts`: 异步执行核心逻辑
+   - `mainSync.ts`: 同步执行核心逻辑
+   - `command.ts`: 命令字符串解析
+   - `script.ts`: $ 脚本方法实现
+   - `node.ts`: Node.js 脚本执行
+   - `template.ts`: 模板字符串解析
+   - `bind.ts`: 选项绑定
+
+3. **execa-arguments**: 参数处理模块
+   - `options.ts`: 选项规范化
+   - `parameters.ts`: 参数解析
+   - `command.ts`: 命令解析
+   - `escape.ts`: 参数转义
+
+4. **execa-return**: 结果处理模块
+   - `result.ts`: 构建结果对象
+   - `finalError.ts`: 错误类定义（ExecaError、ExecaSyncError）
+   - `message.ts`: 错误消息生成
+   - `duration.ts`: 执行时间计算
+
+5. **execa-terminate**: 进程终止模块
+   - `signal.ts`: 信号处理
+   - `kill.ts`: 强制终止
+   - `timeout.ts`: 超时处理
+   - `cleanup.ts`: 清理逻辑
+
+6. **execa-verbose**: 日志模块
+   - `log.ts`: 日志输出
+   - `values.ts`: 值格式化
+   - `info.ts`: 信息收集
+
+7. **execa-io**: IO 处理模块
+   - `maxBuffer.ts`: 缓冲区限制
+   - `stripNewline.ts`: 换行符处理
+
+8. **execa-ipc**: IPC 模块
+   - `ipcInput.ts`: IPC 输入验证
+
+9. **execa-utils**: 工具函数模块
+   - `deferred.ts`: Promise 延迟
+   - `uintArray.ts`: Uint8Array 工具
+   - `standardStream.ts`: 标准流工具
+   - `abortSignal.ts`: 中止信号处理
+
+### 核心流程
+
+1. **命令解析**: 接收命令字符串或数组，解析为 file 和 arguments
+2. **选项规范化**: 合并默认选项、绑定选项和传入选项
+3. **进程创建**: 使用 `child_process.spawn()` 或 `spawnSync()` 创建子进程
+4. **输出收集**: 收集 stdout、stderr 输出
+5. **结果构建**: 构建包含所有信息的结果对象
+6. **错误处理**: 根据退出码和选项决定是否抛出错误
+
+### 数据流向
+
+```
+用户调用 execa/$/execaCommand
+    ↓
+createExeca 创建绑定方法
+    ↓
+parseArguments 解析参数
+    ↓
+normalizeOptions 规范化选项
+    ↓
+execaCoreAsync/execaCoreSync 执行
+    ↓
+child_process.spawn/spawnSync
+    ↓
+收集输出 → 构建结果 → 返回/抛出错误
+```

@@ -1,0 +1,54 @@
+import nthArgDemo from './nthArgDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# nthArg
+
+创建返回第 n 个参数的函数。
+
+## 详细介绍
+
+`nthArg` 创建一个函数，该函数返回其第 n 个参数。n 为负数时从末尾计算。
+
+**常用场景**：
+- 函数式编程中的参数选择
+- 配合其他高阶函数使用
+- 参数投影
+
+## 选择第 n 个参数
+
+使用 `nthArg` 创建函数，返回指定位置的参数。
+
+<CodeOrSourceMdx language="typescript">
+  {nthArgDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>参数索引，默认 0，负数从末尾计算</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => unknown`
+- 描述：返回第 n 个参数的函数
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 创建参数选择函数
+2. **核心流程**: 接收索引 → 返回闭包 → 闭包返回指定位置的参数
+3. **关键技术点**: 闭包捕获索引，负索引处理
+4. **数据流向**: 索引 → 创建闭包 → 调用时从参数列表选取 → 返回值

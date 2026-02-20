@@ -1,0 +1,54 @@
+import toPairsDemo from './toPairsDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# toPairs
+
+将对象转为键值对数组。
+
+## 详细介绍
+
+`toPairs` 创建由对象自有可枚举键值对组成的数组。`toPairsIn` 包含继承属性。
+
+**常用场景**：
+- 对象转 Map
+- 对象遍历
+- 序列化
+
+## 对象转键值对
+
+使用 `toPairs` 将对象转为键值对数组。
+
+<CodeOrSourceMdx language="typescript">
+  {toPairsDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>Record\<string, unknown\></code></td>
+      <td>要转换的对象</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`[string, unknown][]`
+- 描述：键值对数组
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 toPairs、toPairsIn、entries、entriesIn
+2. **核心流程**: 获取对象键名 → 映射为 [key, value] 数组
+3. **关键技术点**: Object.keys vs for...in 区分自有和继承属性
+4. **数据流向**: 对象 → 获取键 → 映射为键值对 → 返回数组

@@ -1,0 +1,106 @@
+import successDemo from './successDemo?raw'
+import errorDemo from './errorDemo?raw'
+import timeoutDemo from './timeoutDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# fetchFormat
+
+fetchFormat 是一个用于将普通异步函数转换为带有完整请求能力的函数。它内部组合了 `asyncFormat`、`timeoutFormat` 和 `retryFormat`，提供了错误处理、超时控制和自动重试的能力。
+
+## 成功用例
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 失败用例（重试后仍失败）
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 超时用例
+
+<CodeOrSourceMdx language="typescript">
+  {timeoutDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+### 泛型
+
+- `Fn` - 被包装函数的类型
+
+### options
+
+- 类型：`FetchFormatOption<Fn>`
+- 描述：配置选项
+  - `fetchFn`：需要包装的请求函数
+  - `retryCount`：重试次数，默认值为 `3`
+  - `timeout`：超时时间（毫秒），默认值为 `3000`
+
+### 返回值
+
+- 类型：`WrappedFunction<Fn, TimeoutError>`
+- 描述：返回一个包装后的函数，调用时返回 `Promise<[res, undefined] | [undefined, TimeoutError]>` 的形式
+
+## 内部实现
+
+fetchFormat 内部按以下顺序组合了三个格式化函数：
+
+1. **asyncFormat**: 将函数转为返回 `[res, err]` 的形式
+2. **timeoutFormat**: 添加超时控制
+3. **retryFormat**: 添加自动重试能力
+
+```typescript
+const fetchFormat = <Fn extends BaseFunction>({
+  fetchFn,
+  retryCount = 3,
+  timeout = 3000,
+}: FetchFormatOption<Fn>): WrappedFunction<Fn, TimeoutError> => {
+  return (...args: Parameters<Fn>) => {
+    /** 将函数转为 [res, err] 的形式 */
+    const asyncFormatFn = asyncFormat<Fn>(fetchFn)
+
+    /** 超时 */
+    const timeoutFn = timeoutFormat<Fn>({ fn: asyncFormatFn, timeout })
+
+    /** 重试 */
+    const retryFn = retryFormat<Fn>({ fn: timeoutFn, retryCount })
+
+    return retryFn(...args)
+  }
+}
+```
+
+## 使用示例
+
+```typescript
+import fetchFormat from '@your-org/js-utils/fetchFormat'
+import { ERROR_TYPE } from '@your-org/js-utils/timeoutFormat'
+
+const fetchData = async (url: string) => {
+  const response = await fetch(url)
+  return response.json()
+}
+
+// 创建带完整能力的请求函数
+const safeFetch = fetchFormat({
+  fetchFn: fetchData,
+  retryCount: 3,  // 重试 3 次
+  timeout: 5000,  // 5 秒超时
+})
+
+// 使用
+const [data, error] = await safeFetch('https://api.example.com/data')
+
+if (error) {
+  if (error.errorType === ERROR_TYPE.TIMEOUT) {
+    console.log('请求超时')
+  } else {
+    console.log('请求失败:', error.error)
+  }
+} else {
+  console.log('请求成功:', data)
+}
+```

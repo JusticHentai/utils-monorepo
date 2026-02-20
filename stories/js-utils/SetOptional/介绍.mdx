@@ -1,0 +1,30 @@
+import normalDemo from './normalDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# SetOptional
+
+SetOptional 是一个用于将 interface 中指定的 key 设置为可选的类型工具。
+
+## 使用示例
+
+<CodeOrSourceMdx language="typescript">
+  {normalDemo}
+</CodeOrSourceMdx>
+
+## 类型定义
+
+```typescript
+type SetOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+```
+
+## 泛型参数
+
+### T
+
+- 类型：`object`
+- 描述：要处理的对象类型
+
+### K
+
+- 类型：`keyof T`
+- 描述：要设置为可选的属性键

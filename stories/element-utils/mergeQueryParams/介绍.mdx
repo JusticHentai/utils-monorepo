@@ -1,14 +1,21 @@
-import basicDemo from '../../../packages/element-utils/src/mergeQueryParams/demo.ts?raw'
+import basicDemo from './basicDemo?raw'
+import overrideDemo from './overrideDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # mergeQueryParams
 
-mergeQueryParams 是一个用于将源 URL 的查询参数合并到目标 URL 中的函数。
+将源 URL 的查询参数合并到目标 URL 中。
 
-## 基础示例
+## 合并查询参数
 
 <CodeOrSourceMdx language="typescript">
   {basicDemo}
+</CodeOrSourceMdx>
+
+## 覆盖同名参数
+
+<CodeOrSourceMdx language="typescript">
+  {overrideDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
@@ -27,9 +34,3 @@ mergeQueryParams 是一个用于将源 URL 的查询参数合并到目标 URL �
 
 - 类型：`string`
 - 描述：添加查询参数后的完整 URL
-
-## 特点
-
-- 使用 URLSearchParams 解析参数
-- 使用 URL API 构建结果
-- 同名参数会被覆盖

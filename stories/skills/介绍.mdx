@@ -1,0 +1,93 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Skills/介绍" />
+
+# Skills 技能系统
+
+`skills/` 目录包含一组 AI 编码技能规范，用于指导 AI 代理在代码生成、审查和重构时遵循项目最佳实践。
+
+## 目录结构
+
+```
+skills/
+├── typescript-style-guide/    # TypeScript 代码规范
+│   ├── SKILL.md               # 规范摘要
+│   └── references/
+│       └── full-guide.md      # 完整参考指南
+├── react-best-practices/      # React 性能优化最佳实践
+│   ├── SKILL.md
+│   └── references/
+│       └── full-guide.md
+├── skill-creator/             # 技能创建指南
+│   ├── SKILL.md
+│   ├── references/
+│   │   ├── output-patterns.md
+│   │   └── workflows.md
+│   └── scripts/
+│       ├── init_skill.py
+│       ├── package_skill.py
+│       └── quick_validate.py
+├── storybook-creator/         # Storybook 文档创建规范
+│   └── SKILL.md
+└── utils-creator/             # 工具函数开发规范
+    └── SKILL.md
+```
+
+## 技能一览
+
+<table>
+  <thead>
+    <tr>
+      <th>技能</th>
+      <th>说明</th>
+      <th>触发场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>typescript-style-guide</strong></td>
+      <td>TypeScript 代码规范（命名、类型、函数、错误处理等 16 类规则）</td>
+      <td>编写或修改 TypeScript 代码时</td>
+    </tr>
+    <tr>
+      <td><strong>react-best-practices</strong></td>
+      <td>React/Next.js 性能优化（8 大类别共 57 条规则）</td>
+      <td>编写、审查或重构 React 代码时</td>
+    </tr>
+    <tr>
+      <td><strong>skill-creator</strong></td>
+      <td>创建新技能的指南和脚本</td>
+      <td>需要扩展 AI 能力时</td>
+    </tr>
+    <tr>
+      <td><strong>storybook-creator</strong></td>
+      <td>为工具函数创建 Storybook 演示文档</td>
+      <td>需要为 packages 下的工具创建 story 时</td>
+    </tr>
+    <tr>
+      <td><strong>utils-creator</strong></td>
+      <td>工具函数开发规范</td>
+      <td>新增或修改工具函数时</td>
+    </tr>
+  </tbody>
+</table>
+
+## 技能文件格式
+
+每个技能目录至少包含一个 `SKILL.md`，格式如下：
+
+```markdown
+---
+name: 技能名称
+description: 技能描述
+---
+
+# 标题
+
+规则内容...
+```
+
+- **frontmatter**：`name` 和 `description` 用于技能注册和检索
+- **SKILL.md**：规范摘要，包含核心规则和速查示例
+- **references/**：完整参考资料，供深入查阅
+- **scripts/**：可选的自动化脚本（如 `skill-creator` 的初始化脚本）

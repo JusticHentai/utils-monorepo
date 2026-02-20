@@ -1,0 +1,68 @@
+import successDemo from './successDemo?raw'
+import errorDemo from './errorDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# attempt
+
+尝试调用函数，返回结果或错误对象。
+
+## 详细介绍
+
+`attempt` 尝试执行给定的函数，如果成功则返回执行结果，如果抛出异常则返回 Error 对象而不是让异常传播。非 Error 类型的抛出值会被自动转换为 Error 对象，自定义 Error 子类会被保留。
+
+**常用场景**：
+- 安全执行可能出错的操作（如 JSON 解析）而无需 try-catch
+- 简化错误处理逻辑
+- 函数式编程中的错误处理
+
+## 成功执行
+
+支持返回函数结果和传递额外参数。
+
+<CodeOrSourceMdx language="typescript">
+  {successDemo}
+</CodeOrSourceMdx>
+
+## 错误捕获
+
+捕获各类错误：标准错误、字符串抛出值（自动转 Error）、自定义 Error 子类。
+
+<CodeOrSourceMdx language="typescript">
+  {errorDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>func</td>
+      <td><code>(...args: unknown[]) =&gt; T</code></td>
+      <td>要尝试调用的函数</td>
+    </tr>
+    <tr>
+      <td>...args</td>
+      <td><code>unknown[]</code></td>
+      <td>传递给函数的参数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`T | Error`
+- 描述：函数返回值或 Error 对象
+
+## 具体实现原理
+
+1. **文件职责**: `attempt/index.ts` 导出 attempt 函数
+2. **核心流程**: try-catch 包裹函数调用，成功返回结果，失败返回 Error
+3. **关键技术点**: `instanceof Error` 判断，非 Error 值用 `new Error(String(error))` 包装
+4. **数据流向**: 调用 func(...args) → 成功返回结果 / 失败捕获异常 → 返回 Error 对象

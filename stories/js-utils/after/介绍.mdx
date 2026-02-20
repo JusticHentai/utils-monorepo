@@ -1,0 +1,68 @@
+import afterDemo from './afterDemo?raw'
+import edgeCaseDemo from './edgeCaseDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# after
+
+创建一个在被调用 n 次之后才执行的函数。
+
+## 详细介绍
+
+`after(n, func)` 创建一个新函数，该函数在被调用 `n` 次之后才会真正执行 `func`。在达到阈值之前的调用不会触发 `func`，达到阈值后每次调用都会执行。
+
+**常用场景**：
+- 确保所有异步操作完成后再执行回调
+- 等待多个事件触发后执行汇总操作
+- 限制函数的最早执行时机
+
+## 多次调用观察
+
+多次点击按钮观察：前 2 次点击不会执行函数，第 3 次及之后每次都会执行。
+
+<CodeOrSourceMdx language="typescript">
+  {afterDemo}
+</CodeOrSourceMdx>
+
+## 边界情况验证
+
+验证不同阈值下的行为：`after(0, fn)` 在调用 1 次后执行，`after(5, fn)` 调用 4 次不执行、第 5 次才执行。
+
+<CodeOrSourceMdx language="typescript">
+  {edgeCaseDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>n</td>
+      <td><code>number</code></td>
+      <td>需要调用的次数阈值</td>
+    </tr>
+    <tr>
+      <td>func</td>
+      <td><code>T</code></td>
+      <td>达到阈值后要执行的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`(...args) => ReturnType<T> | undefined`
+- 描述：新函数，在达到调用次数阈值前返回 undefined，之后返回 func 的执行结果
+
+## 具体实现原理
+
+1. **文件职责**: `after/index.ts` 导出 after 函数
+2. **核心流程**: 内部维护计数器，每次调用自增，达到 n 后执行 func
+3. **关键技术点**: 闭包保存调用计数状态
+4. **数据流向**: 调用包装函数 → 计数器自增 → 判断是否 >= n → 达到则执行 func 并返回结果

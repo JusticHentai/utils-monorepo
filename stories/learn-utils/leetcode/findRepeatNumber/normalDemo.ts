@@ -1,4 +1,4 @@
-import findRepeatNumber from '@jqxon/learn-utils/leetcode/findRepeatNumber'
+import findRepeatNumber from '../../../../packages/learn-utils/src/leetcode/findRepeatNumber'
 
 export default () => {
   const nums = [2, 3, 1, 0, 2, 5, 3]

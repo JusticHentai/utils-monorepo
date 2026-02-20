@@ -1,0 +1,73 @@
+import padDemo from './padDemo?raw'
+import padStartEndDemo from './padStartEndDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# pad
+
+字符串填充工具。
+
+## 详细介绍
+
+`pad` 在字符串两侧填充字符至指定长度。`padStart` 仅左侧填充，`padEnd` 仅右侧填充。
+
+**常用场景**：
+- 数字格式化（如补零）
+- 文本对齐
+- 固定宽度字符串
+
+## 双侧填充
+
+使用 `pad` 在字符串两侧填充字符。
+
+<CodeOrSourceMdx language="typescript">
+  {padDemo}
+</CodeOrSourceMdx>
+
+## 单侧填充
+
+使用 `padStart` 和 `padEnd` 分别在左侧和右侧填充。
+
+<CodeOrSourceMdx language="typescript">
+  {padStartEndDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>string</td>
+      <td><code>string</code></td>
+      <td>要填充的字符串</td>
+    </tr>
+    <tr>
+      <td>length</td>
+      <td><code>number</code></td>
+      <td>目标长度，默认 0</td>
+    </tr>
+    <tr>
+      <td>chars</td>
+      <td><code>string</code></td>
+      <td>填充字符，默认空格</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：填充后的字符串
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 提供 pad、padStart、padEnd 三个函数
+2. **核心流程**: 计算需要填充的长度 → 生成填充字符串 → 拼接到对应位置
+3. **关键技术点**: pad 平分左右填充（奇数时右侧多一个），repeat 和 slice 控制填充长度
+4. **数据流向**: 字符串 + 目标长度 + 填充字符 → 计算填充量 → 拼接 → 返回结果

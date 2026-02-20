@@ -1,0 +1,171 @@
+import basicDemo from './basicDemo?raw'
+import magnitudeDemo from './magnitudeDemo?raw'
+import negativeDemo from './negativeDemo?raw'
+import customDemo from './customDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# formatNumber
+
+formatNumber 是一个将大数字格式化为带后缀简短形式的工具函数。它按照国际通用的 SI 前缀思路（K/M/B/T），将数字缩写为易读的格式。
+
+## 基本规则
+
+- **K** = 千 = 10³
+- **M** = 百万 = 10⁶
+- **B** = 十亿 = 10⁹
+- **T** = 万亿 = 10¹²
+
+### 默认策略
+
+- **0–999**：原样显示（如 `532`）
+- **1,000–9,999**：保留 1 位小数（如 `1.2K`、`9.9K`）
+- **10,000–999,999**：保留 1 位小数（如 `12.3K`、`532.1K`）
+- **≥ 1,000,000**：按 M/B/T 类推（如 `1.2M`、`3B`）
+
+### 特殊处理
+
+- **四舍五入进位**：`999.9K` 四舍五入后变成 `1M`，避免出现 `1000K`
+- **去尾零**：`1.0K` 显示为 `1K`（可配置）
+
+## 基础用法
+
+展示常见数字的格式化结果：
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 各数量级演示
+
+展示从百到万亿的各个数量级：
+
+<CodeOrSourceMdx language="typescript">
+  {magnitudeDemo}
+</CodeOrSourceMdx>
+
+## 负数处理
+
+支持负数的格式化：
+
+<CodeOrSourceMdx language="typescript">
+  {negativeDemo}
+</CodeOrSourceMdx>
+
+## 自定义配置
+
+可以自定义小数位数和尾零处理：
+
+<CodeOrSourceMdx language="typescript">
+  {customDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>必填</th>
+      <th>默认值</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>value</td>
+      <td><code>number</code></td>
+      <td>是</td>
+      <td>-</td>
+      <td>要格式化的数字</td>
+    </tr>
+    <tr>
+      <td>decimals</td>
+      <td><code>number</code></td>
+      <td>否</td>
+      <td>1</td>
+      <td>保留的小数位数</td>
+    </tr>
+    <tr>
+      <td>trimZeros</td>
+      <td><code>boolean</code></td>
+      <td>否</td>
+      <td>true</td>
+      <td>是否去除尾随零（1.0K → 1K）</td>
+    </tr>
+    <tr>
+      <td>magnitudes</td>
+      <td><code>NumberMagnitude[]</code></td>
+      <td>否</td>
+      <td>DEFAULT_MAGNITUDES</td>
+      <td>自定义数量级配置</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`string`
+- 描述：格式化后的字符串
+
+## 类型定义
+
+```typescript
+/** 数量级后缀类型 */
+type NumberSuffix = 'K' | 'M' | 'B' | 'T'
+
+/** 数量级配置 */
+interface NumberMagnitude {
+  /** 阈值 */
+  threshold: number
+  /** 后缀 */
+  suffix: NumberSuffix
+  /** 除数 */
+  divisor: number
+}
+
+/** formatNumber 配置选项 */
+interface FormatNumberOptions {
+  /** 要格式化的数字 */
+  value: number
+  /** 小数位数，默认值：1 */
+  decimals?: number
+  /** 是否去除尾随零，默认值：true */
+  trimZeros?: boolean
+  /** 自定义数量级配置 */
+  magnitudes?: NumberMagnitude[]
+}
+```
+
+## 使用示例
+
+```typescript
+import formatNumber from '@justichentai/js-utils/formatNumber'
+
+// 基础用法
+formatNumber({ value: 532 })        // "532"
+formatNumber({ value: 1234 })       // "1.2K"
+formatNumber({ value: 12345 })      // "12.3K"
+formatNumber({ value: 1234567 })    // "1.2M"
+formatNumber({ value: 1234567890 }) // "1.2B"
+
+// 自定义小数位
+formatNumber({ value: 1234567, decimals: 2 }) // "1.23M"
+formatNumber({ value: 1234567, decimals: 0 }) // "1M"
+
+// 保留尾零
+formatNumber({ value: 1000000, trimZeros: false }) // "1.0M"
+
+// 负数
+formatNumber({ value: -1234567 }) // "-1.2M"
+```
+
+## 实现原理
+
+1. **负数处理**：先取绝对值计算，最后添加负号
+2. **阈值匹配**：从大到小遍历数量级配置，找到第一个满足条件的阈值
+3. **四舍五入**：使用 `toFixed()` 进行四舍五入
+4. **进位处理**：当四舍五入后超过 1000 时，递归调用自身处理进位
+5. **尾零处理**：使用 `parseFloat().toString()` 去除尾零
+
+这种实现确保了输出格式的一致性和可读性，避免出现 `1000K` 这种不自然的表示。

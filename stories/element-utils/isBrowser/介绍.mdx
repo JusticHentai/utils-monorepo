@@ -1,0 +1,127 @@
+import basicDemo from './basicDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# isBrowser
+
+检测当前代码是否运行在浏览器环境中。这是一个基础工具函数，被其他所有环境检测工具依赖。
+
+## 为什么需要环境检测？
+
+在同构/SSR（Server-Side Rendering）应用中，代码会同时在 Node.js 服务器和浏览器中运行：
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      同构应用执行流程                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   [服务端渲染]              [客户端激活]                     │
+│        ↓                        ↓                          │
+│   Node.js 环境              浏览器环境                       │
+│   ❌ 无 window              ✅ 有 window                    │
+│   ❌ 无 document            ✅ 有 document                  │
+│   ❌ 无 DOM API             ✅ 有 DOM API                   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 基础检测
+
+检测当前是否在浏览器环境中运行，通过判断 `window` 和 `document` 对象是否存在。
+
+<CodeOrSourceMdx language="typescript">
+  {basicDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>返回值</td>
+      <td><code>boolean</code></td>
+      <td>是否在浏览器环境中运行</td>
+    </tr>
+  </tbody>
+</table>
+
+## 典型使用场景
+
+### SSR 兼容代码
+
+```typescript
+import isBrowser from '@justichentai/element-utils/isBrowser'
+
+// 在组件中安全使用 DOM API
+const getScrollPosition = () => {
+  if (!isBrowser()) {
+    return { x: 0, y: 0 }
+  }
+  return {
+    x: window.scrollX,
+    y: window.scrollY
+  }
+}
+```
+
+### 条件初始化
+
+```typescript
+import isBrowser from '@justichentai/element-utils/isBrowser'
+
+// 只在浏览器端初始化第三方库
+if (isBrowser()) {
+  import('analytics-library').then(analytics => {
+    analytics.init()
+  })
+}
+```
+
+## 具体实现原理
+
+### 文件结构
+
+- `index.ts` - 唯一源文件，包含 isBrowser 函数实现
+
+### 核心流程
+
+1. 检查 `typeof window !== 'undefined'`
+2. 检查 `typeof document !== 'undefined'`
+3. 两个条件都满足返回 true
+
+### 关键技术点
+
+- 实现：`typeof window !== 'undefined' && typeof document !== 'undefined'`
+- 使用 `typeof` 而非直接访问，避免 ReferenceError
+- 同时检查 window 和 document，排除 Web Worker 环境
+
+## 常见问题
+
+<table>
+  <thead>
+    <tr>
+      <th>问题</th>
+      <th>解决方案</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SSR 中访问 window 报错</td>
+      <td>使用 <code>isBrowser()</code> 包裹 DOM 操作代码</td>
+    </tr>
+    <tr>
+      <td>Web Worker 中返回 false</td>
+      <td>Web Worker 无 document，需单独处理</td>
+    </tr>
+    <tr>
+      <td>Jest 测试环境</td>
+      <td>jsdom 模拟了 window/document，返回 true</td>
+    </tr>
+  </tbody>
+</table>

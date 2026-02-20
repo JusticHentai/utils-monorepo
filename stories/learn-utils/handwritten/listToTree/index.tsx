@@ -6,13 +6,13 @@ const listToTreeDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('扁平数组转树形结构')(res)
+          action('normal')(res)
         }}
       >
-        扁平数组转树形结构
+        normal
       </div>
     </div>
   )

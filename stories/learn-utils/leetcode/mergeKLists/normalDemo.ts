@@ -1,4 +1,4 @@
-import mergeKLists from '@jqxon/learn-utils/leetcode/mergeKLists'
+import mergeKLists from '../../../../packages/learn-utils/src/leetcode/mergeKLists'
 
 export default () => {
   // 创建多个有序链表

@@ -7,13 +7,1272 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./BaseFunction": {
+      "types": "./dist/BaseFunction/index.d.ts",
+      "import": "./dist/BaseFunction/index.js"
+    },
+    "./DeepOptional": {
+      "types": "./dist/DeepOptional/index.d.ts",
+      "import": "./dist/DeepOptional/index.js"
+    },
+    "./Point": {
+      "types": "./dist/Point/index.d.ts",
+      "import": "./dist/Point/index.js"
+    },
+    "./PointMap": {
+      "types": "./dist/PointMap/index.d.ts",
+      "import": "./dist/PointMap/index.js"
+    },
+    "./SetOptional": {
+      "types": "./dist/SetOptional/index.d.ts",
+      "import": "./dist/SetOptional/index.js"
+    },
+    "./TimeElapsed": {
+      "types": "./dist/TimeElapsed/index.d.ts",
+      "import": "./dist/TimeElapsed/index.js"
+    },
+    "./WrappedFunction": {
+      "types": "./dist/WrappedFunction/index.d.ts",
+      "import": "./dist/WrappedFunction/index.js"
+    },
+    "./after": {
+      "types": "./dist/after/index.d.ts",
+      "import": "./dist/after/index.js"
+    },
+    "./ary": {
+      "types": "./dist/ary/index.d.ts",
+      "import": "./dist/ary/index.js"
+    },
+    "./assign": {
+      "types": "./dist/assign/index.d.ts",
+      "import": "./dist/assign/index.js"
+    },
+    "./assignIn": {
+      "types": "./dist/assignIn/index.d.ts",
+      "import": "./dist/assignIn/index.js"
+    },
+    "./assignInWith": {
+      "types": "./dist/assignInWith/index.d.ts",
+      "import": "./dist/assignInWith/index.js"
+    },
+    "./assignWith": {
+      "types": "./dist/assignWith/index.d.ts",
+      "import": "./dist/assignWith/index.js"
+    },
+    "./asyncFormat": {
+      "types": "./dist/asyncFormat/index.d.ts",
+      "import": "./dist/asyncFormat/index.js"
+    },
+    "./at": {
+      "types": "./dist/at/index.d.ts",
+      "import": "./dist/at/index.js"
+    },
+    "./attempt": {
+      "types": "./dist/attempt/index.d.ts",
+      "import": "./dist/attempt/index.js"
+    },
+    "./before": {
+      "types": "./dist/before/index.d.ts",
+      "import": "./dist/before/index.js"
+    },
+    "./bind": {
+      "types": "./dist/bind/index.d.ts",
+      "import": "./dist/bind/index.js"
+    },
+    "./bindAll": {
+      "types": "./dist/bindAll/index.d.ts",
+      "import": "./dist/bindAll/index.js"
+    },
+    "./bindKey": {
+      "types": "./dist/bindKey/index.d.ts",
+      "import": "./dist/bindKey/index.js"
+    },
+    "./camelCase": {
+      "types": "./dist/camelCase/index.d.ts",
+      "import": "./dist/camelCase/index.js"
+    },
+    "./capitalize": {
+      "types": "./dist/capitalize/index.d.ts",
+      "import": "./dist/capitalize/index.js"
+    },
+    "./castArray": {
+      "types": "./dist/castArray/index.d.ts",
+      "import": "./dist/castArray/index.js"
+    },
+    "./ceil": {
+      "types": "./dist/ceil/index.d.ts",
+      "import": "./dist/ceil/index.js"
+    },
+    "./chunk": {
+      "types": "./dist/chunk/index.d.ts",
+      "import": "./dist/chunk/index.js"
+    },
+    "./clamp": {
+      "types": "./dist/clamp/index.d.ts",
+      "import": "./dist/clamp/index.js"
+    },
+    "./compact": {
+      "types": "./dist/compact/index.d.ts",
+      "import": "./dist/compact/index.js"
+    },
+    "./concat": {
+      "types": "./dist/concat/index.d.ts",
+      "import": "./dist/concat/index.js"
+    },
+    "./cond": {
+      "types": "./dist/cond/index.d.ts",
+      "import": "./dist/cond/index.js"
+    },
+    "./conforms": {
+      "types": "./dist/conforms/index.d.ts",
+      "import": "./dist/conforms/index.js"
+    },
+    "./conformsTo": {
+      "types": "./dist/conformsTo/index.d.ts",
+      "import": "./dist/conformsTo/index.js"
+    },
+    "./constant": {
+      "types": "./dist/constant/index.d.ts",
+      "import": "./dist/constant/index.js"
+    },
+    "./countBy": {
+      "types": "./dist/countBy/index.d.ts",
+      "import": "./dist/countBy/index.js"
+    },
+    "./countdown": {
+      "types": "./dist/countdown/index.d.ts",
+      "import": "./dist/countdown/index.js"
+    },
+    "./create": {
+      "types": "./dist/create/index.d.ts",
+      "import": "./dist/create/index.js"
+    },
+    "./createBatch": {
+      "types": "./dist/createBatch/index.d.ts",
+      "import": "./dist/createBatch/index.js"
+    },
+    "./createPromiseController": {
+      "types": "./dist/createPromiseController/index.d.ts",
+      "import": "./dist/createPromiseController/index.js"
+    },
+    "./curry": {
+      "types": "./dist/curry/index.d.ts",
+      "import": "./dist/curry/index.js"
+    },
+    "./curryRight": {
+      "types": "./dist/curryRight/index.d.ts",
+      "import": "./dist/curryRight/index.js"
+    },
+    "./debounce": {
+      "types": "./dist/debounce/index.d.ts",
+      "import": "./dist/debounce/index.js"
+    },
+    "./deburr": {
+      "types": "./dist/deburr/index.d.ts",
+      "import": "./dist/deburr/index.js"
+    },
+    "./deepClone": {
+      "types": "./dist/deepClone/index.d.ts",
+      "import": "./dist/deepClone/index.js"
+    },
+    "./deepMerge": {
+      "types": "./dist/deepMerge/index.d.ts",
+      "import": "./dist/deepMerge/index.js"
+    },
+    "./defaultTo": {
+      "types": "./dist/defaultTo/index.d.ts",
+      "import": "./dist/defaultTo/index.js"
+    },
+    "./defaults": {
+      "types": "./dist/defaults/index.d.ts",
+      "import": "./dist/defaults/index.js"
+    },
+    "./defaultsDeep": {
+      "types": "./dist/defaultsDeep/index.d.ts",
+      "import": "./dist/defaultsDeep/index.js"
+    },
+    "./defer": {
+      "types": "./dist/defer/index.d.ts",
+      "import": "./dist/defer/index.js"
+    },
+    "./delay": {
+      "types": "./dist/delay/index.d.ts",
+      "import": "./dist/delay/index.js"
+    },
+    "./difference": {
+      "types": "./dist/difference/index.d.ts",
+      "import": "./dist/difference/index.js"
+    },
+    "./differenceBy": {
+      "types": "./dist/differenceBy/index.d.ts",
+      "import": "./dist/differenceBy/index.js"
+    },
+    "./differenceWith": {
+      "types": "./dist/differenceWith/index.d.ts",
+      "import": "./dist/differenceWith/index.js"
+    },
+    "./drop": {
+      "types": "./dist/drop/index.d.ts",
+      "import": "./dist/drop/index.js"
+    },
+    "./dropRight": {
+      "types": "./dist/dropRight/index.d.ts",
+      "import": "./dist/dropRight/index.js"
+    },
+    "./dropRightWhile": {
+      "types": "./dist/dropRightWhile/index.d.ts",
+      "import": "./dist/dropRightWhile/index.js"
+    },
+    "./dropWhile": {
+      "types": "./dist/dropWhile/index.d.ts",
+      "import": "./dist/dropWhile/index.js"
+    },
+    "./endsWith": {
+      "types": "./dist/endsWith/index.d.ts",
+      "import": "./dist/endsWith/index.js"
+    },
+    "./eq": {
+      "types": "./dist/eq/index.d.ts",
+      "import": "./dist/eq/index.js"
+    },
+    "./escape": {
+      "types": "./dist/escape/index.d.ts",
+      "import": "./dist/escape/index.js"
+    },
+    "./escapeRegExp": {
+      "types": "./dist/escapeRegExp/index.d.ts",
+      "import": "./dist/escapeRegExp/index.js"
+    },
+    "./every": {
+      "types": "./dist/every/index.d.ts",
+      "import": "./dist/every/index.js"
+    },
+    "./fetchFormat": {
+      "types": "./dist/fetchFormat/index.d.ts",
+      "import": "./dist/fetchFormat/index.js"
+    },
+    "./fill": {
+      "types": "./dist/fill/index.d.ts",
+      "import": "./dist/fill/index.js"
+    },
+    "./filter": {
+      "types": "./dist/filter/index.d.ts",
+      "import": "./dist/filter/index.js"
+    },
+    "./find": {
+      "types": "./dist/find/index.d.ts",
+      "import": "./dist/find/index.js"
+    },
+    "./findIndex": {
+      "types": "./dist/findIndex/index.d.ts",
+      "import": "./dist/findIndex/index.js"
+    },
+    "./findKey": {
+      "types": "./dist/findKey/index.d.ts",
+      "import": "./dist/findKey/index.js"
+    },
+    "./findLast": {
+      "types": "./dist/findLast/index.d.ts",
+      "import": "./dist/findLast/index.js"
+    },
+    "./findLastIndex": {
+      "types": "./dist/findLastIndex/index.d.ts",
+      "import": "./dist/findLastIndex/index.js"
+    },
+    "./findLastKey": {
+      "types": "./dist/findLastKey/index.d.ts",
+      "import": "./dist/findLastKey/index.js"
+    },
+    "./flatMap": {
+      "types": "./dist/flatMap/index.d.ts",
+      "import": "./dist/flatMap/index.js"
+    },
+    "./flatMapDeep": {
+      "types": "./dist/flatMapDeep/index.d.ts",
+      "import": "./dist/flatMapDeep/index.js"
+    },
+    "./flatMapDepth": {
+      "types": "./dist/flatMapDepth/index.d.ts",
+      "import": "./dist/flatMapDepth/index.js"
+    },
+    "./flatten": {
+      "types": "./dist/flatten/index.d.ts",
+      "import": "./dist/flatten/index.js"
+    },
+    "./flattenDeep": {
+      "types": "./dist/flattenDeep/index.d.ts",
+      "import": "./dist/flattenDeep/index.js"
+    },
+    "./flattenDepth": {
+      "types": "./dist/flattenDepth/index.d.ts",
+      "import": "./dist/flattenDepth/index.js"
+    },
+    "./flip": {
+      "types": "./dist/flip/index.d.ts",
+      "import": "./dist/flip/index.js"
+    },
+    "./floor": {
+      "types": "./dist/floor/index.d.ts",
+      "import": "./dist/floor/index.js"
+    },
+    "./flow": {
+      "types": "./dist/flow/index.d.ts",
+      "import": "./dist/flow/index.js"
+    },
+    "./flowRight": {
+      "types": "./dist/flowRight/index.d.ts",
+      "import": "./dist/flowRight/index.js"
+    },
+    "./forEach": {
+      "types": "./dist/forEach/index.d.ts",
+      "import": "./dist/forEach/index.js"
+    },
+    "./forEachRight": {
+      "types": "./dist/forEachRight/index.d.ts",
+      "import": "./dist/forEachRight/index.js"
+    },
+    "./forIn": {
+      "types": "./dist/forIn/index.d.ts",
+      "import": "./dist/forIn/index.js"
+    },
+    "./forInRight": {
+      "types": "./dist/forInRight/index.d.ts",
+      "import": "./dist/forInRight/index.js"
+    },
+    "./forOwn": {
+      "types": "./dist/forOwn/index.d.ts",
+      "import": "./dist/forOwn/index.js"
+    },
+    "./forOwnRight": {
+      "types": "./dist/forOwnRight/index.d.ts",
+      "import": "./dist/forOwnRight/index.js"
+    },
+    "./formatDateByLocale": {
+      "types": "./dist/formatDateByLocale/index.d.ts",
+      "import": "./dist/formatDateByLocale/index.js"
+    },
+    "./formatNumber": {
+      "types": "./dist/formatNumber/index.d.ts",
+      "import": "./dist/formatNumber/index.js"
+    },
+    "./fromPairs": {
+      "types": "./dist/fromPairs/index.d.ts",
+      "import": "./dist/fromPairs/index.js"
+    },
+    "./functions": {
+      "types": "./dist/functions/index.d.ts",
+      "import": "./dist/functions/index.js"
+    },
+    "./functionsIn": {
+      "types": "./dist/functionsIn/index.d.ts",
+      "import": "./dist/functionsIn/index.js"
+    },
+    "./get": {
+      "types": "./dist/get/index.d.ts",
+      "import": "./dist/get/index.js"
+    },
+    "./getDistance": {
+      "types": "./dist/getDistance/index.d.ts",
+      "import": "./dist/getDistance/index.js"
+    },
+    "./getTag": {
+      "types": "./dist/getTag/index.d.ts",
+      "import": "./dist/getTag/index.js"
+    },
+    "./getPosition": {
+      "types": "./dist/getPosition/index.d.ts",
+      "import": "./dist/getPosition/index.js"
+    },
+    "./groupBy": {
+      "types": "./dist/groupBy/index.d.ts",
+      "import": "./dist/groupBy/index.js"
+    },
+
+    "./has": {
+      "types": "./dist/has/index.d.ts",
+      "import": "./dist/has/index.js"
+    },
+    "./hasIn": {
+      "types": "./dist/hasIn/index.d.ts",
+      "import": "./dist/hasIn/index.js"
+    },
+    "./head": {
+      "types": "./dist/head/index.d.ts",
+      "import": "./dist/head/index.js"
+    },
+    "./identity": {
+      "types": "./dist/identity/index.d.ts",
+      "import": "./dist/identity/index.js"
+    },
+    "./inRange": {
+      "types": "./dist/inRange/index.d.ts",
+      "import": "./dist/inRange/index.js"
+    },
+    "./includes": {
+      "types": "./dist/includes/index.d.ts",
+      "import": "./dist/includes/index.js"
+    },
+    "./indexOf": {
+      "types": "./dist/indexOf/index.d.ts",
+      "import": "./dist/indexOf/index.js"
+    },
+    "./initial": {
+      "types": "./dist/initial/index.d.ts",
+      "import": "./dist/initial/index.js"
+    },
+    "./intersection": {
+      "types": "./dist/intersection/index.d.ts",
+      "import": "./dist/intersection/index.js"
+    },
+    "./intersectionBy": {
+      "types": "./dist/intersectionBy/index.d.ts",
+      "import": "./dist/intersectionBy/index.js"
+    },
+    "./intersectionWith": {
+      "types": "./dist/intersectionWith/index.d.ts",
+      "import": "./dist/intersectionWith/index.js"
+    },
+    "./invert": {
+      "types": "./dist/invert/index.d.ts",
+      "import": "./dist/invert/index.js"
+    },
+    "./invertBy": {
+      "types": "./dist/invertBy/index.d.ts",
+      "import": "./dist/invertBy/index.js"
+    },
+    "./invoke": {
+      "types": "./dist/invoke/index.d.ts",
+      "import": "./dist/invoke/index.js"
+    },
+    "./invokeMap": {
+      "types": "./dist/invokeMap/index.d.ts",
+      "import": "./dist/invokeMap/index.js"
+    },
+    "./isArguments": {
+      "types": "./dist/isArguments/index.d.ts",
+      "import": "./dist/isArguments/index.js"
+    },
+    "./isArray": {
+      "types": "./dist/isArray/index.d.ts",
+      "import": "./dist/isArray/index.js"
+    },
+    "./isArrayBuffer": {
+      "types": "./dist/isArrayBuffer/index.d.ts",
+      "import": "./dist/isArrayBuffer/index.js"
+    },
+    "./isArrayLike": {
+      "types": "./dist/isArrayLike/index.d.ts",
+      "import": "./dist/isArrayLike/index.js"
+    },
+    "./isArrayLikeObject": {
+      "types": "./dist/isArrayLikeObject/index.d.ts",
+      "import": "./dist/isArrayLikeObject/index.js"
+    },
+    "./isBoolean": {
+      "types": "./dist/isBoolean/index.d.ts",
+      "import": "./dist/isBoolean/index.js"
+    },
+    "./isBuffer": {
+      "types": "./dist/isBuffer/index.d.ts",
+      "import": "./dist/isBuffer/index.js"
+    },
+    "./isDate": {
+      "types": "./dist/isDate/index.d.ts",
+      "import": "./dist/isDate/index.js"
+    },
+    "./isElement": {
+      "types": "./dist/isElement/index.d.ts",
+      "import": "./dist/isElement/index.js"
+    },
+    "./isEmpty": {
+      "types": "./dist/isEmpty/index.d.ts",
+      "import": "./dist/isEmpty/index.js"
+    },
+    "./isEmptyObject": {
+      "types": "./dist/isEmptyObject/index.d.ts",
+      "import": "./dist/isEmptyObject/index.js"
+    },
+    "./isEqual": {
+      "types": "./dist/isEqual/index.d.ts",
+      "import": "./dist/isEqual/index.js"
+    },
+    "./isEqualWith": {
+      "types": "./dist/isEqualWith/index.d.ts",
+      "import": "./dist/isEqualWith/index.js"
+    },
+    "./isError": {
+      "types": "./dist/isError/index.d.ts",
+      "import": "./dist/isError/index.js"
+    },
+    "./isFiniteNum": {
+      "types": "./dist/isFiniteNum/index.d.ts",
+      "import": "./dist/isFiniteNum/index.js"
+    },
+    "./isFunction": {
+      "types": "./dist/isFunction/index.d.ts",
+      "import": "./dist/isFunction/index.js"
+    },
+    "./isInteger": {
+      "types": "./dist/isInteger/index.d.ts",
+      "import": "./dist/isInteger/index.js"
+    },
+    "./isLength": {
+      "types": "./dist/isLength/index.d.ts",
+      "import": "./dist/isLength/index.js"
+    },
+    "./isMap": {
+      "types": "./dist/isMap/index.d.ts",
+      "import": "./dist/isMap/index.js"
+    },
+    "./isMatch": {
+      "types": "./dist/isMatch/index.d.ts",
+      "import": "./dist/isMatch/index.js"
+    },
+    "./isMatchWith": {
+      "types": "./dist/isMatchWith/index.d.ts",
+      "import": "./dist/isMatchWith/index.js"
+    },
+    "./isNaNValue": {
+      "types": "./dist/isNaNValue/index.d.ts",
+      "import": "./dist/isNaNValue/index.js"
+    },
+    "./isNative": {
+      "types": "./dist/isNative/index.d.ts",
+      "import": "./dist/isNative/index.js"
+    },
+    "./isNil": {
+      "types": "./dist/isNil/index.d.ts",
+      "import": "./dist/isNil/index.js"
+    },
+    "./isNull": {
+      "types": "./dist/isNull/index.d.ts",
+      "import": "./dist/isNull/index.js"
+    },
+    "./isNumber": {
+      "types": "./dist/isNumber/index.d.ts",
+      "import": "./dist/isNumber/index.js"
+    },
+    "./isObject": {
+      "types": "./dist/isObject/index.d.ts",
+      "import": "./dist/isObject/index.js"
+    },
+    "./isObjectLike": {
+      "types": "./dist/isObjectLike/index.d.ts",
+      "import": "./dist/isObjectLike/index.js"
+    },
+    "./isPlainObject": {
+      "types": "./dist/isPlainObject/index.d.ts",
+      "import": "./dist/isPlainObject/index.js"
+    },
+    "./isRegExp": {
+      "types": "./dist/isRegExp/index.d.ts",
+      "import": "./dist/isRegExp/index.js"
+    },
+    "./isSafeInteger": {
+      "types": "./dist/isSafeInteger/index.d.ts",
+      "import": "./dist/isSafeInteger/index.js"
+    },
+    "./isSet": {
+      "types": "./dist/isSet/index.d.ts",
+      "import": "./dist/isSet/index.js"
+    },
+    "./isString": {
+      "types": "./dist/isString/index.d.ts",
+      "import": "./dist/isString/index.js"
+    },
+    "./isSymbol": {
+      "types": "./dist/isSymbol/index.d.ts",
+      "import": "./dist/isSymbol/index.js"
+    },
+    "./isTypedArray": {
+      "types": "./dist/isTypedArray/index.d.ts",
+      "import": "./dist/isTypedArray/index.js"
+    },
+    "./isUndefined": {
+      "types": "./dist/isUndefined/index.d.ts",
+      "import": "./dist/isUndefined/index.js"
+    },
+    "./isUrl": {
+      "types": "./dist/isUrl/index.d.ts",
+      "import": "./dist/isUrl/index.js"
+    },
+    "./isWeakMap": {
+      "types": "./dist/isWeakMap/index.d.ts",
+      "import": "./dist/isWeakMap/index.js"
+    },
+    "./isWeakSet": {
+      "types": "./dist/isWeakSet/index.d.ts",
+      "import": "./dist/isWeakSet/index.js"
+    },
+    "./isWindow": {
+      "types": "./dist/isWindow/index.d.ts",
+      "import": "./dist/isWindow/index.js"
+    },
+    "./iteratee": {
+      "types": "./dist/iteratee/index.d.ts",
+      "import": "./dist/iteratee/index.js"
+    },
+    "./join": {
+      "types": "./dist/join/index.d.ts",
+      "import": "./dist/join/index.js"
+    },
+    "./kebabCase": {
+      "types": "./dist/kebabCase/index.d.ts",
+      "import": "./dist/kebabCase/index.js"
+    },
+    "./keyBy": {
+      "types": "./dist/keyBy/index.d.ts",
+      "import": "./dist/keyBy/index.js"
+    },
+    "./keys": {
+      "types": "./dist/keys/index.d.ts",
+      "import": "./dist/keys/index.js"
+    },
+    "./keysIn": {
+      "types": "./dist/keysIn/index.d.ts",
+      "import": "./dist/keysIn/index.js"
+    },
+    "./last": {
+      "types": "./dist/last/index.d.ts",
+      "import": "./dist/last/index.js"
+    },
+    "./lastIndexOf": {
+      "types": "./dist/lastIndexOf/index.d.ts",
+      "import": "./dist/lastIndexOf/index.js"
+    },
+    "./lerp": {
+      "types": "./dist/lerp/index.d.ts",
+      "import": "./dist/lerp/index.js"
+    },
+    "./logger": {
+      "types": "./dist/logger/index.d.ts",
+      "import": "./dist/logger/index.js"
+    },
+    "./lowerCase": {
+      "types": "./dist/lowerCase/index.d.ts",
+      "import": "./dist/lowerCase/index.js"
+    },
+    "./lowerFirst": {
+      "types": "./dist/lowerFirst/index.d.ts",
+      "import": "./dist/lowerFirst/index.js"
+    },
+    "./map": {
+      "types": "./dist/map/index.d.ts",
+      "import": "./dist/map/index.js"
+    },
+    "./mapKeys": {
+      "types": "./dist/mapKeys/index.d.ts",
+      "import": "./dist/mapKeys/index.js"
+    },
+    "./mapValues": {
+      "types": "./dist/mapValues/index.d.ts",
+      "import": "./dist/mapValues/index.js"
+    },
+    "./matches": {
+      "types": "./dist/matches/index.d.ts",
+      "import": "./dist/matches/index.js"
+    },
+    "./matchesProperty": {
+      "types": "./dist/matchesProperty/index.d.ts",
+      "import": "./dist/matchesProperty/index.js"
+    },
+    "./max": {
+      "types": "./dist/max/index.d.ts",
+      "import": "./dist/max/index.js"
+    },
+    "./maxBy": {
+      "types": "./dist/maxBy/index.d.ts",
+      "import": "./dist/maxBy/index.js"
+    },
+    "./mean": {
+      "types": "./dist/mean/index.d.ts",
+      "import": "./dist/mean/index.js"
+    },
+    "./meanBy": {
+      "types": "./dist/meanBy/index.d.ts",
+      "import": "./dist/meanBy/index.js"
+    },
+    "./memoize": {
+      "types": "./dist/memoize/index.d.ts",
+      "import": "./dist/memoize/index.js"
+    },
+    "./merge": {
+      "types": "./dist/merge/index.d.ts",
+      "import": "./dist/merge/index.js"
+    },
+    "./mergeWith": {
+      "types": "./dist/mergeWith/index.d.ts",
+      "import": "./dist/mergeWith/index.js"
+    },
+    "./method": {
+      "types": "./dist/method/index.d.ts",
+      "import": "./dist/method/index.js"
+    },
+    "./methodOf": {
+      "types": "./dist/methodOf/index.d.ts",
+      "import": "./dist/methodOf/index.js"
+    },
+    "./min": {
+      "types": "./dist/min/index.d.ts",
+      "import": "./dist/min/index.js"
+    },
+    "./minBy": {
+      "types": "./dist/minBy/index.d.ts",
+      "import": "./dist/minBy/index.js"
+    },
+    "./negate": {
+      "types": "./dist/negate/index.d.ts",
+      "import": "./dist/negate/index.js"
+    },
+    "./noop": {
+      "types": "./dist/noop/index.d.ts",
+      "import": "./dist/noop/index.js"
+    },
+    "./now": {
+      "types": "./dist/now/index.d.ts",
+      "import": "./dist/now/index.js"
+    },
+    "./nth": {
+      "types": "./dist/nth/index.d.ts",
+      "import": "./dist/nth/index.js"
+    },
+    "./nthArg": {
+      "types": "./dist/nthArg/index.d.ts",
+      "import": "./dist/nthArg/index.js"
+    },
+    "./omit": {
+      "types": "./dist/omit/index.d.ts",
+      "import": "./dist/omit/index.js"
+    },
+    "./omitBy": {
+      "types": "./dist/omitBy/index.d.ts",
+      "import": "./dist/omitBy/index.js"
+    },
+    "./once": {
+      "types": "./dist/once/index.d.ts",
+      "import": "./dist/once/index.js"
+    },
+    "./orderBy": {
+      "types": "./dist/orderBy/index.d.ts",
+      "import": "./dist/orderBy/index.js"
+    },
+    "./over": {
+      "types": "./dist/over/index.d.ts",
+      "import": "./dist/over/index.js"
+    },
+    "./overArgs": {
+      "types": "./dist/overArgs/index.d.ts",
+      "import": "./dist/overArgs/index.js"
+    },
+    "./overEvery": {
+      "types": "./dist/overEvery/index.d.ts",
+      "import": "./dist/overEvery/index.js"
+    },
+    "./overSome": {
+      "types": "./dist/overSome/index.d.ts",
+      "import": "./dist/overSome/index.js"
+    },
+    "./pad": {
+      "types": "./dist/pad/index.d.ts",
+      "import": "./dist/pad/index.js"
+    },
+    "./padEnd": {
+      "types": "./dist/padEnd/index.d.ts",
+      "import": "./dist/padEnd/index.js"
+    },
+    "./padStart": {
+      "types": "./dist/padStart/index.d.ts",
+      "import": "./dist/padStart/index.js"
+    },
+    "./parseInt": {
+      "types": "./dist/parseInt/index.d.ts",
+      "import": "./dist/parseInt/index.js"
+    },
+    "./parseTime": {
+      "types": "./dist/parseTime/index.d.ts",
+      "import": "./dist/parseTime/index.js"
+    },
+    "./partial": {
+      "types": "./dist/partial/index.d.ts",
+      "import": "./dist/partial/index.js"
+    },
+    "./partialRight": {
+      "types": "./dist/partialRight/index.d.ts",
+      "import": "./dist/partialRight/index.js"
+    },
+    "./partition": {
+      "types": "./dist/partition/index.d.ts",
+      "import": "./dist/partition/index.js"
+    },
+    "./pick": {
+      "types": "./dist/pick/index.d.ts",
+      "import": "./dist/pick/index.js"
+    },
+    "./pickBy": {
+      "types": "./dist/pickBy/index.d.ts",
+      "import": "./dist/pickBy/index.js"
+    },
+    "./property": {
+      "types": "./dist/property/index.d.ts",
+      "import": "./dist/property/index.js"
+    },
+    "./propertyOf": {
+      "types": "./dist/propertyOf/index.d.ts",
+      "import": "./dist/propertyOf/index.js"
+    },
+    "./pull": {
+      "types": "./dist/pull/index.d.ts",
+      "import": "./dist/pull/index.js"
+    },
+    "./pullAll": {
+      "types": "./dist/pullAll/index.d.ts",
+      "import": "./dist/pullAll/index.js"
+    },
+    "./pullAllBy": {
+      "types": "./dist/pullAllBy/index.d.ts",
+      "import": "./dist/pullAllBy/index.js"
+    },
+    "./pullAllWith": {
+      "types": "./dist/pullAllWith/index.d.ts",
+      "import": "./dist/pullAllWith/index.js"
+    },
+    "./pullAt": {
+      "types": "./dist/pullAt/index.d.ts",
+      "import": "./dist/pullAt/index.js"
+    },
+    "./random": {
+      "types": "./dist/random/index.d.ts",
+      "import": "./dist/random/index.js"
+    },
+    "./range": {
+      "types": "./dist/range/index.d.ts",
+      "import": "./dist/range/index.js"
+    },
+    "./rangeRight": {
+      "types": "./dist/rangeRight/index.d.ts",
+      "import": "./dist/rangeRight/index.js"
+    },
+    "./rearg": {
+      "types": "./dist/rearg/index.d.ts",
+      "import": "./dist/rearg/index.js"
+    },
+    "./reduce": {
+      "types": "./dist/reduce/index.d.ts",
+      "import": "./dist/reduce/index.js"
+    },
+    "./reduceRight": {
+      "types": "./dist/reduceRight/index.d.ts",
+      "import": "./dist/reduceRight/index.js"
+    },
+    "./reject": {
+      "types": "./dist/reject/index.d.ts",
+      "import": "./dist/reject/index.js"
+    },
+    "./remove": {
+      "types": "./dist/remove/index.d.ts",
+      "import": "./dist/remove/index.js"
+    },
+    "./repeat": {
+      "types": "./dist/repeat/index.d.ts",
+      "import": "./dist/repeat/index.js"
+    },
+    "./replace": {
+      "types": "./dist/replace/index.d.ts",
+      "import": "./dist/replace/index.js"
+    },
+    "./resource-controller": {
+      "types": "./dist/resource-controller/index.d.ts",
+      "import": "./dist/resource-controller/index.js"
+    },
+    "./rest": {
+      "types": "./dist/rest/index.d.ts",
+      "import": "./dist/rest/index.js"
+    },
+    "./result": {
+      "types": "./dist/result/index.d.ts",
+      "import": "./dist/result/index.js"
+    },
+    "./retryFormat": {
+      "types": "./dist/retryFormat/index.d.ts",
+      "import": "./dist/retryFormat/index.js"
+    },
+    "./reverse": {
+      "types": "./dist/reverse/index.d.ts",
+      "import": "./dist/reverse/index.js"
+    },
+    "./round": {
+      "types": "./dist/round/index.d.ts",
+      "import": "./dist/round/index.js"
+    },
+    "./sample": {
+      "types": "./dist/sample/index.d.ts",
+      "import": "./dist/sample/index.js"
+    },
+    "./sampleSize": {
+      "types": "./dist/sampleSize/index.d.ts",
+      "import": "./dist/sampleSize/index.js"
+    },
+    "./secondsToHHMMSS": {
+      "types": "./dist/secondsToHHMMSS/index.d.ts",
+      "import": "./dist/secondsToHHMMSS/index.js"
+    },
+    "./set": {
+      "types": "./dist/set/index.d.ts",
+      "import": "./dist/set/index.js"
+    },
+    "./setWith": {
+      "types": "./dist/setWith/index.d.ts",
+      "import": "./dist/setWith/index.js"
+    },
+    "./shuffle": {
+      "types": "./dist/shuffle/index.d.ts",
+      "import": "./dist/shuffle/index.js"
+    },
+    "./size": {
+      "types": "./dist/size/index.d.ts",
+      "import": "./dist/size/index.js"
+    },
+    "./sleep": {
+      "types": "./dist/sleep/index.d.ts",
+      "import": "./dist/sleep/index.js"
+    },
+    "./slice": {
+      "types": "./dist/slice/index.d.ts",
+      "import": "./dist/slice/index.js"
+    },
+    "./snakeCase": {
+      "types": "./dist/snakeCase/index.d.ts",
+      "import": "./dist/snakeCase/index.js"
+    },
+    "./some": {
+      "types": "./dist/some/index.d.ts",
+      "import": "./dist/some/index.js"
+    },
+    "./sortBy": {
+      "types": "./dist/sortBy/index.d.ts",
+      "import": "./dist/sortBy/index.js"
+    },
+    "./sortedIndex": {
+      "types": "./dist/sortedIndex/index.d.ts",
+      "import": "./dist/sortedIndex/index.js"
+    },
+    "./sortedIndexBy": {
+      "types": "./dist/sortedIndexBy/index.d.ts",
+      "import": "./dist/sortedIndexBy/index.js"
+    },
+    "./sortedIndexOf": {
+      "types": "./dist/sortedIndexOf/index.d.ts",
+      "import": "./dist/sortedIndexOf/index.js"
+    },
+    "./sortedLastIndex": {
+      "types": "./dist/sortedLastIndex/index.d.ts",
+      "import": "./dist/sortedLastIndex/index.js"
+    },
+    "./sortedLastIndexBy": {
+      "types": "./dist/sortedLastIndexBy/index.d.ts",
+      "import": "./dist/sortedLastIndexBy/index.js"
+    },
+    "./sortedLastIndexOf": {
+      "types": "./dist/sortedLastIndexOf/index.d.ts",
+      "import": "./dist/sortedLastIndexOf/index.js"
+    },
+    "./sortedUniq": {
+      "types": "./dist/sortedUniq/index.d.ts",
+      "import": "./dist/sortedUniq/index.js"
+    },
+    "./sortedUniqBy": {
+      "types": "./dist/sortedUniqBy/index.d.ts",
+      "import": "./dist/sortedUniqBy/index.js"
+    },
+    "./split": {
+      "types": "./dist/split/index.d.ts",
+      "import": "./dist/split/index.js"
+    },
+    "./spread": {
+      "types": "./dist/spread/index.d.ts",
+      "import": "./dist/spread/index.js"
+    },
+    "./startCase": {
+      "types": "./dist/startCase/index.d.ts",
+      "import": "./dist/startCase/index.js"
+    },
+    "./startsWith": {
+      "types": "./dist/startsWith/index.d.ts",
+      "import": "./dist/startsWith/index.js"
+    },
+    "./stub": {
+      "types": "./dist/stub/index.d.ts",
+      "import": "./dist/stub/index.js"
+    },
+    "./stubArray": {
+      "types": "./dist/stubArray/index.d.ts",
+      "import": "./dist/stubArray/index.js"
+    },
+    "./stubFalse": {
+      "types": "./dist/stubFalse/index.d.ts",
+      "import": "./dist/stubFalse/index.js"
+    },
+    "./stubObject": {
+      "types": "./dist/stubObject/index.d.ts",
+      "import": "./dist/stubObject/index.js"
+    },
+    "./stubString": {
+      "types": "./dist/stubString/index.d.ts",
+      "import": "./dist/stubString/index.js"
+    },
+    "./stubTrue": {
+      "types": "./dist/stubTrue/index.d.ts",
+      "import": "./dist/stubTrue/index.js"
+    },
+    "./subtract": {
+      "types": "./dist/subtract/index.d.ts",
+      "import": "./dist/subtract/index.js"
+    },
+    "./sum": {
+      "types": "./dist/sum/index.d.ts",
+      "import": "./dist/sum/index.js"
+    },
+    "./sumBy": {
+      "types": "./dist/sumBy/index.d.ts",
+      "import": "./dist/sumBy/index.js"
+    },
+    "./tail": {
+      "types": "./dist/tail/index.d.ts",
+      "import": "./dist/tail/index.js"
+    },
+    "./take": {
+      "types": "./dist/take/index.d.ts",
+      "import": "./dist/take/index.js"
+    },
+    "./takeRight": {
+      "types": "./dist/takeRight/index.d.ts",
+      "import": "./dist/takeRight/index.js"
+    },
+    "./takeRightWhile": {
+      "types": "./dist/takeRightWhile/index.d.ts",
+      "import": "./dist/takeRightWhile/index.js"
+    },
+    "./takeWhile": {
+      "types": "./dist/takeWhile/index.d.ts",
+      "import": "./dist/takeWhile/index.js"
+    },
+    "./template": {
+      "types": "./dist/template/index.d.ts",
+      "import": "./dist/template/index.js"
+    },
+    "./throttle": {
+      "types": "./dist/throttle/index.d.ts",
+      "import": "./dist/throttle/index.js"
+    },
+    "./timeoutFormat": {
+      "types": "./dist/timeoutFormat/index.d.ts",
+      "import": "./dist/timeoutFormat/index.js"
+    },
+    "./times": {
+      "types": "./dist/times/index.d.ts",
+      "import": "./dist/times/index.js"
+    },
+    "./toArray": {
+      "types": "./dist/toArray/index.d.ts",
+      "import": "./dist/toArray/index.js"
+    },
+    "./toFinite": {
+      "types": "./dist/toFinite/index.d.ts",
+      "import": "./dist/toFinite/index.js"
+    },
+    "./toInteger": {
+      "types": "./dist/toInteger/index.d.ts",
+      "import": "./dist/toInteger/index.js"
+    },
+    "./toLength": {
+      "types": "./dist/toLength/index.d.ts",
+      "import": "./dist/toLength/index.js"
+    },
+    "./toLower": {
+      "types": "./dist/toLower/index.d.ts",
+      "import": "./dist/toLower/index.js"
+    },
+    "./toNumber": {
+      "types": "./dist/toNumber/index.d.ts",
+      "import": "./dist/toNumber/index.js"
+    },
+    "./toPairs": {
+      "types": "./dist/toPairs/index.d.ts",
+      "import": "./dist/toPairs/index.js"
+    },
+    "./toPathArray": {
+      "types": "./dist/toPathArray/index.d.ts",
+      "import": "./dist/toPathArray/index.js"
+    },
+    "./toPairsIn": {
+      "types": "./dist/toPairsIn/index.d.ts",
+      "import": "./dist/toPairsIn/index.js"
+    },
+    "./toPlainObject": {
+      "types": "./dist/toPlainObject/index.d.ts",
+      "import": "./dist/toPlainObject/index.js"
+    },
+    "./toSafeInteger": {
+      "types": "./dist/toSafeInteger/index.d.ts",
+      "import": "./dist/toSafeInteger/index.js"
+    },
+    "./toStringValue": {
+      "types": "./dist/toStringValue/index.d.ts",
+      "import": "./dist/toStringValue/index.js"
+    },
+    "./toUpper": {
+      "types": "./dist/toUpper/index.d.ts",
+      "import": "./dist/toUpper/index.js"
+    },
+    "./transform": {
+      "types": "./dist/transform/index.d.ts",
+      "import": "./dist/transform/index.js"
+    },
+    "./trim": {
+      "types": "./dist/trim/index.d.ts",
+      "import": "./dist/trim/index.js"
+    },
+    "./trimEnd": {
+      "types": "./dist/trimEnd/index.d.ts",
+      "import": "./dist/trimEnd/index.js"
+    },
+    "./trimStart": {
+      "types": "./dist/trimStart/index.d.ts",
+      "import": "./dist/trimStart/index.js"
+    },
+    "./truncate": {
+      "types": "./dist/truncate/index.d.ts",
+      "import": "./dist/truncate/index.js"
+    },
+    "./unary": {
+      "types": "./dist/unary/index.d.ts",
+      "import": "./dist/unary/index.js"
+    },
+    "./unescape": {
+      "types": "./dist/unescape/index.d.ts",
+      "import": "./dist/unescape/index.js"
+    },
+    "./union": {
+      "types": "./dist/union/index.d.ts",
+      "import": "./dist/union/index.js"
+    },
+    "./unionBy": {
+      "types": "./dist/unionBy/index.d.ts",
+      "import": "./dist/unionBy/index.js"
+    },
+    "./unionWith": {
+      "types": "./dist/unionWith/index.d.ts",
+      "import": "./dist/unionWith/index.js"
+    },
+    "./uniq": {
+      "types": "./dist/uniq/index.d.ts",
+      "import": "./dist/uniq/index.js"
+    },
+    "./uniqBy": {
+      "types": "./dist/uniqBy/index.d.ts",
+      "import": "./dist/uniqBy/index.js"
+    },
+    "./uniqWith": {
+      "types": "./dist/uniqWith/index.d.ts",
+      "import": "./dist/uniqWith/index.js"
+    },
+    "./uniqueId": {
+      "types": "./dist/uniqueId/index.d.ts",
+      "import": "./dist/uniqueId/index.js"
+    },
+    "./unset": {
+      "types": "./dist/unset/index.d.ts",
+      "import": "./dist/unset/index.js"
+    },
+    "./unzip": {
+      "types": "./dist/unzip/index.d.ts",
+      "import": "./dist/unzip/index.js"
+    },
+    "./unzipWith": {
+      "types": "./dist/unzipWith/index.d.ts",
+      "import": "./dist/unzipWith/index.js"
+    },
+    "./update": {
+      "types": "./dist/update/index.d.ts",
+      "import": "./dist/update/index.js"
+    },
+    "./updateWith": {
+      "types": "./dist/updateWith/index.d.ts",
+      "import": "./dist/updateWith/index.js"
+    },
+    "./upperCase": {
+      "types": "./dist/upperCase/index.d.ts",
+      "import": "./dist/upperCase/index.js"
+    },
+    "./upperFirst": {
+      "types": "./dist/upperFirst/index.d.ts",
+      "import": "./dist/upperFirst/index.js"
+    },
+    "./values": {
+      "types": "./dist/values/index.d.ts",
+      "import": "./dist/values/index.js"
+    },
+    "./valuesIn": {
+      "types": "./dist/valuesIn/index.d.ts",
+      "import": "./dist/valuesIn/index.js"
+    },
+    "./walk": {
+      "types": "./dist/walk/index.d.ts",
+      "import": "./dist/walk/index.js"
+    },
+    "./without": {
+      "types": "./dist/without/index.d.ts",
+      "import": "./dist/without/index.js"
+    },
+    "./words": {
+      "types": "./dist/words/index.d.ts",
+      "import": "./dist/words/index.js"
+    },
+    "./wrap": {
+      "types": "./dist/wrap/index.d.ts",
+      "import": "./dist/wrap/index.js"
+    },
+    "./xor": {
+      "types": "./dist/xor/index.d.ts",
+      "import": "./dist/xor/index.js"
+    },
+    "./xorBy": {
+      "types": "./dist/xorBy/index.d.ts",
+      "import": "./dist/xorBy/index.js"
+    },
+    "./xorWith": {
+      "types": "./dist/xorWith/index.d.ts",
+      "import": "./dist/xorWith/index.js"
+    },
+    "./zip": {
+      "types": "./dist/zip/index.d.ts",
+      "import": "./dist/zip/index.js"
+    },
+    "./zipObject": {
+      "types": "./dist/zipObject/index.d.ts",
+      "import": "./dist/zipObject/index.js"
+    },
+    "./zipObjectDeep": {
+      "types": "./dist/zipObjectDeep/index.d.ts",
+      "import": "./dist/zipObjectDeep/index.js"
+    },
+    "./zipWith": {
+      "types": "./dist/zipWith/index.d.ts",
+      "import": "./dist/zipWith/index.js"
+    }
+  },
   "files": [
     "dist",
     "package.json",
     "README.md"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "NODE_OPTIONS='--max-old-space-size=16384' tsup",
     "dev": "tsup --watch",
     "prepublish": "pnpm build"
   },

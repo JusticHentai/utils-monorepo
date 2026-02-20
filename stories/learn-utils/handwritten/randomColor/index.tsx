@@ -6,13 +6,13 @@ const randomColorDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('随机颜色生成')(res)
+          action('normal')(res)
         }}
       >
-        生成随机颜色
+        normal
       </div>
     </div>
   )

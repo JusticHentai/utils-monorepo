@@ -1,29 +1,21 @@
-import { action } from 'storybook/actions'
 import '../../.css/index.css'
-import useMergeProps from '../../../packages/element-utils/src/useMergeProps'
-
-interface DemoProps {
-  name?: string
-  age: number
-}
-
-const defaultProps = {
-  name: '默认名称',
-}
+import useBasicDemo from './basicDemo.tsx'
+import useMultiDemo from './multiDemo.tsx'
 
 const UseMergePropsDemo = () => {
-  const props: DemoProps = { age: 25 }
-  const mergedProps = useMergeProps(defaultProps, props)
+  const { showMergedProps } = useBasicDemo()
+  const { showMergedProps: showMultiMergedProps } = useMultiDemo()
 
   return (
     <div>
-      <div
-        className="storybook-button storybook-button-gap"
-        onClick={() => {
-          action('合并后的属性')(mergedProps)
-        }}
-      >
-        查看合并后的属性
+      <div style={{ marginBottom: 16, fontWeight: 'bold' }}>基础用法</div>
+      <div className="button" onClick={showMergedProps}>
+        合并两个属性对象
+      </div>
+
+      <div style={{ margin: '16px 0', fontWeight: 'bold' }}>多对象合并</div>
+      <div className="button" onClick={showMultiMergedProps}>
+        合并三个配置对象
       </div>
     </div>
   )

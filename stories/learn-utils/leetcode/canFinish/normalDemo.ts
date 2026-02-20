@@ -1,4 +1,4 @@
-import canFinish from '@jqxon/learn-utils/leetcode/canFinish'
+import canFinish from '../../../../packages/learn-utils/src/leetcode/canFinish'
 
 export default () => {
   const numCourses = 4

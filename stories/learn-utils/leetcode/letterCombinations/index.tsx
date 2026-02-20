@@ -6,13 +6,13 @@ const letterCombinationsDemo = () => {
   return (
     <div>
       <div
-        className="storybook-button storybook-button-gap"
+        className="button"
         onClick={() => {
           const res = normalDemo()
-          action('电话号码的字母组合')(res)
+          action('normal')(res)
         }}
       >
-        电话号码字母组合 "23"
+        normal
       </div>
     </div>
   )

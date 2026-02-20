@@ -1,4 +1,4 @@
-import maxProduct from '@jqxon/learn-utils/leetcode/maxProduct'
+import maxProduct from '../../../../packages/learn-utils/src/leetcode/maxProduct'
 
 export default () => {
   const nums = [2, 3, -2, 4]

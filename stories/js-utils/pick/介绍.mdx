@@ -1,34 +1,54 @@
-import normalDemo from './normalDemo?raw'
+import basicDemo from './basicDemo?raw'
 import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
 
 # pick
 
-pick 是一个用于从对象中提取指定 key 组成新对象的函数。
+创建一个仅包含指定属性的对象。
 
-## 使用示例
+## 详细介绍
+
+`pick` 函数用于从对象中选取指定的属性创建新对象。
+
+**与 omit 的对比**：
+- `pick` - 选择要保留的属性
+- `omit` - 选择要排除的属性
+
+**常用场景**：
+- 提取需要的字段
+- 创建数据子集
+- API 响应过滤
+
+## 基础示例
 
 <CodeOrSourceMdx language="typescript">
-  {normalDemo}
+  {basicDemo}
 </CodeOrSourceMdx>
 
 ## 参数介绍
 
-### 泛型
-
-- `T extends Record<string, any>` - 源对象类型
-- `K extends keyof T` - 要提取的 key 数组类型
-
-### obj
-
-- 类型：`T`
-- 描述：源对象
-
-### keys
-
-- 类型：`Array<K>`
-- 描述：要提取的 key 数组
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object</td>
+      <td><code>object</code></td>
+      <td>源对象</td>
+    </tr>
+    <tr>
+      <td>paths</td>
+      <td><code>string[]</code></td>
+      <td>要选取的属性路径</td>
+    </tr>
+  </tbody>
+</table>
 
 ### 返回值
 
-- 类型：`Pick<T, K>`
-- 描述：包含指定 key 的新对象
+- 类型：`object`
+- 描述：新对象

@@ -1,0 +1,82 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+import indexTsx from './index.tsx?raw'
+
+# useSetState
+
+管理对象类型 state 的 Hook，类似 class 组件的 this.setState。
+
+## 详细介绍
+
+useSetState 提供了与 class 组件 this.setState 相似的 API，可以进行对象的部分更新而不需要手动合并。它支持直接传入对象或函数式更新。
+
+### 使用场景
+
+- 管理复杂的表单状态
+- 管理多个相关联的状态
+- 从 class 组件迁移到函数组件
+
+## 演示代码
+
+<CodeOrSourceMdx language="tsx">
+  {indexTsx}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>initialState</td>
+      <td><code>S | (() =&gt; S)</code></td>
+      <td>初始状态对象或返回初始状态的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>属性名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>state</td>
+      <td><code>S</code></td>
+      <td>当前状态对象</td>
+    </tr>
+    <tr>
+      <td>setState</td>
+      <td><code>SetState&lt;S&gt;</code></td>
+      <td>合并更新状态的函数</td>
+    </tr>
+  </tbody>
+</table>
+
+### SetState 类型
+
+```typescript
+type SetState<S> = <K extends keyof S>(
+  state: Pick<S, K> | null | ((prevState: Readonly<S>) => Pick<S, K> | S | null)
+) => void
+```
+
+## 具体实现原理
+
+### 核心流程
+
+1. 使用 useState 管理状态
+2. setMergeState 函数判断传入的是函数还是对象
+3. 将新状态与旧状态合并（浅合并）
+4. 使用 useMemoizedFn 保证 setState 引用稳定

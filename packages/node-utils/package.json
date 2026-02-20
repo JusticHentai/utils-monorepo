@@ -1,12 +1,78 @@
 {
   "name": "@justichentai/node-utils",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "node 工具包",
   "license": "ISC",
   "author": "justichentai",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./execa": {
+      "types": "./dist/execa/index.d.ts",
+      "import": "./dist/execa/index.js"
+    },
+    "./fs-utils": {
+      "types": "./dist/fs-utils/index.d.ts",
+      "import": "./dist/fs-utils/index.js"
+    },
+    "./fs-copy": {
+      "types": "./dist/fs-copy/index.d.ts",
+      "import": "./dist/fs-copy/index.js"
+    },
+    "./fs-emptyDir": {
+      "types": "./dist/fs-emptyDir/index.d.ts",
+      "import": "./dist/fs-emptyDir/index.js"
+    },
+    "./fs-ensureDir": {
+      "types": "./dist/fs-ensureDir/index.d.ts",
+      "import": "./dist/fs-ensureDir/index.js"
+    },
+    "./fs-ensureFile": {
+      "types": "./dist/fs-ensureFile/index.d.ts",
+      "import": "./dist/fs-ensureFile/index.js"
+    },
+    "./fs-ensureLink": {
+      "types": "./dist/fs-ensureLink/index.d.ts",
+      "import": "./dist/fs-ensureLink/index.js"
+    },
+    "./fs-ensureSymlink": {
+      "types": "./dist/fs-ensureSymlink/index.d.ts",
+      "import": "./dist/fs-ensureSymlink/index.js"
+    },
+    "./fs-move": {
+      "types": "./dist/fs-move/index.d.ts",
+      "import": "./dist/fs-move/index.js"
+    },
+    "./fs-outputFile": {
+      "types": "./dist/fs-outputFile/index.d.ts",
+      "import": "./dist/fs-outputFile/index.js"
+    },
+    "./fs-outputJson": {
+      "types": "./dist/fs-outputJson/index.d.ts",
+      "import": "./dist/fs-outputJson/index.js"
+    },
+    "./fs-pathExists": {
+      "types": "./dist/fs-pathExists/index.d.ts",
+      "import": "./dist/fs-pathExists/index.js"
+    },
+    "./fs-readJson": {
+      "types": "./dist/fs-readJson/index.d.ts",
+      "import": "./dist/fs-readJson/index.js"
+    },
+    "./fs-remove": {
+      "types": "./dist/fs-remove/index.d.ts",
+      "import": "./dist/fs-remove/index.js"
+    },
+    "./fs-writeJson": {
+      "types": "./dist/fs-writeJson/index.d.ts",
+      "import": "./dist/fs-writeJson/index.js"
+    }
+  },
   "files": [
     "dist",
     "package.json",
@@ -19,13 +85,26 @@
   },
   "dependencies": {
     "@justichentai/js-utils": "workspace:*",
+    "@sindresorhus/merge-streams": "^4.0.0",
     "chalk": "^5.4.1",
+    "cross-spawn": "^7.0.6",
+    "figures": "^6.1.0",
     "fs-extra": "^11.2.0",
-    "ora": "^8.1.1"
+    "get-stream": "^9.0.0",
+    "human-signals": "^8.0.1",
+    "is-plain-obj": "^4.1.0",
+    "is-stream": "^4.0.1",
+    "npm-run-path": "^6.0.0",
+    "ora": "^8.1.1",
+    "pretty-ms": "^9.2.0",
+    "signal-exit": "^4.1.0",
+    "strip-final-newline": "^4.0.0",
+    "yoctocolors": "^2.1.1"
   },
   "devDependencies": {
     "@swc/core": "^1.10.1",
     "@swc/helpers": "^0.5.15",
+    "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.10.5",
     "esbuild": "^0.24.2",

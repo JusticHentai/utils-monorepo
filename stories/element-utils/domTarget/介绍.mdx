@@ -1,0 +1,85 @@
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# domTarget / getTargetElement
+
+获取目标 DOM 元素的工具函数。
+
+## 详细介绍
+
+`getTargetElement` 用于从多种形式的目标输入中获取实际的 DOM 元素。支持 React ref、函数和直接的 DOM 元素。
+
+这是很多 DOM 相关 hooks 的基础工具，用于统一处理不同形式的元素引用。
+
+## 支持的输入形式
+
+- **函数**: `() => Element` - 返回目标元素的函数
+- **Ref 对象**: `RefObject<Element>` - React 的 ref 对象
+- **直接值**: `Element | null | undefined` - 目标元素本身
+
+## 使用示例
+
+```typescript
+import getTargetElement from '@justichentai/element-utils/domTarget'
+
+// 从 ref 获取
+const element1 = getTargetElement(divRef)
+
+// 从函数获取
+const element2 = getTargetElement(() => document.getElementById('my-id'))
+
+// 直接传入元素
+const element3 = getTargetElement(document.body)
+
+// 使用默认值
+const element4 = getTargetElement(null, document.documentElement)
+```
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>target</td>
+      <td><code>BasicTarget&lt;T&gt;</code></td>
+      <td>目标元素（支持函数、ref 或直接值）</td>
+    </tr>
+    <tr>
+      <td>defaultElement</td>
+      <td><code>T</code></td>
+      <td>当 target 为空时返回的默认元素</td>
+    </tr>
+  </tbody>
+</table>
+
+## 类型定义
+
+```typescript
+type TargetValue<T> = T | undefined | null
+
+type TargetType = HTMLElement | Element | Window | Document
+
+type BasicTarget<T extends TargetType = Element> =
+  | (() => TargetValue<T>)
+  | TargetValue<T>
+  | RefObject<TargetValue<T>>
+```
+
+## 具体实现原理
+
+1. **文件职责**: 
+   - `index.ts` - 主函数实现
+   - `interface.ts` - 类型定义
+2. **核心流程**: 
+   - 检查 target 是否为空，为空则返回默认值
+   - 判断 target 类型（函数、ref、直接值）
+   - 根据类型提取实际元素并返回
+3. **关键技术点**: 
+   - 通过 `typeof target === 'function'` 判断函数
+   - 通过 `'current' in target` 判断 ref 对象

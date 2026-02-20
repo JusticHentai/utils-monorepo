@@ -1,0 +1,54 @@
+import sizeDemo from './sizeDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# size
+
+返回集合的长度。
+
+## 详细介绍
+
+`size` 返回集合的大小。支持数组（length）、对象（键数量）和字符串（长度）。
+
+**常用场景**：
+- 通用集合大小获取
+- 替代手动判断类型再取长度
+- 数据验证
+
+## 集合大小
+
+使用 `size` 获取不同类型集合的大小。
+
+<CodeOrSourceMdx language="typescript">
+  {sizeDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>collection</td>
+      <td><code>unknown[] | Record\<string, unknown\> | string | null</code></td>
+      <td>要获取大小的集合</td>
+    </tr>
+  </tbody>
+</table>
+
+### 返回值
+
+- 类型：`number`
+- 描述：集合的大小
+
+## 具体实现原理
+
+1. **文件职责**: `index.ts` 实现通用集合大小获取
+2. **核心流程**: 判断类型 → 数组/字符串取 length → 对象取 Object.keys.length
+3. **关键技术点**: 类型判断，null/undefined 处理
+4. **数据流向**: 集合 → 类型判断 → 对应方式获取大小 → 返回数值

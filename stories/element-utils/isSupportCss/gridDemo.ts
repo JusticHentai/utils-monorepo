@@ -1,3 +1,4 @@
+import { action } from 'storybook/actions'
 import isSupportCss from '../../../packages/element-utils/src/isSupportCss'
 
 const gridDemo = () => {
@@ -6,7 +7,7 @@ const gridDemo = () => {
     'grid-template-columns': '1fr 1fr',
   })
 
-  return { isSupport: result, css: 'display: grid' }
+  action('检测 grid 支持')({ isSupport: result, css: 'display: grid' })
 }
 
 export default gridDemo

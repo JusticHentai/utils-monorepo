@@ -1,4 +1,4 @@
-export type Arg =
+export type MergeClassArg =
   | string
   | string[]
   | { [key: string]: any }
