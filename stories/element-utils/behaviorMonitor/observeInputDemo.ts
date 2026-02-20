@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeInput from '../../../packages/element-utils/src/behaviorMonitor/core/observeInput'
+import observeInput from '../../../packages/element-utils/src/BehaviorMonitor/core/observeInput'
 
 const observeInputDemo = () => {
   // 开启值记录，自定义敏感字段

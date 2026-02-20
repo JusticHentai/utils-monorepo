@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeClick from '../../../packages/element-utils/src/behaviorMonitor/core/observeClick'
+import observeClick from '../../../packages/element-utils/src/BehaviorMonitor/core/observeClick'
 
 const observeClickDemo = () => {
   // 在捕获阶段监听点击，采样率 100%

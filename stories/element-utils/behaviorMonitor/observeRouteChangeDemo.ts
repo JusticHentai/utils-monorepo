@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeRouteChange from '../../../packages/element-utils/src/behaviorMonitor/core/observeRouteChange'
+import observeRouteChange from '../../../packages/element-utils/src/BehaviorMonitor/core/observeRouteChange'
 
 const observeRouteChangeDemo = () => {
   const stop = observeRouteChange((behavior) => {

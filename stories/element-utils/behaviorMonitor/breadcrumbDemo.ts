@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import BehaviorMonitor from '../../../packages/element-utils/src/behaviorMonitor'
+import BehaviorMonitor from '../../../packages/element-utils/src/BehaviorMonitor'
 
 const breadcrumbDemo = () => {
   // 限制最大记录数为 5，模拟面包屑追踪

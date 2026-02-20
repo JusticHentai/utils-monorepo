@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeVisibility from '../../../packages/element-utils/src/behaviorMonitor/core/observeVisibility'
+import observeVisibility from '../../../packages/element-utils/src/BehaviorMonitor/core/observeVisibility'
 
 const observeVisibilityDemo = () => {
   const stop = observeVisibility((behavior) => {

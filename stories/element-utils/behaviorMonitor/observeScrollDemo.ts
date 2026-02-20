@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import observeScroll from '../../../packages/element-utils/src/behaviorMonitor/core/observeScroll'
+import observeScroll from '../../../packages/element-utils/src/BehaviorMonitor/core/observeScroll'
 
 const observeScrollDemo = () => {
   // 节流 300ms，采样率 100%

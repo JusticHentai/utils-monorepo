@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import BehaviorMonitor from '../../../packages/element-utils/src/behaviorMonitor'
+import BehaviorMonitor from '../../../packages/element-utils/src/BehaviorMonitor'
 
 const trackCustomDemo = () => {
   const monitor = new BehaviorMonitor()
