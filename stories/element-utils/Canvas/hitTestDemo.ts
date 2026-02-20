@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import Canvas from '../../../packages/element-utils/src/Canvas'
+import { Canvas } from '@justichentai/element-utils'
 
 const hitTestDemo = (canvas: Canvas) => {
   canvas.clear()

@@ -1,4 +1,4 @@
-import Canvas from '../../../packages/element-utils/src/Canvas'
+import { Canvas } from '@justichentai/element-utils'
 import demoImg from '../../.assets/demo.png'
 
 const setFilterDemo = async (canvas: Canvas) => {

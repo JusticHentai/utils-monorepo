@@ -1,4 +1,4 @@
-import Canvas from '../../../packages/element-utils/src/Canvas'
+import { Canvas } from '@justichentai/element-utils'
 
 const clearDemo = (canvas: Canvas) => {
   // 先绘制一些内容

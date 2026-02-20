@@ -1,4 +1,4 @@
-import Canvas from '../../../packages/element-utils/src/Canvas'
+import { Canvas } from '@justichentai/element-utils'
 
 const addRadialGradientDemo = (canvas: Canvas) => {
   const ctx = canvas.getContext()
