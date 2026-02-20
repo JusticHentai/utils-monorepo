@@ -1,0 +1,1 @@
+const h=(r,f,t)=>{if(!r)return t;let e=t;if(Array.isArray(r))for(let s=r.length-1;s>=0;s--)e=f(e,r[s],s,r);else{const s=Object.keys(r);for(let y=s.length-1;y>=0;y--){const g=s[y];e=f(e,r[g],g,r)}}return e};export{h as r};

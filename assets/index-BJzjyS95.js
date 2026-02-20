@@ -1,0 +1,1 @@
+const r=t=>{if(!t?.length)return[];const e=Math.max(...t.map(n=>n?.length||0)),o=Array.from({length:e},()=>[]);for(const n of t)for(let u=0;u<e;u++)o[u].push(n?.[u]);return o},s=(t,e)=>t?.length?r(t).map(n=>e(...n)):[];export{s as a,r as u};

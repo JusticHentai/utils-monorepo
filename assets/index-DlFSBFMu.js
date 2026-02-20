@@ -1,0 +1,1 @@
+const r=o=>{const{cb:u,duration:n,immediate:c}=o;let e=null,l=!0,t=null;return(...i)=>{e&&(clearTimeout(e),e=null),c?(l&&(u(...i),l=!1),e=setTimeout(()=>{e=null,l=!0},n)):(t=i,e=setTimeout(()=>{t&&(u(...t),t=null),e=null},n))}};export{r as d};

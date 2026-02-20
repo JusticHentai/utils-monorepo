@@ -1,0 +1,1 @@
+const a=()=>{if(typeof navigator>"u")return!1;if("userAgentData"in navigator){const{platform:t}=navigator.userAgentData;return/mac|ios/i.test(t)}return/(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)};export{a as i};

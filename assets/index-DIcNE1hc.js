@@ -1,0 +1,1 @@
+import{i as t}from"./index-DbXIB-0m.js";const r=()=>t()&&typeof PerformanceObserver<"u",n=e=>{if(!r())return!1;try{return(PerformanceObserver.supportedEntryTypes||[]).includes(e)}catch{return!1}},o=()=>{if(!r())return[];try{return PerformanceObserver.supportedEntryTypes||[]}catch{return[]}};export{n as a,o as g,r as s};

@@ -1,0 +1,1 @@
+import{i as m}from"./index-HlNQgXsc.js";import{i as c}from"./index-CPTfiPhJ.js";const f=(n,e)=>{if(c(n)&&c(e)){for(const i in e){const o=n[i],s=e[i],r=f(o,s);Object.assign(n,{[i]:r})}return n}if(m(n)&&m(e)){for(const i in e){const o=n[i],s=e[i],r=f(o,s);n[Number(i)]=r}return n}return e||n};export{f as d};

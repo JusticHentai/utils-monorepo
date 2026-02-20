@@ -1,0 +1,1 @@
+import{t as x}from"./index-BtlRvorY.js";const d=(o,i)=>{const s={};if(!o?.length)return s;const l=(e,t,f)=>{let n=e;for(let r=0;r<t.length-1;r++){const c=t[r],g=t[r+1],u=/^\d+$/.test(g);c in n||(n[c]=u?[]:{}),n=n[c]}n[t[t.length-1]]=f};for(let e=0;e<o.length;e++){const t=x(o[e]);l(s,t,i?.[e])}return s};export{d as z};

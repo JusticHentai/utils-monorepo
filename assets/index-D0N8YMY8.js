@@ -1,0 +1,1 @@
+const f=(o,u)=>{if(!o.length)return[];const n=[];for(const t of o)if(t?.length)for(const e of t){const i=n.find(c=>u(c.value,e));i?i.count++:n.push({value:e,count:1})}return n.filter(t=>t.count===1).map(t=>t.value)};export{f as x};

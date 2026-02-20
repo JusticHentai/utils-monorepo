@@ -1,0 +1,1 @@
+const o=t=>{if(!t)return"";if(t.id)return`//*[@id="${t.id}"]`;if(t===document.body)return"/html/body";let a=0;const i=t.parentNode?.children||[];for(let r=0;r<i.length;r++){const n=i[r];if(n===t)return`${t.parentElement?o(t.parentElement):""}/${t.tagName.toLowerCase()}[${a+1}]`;n.tagName===t.tagName&&a++}return""};export{o as g};

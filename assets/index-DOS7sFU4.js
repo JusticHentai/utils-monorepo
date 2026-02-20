@@ -1,0 +1,1 @@
+const r=o=>{if(o==null||typeof o!="object")return!1;const n=Object.getPrototypeOf(o);if(n===null)return!0;const t=Object.prototype.hasOwnProperty.call(n,"constructor")&&n.constructor;return typeof t=="function"&&t instanceof t&&Function.prototype.toString.call(t)===Function.prototype.toString.call(Object)};export{r as i};

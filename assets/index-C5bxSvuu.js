@@ -1,0 +1,1 @@
+const i=({value:a,min:t,max:o})=>{let r=a;if(t!==void 0&&o!==void 0){const e=Math.min(t,o),h=Math.max(t,o);return Math.min(Math.max(a,e),h)}return t!==void 0&&(r=Math.max(t,r)),o!==void 0&&(r=Math.min(o,r)),r};export{i as c};

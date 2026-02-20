@@ -1,0 +1,1 @@
+const t={root:null,rootMargin:"0px",threshold:0,immediate:!0},e={childList:!0,attributes:!0,characterData:!1,subtree:!0,attributeOldValue:!1,characterDataOldValue:!1,immediate:!0},a={box:"content-box",immediate:!0},r={buffered:!0,immediate:!0};export{r as a,e as b,a as c,t as d};

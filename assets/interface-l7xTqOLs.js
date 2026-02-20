@@ -1,0 +1,1 @@
+var n=(t=>(t.NAVIGATION="navigation",t.LARGEST_CONTENTFUL_PAINT="largest-contentful-paint",t.FIRST_INPUT="first-input",t.LAYOUT_SHIFT="layout-shift",t.PAINT="paint",t.EVENT="event",t.LONGTASK="longtask",t.RESOURCE="resource",t))(n||{}),a=(t=>(t.FIRST_PAINT="first-paint",t.FIRST_CONTENTFUL_PAINT="first-contentful-paint",t))(a||{});export{n as E,a as P};

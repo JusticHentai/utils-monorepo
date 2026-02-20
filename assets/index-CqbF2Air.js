@@ -1,0 +1,1 @@
+const n=(r,i,o)=>{i===void 0&&(i=r,r=0),o===void 0&&(o=r<i?1:-1);const c=o===0?Math.ceil((i-r)/(i>r?1:-1)):Math.max(Math.ceil((i-r)/o),0);if(o===0)return Array.from({length:c},()=>r);const e=[];let h=r;for(let l=0;l<c;l++)e.push(h),h+=o;return e},u=(r,i,o)=>n(r,i,o).reverse();export{n as a,u as r};

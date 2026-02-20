@@ -1,0 +1,1 @@
+import{i as n}from"./index-DOS7sFU4.js";const y=(e,f,a)=>{if(f==null)return e;for(const l of Object.keys(f)){const s=e[l],i=f[l],t=a(s,i,l,e,f);if(t!==void 0)e[l]=t;else if(n(i)&&n(s))y(s,i,a);else if(Array.isArray(i)&&Array.isArray(s))for(let r=0;r<i.length;r++)n(i[r])&&n(s[r])?y(s[r],i[r],a):i[r]!==void 0&&(s[r]=i[r]);else e[l]=i}return e};export{y as m};

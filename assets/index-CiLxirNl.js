@@ -1,0 +1,1 @@
+import{f}from"./index-CInYAaOY.js";const u=(r,s)=>{if(!r?.length)return[];const e=[];for(let t=0;t<r.length;t++){const a=s(r[t],t,r);Array.isArray(a)?e.push(...a):e.push(a)}return e},n=(r,s)=>{if(!r?.length)return[];const e=[];for(let t=0;t<r.length;t++)e.push(s(r[t],t,r));return f(e)};export{n as a,u as f};

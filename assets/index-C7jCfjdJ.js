@@ -1,0 +1,1 @@
+import{r as t}from"./iframe-BWchUvSv.js";import{d as o}from"./index-D7tMd_FW.js";const s=(i,e)=>{const r=t.useRef({deps:e,obj:void 0,initialized:!1});return(!r.current.initialized||!o(r.current.deps,e))&&(r.current={deps:e,obj:i(),initialized:!0}),r.current.obj};export{s as u};

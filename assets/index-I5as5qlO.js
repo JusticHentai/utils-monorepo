@@ -1,0 +1,1 @@
+import{i}from"./index--iYhBf8Z.js";const a=(r,t)=>{if(r===t)return!0;if(r==null||t==null)return!1;for(const n of Object.keys(t)){const s=r[n],e=t[n];if(e!==void 0&&s===void 0&&!(n in r)||!i(s,e))return!1}return!0},l=r=>t=>a(t,r);export{a as i,l as m};

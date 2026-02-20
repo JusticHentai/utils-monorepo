@@ -1,0 +1,1 @@
+import{r as e}from"./iframe-BWchUvSv.js";import{u}from"./index-Ryb9dmuU.js";function i(a){const t=e.useRef(0),[r,n]=e.useState(a),s=e.useCallback(o=>{cancelAnimationFrame(t.current),t.current=requestAnimationFrame(()=>{n(o)})},[]);return u(()=>{cancelAnimationFrame(t.current)}),[r,s]}export{i as u};

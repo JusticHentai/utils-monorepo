@@ -1,0 +1,1 @@
+const a=(s,r)=>{if(!s.length)return[];const e=new Map;for(const t of s){if(!t?.length)continue;const n=new Set;for(const u of t){const o=r(u);if(!n.has(o)){n.add(o);const f=e.get(o);f?f.count++:e.set(o,{value:u,count:1})}}}const c=[];for(const{value:t,count:n}of e.values())n===1&&c.push(t);return c};export{a as x};

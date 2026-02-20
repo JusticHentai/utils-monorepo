@@ -1,0 +1,1 @@
+const i=(n,c)=>{const{batchSize:l,batchDelay:u}=c;let t=[],e=null;const r=()=>{t.length<=0||(n([...t]),t=[],e&&(clearTimeout(e),e=null))};return{flush:r,add:a=>{if(t.push(...a),t.length>=l){r();return}e||(e=setTimeout(r,u))}}};export{i as c};

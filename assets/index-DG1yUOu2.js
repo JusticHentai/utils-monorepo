@@ -1,0 +1,1 @@
+const t=r=>{if(r==null)return 0;if(typeof r=="number")return r!==r?0:r===1/0?Number.MAX_VALUE:r===-1/0?-Number.MAX_VALUE:r;const n=Number(r);return n!==n?0:n===1/0?Number.MAX_VALUE:n===-1/0?-Number.MAX_VALUE:n};export{t};

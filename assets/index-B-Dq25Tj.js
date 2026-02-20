@@ -1,0 +1,1 @@
+const f=(e,n)=>{if(!e?.length||!n?.length)return[];const h=[],o=new Set(n.filter(t=>t>=0&&t<e.length));for(const t of n)t>=0&&t<e.length&&h.push(e[t]);let l=0;for(let t=0;t<e.length;t++)o.has(t)||(e[l]=e[t],l++);return e.length=l,h};export{f as p};

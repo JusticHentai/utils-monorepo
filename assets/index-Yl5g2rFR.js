@@ -1,0 +1,1 @@
+import{r as o}from"./iframe-BWchUvSv.js";function S(s=!1,c){const[M,t]=o.useState(s),e=c===void 0?!s:c,r=o.useMemo(()=>()=>t(n=>n===s?e:s),[s,e]),i=o.useMemo(()=>n=>t(n),[]),m=o.useMemo(()=>()=>t(s),[s]),g=o.useMemo(()=>()=>t(e),[e]),p=o.useMemo(()=>({toggle:r,set:i,setLeft:m,setRight:g}),[r,i,m,g]);return[M,p]}export{S as u};

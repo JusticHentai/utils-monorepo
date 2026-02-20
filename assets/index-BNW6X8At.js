@@ -1,0 +1,1 @@
+const h=(e,...t)=>{if(!e?.length||!t.length)return e||[];const s=new Set(t);let l=0;for(let n=0;n<e.length;n++)s.has(e[n])||(e[l]=e[n],l++);return e.length=l,e},o=(e,t)=>h(e,...t);export{o as a,h as p};

@@ -1,0 +1,1 @@
+import{t as s}from"./index-xKxNytmu.js";import{g as o}from"./index-Be32pr3j.js";import{i}from"./index-CSDXyHsi.js";const m=100,e=(t,a)=>{if(!i(t))return;const{maxLength:r=m}=a||{};return{tagName:t.tagName.toLowerCase(),id:t.id,className:t.className,innerText:s({str:t?.innerText?.trim()||"",maxLength:r}),xpath:o(t)}};export{m as D,e as g};

@@ -1,0 +1,1 @@
+import{t as u}from"./index-BtlRvorY.js";const s=(f,...i)=>n=>{const r=typeof n=="string"?u(n):n;let t=f;for(let o=0;o<r.length-1;o++){if(t==null)return;t=t[r[o]]}if(t==null)return;const l=r[r.length-1],e=t[l];if(typeof e=="function")return e.apply(t,i)};export{s as m};

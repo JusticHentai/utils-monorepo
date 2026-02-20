@@ -1,0 +1,1 @@
+import{i as t}from"./index-DbXIB-0m.js";const n=()=>{if(!t())return!1;let e=!1;try{const s=Object.defineProperty({},"passive",{get(){return e=!0,!0}});window.addEventListener("testPassive",null,s),window.removeEventListener("testPassive",null,s)}catch{e=!1}return e};export{n as s};

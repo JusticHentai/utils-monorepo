@@ -1,0 +1,1 @@
+const m=(n,s=1)=>{if(!n?.length)return[];const r=n.length,o=Math.min(s<0?0:s,r),e=[...n];for(let t=0;t<o;t++){const a=t+Math.floor(Math.random()*(r-t)),h=e[t];e[t]=e[a],e[a]=h}return e.slice(0,o)};export{m as s};

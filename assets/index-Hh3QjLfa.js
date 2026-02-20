@@ -1,0 +1,1 @@
+import{c as o}from"./index-BtXwjIh0.js";import{i as t}from"./index-DbXIB-0m.js";const f=e=>{if(!t())return()=>{};const r=[o(window,"online",()=>e(!0)),o(window,"offline",()=>e(!1))];return()=>r.forEach(n=>n())};export{f as o};

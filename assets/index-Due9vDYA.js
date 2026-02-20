@@ -1,0 +1,1 @@
+import{s as a}from"./index-BvINh1mj.js";import{c as r}from"./index-BtXwjIh0.js";const s="complete",t="load",E=o=>{const e=async n=>{await a(0),o(n)};return document.readyState!==s?r(window,t,e):(e(new Event(t)),()=>{})};export{E as o};

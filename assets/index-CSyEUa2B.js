@@ -1,0 +1,1 @@
+import{i as f}from"./index-DOS7sFU4.js";const r=(o,...i)=>{for(const s of i)if(s!=null)for(const e of Object.keys(s)){const n=o[e],t=s[e];f(n)&&f(t)?r(n,t):n===void 0&&(o[e]=t)}return o};export{r as d};
