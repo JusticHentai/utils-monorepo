@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import type LongTaskObserver from '../../../packages/element-utils/src/longTaskMonitor'
+import type LongTaskObserver from '../../../packages/element-utils/src/LongTaskMonitor'
 
 /**
  * 计算总阻塞时间 (TBT) 演示

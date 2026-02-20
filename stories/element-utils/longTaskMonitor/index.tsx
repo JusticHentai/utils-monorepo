@@ -5,7 +5,7 @@ import { createStartObserveDemo } from './startObserveDemo'
 import { createStopObserveDemo } from './stopObserveDemo'
 import triggerLongTaskDemo from './triggerLongTaskDemo'
 
-import type LongTaskObserver from '../../../packages/element-utils/src/longTaskMonitor'
+import type LongTaskObserver from '../../../packages/element-utils/src/LongTaskMonitor'
 
 // 观察器实例
 let observer: LongTaskObserver | null = null

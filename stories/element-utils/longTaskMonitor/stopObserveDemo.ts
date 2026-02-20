@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import type LongTaskObserver from '../../../packages/element-utils/src/longTaskMonitor'
+import type LongTaskObserver from '../../../packages/element-utils/src/LongTaskMonitor'
 
 export const createStopObserveDemo = (
   getObserver: () => LongTaskObserver | null,
