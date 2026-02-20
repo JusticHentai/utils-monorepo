@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
-import type Reporter from '../../../packages/element-utils/src/reporter'
-import { REPORT_TYPE } from '../../../packages/element-utils/src/reporter/interface'
+import type Reporter from '../../../packages/element-utils/src/Reporter'
+import { REPORT_TYPE } from '../../../packages/element-utils/src/Reporter/interface'
 
 export const createReportDemo = (getReporter: () => Reporter | null) => {
   return () => {

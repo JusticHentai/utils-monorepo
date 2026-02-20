@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import type Reporter from '../../../packages/element-utils/src/reporter'
+import type Reporter from '../../../packages/element-utils/src/Reporter'
 
 export const createUpdatePageInfoDemo = (
   getReporter: () => Reporter | null

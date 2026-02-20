@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { Surveillance } from '../../../packages/element-utils/src/surveillance'
+import { Surveillance } from '../../../packages/element-utils/src/Surveillance'
 
 const basicDemo = () => {
   // 创建监控实例

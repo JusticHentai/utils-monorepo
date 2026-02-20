@@ -1,6 +1,6 @@
 import { action } from 'storybook/actions'
-import Reporter from '../../../packages/element-utils/src/reporter'
-import { REPORT_METHOD, REPORT_TYPE } from '../../../packages/element-utils/src/reporter/interface'
+import Reporter from '../../../packages/element-utils/src/Reporter'
+import { REPORT_METHOD, REPORT_TYPE } from '../../../packages/element-utils/src/Reporter/interface'
 
 let reporter: Reporter | null = null
 

@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import ResourceMonitor from '../../../packages/element-utils/src/resourceMonitor'
+import ResourceMonitor from '../../../packages/element-utils/src/ResourceMonitor'
 
 const monitor = new ResourceMonitor()
 

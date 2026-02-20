@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import RequestMonitor from '../../../packages/element-utils/src/requestMonitor'
+import RequestMonitor from '../../../packages/element-utils/src/RequestMonitor'
 
 export const monitor = new RequestMonitor({
   onRequest: (request) => {

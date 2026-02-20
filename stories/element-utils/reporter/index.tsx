@@ -1,5 +1,5 @@
 import '../../.css/index.css'
-import type Reporter from '../../../packages/element-utils/src/reporter'
+import type Reporter from '../../../packages/element-utils/src/Reporter'
 import { createInitDemo } from './initDemo'
 import { createReportDemo } from './reportDemo'
 import { createFlushDemo } from './flushDemo'
