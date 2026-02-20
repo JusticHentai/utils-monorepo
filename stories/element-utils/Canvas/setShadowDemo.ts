@@ -1,4 +1,4 @@
-import { Canvas } from '@justichentai/element-utils'
+import Canvas from '../../../packages/element-utils/src/Canvas'
 
 const setShadowDemo = (canvas: Canvas) => {
   canvas.clear()

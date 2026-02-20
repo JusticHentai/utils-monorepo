@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { Canvas } from '@justichentai/element-utils'
+import Canvas from '../../../packages/element-utils/src/Canvas'
 import demoImg from '../../.assets/demo.png'
 
 const imageDataDemo = async (canvas: Canvas) => {

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Canvas } from '@justichentai/element-utils'
+import Canvas from '../../../packages/element-utils/src/Canvas'
 import '../../.css/index.css'
 
 // 图像

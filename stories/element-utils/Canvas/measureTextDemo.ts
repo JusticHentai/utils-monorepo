@@ -1,5 +1,5 @@
 import { action } from 'storybook/actions'
-import { Canvas } from '@justichentai/element-utils'
+import Canvas from '../../../packages/element-utils/src/Canvas'
 
 const measureTextDemo = (canvas: Canvas) => {
   canvas.clear()
