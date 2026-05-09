@@ -1,0 +1,38 @@
+{
+  "name": "@justichentai/utils-agent",
+  "version": "1.0.0",
+  "description": "General purpose hardened LLM agent utilities for Node.js.",
+  "license": "ISC",
+  "author": "justichentai",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "tsx test.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublish": "pnpm build"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.15.3",
+    "@swc/helpers": "^0.5.17",
+    "@types/node": "^22.10.5",
+    "esbuild": "^0.27.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "sideEffects": false
+}

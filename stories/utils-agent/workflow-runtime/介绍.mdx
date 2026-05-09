@@ -1,0 +1,87 @@
+import agentFacadeDemo from './agentFacadeDemo?raw'
+import workflowRuntimeDemo from './workflowRuntimeDemo?raw'
+import toolCallDemo from './toolCallDemo?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# workflow-runtime
+
+`utils-agent` 提供通用 LLM agent 的基础运行框架。当前实现已经拆成 `workflow` 和 `runtime` 两层：
+
+- `workflow` 定义执行步骤和步骤跳转。
+- `runtime` 持有运行状态，负责调用 provider、执行 capability、写入 memory、应用 policy。
+- `agent` 是对外门面，默认挂载内置 workflow。
+
+## agent facade
+
+高层使用方式适合业务侧直接创建 agent 并调用 `run`。这里使用 `MockLlmProvider`，因此不需要真实 LLM API key。
+
+<CodeOrSourceMdx language="typescript">
+  {agentFacadeDemo}
+</CodeOrSourceMdx>
+
+## workflow/runtime
+
+底层使用方式适合需要自定义 workflow、插入 checkpoint、streaming、approval、handoff 等步骤的场景。
+
+<CodeOrSourceMdx language="typescript">
+  {workflowRuntimeDemo}
+</CodeOrSourceMdx>
+
+## tool call
+
+`capability` 是 agent 的工具层。provider 返回 `toolCalls` 后，runtime 会执行对应 capability，再把工具结果作为 `tool` message 放回模型上下文。
+
+<CodeOrSourceMdx language="typescript">
+  {toolCallDemo}
+</CodeOrSourceMdx>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>provider</td>
+      <td><code>LlmProvider</code></td>
+      <td>模型供应商适配器，负责把标准请求转换为真实模型调用。</td>
+    </tr>
+    <tr>
+      <td>capabilities</td>
+      <td><code>AgentCapability[]</code></td>
+      <td>工具注册列表，runtime 会按 provider 返回的 tool call 名称查找并执行。</td>
+    </tr>
+    <tr>
+      <td>policy</td>
+      <td><code>AgentPolicy</code></td>
+      <td>运行前、模型调用前、工具调用前和输出后的 guardrail 钩子。</td>
+    </tr>
+    <tr>
+      <td>memory</td>
+      <td><code>AgentMemory</code></td>
+      <td>会话历史读写接口，默认使用内存实现。</td>
+    </tr>
+    <tr>
+      <td>maxToolRounds</td>
+      <td><code>number</code></td>
+      <td>单次 run 中允许的工具调用轮数。</td>
+    </tr>
+    <tr>
+      <td>maxWorkflowSteps</td>
+      <td><code>number</code></td>
+      <td>workflow 最大跳转步数，用于防止错误 workflow 无限循环。</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**: `workflow/defaultWorkflow.ts` 定义默认流程，`runtime/AgentRuntime.ts` 执行具体节点逻辑，`runtime/executeWorkflow.ts` 负责步骤跳转。
+2. **核心流程**: `prepare` 读取 memory 并拼装消息，`callModel` 调 provider，`handleTools` 执行 capability，`finalize` 写回 memory 并产出结果。
+3. **关键技术点**: provider、policy、memory、capability 都通过接口注入，agent 核心不绑定具体模型服务。
+4. **数据流向**: 输入被规范化为 `AgentWorkflowState`，workflow step 持续更新 state，最终由 `finalize` 生成 `AgentRunOutput`。
