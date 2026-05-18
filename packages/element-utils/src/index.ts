@@ -15,6 +15,37 @@ export { default as combo } from './combo'
 export { default as createEventListener } from './createEventListener'
 export { default as createLazyLoadObserver } from './createLazyLoadObserver'
 export { default as debounce } from './debounce'
+export {
+  DEFAULT_EARLY_ERROR_MAX_AGE,
+  DEFAULT_EARLY_ERROR_MAX_BYTES,
+  DEFAULT_EARLY_ERROR_MAX_COUNT,
+  DEFAULT_EARLY_ERROR_MAX_HTML_LENGTH,
+  DEFAULT_EARLY_ERROR_MAX_MESSAGE_LENGTH,
+  DEFAULT_EARLY_ERROR_MAX_STACK_LENGTH,
+  DEFAULT_EARLY_ERROR_SENSITIVE_KEYS,
+  EARLY_ERROR_FLUSH_REASON,
+  EARLY_ERROR_TRANSPORT,
+  EARLY_ERROR_TYPE,
+  default as EarlyErrorQueue,
+} from './earlyErrorQueue'
+export type {
+  EarlyBrowserReportEvent,
+  EarlyErrorConnection,
+  EarlyErrorContext,
+  EarlyErrorEvent,
+  EarlyErrorGlobalQueue,
+  EarlyErrorPayload,
+  EarlyErrorQueueOptions,
+  EarlyErrorQueueStats,
+  EarlyErrorSendResult,
+  EarlyErrorViewport,
+  EarlyJSErrorEvent,
+  EarlyResourceErrorEvent,
+  EarlyUnhandledRejectionEvent,
+  EnrichedEarlyErrorEvent,
+  FlushEarlyErrorsOptions,
+  TakeGlobalEarlyErrorsOptions,
+} from './earlyErrorQueue'
 export { default as ErrorMonitor } from './ErrorMonitor'
 export { ERROR_TYPE } from './ErrorMonitor/interface'
 export type {
@@ -27,6 +58,7 @@ export type {
   ResourceErrorInfo,
   StopListening,
 } from './ErrorMonitor/interface'
+export { default as estimateBytes } from './estimateBytes'
 export { default as formatBytes } from './formatBytes'
 export { ByteUnit } from './formatBytes/interface'
 export type {
@@ -143,11 +175,13 @@ export type {
 } from './RequestMonitor/interface'
 export { default as resize } from './resize'
 export { default as ResourceMonitor } from './ResourceMonitor'
+export { default as safeStringify } from './safeStringify'
 export { default as scrollBottom } from './scrollBottom'
 export { default as sessionId } from './sessionId'
 export { default as shouldSample } from './shouldSample'
 export type { ShouldSampleOptions } from './shouldSample/interface'
 export { default as supportIntersectionObserver } from './supportIntersectionObserver'
+export { default as supportFetch } from './supportFetch'
 export { default as supportMutationObserver } from './supportMutationObserver'
 export { default as supportPassiveEvents } from './supportPassiveEvents'
 export {
@@ -158,8 +192,11 @@ export {
 export { default as supportRequestAnimationFrame } from './supportRequestAnimationFrame'
 export { default as supportRequestIdleCallback } from './supportRequestIdleCallback'
 export { default as supportResizeObserver } from './supportResizeObserver'
+export { default as supportSendBeacon } from './supportSendBeacon'
+export { default as supportTextEncoder } from './supportTextEncoder'
 export { default as Surveillance } from './Surveillance'
 export { default as throttle } from './throttle'
+export { default as truncateText } from './truncateText'
 export { default as uniqueId } from './uniqueId'
 export { default as useCountDown } from './useCountDown'
 export { default as useDebounce } from './useDebounce'
@@ -254,14 +291,6 @@ export type {
   OnINPMetricCallback,
   OnINPOptions,
 } from './onINP/interface'
-export type {
-  KeyModifiers,
-  KeyboardEventType,
-  KeyFilter,
-  KeyPredicate,
-  KeyType,
-  OnKeyPressOptions,
-} from './onKeyPress/interface'
 export {
   aliasKeyCodeMap,
   countKeyByEvent,
@@ -270,6 +299,14 @@ export {
   isValidKeyType,
   modifierKey,
 } from './onKeyPress'
+export type {
+  KeyFilter,
+  KeyModifiers,
+  KeyPredicate,
+  KeyType,
+  KeyboardEventType,
+  OnKeyPressOptions,
+} from './onKeyPress/interface'
 export type {
   LCPMetric,
   OnLCPMetricCallback,
@@ -425,8 +462,8 @@ export type { UseHoverOptions } from './useHover/interface'
 export { default as useKeyPress } from './useKeyPress'
 export type {
   KeyEvent,
-  KeyFilter as UseKeyPressKeyFilter,
   Target as KeyPressTarget,
+  KeyFilter as UseKeyPressKeyFilter,
   KeyType as UseKeyPressKeyType,
   UseKeyPressOptions,
 } from './useKeyPress/interface'

@@ -1,0 +1,1385 @@
+import queueDemo from './queueDemo?raw'
+import bootstrapDemo from './bootstrapDemo?raw'
+import flushDemo from './flushDemo?raw'
+import scriptSource from '../../../packages/element-utils/src/earlyErrorQueue/script.tsx?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# earlyErrorQueue
+
+`earlyErrorQueue` 用于处理监控 SDK 初始化前发生的早期错误。它配合一段可直接复制到 HTML head 的 inline bootstrap 使用：bootstrap 先捕获 `error`、资源加载失败、`unhandledrejection` 和 Reporting API 报告；完整 SDK 初始化后再接管队列、补齐上下文并统一发送。
+
+## 队列去重和限制
+
+队列是有界 ring buffer，会限制条数、估算字节数和存活时间。同一错误重复出现时会合并 `count`，URL 会在进入队列前过滤常见敏感 query。
+
+<CodeOrSourceMdx language="typescript">{queueDemo}</CodeOrSourceMdx>
+
+## inline bootstrap
+
+`script.tsx` 不是 import 入口，它是 copy-only 片段。实际落地时将文件中的 IIFE 复制到业务首个 script 之前，越早执行越能覆盖首屏白屏前的错误。
+
+<CodeOrSourceMdx language="typescript">{scriptSource}</CodeOrSourceMdx>
+
+Storybook 中为了避免直接安装全局监听，使用模拟队列演示 bootstrap 暴露的 `window.__EARLY_ERROR_QUEUE__` 结构。
+
+<CodeOrSourceMdx language="typescript">{bootstrapDemo}</CodeOrSourceMdx>
+
+## 接管并 flush
+
+SDK 初始化完成后创建 `EarlyErrorQueue`，调用 `captureGlobal()` 读取并停止全局 bootstrap 监听，再通过 `flush()` 补齐 `appId`、`release`、`route`、`userId` 等上下文。
+
+<CodeOrSourceMdx language="typescript">{flushDemo}</CodeOrSourceMdx>
+
+## 源码文件说明
+
+### 对外入口
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+      <th>关键点</th>
+      <th>使用方式</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>src/earlyErrorQueue/index.ts</code>
+      </td>
+      <td>可被业务 SDK 正常 import 的接管层。</td>
+      <td>
+        封装 <code>EarlyErrorQueue</code> 类，提供 <code>push</code>、
+        <code>captureGlobal</code>、<code>take</code>、<code>peek</code>、
+        <code>clear</code>、<code>createPayload</code>、<code>flush</code>。
+        队列数组、去重 <code>Map</code>、字节统计和丢弃计数都由 class
+        私有字段维护。
+      </td>
+      <td>
+        完整监控 SDK 初始化完成后 import 它，接管 inline bootstrap
+        中的全局队列并发送。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>src/earlyErrorQueue/interface.ts</code>
+      </td>
+      <td>集中定义公共类型、枚举和 payload 协议。</td>
+      <td>
+        包含 <code>EARLY_ERROR_TYPE</code>、<code>EARLY_ERROR_TRANSPORT</code>、
+        <code>EARLY_ERROR_FLUSH_REASON</code>、事件联合类型、队列配置、 flush
+        配置、发送结果、默认限制常量和全局队列协议。
+      </td>
+      <td>
+        业务侧需要约束上报上下文、payload 或自定义过滤函数时从这里引用类型。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>src/earlyErrorQueue/script.tsx</code>
+      </td>
+      <td>copy-only inline bootstrap 片段。</td>
+      <td>
+        不作为模块 import。它直接安装 <code>error</code>、
+        <code>unhandledrejection</code> 和 Reporting API 监听，并暴露
+        <code>window.__EARLY_ERROR_QUEUE__</code>。
+      </td>
+      <td>复制到 HTML head 的首个业务 script 前，越早执行越能捕获首屏错误。</td>
+    </tr>
+  </tbody>
+</table>
+
+### core 文件
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+      <th>关键点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>core/sanitizeEvent.ts</code>
+      </td>
+      <td>入队前清洗事件。</td>
+      <td>
+        统一截断 message、stack、outerHTML，并对
+        pageUrl、filename、resourceUrl、 reportUrl 做敏感 query 过滤。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>core/sanitizeUrl.ts</code>
+      </td>
+      <td>URL 隐私过滤。</td>
+      <td>
+        用 <code>URL</code> 和 <code>searchParams</code> 解析 query；相对 URL
+        依赖调用方传入 <code>baseUrl</code>。命中敏感 key 时替换为
+        <code>[Filtered]</code>；解析失败时安全截断字符串。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../isBrowser/index.ts</code>
+      </td>
+      <td>公共工具，判断浏览器运行环境。</td>
+      <td>
+        TS 模块统一复用它判断 <code>window</code> / <code>document</code>
+        是否存在，避免每个 helper 重复写环境探测。copy-only script 因为不能
+        import，保留自包含判断。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>core/getErrorKey.ts</code>
+      </td>
+      <td>生成去重 key。</td>
+      <td>
+        JS 错误使用 type、message、filename、lineno、colno、stackTop；
+        资源错误使用 type、tagName、resourceUrl、message；Promise 和 Reporting
+        API 使用各自可稳定定位的字段。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../estimateBytes/index.ts</code>
+      </td>
+      <td>公共工具，估算队列和 payload 体积。</td>
+      <td>
+        优先使用 <code>TextEncoder</code> 计算字节数，缺失时降级为字符串长度。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../safeStringify/index.ts</code>
+      </td>
+      <td>公共工具，安全序列化未知对象。</td>
+      <td>
+        处理循环引用，避免错误原因或队列估算时因为 <code>JSON.stringify</code>
+        失败而影响页面。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../truncateText/index.ts</code>
+      </td>
+      <td>公共工具，按最大长度硬截断文本。</td>
+      <td>
+        不追加省略号，供
+        message、stack、outerHTML、URL、序列化后的未知错误原因复用，保证 payload
+        字段严格受长度限制。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../supportFetch/index.ts</code>
+      </td>
+      <td>
+        公共工具，判断 <code>fetch</code> 是否可调用。
+      </td>
+      <td>
+        <code>sendEarlyErrorPayload</code> 的 fetch 分支复用它，避免散落
+        <code>typeof fetch</code> 判断。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>../supportSendBeacon/index.ts</code>
+      </td>
+      <td>
+        公共工具，判断 <code>navigator.sendBeacon</code> 是否可调用。
+      </td>
+      <td>
+        内部先复用 <code>isBrowser()</code>，beacon 分支只关心是否可尝试发送。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>core/normalizeUnknownError.ts</code>
+      </td>
+      <td>标准化未知错误原因。</td>
+      <td>
+        将 <code>Error</code>、字符串、对象、null、基础类型统一转换为 message、
+        stack 和 reasonType，主要服务 Promise rejection。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>browser/createBaseEvent.ts</code>
+      </td>
+      <td>生成早期事件通用字段。</td>
+      <td>
+        采集 timestamp、pageUrl、userAgent、viewport、connection、count、
+        firstSeen、lastSeen，保证所有事件结构一致。浏览器环境判断复用
+        <code>isBrowser()</code>，SSR 或非浏览器环境下返回空 URL、空 userAgent
+        或 undefined 快照。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>browser/createEvents.ts</code>
+      </td>
+      <td>从浏览器事件生成标准早期错误事件。</td>
+      <td>
+        提供 <code>createErrorEvent</code>、
+        <code>createUnhandledRejectionEvent</code>、
+        <code>createBrowserReportEvent</code>。当前主要给后续扩展和测试复用，
+        inline script 为了可复制性保留了独立实现。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>browser/takeGlobalEarlyErrors.ts</code>
+      </td>
+      <td>读取 window 全局 bootstrap 队列。</td>
+      <td>
+        默认读取 <code>window.__EARLY_ERROR_QUEUE__</code>，调用{' '}
+        <code>take()</code>
+        清空早期队列，并默认调用 <code>stop()</code> 移除 bootstrap 监听。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>browser/enrichEarlyErrors.ts</code>
+      </td>
+      <td>补齐初始化后的业务上下文。</td>
+      <td>
+        将
+        appId、release、buildId、route、userId、sessionId、experiment、platform
+        等上下文合并到早期事件上，并追加 flushedAt、flushReason、source。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>transport/sendEarlyErrorPayload.ts</code>
+      </td>
+      <td>发送早期错误 payload。</td>
+      <td>
+        常规阶段使用 fetch；页面隐藏或关闭阶段可用 sendBeacon，失败后降级为
+        <code>fetch keepalive</code>。小包限制按 <code>60 KiB</code> 处理。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Storybook 文件说明
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+      <th>展示内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/index.stories.ts</code>
+      </td>
+      <td>Storybook 注册入口。</td>
+      <td>
+        配置 title、component、layout 和 <code>Demo</code> 导出，让 Storybook
+        能加载 当前工具页面。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/index.tsx</code>
+      </td>
+      <td>演示组件入口。</td>
+      <td>
+        渲染三个按钮：队列去重和限制、模拟 inline bootstrap、接管并 flush。
+        它只组合 demo，不承载核心业务逻辑。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/queueDemo.ts</code>
+      </td>
+      <td>演示内存队列能力。</td>
+      <td>
+        构造重复 JS 错误和资源错误，展示去重计数、敏感 URL
+        过滤、最大条数限制后的 队列内容。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/bootstrapDemo.ts</code>
+      </td>
+      <td>模拟 inline bootstrap 暴露的全局协议。</td>
+      <td>
+        构造一个最小版 <code>window.__EARLY_ERROR_QUEUE__</code>，
+        演示早期错误如何先进入全局队列。Storybook 中不直接执行真实 bootstrap，
+        避免污染全局监听。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/flushDemo.ts</code>
+      </td>
+      <td>演示 SDK 初始化后的接管流程。</td>
+      <td>
+        调用 <code>captureGlobal()</code> 读取全局队列，再用{' '}
+        <code>flush()</code>
+        补齐
+        appId、release、route、userId、sessionId、platform。为了避免真实请求，
+        demo 在 <code>beforeSend</code> 中输出 payload 并取消发送。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stories/element-utils/earlyErrorQueue/介绍.mdx</code>
+      </td>
+      <td>文档页。</td>
+      <td>
+        解释能力边界、使用流程、参数、返回值、源码文件职责、Storybook 文件职责和
+        数据流向，并通过 <code>?raw</code> 展示 demo 与 copy-only script 源码。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 函数级导读
+
+这一节用于回答“每个函数到底做了什么”。源码里只保留必要注释，完整导读放在 Storybook 文档里，避免 copy-only 脚本变重。
+
+### EarlyErrorQueue 类
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>输入</th>
+      <th>输出</th>
+      <th>做了什么</th>
+      <th>为什么需要</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>constructor(options)</code>
+      </td>
+      <td>
+        <code>EarlyErrorQueueOptions</code>
+      </td>
+      <td>
+        <code>EarlyErrorQueue</code> 实例
+      </td>
+      <td>
+        合并 maxCount、maxBytes、maxAge、beforeEnqueue 等运行时配置，并创建
+        <code>queue</code>、<code>keys</code>、<code>bytes</code>、
+        <code>dropped</code> 这些实例私有状态。
+      </td>
+      <td>
+        让 SDK 侧可以用统一类管理早期错误，而不是直接操作底层数组和全局变量。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>push(event)</code>
+      </td>
+      <td>
+        <code>EarlyErrorEvent</code>
+      </td>
+      <td>
+        <code>boolean</code>
+      </td>
+      <td>
+        把一个已标准化的早期错误推入内部队列。实际入队前会经过清洗、过滤、去重和队列裁剪。
+      </td>
+      <td>
+        用于 SDK 主动补充早期错误，或把测试/业务自定义错误接入同一套 flush
+        流程。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>captureGlobal()</code>
+      </td>
+      <td>无</td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        调用 <code>takeGlobalEarlyErrors()</code> 读取
+        <code>window.__EARLY_ERROR_QUEUE__</code>
+        ，把全局队列中的事件逐条推入内部队列。
+      </td>
+      <td>
+        这是 inline bootstrap 和完整 SDK 的交接点。SDK 初始化完成后，通过它拿回
+        bootstrap 暂存的错误。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>take()</code>
+      </td>
+      <td>无</td>
+      <td>
+        <code>EarlyErrorEvent[]</code>
+      </td>
+      <td>返回当前队列副本，并清空内部队列。</td>
+      <td>避免同一批早期错误被重复上报。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>peek()</code>
+      </td>
+      <td>无</td>
+      <td>
+        <code>EarlyErrorEvent[]</code>
+      </td>
+      <td>返回当前队列副本，但不清空。</td>
+      <td>用于调试、Storybook 展示、上报前预览。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>clear()</code>
+      </td>
+      <td>无</td>
+      <td>
+        <code>void</code>
+      </td>
+      <td>清空队列、去重索引和当前字节统计。</td>
+      <td>用于业务主动放弃早期错误，或测试用例重置状态。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>createPayload(options)</code>
+      </td>
+      <td>
+        flush 配置中除 <code>url</code>、<code>transport</code>、
+        <code>credentials</code>
+        外的字段
+      </td>
+      <td>
+        <code>EarlyErrorPayload</code>
+      </td>
+      <td>
+        读取当前队列统计，调用 <code>take()</code> 清空队列，再用
+        <code>enrichEarlyErrors()</code> 补齐业务上下文，最后组装
+        source、reason、context、 events、stats。
+      </td>
+      <td>把“缓存的事实事件”转换成“后端可落库、可排查的上报载荷”。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>flush(options)</code>
+      </td>
+      <td>
+        <code>FlushEarlyErrorsOptions</code>
+      </td>
+      <td>
+        <code>Promise&lt;EarlyErrorSendResult&gt;</code>
+      </td>
+      <td>
+        先创建 payload，再执行 <code>beforeSend</code>。如果返回
+        false，则取消发送；否则调用
+        <code>sendEarlyErrorPayload()</code> 发送。
+      </td>
+      <td>
+        提供 SDK
+        初始化后的完整上报动作，同时给业务保留最后的过滤、脱敏、改写机会。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### EarlyErrorQueue 实例状态和队列逻辑
+
+<table>
+  <thead>
+    <tr>
+      <th>状态</th>
+      <th>类型 / 初始值</th>
+      <th>写入位置</th>
+      <th>读取位置</th>
+      <th>不变量</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>options</code>
+      </td>
+      <td>
+        由入参 <code>options</code> 和默认常量合并出的实例私有配置
+      </td>
+      <td>
+        只在 <code>constructor</code> 中写入一次
+      </td>
+      <td>
+        <code>push</code>、<code>trimQueue</code>、<code>sanitizeEvent</code>
+      </td>
+      <td>队列生命周期内不再变化，保证一次实例使用一套容量和清洗规则。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>installedAt</code>
+      </td>
+      <td>
+        <code>Date.now()</code>
+      </td>
+      <td>创建队列实例时写入一次</td>
+      <td>
+        <code>push</code> 中和当前时间比较
+      </td>
+      <td>
+        超过 <code>maxAge</code> 后新事件直接拒绝入队，已有队列不被自动清空。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>queue</code>
+      </td>
+      <td>
+        <code>EarlyErrorEvent[]</code>，初始为空数组
+      </td>
+      <td>
+        <code>push</code> 追加新事件，<code>removeFirst</code> 移除旧事件，
+        <code>take</code>/<code>clear</code> 清空
+      </td>
+      <td>
+        <code>peek</code>、<code>take</code>、<code>getStats</code>、
+        <code>estimateBytes</code>、<code>trimQueue</code>
+      </td>
+      <td>
+        只保存去重后的代表事件；同类重复错误不新增数组项，只更新已有事件。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>keys</code>
+      </td>
+      <td>
+        <code>Map&lt;string, EarlyErrorEvent&gt;</code>，初始为空
+      </td>
+      <td>
+        <code>push</code> 对新事件 <code>set</code>，<code>removeFirst</code>
+        删除旧事件 key，<code>take</code>/<code>clear</code> 清空
+      </td>
+      <td>
+        <code>push</code> 用 <code>keys.get(key)</code> 判断是否为重复错误
+      </td>
+      <td>
+        必须和 <code>queue</code> 同步；队列移除事件时必须删除对应 key。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>bytes</code>
+      </td>
+      <td>
+        <code>number</code>，初始为 <code>0</code>
+      </td>
+      <td>
+        <code>recalculateBytes</code> 重算，<code>take</code>/<code>clear</code>
+        置为 <code>0</code>
+      </td>
+      <td>
+        <code>trimQueue</code> 判断是否超过 <code>maxBytes</code>，
+        <code>getStats</code> 返回统计
+      </td>
+      <td>
+        通过 <code>estimateBytes(queue)</code> 基于整个队列重算，避免手动累加在
+        去重更新、删除旧事件后出现偏差。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>dropped</code>
+      </td>
+      <td>
+        <code>number</code>，初始为 <code>0</code>
+      </td>
+      <td>
+        只在 <code>removeFirst</code> 因容量裁剪丢弃旧事件时增加
+      </td>
+      <td>
+        <code>getStats</code>
+      </td>
+      <td>
+        <code>beforeEnqueue</code> 返回 false、超过 <code>maxAge</code>
+        拒绝入队都不增加 dropped；它只表示容量限制导致的本地丢弃。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### push(event) 执行路径
+
+<table>
+  <thead>
+    <tr>
+      <th>顺序</th>
+      <th>代码动作</th>
+      <th>读取状态</th>
+      <th>写入状态 / 返回</th>
+      <th>原因</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>
+        比较 <code>Date.now() - installedAt</code> 和<code>options.maxAge</code>
+      </td>
+      <td>
+        <code>installedAt</code>、<code>options.maxAge</code>
+      </td>
+      <td>
+        超时直接 <code>return false</code>，不清洗、不去重、不改队列
+      </td>
+      <td>早期错误队列只接收初始化窗口期内的事件。</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>
+        调用 <code>sanitizeEvent(event, options)</code>
+      </td>
+      <td>
+        <code>options.maxMessageLength</code>、<code>maxStackLength</code>、
+        <code>maxHtmlLength</code>、<code>sensitiveKeys</code>
+      </td>
+      <td>得到脱敏、截断后的事件副本</td>
+      <td>敏感 URL 和超长字段不能先进入队列再处理。</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>
+        如果存在 <code>beforeEnqueue</code>，用清洗后的事件调用它
+      </td>
+      <td>
+        <code>options.beforeEnqueue</code>
+      </td>
+      <td>
+        返回事件则继续；返回 <code>false</code> 时 <code>return false</code>
+      </td>
+      <td>给业务最后一次过滤或补字段机会。</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>
+        调用 <code>getErrorKey(filteredEvent)</code>，再
+        <code>keys.get(key)</code>
+      </td>
+      <td>
+        <code>keys</code>
+      </td>
+      <td>没有直接写入；只判断是否命中已有事件</td>
+      <td>用稳定 key 把同类错误聚合成一条。</td>
+    </tr>
+    <tr>
+      <td>5A</td>
+      <td>命中已有事件</td>
+      <td>
+        <code>existingEvent</code>
+      </td>
+      <td>
+        <code>existingEvent.count += 1</code>，
+        <code>existingEvent.lastSeen = filteredEvent.timestamp</code>， 然后重算{' '}
+        <code>bytes</code> 并 <code>return true</code>
+      </td>
+      <td>重复错误只更新次数和最近时间，不增加队列长度。</td>
+    </tr>
+    <tr>
+      <td>5B</td>
+      <td>没有命中已有事件</td>
+      <td>
+        <code>queue</code>、<code>keys</code>
+      </td>
+      <td>
+        <code>queue.push(filteredEvent)</code>，
+        <code>keys.set(key, filteredEvent)</code>，然后进入
+        <code>trimQueue()</code>
+      </td>
+      <td>新错误成为队列中的代表事件，并建立去重索引。</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>
+        <code>trimQueue()</code> 先重算 <code>bytes</code>，再按条数和字节数裁剪
+      </td>
+      <td>
+        <code>queue.length</code>、<code>bytes</code>、
+        <code>options.maxCount</code>、<code>options.maxBytes</code>
+      </td>
+      <td>
+        超限时循环调用 <code>removeFirst()</code>；最终
+        <code>return true</code>
+      </td>
+      <td>保留最近错误，避免早期异常把内存或 payload 撑爆。</td>
+    </tr>
+  </tbody>
+</table>
+
+#### 裁剪、读取和清理路径
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>具体逻辑</th>
+      <th>状态变化</th>
+      <th>语义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>recalculateBytes()</code>
+      </td>
+      <td>
+        用 <code>estimateBytes(queue)</code> 对整个队列重新估算字节数
+      </td>
+      <td>
+        覆盖写入 <code>bytes</code>
+      </td>
+      <td>队列内容变化后统一重算，避免增量维护出错。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>removeFirst()</code>
+      </td>
+      <td>
+        <code>queue.shift()</code> 取出最旧事件；如果存在，删除它的
+        <code>keys</code> 条目，<code>dropped += 1</code>，再重算字节数
+      </td>
+      <td>
+        <code>queue</code> 变短，<code>keys</code> 删除旧 key，
+        <code>dropped</code> 增加，<code>bytes</code> 更新
+      </td>
+      <td>容量超限时丢弃最旧事件，同时保持去重索引不悬空。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>trimQueue()</code>
+      </td>
+      <td>
+        先重算 <code>bytes</code>；只要 <code>queue.length &gt; maxCount</code>
+        或 <code>bytes &gt; maxBytes</code>，就持续调用
+        <code>removeFirst()</code>
+      </td>
+      <td>
+        可能多次修改 <code>queue</code>、<code>keys</code>、<code>dropped</code>
+        、<code>bytes</code>
+      </td>
+      <td>同时满足条数上限和 payload 体积上限。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>take()</code>
+      </td>
+      <td>
+        先 <code>queue.slice()</code> 复制当前事件，再清空数组、map 和
+        <code>bytes</code>
+      </td>
+      <td>
+        <code>queue.length = 0</code>，<code>keys.clear()</code>，
+        <code>bytes = 0</code>
+      </td>
+      <td>读取后清空，保证同一批早期错误只被上报一次。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>peek()</code>
+      </td>
+      <td>
+        返回 <code>queue.slice()</code>
+      </td>
+      <td>不修改任何状态</td>
+      <td>用于调试或预览，不消费队列。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>clear()</code>
+      </td>
+      <td>
+        清空数组、map 和 <code>bytes</code>
+      </td>
+      <td>
+        <code>queue.length = 0</code>，<code>keys.clear()</code>，
+        <code>bytes = 0</code>
+      </td>
+      <td>
+        主动放弃当前缓存；不会重置 <code>dropped</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>getStats()</code>
+      </td>
+      <td>
+        返回 <code>queue.length</code>、<code>bytes</code>、<code>dropped</code>
+      </td>
+      <td>不修改任何状态</td>
+      <td>让 payload 能告诉后端当前缓存量和是否发生过本地容量丢弃。</td>
+    </tr>
+  </tbody>
+</table>
+
+### 事件清洗和标准化函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>所在文件</th>
+      <th>做了什么</th>
+      <th>为什么这样做</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>sanitizeEvent(event, options)</code>
+      </td>
+      <td>
+        <code>core/sanitizeEvent.ts</code>
+      </td>
+      <td>
+        按事件类型分别处理字段：JS 错误处理 filename/stack；资源错误处理
+        resourceUrl/outerHTML；Promise 错误处理 stack；Reporting API 处理
+        reportUrl/body。
+      </td>
+      <td>
+        入队前先脱敏和截断，避免敏感信息进入内存队列，也避免队列体积失控。
+        截断统一复用 <code>truncateText</code>，不在当前文件重复维护
+        <code>slice(0, maxLength)</code> helper。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>sanitizeUrl(url, sensitiveKeys, maxLength, baseUrl)</code>
+      </td>
+      <td>
+        <code>core/sanitizeUrl.ts</code>
+      </td>
+      <td>
+        尝试用 <code>new URL(url, baseUrl)</code> 解析 URL，遍历 query
+        key，命中敏感规则时替换值；解析失败时把原字符串交给{' '}
+        <code>truncateText</code> 硬截断返回。
+      </td>
+      <td>URL 常常带 token、session、手机号、搜索词，必须在本地提前过滤。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>getErrorKey(event)</code>
+      </td>
+      <td>
+        <code>core/getErrorKey.ts</code>
+      </td>
+      <td>按事件类型选择稳定字段拼接去重 key。</td>
+      <td>
+        早期错误可能短时间高频重复，合并计数比重复上报更有价值，也更省请求体积。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>getStackTop(stack)</code>
+      </td>
+      <td>
+        <code>core/getErrorKey.ts</code>
+      </td>
+      <td>取堆栈第一行。</td>
+      <td>第一行通常足以参与 fingerprint，且比完整 stack 更稳定、更轻。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>safeStringify(value)</code>
+      </td>
+      <td>
+        <code>../safeStringify/index.ts</code>
+      </td>
+      <td>序列化未知对象，并用 seen 数组处理循环引用。</td>
+      <td>
+        这是 <code>element-utils</code>{' '}
+        公共工具；错误原因可能是任意对象，不能因为序列化失败影响监控代码本身。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>estimateBytes(value)</code>
+      </td>
+      <td>
+        <code>../estimateBytes/index.ts</code>
+      </td>
+      <td>把值安全转成字符串后估算字节数。</td>
+      <td>
+        这是 <code>element-utils</code> 公共工具；用于限制队列总大小和判断
+        beacon/keepalive payload 是否过大。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>normalizeUnknownError(value)</code>
+      </td>
+      <td>
+        <code>core/normalizeUnknownError.ts</code>
+      </td>
+      <td>
+        根据 unknown 的实际类型生成 message、stack、reasonType。Error 取
+        message/stack；对象走 safeStringify；其他类型走
+        String；所有文本输出统一经过
+        <code>truncateText</code>。
+      </td>
+      <td>
+        Promise rejection 的 reason 不保证是 Error，需要统一成可上报结构。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>createBaseEvent()</code>
+      </td>
+      <td>
+        <code>browser/createBaseEvent.ts</code>
+      </td>
+      <td>
+        生成
+        timestamp、pageUrl、userAgent、viewport、connection、count、firstSeen、
+        lastSeen。
+      </td>
+      <td>所有错误事件都需要这些基础字段，集中生成可以保证结构一致。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>getViewport()</code>
+      </td>
+      <td>
+        <code>browser/createBaseEvent.ts</code>
+      </td>
+      <td>读取 window.innerWidth 和 window.innerHeight。</td>
+      <td>早期错误常和设备视口相关，例如移动端首屏资源或布局问题。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>getConnection()</code>
+      </td>
+      <td>
+        <code>browser/createBaseEvent.ts</code>
+      </td>
+      <td>
+        读取 navigator.connection 中的 effectiveType、downlink、rtt、saveData。
+      </td>
+      <td>资源加载失败和慢网环境强相关，网络快照有排查价值。</td>
+    </tr>
+  </tbody>
+</table>
+
+### 浏览器事件转换函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>所在文件</th>
+      <th>做了什么</th>
+      <th>适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>isResourceTarget(target)</code>
+      </td>
+      <td>
+        <code>browser/createEvents.ts</code>
+      </td>
+      <td>判断事件 target 是否带有 tagName，从而识别资源加载错误。</td>
+      <td>
+        区分 <code>ErrorEvent</code> 和资源元素触发的 <code>error</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>createErrorEvent(event)</code>
+      </td>
+      <td>
+        <code>browser/createEvents.ts</code>
+      </td>
+      <td>
+        如果 target 是资源元素，生成 resource_error；如果是 ErrorEvent，生成
+        js_error； 否则返回 null。
+      </td>
+      <td>后续如要把正式 SDK 监听和早期队列复用同一转换逻辑，可直接使用它。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>createUnhandledRejectionEvent(event)</code>
+      </td>
+      <td>
+        <code>browser/createEvents.ts</code>
+      </td>
+      <td>
+        读取 PromiseRejectionEvent.reason，标准化后生成 unhandled_rejection。
+      </td>
+      <td>处理初始化阶段未 catch 的 Promise。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>createBrowserReportEvent(report)</code>
+      </td>
+      <td>
+        <code>browser/createEvents.ts</code>
+      </td>
+      <td>把 Reporting API report 转成 browser_report，兼容 body.toJSON。</td>
+      <td>收集 CSP、弃用 API、浏览器干预等平台报告。</td>
+    </tr>
+  </tbody>
+</table>
+
+### 上下文和发送函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>所在文件</th>
+      <th>做了什么</th>
+      <th>失败策略</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>takeGlobalEarlyErrors(options)</code>
+      </td>
+      <td>
+        <code>browser/takeGlobalEarlyErrors.ts</code>
+      </td>
+      <td>
+        先通过 <code>isBrowser()</code> 确认可以访问 window，再从 window
+        上取指定全局队列，调用 <code>take()</code> 读取并清空。默认读取后调用
+        <code>stop()</code>，让完整 SDK 接管后不再重复监听。
+      </td>
+      <td>非浏览器环境或没有全局队列时返回空数组。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>enrichEarlyErrors(events, context, reason)</code>
+      </td>
+      <td>
+        <code>browser/enrichEarlyErrors.ts</code>
+      </td>
+      <td>
+        给每个事件补 appId、release、route、userId、sessionId 等上下文，并追加
+        flushedAt、flushReason、source。
+      </td>
+      <td>
+        如果没传 route，会在 <code>isBrowser()</code> 为 true 后 fallback 到
+        <code>window.location.pathname</code>；userId 默认为 anonymous。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>sendEarlyErrorPayload(url, payload, transport, credentials)</code>
+      </td>
+      <td>
+        <code>transport/sendEarlyErrorPayload.ts</code>
+      </td>
+      <td>
+        将 payload 通过 <code>safeStringify</code> 序列化，估算体积，根据
+        transport 选择 fetch 或 beacon 发送。
+      </td>
+      <td>
+        空事件直接返回成功；beacon 分支先用
+        <code>supportSendBeacon()</code> 判断能力，不可用或失败时降级 keepalive
+        fetch。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>postByFetch(url, body, credentials, keepalive)</code>
+      </td>
+      <td>
+        <code>transport/sendEarlyErrorPayload.ts</code>
+      </td>
+      <td>使用 POST JSON 发送，支持 credentials 和 keepalive。</td>
+      <td>
+        <code>supportFetch()</code> 为 false 或请求异常时返回 false。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>postByBeacon(url, body, bytes)</code>
+      </td>
+      <td>
+        <code>transport/sendEarlyErrorPayload.ts</code>
+      </td>
+      <td>
+        用 Blob 包装 JSON，通过 <code>window.navigator.sendBeacon</code> 发送。
+      </td>
+      <td>
+        <code>supportSendBeacon()</code> 为 false、超过 60 KiB 或异常时返回
+        false。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### script.tsx 内部函数
+
+<table>
+  <thead>
+    <tr>
+      <th>函数</th>
+      <th>做了什么</th>
+      <th>和 TS 版本的关系</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>IIFE</code>
+      </td>
+      <td>
+        文件主体是立即执行函数，浏览器解析到 script 后立刻安装监听，同时把
+        queue、keys、 bytes、dropped 等变量限制在局部作用域。
+      </td>
+      <td>它是 copy-only 版本，不能 import TS core 文件。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>now()</code>
+      </td>
+      <td>优先使用 Date.now，老环境降级为 +new Date。</td>
+      <td>对应 TS 版本里直接使用 Date.now。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>safeString(value)</code>
+      </td>
+      <td>把未知值转换成字符串，JSON 失败时降级 String。</td>
+      <td>
+        对应 <code>safeStringify</code> 的轻量版本。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>estimateBytes(value)</code>
+      </td>
+      <td>用字符串长度估算体积。</td>
+      <td>
+        inline bootstrap 为了体积更小，没有引入 TextEncoder 逻辑；正式 TS
+        版本估算更准确。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>sanitizeUrl(url)</code>
+      </td>
+      <td>过滤敏感 query 并截断 URL。</td>
+      <td>
+        对应 TS 版本 <code>sanitizeUrl</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>getViewport()</code> / <code>getConnection()</code>
+      </td>
+      <td>采集视口和网络快照。</td>
+      <td>
+        对应 TS 版本 <code>createBaseEvent</code> 内部辅助函数。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>createBase()</code>
+      </td>
+      <td>
+        生成
+        timestamp、pageUrl、userAgent、viewport、connection、count、firstSeen、lastSeen。
+      </td>
+      <td>
+        对应 TS 版本 <code>createBaseEvent</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>normalizeReason(reason)</code>
+      </td>
+      <td>把 Promise rejection reason 转换成 message、stack、reasonType。</td>
+      <td>
+        对应 TS 版本 <code>normalizeUnknownError</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>getStackTop(stack)</code> / <code>getKey(event)</code>
+      </td>
+      <td>生成去重 key，重复错误会合并计数。</td>
+      <td>
+        对应 TS 版本 <code>getErrorKey</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>recalculateBytes()</code> / <code>trimQueue()</code>
+      </td>
+      <td>重算队列体积，并在超出条数或字节限制时移除旧事件。</td>
+      <td>
+        对应 TS 版本 <code>EarlyErrorQueue</code> class 的私有方法。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>push(event)</code>
+      </td>
+      <td>入队前做 maxAge 判断、字段截断、URL 过滤、去重合并和队列裁剪。</td>
+      <td>
+        对应 TS 版本队列的 <code>push</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>onError(event)</code>
+      </td>
+      <td>
+        捕获资源加载错误和 JS 运行时错误。target 不是 window 且有 tagName
+        时按资源错误处理； ErrorEvent 按 JS 错误处理。
+      </td>
+      <td>
+        对应 TS 版本 <code>createErrorEvent</code> 的逻辑。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>onUnhandledRejection(event)</code>
+      </td>
+      <td>捕获未处理 Promise rejection，并推入 unhandled_rejection。</td>
+      <td>
+        对应 TS 版本 <code>createUnhandledRejectionEvent</code>。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>installReportingObserver()</code>
+      </td>
+      <td>在支持 ReportingObserver 的浏览器中收集 buffered reports。</td>
+      <td>
+        对应 TS 版本 <code>createBrowserReportEvent</code> 可支持的数据结构。
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>stop()</code>
+      </td>
+      <td>移除 error 和 unhandledrejection 监听，并断开 ReportingObserver。</td>
+      <td>完整 SDK 接管后通过全局队列的 stop 调用它。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>window[GLOBAL_NAME]</code>
+      </td>
+      <td>
+        暴露 push、take、peek、stop、getStats。完整 SDK
+        通过这个协议接管早期错误。
+      </td>
+      <td>
+        对应 TS 类型 <code>EarlyErrorGlobalQueue</code>。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 参数介绍
+
+<table>
+  <thead>
+    <tr>
+      <th>参数名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>maxCount</td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        最大缓存条数，默认 <code>50</code>
+      </td>
+    </tr>
+    <tr>
+      <td>maxBytes</td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        最大估算字节数，默认 <code>48 KiB</code>
+      </td>
+    </tr>
+    <tr>
+      <td>maxAge</td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        最大存活时间，默认 <code>60000ms</code>
+      </td>
+    </tr>
+    <tr>
+      <td>beforeEnqueue</td>
+      <td>
+        <code>(event) =&gt; event | false</code>
+      </td>
+      <td>
+        入队前过滤或改写事件，返回 <code>false</code> 时丢弃
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 返回值
+
+<table>
+  <thead>
+    <tr>
+      <th>方法名</th>
+      <th>类型</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>captureGlobal</td>
+      <td>
+        <code>() =&gt; number</code>
+      </td>
+      <td>
+        接管 <code>window.__EARLY_ERROR_QUEUE__</code> 并返回读取条数
+      </td>
+    </tr>
+    <tr>
+      <td>flush</td>
+      <td>
+        <code>(options) =&gt; Promise&lt;EarlyErrorSendResult&gt;</code>
+      </td>
+      <td>
+        补上下文并发送，支持 <code>fetch</code> 和 <code>sendBeacon</code>
+      </td>
+    </tr>
+    <tr>
+      <td>take</td>
+      <td>
+        <code>() =&gt; EarlyErrorEvent[]</code>
+      </td>
+      <td>读取并清空队列</td>
+    </tr>
+  </tbody>
+</table>
+
+## 具体实现原理
+
+1. **文件职责**：`script.tsx` 提供 copy-only inline bootstrap；`index.ts` 提供可 import 的 SDK 接管类，并用 class 私有字段负责有界队列、去重和统计；`browser/**` 负责读取浏览器事件、全局队列和运行时上下文；`transport/sendEarlyErrorPayload.ts` 负责 fetch/beacon 发送；`core/**` 只保留清洗、去重 key、未知错误标准化这类纯逻辑 helper。
+2. **核心流程**：HTML head 先执行 bootstrap，错误进入全局队列；SDK 初始化后 `captureGlobal()` 取走事件；`flush()` 调用 `enrichEarlyErrors()` 补业务上下文后发送。
+3. **关键技术点**：资源错误必须通过捕获阶段监听；队列满时丢弃最旧事件；入队前做 URL 敏感参数过滤；页面隐藏时可选 `sendBeacon`，失败后降级 `fetch keepalive`。
+4. **数据流向**：浏览器事件 → bootstrap 全局队列 → `EarlyErrorQueue` 内存队列 → enriched payload → 后端监控接口。

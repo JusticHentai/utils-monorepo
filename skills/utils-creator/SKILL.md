@@ -18,6 +18,15 @@ description: 在 packages 下创建或修改工具函数时使用。当用户需
 - 编写 Storybook 文档（使用 storybook-creator skill）
 - 配置构建工具
 
+## 开始前检查
+
+在修改某个 package 前，先检查目标 package 是否有包级 `AGENTS.md` 或工具索引：
+
+- 如果存在 `packages/{packageName}/AGENTS.md`，先遵循其中的包级规则。
+- 如果存在 `packages/{packageName}/docs/tool-index/README.md`，先读总览，再只打开和当前需求相关的分类索引。
+- 新增工具前必须先确认是否已有工具、support helper、monitor 或通用 helper 能复用。
+- 修改工具后，如果新增、重命名、删除了 public 工具或明显新增可复用能力，同步更新对应工具索引。
+
 ## 目录结构
 
 每个工具函数应遵循以下目录结构：
@@ -59,7 +68,7 @@ export default {toolName}
 
 ### 2. 创建类型定义 interface.ts
 
-复杂类型应抽离到 `interface.ts`：
+复杂类型应抽离到 `interface.ts`，但只放**调用方需要感知的公共协议**：
 
 ```typescript
 // packages/{packageName}/src/{toolName}/interface.ts
@@ -94,11 +103,30 @@ export interface {ToolName}Result {
 
 **默认值处理**：
 ```typescript
-const {toolName} = (options: {ToolName}Options): {ReturnType} => {
-  const { {param1}, {param2} = {DEFAULT_VALUE} } = options
+const {toolName} = (options: {ToolName}Options = {}): {ReturnType} => {
+  const { {param2} = {DEFAULT_VALUE} } = options
   // 实现
 }
 ```
+
+**interface.ts 放置规则**：
+- 放入调用方会 import 的类型：配置项、返回值、事件 payload、枚举、外部协议对象。
+- 放入公共默认常量：当默认值会出现在配置注释、文档或业务侧需要复用时，使用 `export const DEFAULT_{TOOL_NAME}_{FIELD}` 放在 `interface.ts`。
+- 不放仅函数内部使用的类型：闭包状态、内部 store、完整配置合并结果、临时中间结构、内部 helper 返回类型，应在使用它的 `.ts` 文件内就近定义或由函数返回值推断。
+- 不为简单默认值合并单独创建 `defaultOptions.ts`。只有默认值包含复杂计算、运行时环境探测，或被多个模块以独立职责复用时，才考虑抽成独立模块。
+- 默认值合并逻辑应靠近消费它的函数；如果只是把 `options.foo ?? DEFAULT_FOO` 补齐，放在主函数或对应 core 文件内即可。
+- 不为线性默认值合并额外拆 `createFullOptions`、`getDefaultOptions`、`normalizeOptions` 这类 helper。只有合并逻辑包含校验、派生字段、环境探测、跨模块复用，或能显著降低主流程复杂度时才允许拆函数。
+
+**实例状态与 core 边界**：
+- 对外暴露 class 的工具，实例级可变状态必须由 class 私有字段维护，例如队列数组、`Map` / `Set`、计数器、计时器、observer、清理函数、实例配置、生命周期时间戳。
+- 不要在 `core/**` 中导出持有实例状态的闭包工厂，例如 `createXxx()` 返回 `push/take/clear/getStats` 且内部藏数组、`Map`、计数器。这样的结构会让 class 只剩一层包装，状态读写也难以在文档中定位。
+- `core/**` 默认只放无实例状态、无环境副作用的逻辑 helper：输入来自参数，输出来自返回值，不依赖隐藏的可变闭包状态，也不直接读写浏览器全局、DOM、网络或存储。class 方法可以调用这些 helper，但状态创建、状态更新和生命周期收口应留在 class 文件。
+- 如果 helper 不可避免要触碰浏览器全局、DOM、网络、存储等副作用，应放到 `browser/**`、`transport/**`、`storage/**` 等明确目录，文件名和文档必须说明它是 effect 边界；不要把副作用和实例状态容器混在同一个 `core` 工厂里。
+
+**对象组装可读性**：
+- 对象字面量里不要直接塞多行表达式、链式调用、带 `??` / `||` 兜底的复杂表达式，或带 3 个及以上参数的 helper 调用。先用语义化 `const` 承接，再把变量放进对象字段。
+- 对象字段应优先呈现数据结构，例如 `{ message, pageUrl, stack }`；清洗、截断、格式化、降级兜底等处理步骤放在对象创建前，便于阅读数据流和调试中间值。
+- 简单字段可以保留在对象里，例如 `type: EARLY_ERROR_TYPE.JS`、`count: 1`、`lineno: event.lineno`、`...event`。
 
 ### 3. 添加包入口导出
 
@@ -434,6 +462,8 @@ const handler = (event: Event) => {
 ## 内部依赖引用规范
 
 当工具函数需要使用已存在于 `@packages` 下的功能时，**必须**直接引用，禁止重复实现。
+
+如果当前 package 有工具索引，优先根据索引定位已有能力。例如 `element-utils` 中判断浏览器环境应优先复用 `isBrowser()`，不要在 importable TS 模块中重复写 `typeof window === 'undefined'`；判断具体 Web API 时优先复用 `support*` 工具。
 
 **引用方式（按优先级排序）**：
 

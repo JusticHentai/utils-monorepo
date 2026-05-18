@@ -1,0 +1,79 @@
+import basicDemo from './basicDemo?raw'
+import source from '../../../packages/element-utils/src/supportFetch/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportFetch
+
+`supportFetch` 判断当前运行环境是否可以调用全局 `fetch`。它把网络上报里的能力判断抽成公共工具，避免各模块重复写 `typeof fetch`。
+
+## 具体逻辑
+
+<table>
+  <thead>
+    <tr>
+      <th>步骤</th>
+      <th>代码动作</th>
+      <th>返回</th>
+      <th>调用方影响</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>
+        执行 <code>typeof fetch === 'function'</code>
+      </td>
+      <td>
+        存在函数时返回 <code>true</code>，否则返回 <code>false</code>
+      </td>
+      <td>
+        <code>earlyErrorQueue</code> 的 fetch 发送分支据此决定是否直接失败兜底。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 用例
+
+<CodeOrSourceMdx language="typescript">{basicDemo}</CodeOrSourceMdx>
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">{source}</CodeOrSourceMdx>
+
+## Storybook 文件说明
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>index.stories.ts</code>
+      </td>
+      <td>注册 Storybook story。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>index.tsx</code>
+      </td>
+      <td>渲染触发检测按钮。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>basicDemo.ts</code>
+      </td>
+      <td>调用 <code>supportFetch()</code> 并输出检测结果。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>介绍.mdx</code>
+      </td>
+      <td>解释检测逻辑和下游上报分支如何消费结果。</td>
+    </tr>
+  </tbody>
+</table>

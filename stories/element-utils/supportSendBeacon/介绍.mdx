@@ -1,0 +1,85 @@
+import basicDemo from './basicDemo?raw'
+import source from '../../../packages/element-utils/src/supportSendBeacon/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# supportSendBeacon
+
+`supportSendBeacon` 判断当前浏览器环境是否支持 `navigator.sendBeacon`。它用于上报模块在页面隐藏、卸载附近选择发送通道前做能力探测。
+
+## 具体逻辑
+
+<table>
+  <thead>
+    <tr>
+      <th>步骤</th>
+      <th>代码动作</th>
+      <th>返回</th>
+      <th>调用方影响</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>
+        先调用 <code>isBrowser()</code>
+      </td>
+      <td>非浏览器直接返回 false</td>
+      <td>SSR 或测试环境不会触碰 <code>window.navigator</code>。</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>
+        判断 <code>typeof window.navigator.sendBeacon === 'function'</code>
+      </td>
+      <td>存在函数时返回 true</td>
+      <td>
+        <code>earlyErrorQueue</code> 的 beacon 分支据此决定是否尝试发送或降级 keepalive fetch。
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## 用例
+
+<CodeOrSourceMdx language="typescript">{basicDemo}</CodeOrSourceMdx>
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">{source}</CodeOrSourceMdx>
+
+## Storybook 文件说明
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>index.stories.ts</code>
+      </td>
+      <td>注册 Storybook story。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>index.tsx</code>
+      </td>
+      <td>渲染触发检测按钮。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>basicDemo.ts</code>
+      </td>
+      <td>调用 <code>supportSendBeacon()</code> 并输出检测结果。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>介绍.mdx</code>
+      </td>
+      <td>解释浏览器环境判断、sendBeacon 能力判断和上报模块如何消费结果。</td>
+    </tr>
+  </tbody>
+</table>

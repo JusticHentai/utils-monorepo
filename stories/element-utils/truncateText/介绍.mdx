@@ -1,0 +1,133 @@
+import basicDemo from './basicDemo?raw'
+import optionalDemo from './optionalDemo?raw'
+import source from '../../../packages/element-utils/src/truncateText/index.ts?raw'
+import { CodeOrSourceMdx } from '@storybook/addon-docs/blocks'
+
+# truncateText
+
+`truncateText` 按最大长度硬截断字符串，不追加省略号。它用于日志、URL、错误消息、payload 字段这类需要严格控制字段长度的场景。
+
+## 和 js-utils/truncate 的边界
+
+<table>
+  <thead>
+    <tr>
+      <th>工具</th>
+      <th>行为</th>
+      <th>适合场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>@justichentai/js-utils/truncate</code>
+      </td>
+      <td>超长时追加 <code>...</code>，省略号包含在总长度里。</td>
+      <td>UI 展示，让用户知道文本被省略。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>truncateText</code>
+      </td>
+      <td>只执行 <code>slice(0, maxLength)</code> 语义，不增加额外字符。</td>
+      <td>上报、缓存、URL、堆栈等必须严格受长度限制的数据字段。</td>
+    </tr>
+  </tbody>
+</table>
+
+## 实现逻辑
+
+<table>
+  <thead>
+    <tr>
+      <th>分支</th>
+      <th>返回</th>
+      <th>原因</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>text === undefined</code>
+      </td>
+      <td>
+        <code>undefined</code>
+      </td>
+      <td>保留可选字段语义，不把缺失值变成空字符串。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>maxLength &lt;= 0</code> 或 <code>Number.isNaN(maxLength)</code>
+      </td>
+      <td>空字符串</td>
+      <td>调用方明确给出不可保留长度时，结果长度仍满足限制。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>text.length &lt;= maxLength</code>
+      </td>
+      <td>原字符串</td>
+      <td>未超限时不创建新的截断内容。</td>
+    </tr>
+    <tr>
+      <td>超长文本</td>
+      <td>
+        <code>text.slice(0, maxLength)</code>
+      </td>
+      <td>硬截断到指定最大长度。</td>
+    </tr>
+  </tbody>
+</table>
+
+## 用例
+
+<CodeOrSourceMdx language="typescript">{basicDemo}</CodeOrSourceMdx>
+
+<CodeOrSourceMdx language="typescript">{optionalDemo}</CodeOrSourceMdx>
+
+## 源码
+
+<CodeOrSourceMdx language="typescript">{source}</CodeOrSourceMdx>
+
+## Storybook 文件说明
+
+<table>
+  <thead>
+    <tr>
+      <th>文件</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>index.stories.ts</code>
+      </td>
+      <td>注册 Storybook story。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>index.tsx</code>
+      </td>
+      <td>渲染两个触发按钮。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>basicDemo.ts</code>
+      </td>
+      <td>演示普通长文本的硬截断结果。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>optionalDemo.ts</code>
+      </td>
+      <td>演示 <code>undefined</code>、0 长度和负长度分支。</td>
+    </tr>
+    <tr>
+      <td>
+        <code>介绍.mdx</code>
+      </td>
+      <td>解释工具边界、分支行为、demo 和源码。</td>
+    </tr>
+  </tbody>
+</table>

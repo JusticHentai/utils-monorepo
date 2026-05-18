@@ -1,0 +1,1525 @@
+# earlyErrorQueue 源码
+
+这一页按真实源码执行顺序拆解。每一节都是“短代码块 + 紧邻解释”，避免先贴一大段文件再让读者自己找对应关系。
+
+## 本页解释粒度
+
+每个核心片段都按开发者调试源码时真正会问的问题解释：
+
+- 这个阶段的名字是什么意思，避免只写“清洗”“拒绝”“兜底”这类没有定义的词。
+- 这段读取了哪些入参、class 字段、Map、数组、全局对象或 helper 返回值。
+- 这段会不会修改 `queue/keys/bytes/dropped`，如果不修改也明确说出来。
+- 数据从什么形状变成什么形状，例如原始错误事件变成脱敏、截断后的事件。
+- 返回值代表什么业务语义，例如 `false` 是“没有入队”，不是网络失败。
+- 空值、重复、超限、取消发送、能力不存在这些边界分支具体怎么走。
+
+## 阅读顺序
+
+<table>
+  <thead>
+    <tr>
+      <th>顺序</th>
+      <th>文件</th>
+      <th>要先理解的问题</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>
+        <code>index.ts</code>
+      </td>
+      <td>
+        class 私有字段在哪里创建，<code>push/take/peek/clear</code>{' '}
+        如何读写队列状态。
+      </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>
+        <code>core/sanitizeEvent.ts</code>、<code>sanitizeUrl.ts</code>、
+        <code>getErrorKey.ts</code>
+      </td>
+      <td>入队前如何截断、脱敏，以及重复错误如何生成稳定 key。</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>
+        <code>browser/takeGlobalEarlyErrors.ts</code>
+      </td>
+      <td>SDK 初始化后如何读取并停止 inline bootstrap。</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>
+        <code>transport/sendEarlyErrorPayload.ts</code>
+      </td>
+      <td>发送分支、失败兜底和返回统计。</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>
+        <code>browser/enrichEarlyErrors.ts</code>
+      </td>
+      <td>被消费的队列事件如何补齐初始化后的业务上下文。</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>
+        <code>browser/createBaseEvent.ts</code>、
+        <code>core/normalizeUnknownError.ts</code>、
+        <code>browser/createEvents.ts</code>、
+        <code>browser/enrichEarlyErrors.ts</code>
+      </td>
+      <td>事件从浏览器输入变成队列事件，再变成上报事件的过程。</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>
+        <code>script.tsx</code>
+      </td>
+      <td>copy-only inline script 为什么自包含，以及它暴露什么全局协议。</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>
+        <code>interface.ts</code>
+      </td>
+      <td>哪些类型和常量属于公共协议，哪些内部结构不应该放出来。</td>
+    </tr>
+  </tbody>
+</table>
+
+## EarlyErrorQueue：依赖
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+import estimateBytes from '../estimateBytes'
+import enrichEarlyErrors from './browser/enrichEarlyErrors'
+import getErrorKey from './core/getErrorKey'
+import sanitizeEvent from './core/sanitizeEvent'
+import sendEarlyErrorPayload from './transport/sendEarlyErrorPayload'
+import takeGlobalEarlyErrors from './browser/takeGlobalEarlyErrors'
+```
+
+`EarlyErrorQueue` 是队列实例状态的唯一容器。这里的“实例状态”指会随着一次队列实例生命周期变化的字段，例如数组、去重索引、字节数和丢弃计数。
+
+这些 import 分成三类：
+
+- 纯逻辑 helper：`sanitizeEvent`、`getErrorKey`。它们只根据入参返回结果，不读写 class 字段，也不触碰浏览器全局。
+- 实例状态 helper：`estimateBytes(this.queue)`。它不自己保存状态，只返回字节估算结果，由 class 写入 `this.bytes`。
+- effect 边界：`takeGlobalEarlyErrors` 会读 `window.__EARLY_ERROR_QUEUE__`，`sendEarlyErrorPayload` 会发网络请求，`enrichEarlyErrors` 会读当前路由和时间；这些不放在 `core/**`。
+
+这段 import 本身不产生副作用。真正读写状态发生在后面的 class 方法里。
+
+## EarlyErrorQueue：内部配置类型
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+type EarlyErrorQueueRuntimeOptions = {
+  maxCount: number
+  maxBytes: number
+  maxAge: number
+  maxStackLength: number
+  maxMessageLength: number
+  maxHtmlLength: number
+  sensitiveKeys: RegExp
+  beforeEnqueue: EarlyErrorQueueOptions['beforeEnqueue']
+}
+```
+
+这个类型只服务 class 内部，所以留在 `index.ts` 就近定义。
+
+- `EarlyErrorQueueOptions` 是调用方传入的公共配置，允许字段缺省。
+- `EarlyErrorQueueRuntimeOptions` 是 constructor 合并默认值后的内部配置，除 `beforeEnqueue` 以外都变成必填。
+- 它不会被 export，因为业务代码不应该依赖“内部已经补齐默认值”的结构。
+
+后续 `push`、`trimQueue`、`sanitizeEvent` 都读取 `this.options`；没有任何方法会重新写它，所以一个队列实例的容量和清洗规则在生命周期内固定。
+
+## EarlyErrorQueue：实例字段
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+export default class EarlyErrorQueue {
+  private readonly options: EarlyErrorQueueRuntimeOptions
+  private readonly installedAt = Date.now()
+  private readonly queue: EarlyErrorEvent[] = []
+  private readonly keys = new Map<string, EarlyErrorEvent>()
+  private bytes = 0
+  private dropped = 0
+```
+
+这六个字段构成队列实例的全部状态，其中 `queue/keys/bytes/dropped` 会随调用变化：
+
+- `options`：实例固定配置。constructor 写一次，后续只读。
+- `installedAt`：实例创建时间。`push` 用它计算“队列已经活了多久”。
+- `queue`：按入队顺序保存去重后的代表事件。新事件从尾部进入，容量裁剪从头部移除旧事件。
+- `keys`：去重索引。key 来自 `getErrorKey`，value 指向 `queue` 里的同一个事件对象；这让重复事件可以直接更新已有对象。
+- `bytes`：当前队列的估算字节数。只通过 `recalculateBytes` 或清空逻辑更新，不在多个分支里手动加减。
+- `dropped`：因容量裁剪丢弃的旧事件数。它不统计 `maxAge` 超时拒绝，也不统计 `beforeEnqueue` 返回 `false`。
+
+核心不变量是：只要事件还在 `queue` 里，`keys` 也必须能用同一个 key 找到它；事件被裁剪、take 或 clear 时，这两个结构要一起更新。
+
+## EarlyErrorQueue：构造函数
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+constructor(options: EarlyErrorQueueOptions = {}) {
+  this.options = {
+    maxCount: options.maxCount ?? DEFAULT_EARLY_ERROR_MAX_COUNT,
+    maxBytes: options.maxBytes ?? DEFAULT_EARLY_ERROR_MAX_BYTES,
+    maxAge: options.maxAge ?? DEFAULT_EARLY_ERROR_MAX_AGE,
+    maxStackLength:
+      options.maxStackLength ?? DEFAULT_EARLY_ERROR_MAX_STACK_LENGTH,
+    maxMessageLength:
+      options.maxMessageLength ?? DEFAULT_EARLY_ERROR_MAX_MESSAGE_LENGTH,
+    maxHtmlLength:
+      options.maxHtmlLength ?? DEFAULT_EARLY_ERROR_MAX_HTML_LENGTH,
+    sensitiveKeys:
+      options.sensitiveKeys ?? DEFAULT_EARLY_ERROR_SENSITIVE_KEYS,
+    beforeEnqueue: options.beforeEnqueue,
+  }
+}
+```
+
+constructor 做两件事：
+
+- 读取调用方传入的 `options`。
+- 对每个可选字段执行 `options.foo ?? DEFAULT_FOO`，把它补成 class 内部稳定使用的 `this.options`。
+
+这里没有拆 `createFullOptions`。原因是每一项都是线性默认值合并，没有校验、派生字段或跨模块复用；拆 helper 会让读者多跳一层，却不会让主流程更清楚。
+
+这个阶段只写 `this.options`。它不会写 `queue/keys/bytes/dropped`，所以创建实例时队列仍然是空的。
+
+## EarlyErrorQueue：字节重算
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+private recalculateBytes = (): void => {
+  this.bytes = estimateBytes(this.queue)
+}
+```
+
+这段只写 `this.bytes`，不修改 `queue/keys/dropped`。
+
+这里选择“整体重算”，不是“每次入队加上新事件字节数”，原因是队列里的事件对象可能原地变化。例如重复错误命中后会直接改已有事件的 `count` 和 `lastSeen`；容量裁剪也可能一次删除多条旧事件。整体重算虽然要遍历队列，但队列有 `maxCount` 上限，复杂度可控，状态也更不容易算错。
+
+## EarlyErrorQueue：移除最旧事件
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+private removeFirst = (): void => {
+  const removed = this.queue.shift()
+  if (!removed) return
+
+  this.keys.delete(getErrorKey(removed))
+  this.dropped += 1
+  this.recalculateBytes()
+}
+```
+
+`removeFirst` 的语义是“容量裁剪时丢弃最旧事件”。它不是业务过滤，也不是读取队列。
+
+执行顺序是：
+
+1. `this.queue.shift()` 取出最旧事件；队列为空时提前返回，没有状态变化。
+2. 用同一个事件重新算 key，并从 `this.keys` 删除对应索引，保证 `queue` 和 `keys` 同步。
+3. `this.dropped += 1`，这是唯一增加 `dropped` 的地方。
+4. 重算 `bytes`，让统计和后续容量判断使用最新队列内容。
+
+返回值是 `void`。调用方不靠返回值判断是否删除成功，而是依赖 `queue/keys/bytes/dropped` 四个状态被同步更新。
+
+## EarlyErrorQueue：容量裁剪
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+private trimQueue = (): void => {
+  this.recalculateBytes()
+
+  while (
+    this.queue.length > this.options.maxCount ||
+    this.bytes > this.options.maxBytes
+  ) {
+    this.removeFirst()
+  }
+}
+```
+
+`trimQueue` 的语义是“把队列裁剪回配置允许的大小”。它只在新事件入队后调用。
+
+执行顺序是：
+
+1. 先调用 `recalculateBytes()`，让 `this.bytes` 反映当前完整队列。
+2. 只要条数超过 `maxCount`，或者字节数超过 `maxBytes`，就调用 `removeFirst()` 删除队头旧事件。
+3. `removeFirst()` 每删一次都会同步更新 `keys/dropped/bytes`。
+
+最终要保证两个不变量同时成立：
+
+- `this.queue.length <= this.options.maxCount`
+- `this.bytes <= this.options.maxBytes`
+
+边界情况：如果刚入队的新事件本身就超过 `maxBytes`，队列可能把它也裁掉；当前 `push` 仍会返回 `true`，表示事件通过了入队流程，但最后没有被缓存下来。`dropped` 会记录这次容量裁剪。
+
+## EarlyErrorQueue：统计快照
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+private getStats = (): EarlyErrorQueueStats => ({
+  count: this.queue.length,
+  bytes: this.bytes,
+  dropped: this.dropped,
+})
+```
+
+`getStats` 是 class 私有方法，不作为 public API 暴露。它读取的是当前内存状态：
+
+- `count`：当前 `queue.length`，也就是还没被消费的代表事件数量。
+- `bytes`：最近一次重算后的估算字节数。
+- `dropped`：实例生命周期内因容量裁剪丢弃的旧事件数量。
+
+它不修改任何状态。`createPayload` 会在调用 `take()` 之前先读它，所以 payload 里的 stats 描述的是“消费前的队列状态”，不是清空后的状态。
+
+## EarlyErrorQueue：push 的入队前过滤与字段清洗
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+push = (event: EarlyErrorEvent): boolean => {
+  if (Date.now() - this.installedAt > this.options.maxAge) return false
+
+  const sanitizedEvent = sanitizeEvent(event, this.options)
+  const filteredEvent = this.options.beforeEnqueue
+    ? this.options.beforeEnqueue(sanitizedEvent)
+    : sanitizedEvent
+
+  if (!filteredEvent) return false
+```
+
+这段发生在真正写入 `queue` 之前，所以叫“入队前过滤与字段清洗”。
+
+术语先定义清楚：
+
+- “过滤”指决定这个事件是否允许继续进入队列流程。
+- “字段清洗”指对事件字段做脱敏、截断和兜底，例如 URL query 里的 token 被替换，`message/stack/outerHTML` 被限制长度。
+- “拒绝入队”指返回 `false`，并且不写 `queue/keys/bytes/dropped`。
+
+执行顺序是：
+
+1. `Date.now() - this.installedAt > this.options.maxAge`：判断队列是否已经超过早期捕获窗口。超时直接 `return false`，不会调用 `sanitizeEvent`，也不会触发业务回调。
+2. `sanitizeEvent(event, this.options)`：把原始事件转换成清洗后的事件。这个函数返回新对象，不写 class 状态。
+3. `beforeEnqueue`：业务侧最后一次过滤或改写机会。它接收的是已经清洗过的事件，不会拿到未脱敏 URL。
+4. `if (!filteredEvent) return false`：业务返回 `false` 时丢弃事件。这个丢弃不是容量裁剪，所以 `dropped` 不增加。
+
+能走到下一段代码时，`filteredEvent` 一定是准备进入去重流程的事件。
+
+## EarlyErrorQueue：push 的重复错误合并分支
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+const key = getErrorKey(filteredEvent)
+const existingEvent = this.keys.get(key)
+
+if (existingEvent) {
+  existingEvent.count += 1
+  existingEvent.lastSeen = filteredEvent.timestamp
+  this.recalculateBytes()
+  return true
+}
+```
+
+“重复错误”不是指两个对象完全相等，而是 `getErrorKey(filteredEvent)` 生成的 key 已经存在于 `this.keys`。
+
+这段读取两个值：
+
+- `filteredEvent`：已经通过字段清洗和业务过滤的事件。
+- `this.keys`：当前队列的去重索引。
+
+命中 `existingEvent` 时，代码不会向 `queue` 追加新项，只会原地更新已有代表事件：
+
+- `count += 1` 记录重复出现次数。
+- `lastSeen = filteredEvent.timestamp` 记录最近一次出现时间。
+- 重算 `bytes`，因为已有事件内容变了。
+- 返回 `true` 表示这次事件被队列接受并合并。
+
+这个分支不会修改 `keys` 的条目数量，也不会修改 `dropped`。`queue.length` 保持不变。
+
+## EarlyErrorQueue：push 的新事件入队和容量裁剪
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+  this.queue.push(filteredEvent)
+  this.keys.set(key, filteredEvent)
+  this.trimQueue()
+  return true
+}
+```
+
+未命中去重索引时，说明这个错误是当前队列里新的代表事件。
+
+- `this.queue.push(filteredEvent)` 把事件放到队尾。
+- `this.keys.set(key, filteredEvent)` 建立去重索引，value 和队列项是同一个对象。
+- `this.trimQueue()` 负责容量限制，可能把队头旧事件移除。
+- 返回 `true` 表示新事件已入队。
+
+这里会写 `queue`、`keys`，并且可能通过 `trimQueue()` 间接写 `bytes/dropped`。如果队列超出 `maxCount` 或 `maxBytes`，`trimQueue()` 会从最旧事件开始删，直到容量回到限制内。
+
+返回 `true` 的含义是“事件通过了入队流程”。它不保证事件最终一定还留在队列里，因为极端情况下新事件本身超过 `maxBytes`，会被刚调用的 `trimQueue()` 裁掉。
+
+## EarlyErrorQueue：接管 bootstrap 全局队列
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+captureGlobal = (): number => {
+  const events = takeGlobalEarlyErrors()
+  events.forEach((event) => this.push(event))
+  return events.length
+}
+```
+
+这里的“接管”指完整 SDK 初始化完成后，把 inline bootstrap 在 `window.__EARLY_ERROR_QUEUE__` 暂存的事件转移到当前 `EarlyErrorQueue` 实例中。
+
+执行流程是：
+
+1. `takeGlobalEarlyErrors()` 从 `window.__EARLY_ERROR_QUEUE__` 取出并清空 inline 队列。
+2. `events.forEach((event) => this.push(event))` 把每个事件重新走当前实例的入队流程，所以仍然会执行字段清洗、业务过滤、去重和容量裁剪。
+3. 返回 `events.length`，它表示“从全局队列读到了多少条原始事件”，不是最终成功留在当前队列里的数量。
+
+边界行为：如果 `beforeEnqueue` 丢弃部分事件，或者容量裁剪删掉旧事件，`captureGlobal()` 的返回值不会反映这些变化。要看当前队列内容，应调用 `peek()`。
+
+## EarlyErrorQueue：take/peek 的消费式读取和只读快照
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+take = (): EarlyErrorEvent[] => {
+  const events = this.queue.slice()
+  this.queue.length = 0
+  this.keys.clear()
+  this.bytes = 0
+  return events
+}
+
+peek = (): EarlyErrorEvent[] => this.queue.slice()
+```
+
+`take` 和 `peek` 都返回数组浅拷贝，但语义完全不同：
+
+- `take` 是“消费式读取”。它先 `slice` 出当前事件快照，再清空 `queue`、`keys` 和 `bytes`。用于上报前取走事件，避免同一批错误重复发送。
+- `peek` 是“只读快照”。它只返回 `queue.slice()`，不会清空队列，也不会修改 `keys/bytes/dropped`。
+
+两者返回的都是浅拷贝；数组是新的，但里面的事件对象不是深拷贝。调用方不应该修改返回事件对象后再假设队列内部完全不受影响。
+
+## EarlyErrorQueue：主动清空
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+clear = (): void => {
+  this.queue.length = 0
+  this.keys.clear()
+  this.bytes = 0
+}
+```
+
+`clear` 的语义是“主动放弃当前缓存”。它写三个状态：
+
+- `queue.length = 0`：丢弃当前所有事件。
+- `keys.clear()`：清空去重索引，避免旧 key 影响后续事件。
+- `bytes = 0`：当前队列已经为空，字节估算同步归零。
+
+它不会重置 `dropped`。`dropped` 描述的是这个实例生命周期内发生过多少次容量裁剪；清空当前队列不等于清空生命周期统计。
+
+## EarlyErrorQueue：createPayload 的消费队列和补上下文
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+  createPayload = (
+    options: Omit<
+      FlushEarlyErrorsOptions,
+      'url' | 'transport' | 'credentials'
+    > = {}
+  ): EarlyErrorPayload => {
+    const reason = options.reason ?? EARLY_ERROR_FLUSH_REASON.INIT
+    const context = options.context ?? {}
+    const stats = this.getStats()
+    const events = enrichEarlyErrors(this.take(), context, reason)
+```
+
+`createPayload` 把“内存队列里的事实事件”转换成“可以发送给监控后端的 payload”。它会消费队列。
+
+这里的顺序很重要：
+
+- 先读 `stats`，此时队列还没被 `take()` 清空，所以 `count/bytes/dropped` 是消费前状态。
+- 再调用 `this.take()`，读取并清空当前队列。
+- `enrichEarlyErrors` 给每个事件补 `context`、`flushReason`、`flushedAt` 和 `source`。
+
+返回值里的 `events` 是补齐上下文后的事件数组；`context` 是这次 flush 的上下文原值；`stats` 是消费前队列统计。
+
+边界行为：调用 `createPayload` 本身就会消费队列，即使后续没有发送。只想预览时要用 `peek()`，不要调用 `createPayload()`。
+
+## EarlyErrorQueue：flush 的发送前处理和取消发送
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+  flush = async (options: FlushEarlyErrorsOptions) => {
+    const payload = this.createPayload(options)
+    const processedPayload = options.beforeSend
+      ? options.beforeSend(payload)
+      : payload
+
+    if (!processedPayload) {
+      return {
+        success: false,
+        transport: options.transport ?? EARLY_ERROR_TRANSPORT.FETCH,
+        count: 0,
+        bytes: 0,
+      }
+    }
+```
+
+`flush` 是完整发送入口。它先调用 `createPayload(options)`，所以第一步已经消费并清空队列；然后才执行发送前回调 `beforeSend`。
+
+`beforeSend` 的语义是“发送前最后一次改写或取消 payload”：
+
+- 没传 `beforeSend`：直接发送原 payload。
+- 返回新的 payload：发送返回值。
+- 返回 `false`：取消发送。
+
+因此 `beforeSend` 返回 `false` 时不会发请求，但队列已经在 `createPayload` 阶段被清空，当前实现不会自动把事件放回队列。
+
+这个返回对象表示“本次发送被取消”，不是网络失败：
+
+- `success: false`
+- `count: 0`
+- `bytes: 0`
+- `transport` 使用调用方传入值，没有传则按 `FETCH`
+
+## EarlyErrorQueue：flush 的网络发送出口
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/index.ts`
+
+```ts
+    return sendEarlyErrorPayload(
+      options.url,
+      processedPayload,
+      options.transport,
+      options.credentials
+    )
+  }
+}
+```
+
+这段不再读写 `queue/keys/bytes/dropped`，只把 payload 和发送配置交给 `sendEarlyErrorPayload`。
+
+从这里开始，关注点从“队列状态”切换为“网络发送结果”：
+
+- `options.url`：发送地址。
+- `processedPayload`：经过 `beforeSend` 后的 payload。
+- `options.transport`：发送通道，缺省由发送模块按 `FETCH` 处理。
+- `options.credentials`：fetch 是否携带凭据。
+
+网络策略、空事件处理、beacon 降级都在 `transport/sendEarlyErrorPayload.ts` 里完成。
+
+## takeGlobalEarlyErrors：非浏览器保护与全局名配置
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/takeGlobalEarlyErrors.ts`
+
+```ts
+const DEFAULT_GLOBAL_NAME = '__EARLY_ERROR_QUEUE__'
+
+const takeGlobalEarlyErrors = (
+  options: TakeGlobalEarlyErrorsOptions = {}
+): EarlyErrorEvent[] => {
+  if (!isBrowser()) return []
+
+  const { globalName = DEFAULT_GLOBAL_NAME, stopAfterTake = true } = options
+```
+
+这段是 effect 边界，会读取浏览器全局对象，所以第一步必须判断环境。
+
+- `isBrowser()` 返回 `false`：直接返回空数组，不触碰 `window`，适合 SSR、测试或 Node 环境。
+- `globalName` 默认读取 `__EARLY_ERROR_QUEUE__`，和 `script.tsx` 暴露的全局对象保持一致。
+- `stopAfterTake` 默认 `true`，表示 SDK 接管后停止 bootstrap 继续监听。
+
+这个函数不修改 `EarlyErrorQueue` 实例状态。它只负责从 `window` 拿数据，后续是否入队由 `captureGlobal()` 决定。
+
+## takeGlobalEarlyErrors：读取 window 队列并按配置停止监听
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/takeGlobalEarlyErrors.ts`
+
+```ts
+  const queue = (window as unknown as WindowWithEarlyErrorQueue)[globalName]
+  if (!queue?.take) return []
+
+  const events = queue.take()
+
+  if (stopAfterTake) {
+    queue.stop?.()
+  }
+
+  return events
+}
+```
+
+这里读的是 `window[globalName]`，不是 import 的模块状态。它和 copy-only script 通过全局协议通信。
+
+执行分支：
+
+- 全局对象不存在，或没有 `take`：返回空数组。
+- 存在 `take`：调用 `queue.take()`，读取并清空 bootstrap 队列。
+- `stopAfterTake` 为 `true`：调用 `queue.stop?.()`，移除 inline script 安装的监听器。
+- `stop` 不存在：可选链让调用跳过，不会抛错。
+
+返回的 `events` 是 bootstrap 队列给出的事件数组。它还没有经过当前 `EarlyErrorQueue` 实例的 `sanitizeEvent/beforeEnqueue/getErrorKey/trimQueue`。
+
+## sendEarlyErrorPayload：fetch 发送的能力判断、POST JSON 和异常兜底
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/transport/sendEarlyErrorPayload.ts`
+
+```ts
+const postByFetch = async (
+  url: string,
+  body: string,
+  credentials?: RequestCredentials,
+  keepalive = false
+): Promise<boolean> => {
+  if (!supportFetch()) return false
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+      credentials,
+      keepalive,
+    })
+
+    return response.ok
+  } catch {
+    return false
+  }
+}
+```
+
+`postByFetch` 是底层发送 helper，只返回布尔值，不抛异常给调用方：
+
+- `supportFetch()` 返回 `false` 时直接返回 `false`，不重复写 `typeof fetch`。
+- 网络异常被 `catch` 吞掉并返回 `false`。
+- HTTP 请求完成后，以 `response.ok` 判定成功。
+- `keepalive` 由 beacon 降级分支传入，用于页面卸载附近的兜底发送。
+
+返回 `false` 的语义是“fetch 通道没有成功发送”，可能是能力不存在、网络异常或 HTTP 非 2xx；调用方不需要区分这些底层原因。
+
+## sendEarlyErrorPayload：beacon 发送的能力、体积限制和失败返回
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/transport/sendEarlyErrorPayload.ts`
+
+```ts
+const postByBeacon = (url: string, body: string, bytes: number): boolean => {
+  if (!supportSendBeacon()) return false
+  if (bytes > DEFAULT_KEEPALIVE_LIMIT) return false
+
+  try {
+    const blob = new Blob([body], { type: 'application/json' })
+    return window.navigator.sendBeacon(url, blob)
+  } catch {
+    return false
+  }
+}
+```
+
+`postByBeacon` 用于页面隐藏或卸载附近的小 payload 发送。它也只返回布尔值。
+
+- `supportSendBeacon()` 返回 `false`：说明当前环境不能调用 `navigator.sendBeacon`。
+- `bytes > DEFAULT_KEEPALIVE_LIMIT`：payload 过大，不走 beacon，避免卸载阶段发送失败概率过高。
+- `new Blob` 或 `sendBeacon` 抛异常：catch 后返回 `false`。
+
+失败不会抛出，而是返回 `false`，主函数会继续尝试 keepalive fetch 降级。
+
+## sendEarlyErrorPayload：payload 序列化、字节估算和空事件分支
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/transport/sendEarlyErrorPayload.ts`
+
+```ts
+const sendEarlyErrorPayload = async (
+  url: string,
+  payload: EarlyErrorPayload,
+  transport: EARLY_ERROR_TRANSPORT = EARLY_ERROR_TRANSPORT.FETCH,
+  credentials?: RequestCredentials
+): Promise<EarlyErrorSendResult> => {
+  const body = safeStringify(payload)
+  const bytes = estimateBytes(body)
+
+  if (payload.events.length === 0) {
+    return {
+      success: true,
+      transport,
+      count: 0,
+      bytes,
+    }
+  }
+```
+
+主函数先做发送前准备：
+
+- `safeStringify(payload)`：把 payload 转成 JSON 字符串；如果业务 `context` 里混入循环引用或不可直接序列化的值，也不会让发送逻辑再抛错。
+- `estimateBytes(body)`：估算真正要发出去的 JSON 字符串体积。
+
+空事件分支的语义是“flush 流程成功完成，但没有事件需要发给后端”。它不会发网络请求。这里的 `bytes` 仍然是 payload JSON 的字节估算，不是 0。
+
+## sendEarlyErrorPayload：beacon 降级和 fetch 默认发送路径
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/transport/sendEarlyErrorPayload.ts`
+
+```ts
+if (transport === EARLY_ERROR_TRANSPORT.BEACON) {
+  const beaconSuccess = postByBeacon(url, body, bytes)
+  if (beaconSuccess) {
+    return {
+      success: true,
+      transport: EARLY_ERROR_TRANSPORT.BEACON,
+      count: payload.events.length,
+      bytes,
+    }
+  }
+
+  const keepaliveSuccess = await postByFetch(url, body, credentials, true)
+  return {
+    success: keepaliveSuccess,
+    transport: EARLY_ERROR_TRANSPORT.BEACON,
+    count: payload.events.length,
+    bytes,
+  }
+}
+
+const success = await postByFetch(url, body, credentials)
+```
+
+`BEACON` 分支先尝试 `sendBeacon`：
+
+- 成功：返回 `success: true`，`transport: BEACON`。
+- 失败：继续调用 `postByFetch(url, body, credentials, true)`，也就是 keepalive fetch。
+- keepalive fetch 的结果写入 `success`。
+
+注意：即使底层兜底用了 fetch，返回的 `transport` 仍然是 `BEACON`。这里的 `transport` 表示调用方选择的发送策略，不是最终成功的底层 API 名称。
+
+非 `BEACON` 分支直接走普通 fetch。两个分支最终都会返回同样结构的 `EarlyErrorSendResult`，便于调用方记录发送结果。
+
+## sanitizeEvent：共享字段的截断、URL 脱敏和兜底
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeEvent.ts`
+
+```ts
+const sanitizeEvent = (
+  event: EarlyErrorEvent,
+  options: SanitizeEventOptions
+): EarlyErrorEvent => {
+  const message = truncateText(event.message, options.maxMessageLength)
+  const pageUrl =
+    sanitizeUrl(
+      event.pageUrl,
+      options.sensitiveKeys,
+      options.maxMessageLength
+    ) ?? ''
+  const base = {
+    ...event,
+    message,
+    pageUrl,
+  }
+```
+
+这里的“字段清洗”具体指三类处理：
+
+- 截断：`message` 用 `truncateText` 限制到 `maxMessageLength`。
+- 脱敏：`pageUrl` 用 `sanitizeUrl` 过滤敏感 query value，例如 token、session、password。
+- 兜底：`sanitizeUrl` 可能返回 `undefined`，`?? ''` 保证最终 `pageUrl` 是字符串。
+
+这段先把共享字段的处理结果放到局部变量，再组装 `base`。这样对象字段只表达数据结构：保留原事件字段，再覆盖清洗后的 `message/pageUrl`。
+
+`truncateText` 是包级公共工具：不追加省略号，`undefined` 会原样返回，适合错误消息、堆栈、URL 和 HTML 快照这类 payload 字段限制。
+
+## sanitizeEvent：JS 错误的定位字段清洗
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeEvent.ts`
+
+```ts
+if (event.type === EARLY_ERROR_TYPE.JS) {
+  const filename = sanitizeUrl(
+    event.filename,
+    options.sensitiveKeys,
+    options.maxMessageLength,
+    base.pageUrl
+  )
+  const stack = truncateText(event.stack, options.maxStackLength)
+
+  return {
+    ...base,
+    type: EARLY_ERROR_TYPE.JS,
+    filename,
+    lineno: event.lineno,
+    colno: event.colno,
+    stack,
+  }
+}
+```
+
+JS 错误分支处理运行时异常的定位字段：
+
+- `filename` 可能带 query，所以走 `sanitizeUrl`；如果它是相对地址，用已经脱敏后的 `base.pageUrl` 作为解析 base。
+- `lineno/colno` 原样保留。
+- `stack` 按 `maxStackLength` 截断，避免单条堆栈占满队列字节预算。
+- `return` 对象里只放字段结构，不混入多参数清洗调用。
+
+这段不修改传入的 `event` 对象，而是返回一个带 `type: JS` 的新对象。`base` 里的公共字段已经清洗过，分支里只补 JS 专属字段。
+
+## sanitizeEvent：资源错误的 URL 和 DOM 快照清洗
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeEvent.ts`
+
+```ts
+if (event.type === EARLY_ERROR_TYPE.RESOURCE) {
+  const resourceUrl = sanitizeUrl(
+    event.resourceUrl,
+    options.sensitiveKeys,
+    options.maxMessageLength,
+    base.pageUrl
+  )
+  const outerHTML = truncateText(event.outerHTML, options.maxHtmlLength)
+
+  return {
+    ...base,
+    type: EARLY_ERROR_TYPE.RESOURCE,
+    tagName: event.tagName,
+    resourceUrl,
+    outerHTML,
+  }
+}
+```
+
+资源错误分支处理的是 `<script>`、`<img>`、`<link>` 等静态资源加载失败：
+
+- `tagName` 用来区分 `script/img/link` 等来源。
+- `resourceUrl` 做 query 脱敏；相对资源地址同样基于 `base.pageUrl` 解析。
+- `outerHTML` 只保留短快照，避免把完整 DOM 片段放进内存队列。
+
+这段返回的新对象仍然带 `base` 公共字段。`outerHTML` 只是排查用快照，不需要完整保留；太长会增加内存占用和 payload 体积。
+
+## sanitizeEvent：Promise 拒绝和浏览器报告字段清洗
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeEvent.ts`
+
+```ts
+if (event.type === EARLY_ERROR_TYPE.UNHANDLED_REJECTION) {
+  const stack = truncateText(event.stack, options.maxStackLength)
+
+  return {
+    ...base,
+    type: EARLY_ERROR_TYPE.UNHANDLED_REJECTION,
+    reasonType: event.reasonType,
+    stack,
+  }
+}
+
+const reportUrl = sanitizeUrl(
+  event.reportUrl,
+  options.sensitiveKeys,
+  options.maxMessageLength,
+  base.pageUrl
+)
+
+return {
+  ...base,
+  type: EARLY_ERROR_TYPE.BROWSER_REPORT,
+  reportType: event.reportType,
+  reportUrl,
+  body: event.body,
+}
+```
+
+`UNHANDLED_REJECTION` 只保留标准化后的 `reasonType` 和可选堆栈。它没有 `filename/lineno/colno`，所以分支里只截断 `stack`。
+
+最后的 `return` 是 `BROWSER_REPORT` 分支，因为前面已经排除了 JS、RESOURCE 和 UNHANDLED_REJECTION。浏览器报告处理两类字段：
+
+- `reportUrl`：可能包含敏感 query，所以用 `sanitizeUrl`。
+- `body`：来自 Reporting API 的结构化数据，这里不深度清洗；是否进一步裁剪交给调用方的 `beforeEnqueue`。
+
+整个 `sanitizeEvent` 不写队列状态，只返回清洗后的事件对象。真正入队发生在 `EarlyErrorQueue.push` 后续分支。
+
+## sanitizeUrl：URL 解析、baseUrl 和空值分支
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeUrl.ts`
+
+```ts
+const sanitizeUrl = (
+  url: string | undefined,
+  sensitiveKeys: RegExp = DEFAULT_EARLY_ERROR_SENSITIVE_KEYS,
+  maxLength = DEFAULT_EARLY_ERROR_MAX_MESSAGE_LENGTH,
+  baseUrl?: string
+): string | undefined => {
+  if (!url) return undefined
+
+  try {
+    const parsedUrl = new URL(url, baseUrl)
+    const keys = Array.from(parsedUrl.searchParams.keys())
+```
+
+`sanitizeUrl` 的职责是“把 URL 字符串解析成可处理的 URL，再为 query 脱敏做准备”。它不读浏览器全局，所以仍然是纯逻辑 helper。
+
+- 空 URL 返回 `undefined`，由调用处决定是否兜底；例如 `pageUrl` 调用处用 `?? ''` 兜底。
+- `baseUrl` 由调用方显式传入，`sanitizeUrl` 本身不读取 `window`，所以它仍然是纯逻辑 helper。
+- 没有 `baseUrl` 时只能解析绝对 URL；解析失败会进 `catch`。
+
+这里创建的 `parsedUrl` 是局部变量，不会修改传入的原始字符串。
+
+## sanitizeUrl：query value 过滤和解析失败兜底
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/sanitizeUrl.ts`
+
+```ts
+    keys.forEach((key) => {
+      if (sensitiveKeys.test(key)) {
+        parsedUrl.searchParams.set(key, '[Filtered]')
+      }
+    })
+
+    return truncateText(parsedUrl.toString(), maxLength)
+  } catch {
+    return truncateText(String(url), maxLength)
+  }
+}
+```
+
+`keys` 先拷贝出来再遍历，是为了在修改 `searchParams` 时不依赖迭代器的实时行为。
+
+“脱敏”在这里具体指：命中 `sensitiveKeys` 的 query value 被替换成 `[Filtered]`，query key 名保留。例如 `?token=abc` 会变成 `?token=[Filtered]`。保留 key 名可以让后端知道是哪类参数被过滤，但不会带出真实值。
+
+返回分支有两个：
+
+- 解析成功：返回 `parsedUrl.toString()` 的截断结果。
+- 解析失败：不丢弃原始字符串，改为 `String(url)` 后硬截断返回。
+
+## getErrorKey：资源错误和 JS 错误的去重 key
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/getErrorKey.ts`
+
+```ts
+const getStackTop = (stack?: string): string => {
+  return String(stack ?? '').split('\n')[0] ?? ''
+}
+
+const getErrorKey = (event: EarlyErrorEvent): string => {
+  if (event.type === EARLY_ERROR_TYPE.RESOURCE) {
+    return [event.type, event.tagName, event.resourceUrl, event.message].join(
+      '|'
+    )
+  }
+
+  if (event.type === EARLY_ERROR_TYPE.JS) {
+    return [
+      event.type,
+      event.message,
+      event.filename,
+      event.lineno,
+      event.colno,
+      getStackTop(event.stack),
+    ].join('|')
+  }
+```
+
+`getErrorKey` 的返回值会作为 `keys: Map<string, EarlyErrorEvent>` 的 key。它决定“哪些错误算同一种错误”。
+
+`getStackTop` 只取堆栈第一行，避免同一错误因为后续调用栈细节不同而无法合并。
+
+资源错误 key 关注资源类型、资源地址和消息，因为资源错误通常由某个 URL 加载失败决定。JS 错误 key 关注消息、文件、行列号和堆栈顶部，因为这些字段能定位运行时错误位置。
+
+这个函数不读写队列状态；它只是把事件转换成稳定字符串。
+
+## getErrorKey：Promise 拒绝和浏览器报告的去重 key
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/getErrorKey.ts`
+
+```ts
+  if (event.type === EARLY_ERROR_TYPE.UNHANDLED_REJECTION) {
+    return [event.type, event.message, getStackTop(event.stack)].join('|')
+  }
+
+  return [event.type, event.reportType, event.reportUrl, event.message].join(
+    '|'
+  )
+}
+```
+
+Promise 拒绝没有文件行列号，所以用类型、消息和堆栈顶部。浏览器报告用 `reportType/reportUrl/message`，把同类报告合并到同一条事件上。
+
+边界行为：如果某些字段是 `undefined`，`join('|')` 仍会生成字符串。这样 key 生成不会因为字段缺失抛错，但字段越少，合并粒度会越粗。
+
+## createBaseEvent：创建事件公共字段和浏览器快照
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createBaseEvent.ts`
+
+```ts
+const createBaseEvent = () => {
+  const timestamp = Date.now()
+  const browser = isBrowser()
+
+  return {
+    timestamp,
+    pageUrl: browser ? window.location.href : '',
+    userAgent: browser ? window.navigator.userAgent : '',
+    viewport: getViewport(),
+    connection: getConnection(),
+    count: 1,
+    firstSeen: timestamp,
+    lastSeen: timestamp,
+  }
+}
+```
+
+`createBaseEvent` 创建每一种早期错误都需要的公共字段。它把“发生时间”和“浏览器环境快照”放到事件上，后续 JS 错误、资源错误、Promise 拒绝和浏览器报告都会展开这份对象。
+
+字段语义：
+
+- `timestamp`：当前事件创建时间。
+- `firstSeen`：这类错误第一次出现时间，初始等于 `timestamp`。
+- `lastSeen`：这类错误最近一次出现时间，初始也等于 `timestamp`；重复错误合并时只更新它。
+- `count`：同类错误累计次数，初始为 `1`。
+- `pageUrl/userAgent/viewport/connection`：浏览器快照，用于排查错误发生页面、设备视口和网络状态。
+
+边界行为：`isBrowser()` 为 `false` 时不读取 `window`，`pageUrl/userAgent` 返回空字符串，`viewport/connection` 返回 `undefined`。这样测试、SSR 或 Node 环境不会因为构造事件而抛错。
+
+## normalizeUnknownError：Error 和字符串 reason 的标准化
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/normalizeUnknownError.ts`
+
+```ts
+const normalizeUnknownError = (
+  value: unknown,
+  maxMessageLength = DEFAULT_EARLY_ERROR_MAX_MESSAGE_LENGTH,
+  maxStackLength = DEFAULT_EARLY_ERROR_MAX_STACK_LENGTH
+): NormalizedUnknownError => {
+  if (value instanceof Error) {
+    return {
+      name: value.name,
+      message: truncateText(value.message, maxMessageLength),
+      stack: truncateText(value.stack, maxStackLength),
+      reasonType: 'error',
+    }
+  }
+
+  if (typeof value === 'string') {
+    return {
+      message: truncateText(value, maxMessageLength),
+      reasonType: 'string',
+    }
+  }
+```
+
+`normalizeUnknownError` 用于把 `ErrorEvent.error` 和 `PromiseRejectionEvent.reason` 变成统一结构。这里的“unknown”很关键：Promise rejection 的 `reason` 可以是任意值，不保证是 `Error`。
+
+- `value instanceof Error`：保留 `name/message/stack`。`message` 和 `stack` 都经过 `truncateText`，避免超长错误对象撑大队列。
+- `typeof value === 'string'`：字符串本身就是可读消息，直接作为 `message`，再按 `maxMessageLength` 截断。
+- `reasonType` 标记来源类型，后端和排查工具可以区分“真实 Error”和“字符串 rejection”。
+
+这个函数不写队列状态，只返回标准化对象；真正事件结构由 `createEvents` 组装。
+
+## normalizeUnknownError：null、对象和基础类型的兜底标准化
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/core/normalizeUnknownError.ts`
+
+```ts
+  if (value === null) {
+    return {
+      message: 'null',
+      reasonType: 'null',
+    }
+  }
+
+  if (typeof value === 'object') {
+    return {
+      message: truncateText(safeStringify(value), maxMessageLength),
+      reasonType: 'object',
+    }
+  }
+
+  return {
+    message: truncateText(String(value), maxMessageLength),
+    reasonType: typeof value,
+  }
+}
+```
+
+这段处理非 Error、非字符串的情况，目标是“无论输入是什么，都返回可展示、可上报的 message”。
+
+- `null`：单独返回 `message: 'null'`，避免 `typeof null === 'object'` 被归到对象分支。
+- `object`：用 `safeStringify(value)` 安全序列化，再截断。循环引用或不可直接 JSON 序列化的对象不会让错误捕获逻辑二次抛错。
+- 其他基础类型：用 `String(value)` 转成消息，`reasonType` 使用 `typeof value`，覆盖 `number/boolean/symbol/undefined/bigint`。
+
+返回对象始终包含 `message` 和 `reasonType`。调用方不需要再判断 reason 是否可读。
+
+## createEvents：区分资源加载错误和 JS ErrorEvent
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createEvents.ts`
+
+```ts
+const isResourceTarget = (
+  target: EventTarget | null
+): target is EventTarget & ResourceTarget => {
+  return Boolean(target && 'tagName' in target)
+}
+
+const isWindowTarget = (target: EventTarget | null): boolean => {
+  return isBrowser() && target === window
+}
+
+const isErrorEvent = (event: ErrorEvent | Event): event is ErrorEvent => {
+  return (
+    isBrowser() &&
+    typeof ErrorEvent !== 'undefined' &&
+    event instanceof ErrorEvent
+  )
+}
+```
+
+这三个判断服务于同一个问题：浏览器的 `error` 事件既可能表示 JS 运行时异常，也可能表示资源加载失败。
+
+- `isResourceTarget`：判断 `event.target` 是否像资源元素。这里只看有没有 `tagName`，因为资源错误通常来自 `<script>`、`<img>`、`<link>` 等元素。
+- `isWindowTarget`：排除 window 自身。它先走 `isBrowser()`，避免非浏览器环境直接读取 `window`。
+- `isErrorEvent`：判断事件是不是 JS 运行时错误。它先确认 `ErrorEvent` 构造器存在，再执行 `instanceof`，兼容没有该构造器的环境。
+
+这些 helper 只做类型收窄，不创建事件，也不写队列状态。
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createEvents.ts`
+
+```ts
+export const createErrorEvent = (
+  event: ErrorEvent | Event
+): EarlyJSErrorEvent | EarlyResourceErrorEvent | null => {
+  const target = event.target
+
+  if (isResourceTarget(target) && !isWindowTarget(target)) {
+    const tagName = target.tagName
+    const resourceUrl = target.src ?? target.href
+
+    return {
+      ...createBaseEvent(),
+      type: EARLY_ERROR_TYPE.RESOURCE,
+      message: `Failed to load ${String(tagName ?? 'resource').toLowerCase()}: ${resourceUrl ?? ''}`,
+      tagName,
+      resourceUrl,
+      outerHTML: target.outerHTML,
+    }
+  }
+```
+
+这里先走资源错误分支，因为资源加载失败也会触发 `error` 事件，但它不是 JS `ErrorEvent` 的业务语义。
+
+命中资源分支时，事件会带上：
+
+- `tagName`：失败元素类型。
+- `resourceUrl`：`src` 或 `href`。
+- `outerHTML`：失败元素快照，后续入队前会被 `sanitizeEvent` 截断。
+
+返回值是 `EarlyResourceErrorEvent`。如果 `target` 不像资源元素，代码继续往 JS 错误分支走。
+
+## createEvents：从 ErrorEvent 创建 JS 错误事件
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createEvents.ts`
+
+```ts
+  if (isErrorEvent(event)) {
+    const normalizedError = normalizeUnknownError(event.error)
+
+    return {
+      ...createBaseEvent(),
+      type: EARLY_ERROR_TYPE.JS,
+      message: event.message || normalizedError.message,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+      stack: normalizedError.stack,
+    }
+  }
+
+  return null
+}
+```
+
+不是资源错误时，再通过 `isErrorEvent(event)` 判断是否是浏览器 JS 错误。
+
+这段会读取两个来源：
+
+- 浏览器事件本身的 `message/filename/lineno/colno`，这些字段定位到报错文件和行列。
+- `event.error` 标准化后的 `stack`，因为原始 error 对象可能不存在，也可能不是标准 Error。
+
+`message` 优先用 `event.message`；如果为空，再用 `normalizeUnknownError(event.error).message` 兜底。
+
+如果既不是资源错误，也不是 `ErrorEvent`，返回 `null`，调用方不应该入队。
+
+## createEvents：Promise rejection reason 标准化
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createEvents.ts`
+
+```ts
+export const createUnhandledRejectionEvent = (
+  event: PromiseRejectionEvent
+): EarlyUnhandledRejectionEvent => {
+  const normalizedReason = normalizeUnknownError(event.reason)
+
+  return {
+    ...createBaseEvent(),
+    type: EARLY_ERROR_TYPE.UNHANDLED_REJECTION,
+    message: normalizedReason.message,
+    reasonType: normalizedReason.reasonType,
+    stack: normalizedReason.stack,
+  }
+}
+```
+
+Promise 拒绝的 `reason` 可以是任意类型，所以先走 `normalizeUnknownError(event.reason)`。
+
+输出事件只保留标准化后的：
+
+- `message`：可读错误信息。
+- `reasonType`：原始 reason 的类型。
+- `stack`：如果能拿到 Error stack 就保留。
+
+这样队列不会直接持有不可控对象，也不会因为循环引用 reason 影响后续序列化。
+
+## createEvents：Reporting API report 转成浏览器报告事件
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/createEvents.ts`
+
+```ts
+export const createBrowserReportEvent = (
+  report: BrowserReportLike
+): EarlyBrowserReportEvent => {
+  const reportType = report.type
+  const body = report.body?.toJSON?.() ?? report.body
+
+  return {
+    ...createBaseEvent(),
+    type: EARLY_ERROR_TYPE.BROWSER_REPORT,
+    message: reportType ? `Browser report: ${reportType}` : 'Browser report',
+    reportType,
+    reportUrl: report.url,
+    body,
+  }
+}
+```
+
+Reporting API 的 report 不是 JS 异常，而是浏览器平台报告，例如 CSP、弃用 API、浏览器干预等。
+
+字段处理：
+
+- `reportType` 来自 `report.type`，用于区分报告类别。
+- `message` 根据 `reportType` 生成；没有类型时兜底为 `Browser report`。
+- `body` 可能提供 `toJSON`，这里优先转成普通对象；没有 `toJSON` 时保留原始 body。
+- `reportUrl` 后续入队时会被 `sanitizeEvent` 过滤敏感 query。
+
+这段只创建事件对象，不安装 `ReportingObserver`。监听安装在 copy-only script 里完成。
+
+## enrichEarlyErrors：flush 时补齐业务上下文和发送元信息
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/browser/enrichEarlyErrors.ts`
+
+```ts
+const enrichEarlyErrors = (
+  events: EarlyErrorEvent[],
+  context: EarlyErrorContext = {},
+  reason: EARLY_ERROR_FLUSH_REASON = EARLY_ERROR_FLUSH_REASON.INIT
+): EnrichedEarlyErrorEvent[] => {
+  const flushedAt = Date.now()
+  const route = isBrowser() ? window.location.pathname : undefined
+
+  return events.map((event) => ({
+    ...event,
+    ...context,
+    route: context.route ?? route,
+    userId: context.userId ?? 'anonymous',
+    flushedAt,
+    flushReason: reason,
+    source: 'early_error_queue',
+  }))
+}
+```
+
+这段把“早期捕获时还不知道的信息”补回事件。早期错误发生时，完整 SDK 可能还没初始化，所以当时拿不到 appId、release、userId、sessionId 等业务上下文。
+
+数据合并顺序是：
+
+1. `...event`：保留原始早期错误字段。
+2. `...context`：把 SDK 初始化后拿到的业务上下文合并进去，同名字段由 context 覆盖。
+3. `route: context.route ?? route`：调用方传了 route 就用调用方的；没传且在浏览器环境中，就用当前 `window.location.pathname`。
+4. `userId: context.userId ?? 'anonymous'`：没有用户信息时给后端稳定默认值。
+5. `flushedAt/flushReason/source`：标记这批事件何时、为什么、从哪个模块被发送。
+
+返回的是新数组，原 `events` 数组不会被清空；清空发生在 `EarlyErrorQueue.createPayload` 调用 `take()` 时。
+
+## script.tsx：copy-only 脚本的自包含配置和状态
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/script.tsx`
+
+```ts
+;(function () {
+  var GLOBAL_NAME = '__EARLY_ERROR_QUEUE__'
+  var MAX_COUNT = 50
+  var MAX_BYTES = 48 * 1024
+  var MAX_AGE = 60 * 1000
+  var MAX_STACK = 8 * 1024
+  var MAX_MESSAGE = 1000
+  var MAX_HTML = 300
+  var SENSITIVE_KEYS =
+    /token|ticket|sid|session|password|passwd|phone|mobile|email|idcard|identity|search|keyword|query/i
+  var installedAt = Date.now ? Date.now() : +new Date()
+  var queue = []
+  var dropped = 0
+  var bytes = 0
+  var keys = {}
+  var reportingObserver = null
+```
+
+`script.tsx` 是 copy-only inline bootstrap，不是模块入口，所以不能 import `isBrowser/estimateBytes/safeStringify` 等包内工具。它最终要被复制到 HTML head 里，越早执行越能捕获首屏错误。
+
+它用 IIFE 创建私有作用域，避免把内部状态直接挂到全局。这里的数据结构和 TS class 队列对应：
+
+- `GLOBAL_NAME`：全局协议名，SDK 后续通过 `window.__EARLY_ERROR_QUEUE__` 接管。
+- `MAX_*`：copy-only 版本内置限制，不能依赖 TS 模块里的默认常量。
+- `installedAt`：脚本安装时间，用来限制早期捕获窗口。
+- `queue`：事件数组。
+- `keys`：普通对象形式的去重索引，比 `Map` 更适合复制到老环境脚本里。
+- `bytes/dropped`：当前体积和容量裁剪统计。
+- `reportingObserver`：用于后续 `stop()` 断开 Reporting API 监听。
+
+## script.tsx：push 的早期窗口过滤和原地字段清洗
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/script.tsx`
+
+```ts
+  function push(event) {
+    try {
+      if (now() - installedAt > MAX_AGE) return
+
+      event.message = safeString(event.message).slice(0, MAX_MESSAGE)
+      event.pageUrl = sanitizeUrl(event.pageUrl || location.href)
+      event.filename = sanitizeUrl(event.filename)
+      event.resourceUrl = sanitizeUrl(event.resourceUrl)
+      event.reportUrl = sanitizeUrl(event.reportUrl)
+      event.stack = event.stack
+        ? String(event.stack).slice(0, MAX_STACK)
+        : undefined
+      event.outerHTML = event.outerHTML
+        ? String(event.outerHTML).slice(0, MAX_HTML)
+        : undefined
+```
+
+inline 版本的 `push` 和 TS class 的 `push` 语义相近，但实现更克制，因为它要复制到业务页面里：
+
+- `now() - installedAt > MAX_AGE`：超过早期窗口直接返回，不再捕获后续事件。
+- `event.message/pageUrl/filename/resourceUrl/reportUrl/stack/outerHTML`：直接在原对象上改写，完成截断和 URL 脱敏。
+- `try/catch` 包住整个入队流程：任何清洗或入队异常都会被吞掉，避免早期错误捕获脚本本身影响页面。
+
+这里的“清洗”同样指字段处理：消息截断、URL query 脱敏、堆栈和 HTML 快照限制长度。和 TS 模块不同，inline 版本为了减少代码体积直接修改传入的 `event` 对象。
+
+## script.tsx：去重合并、首次入队和容量裁剪
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/script.tsx`
+
+```ts
+      var key = getKey(event)
+      var existing = keys[key]
+
+      if (existing) {
+        existing.count += 1
+        existing.lastSeen = event.timestamp || now()
+        recalculateBytes()
+        return
+      }
+
+      queue.push(event)
+      keys[key] = event
+      trimQueue()
+    } catch (_) {}
+  }
+```
+
+inline 版本的状态变化和 TS 队列一致：
+
+- `getKey(event)`：把事件转换成去重 key。
+- 命中 `keys[key]`：只更新已有事件的 `count/lastSeen`，不增加数组长度。
+- 未命中：事件进入 `queue`，同时写入 `keys`。
+- `trimQueue()`：根据 `MAX_COUNT/MAX_BYTES` 从队头裁剪旧事件，并更新 `bytes/dropped`。
+
+`catch (_) {}` 是故意的：早期错误捕获脚本不能成为页面新的错误来源。失败时不会向外抛错，也不会阻断业务页面继续执行。
+
+## script.tsx：暴露全局 push 协议并补齐基础字段
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/script.tsx`
+
+```ts
+  window[GLOBAL_NAME] = {
+    push: function (event) {
+      var base = createBase()
+      push({
+        timestamp: base.timestamp,
+        pageUrl: base.pageUrl,
+        userAgent: base.userAgent,
+        viewport: base.viewport,
+        connection: base.connection,
+        count: base.count,
+        firstSeen: base.firstSeen,
+        lastSeen: base.lastSeen,
+        type: event.type || 'js_error',
+        message: event.message || 'Unknown early error',
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        stack: event.stack,
+        tagName: event.tagName,
+        resourceUrl: event.resourceUrl || event.url,
+        outerHTML: event.outerHTML,
+        reasonType: event.reasonType,
+        reportType: event.reportType,
+        reportUrl: event.reportUrl,
+        body: event.body,
+        extra: event.extra,
+      })
+    },
+```
+
+暴露的 `window[GLOBAL_NAME].push` 是给业务或其他早期脚本手动塞错误用的协议。它接收 `Partial<EarlyErrorEvent>` 风格的对象，再用 `createBase()` 补齐基础字段。
+
+字段映射分成两类：
+
+- 基础字段：`timestamp/pageUrl/userAgent/viewport/connection/count/firstSeen/lastSeen` 来自 `createBase()`，保证手动 push 的事件也有完整公共字段。
+- 调用方字段：`type/message/filename/lineno/.../extra` 来自传入的 `event`。
+
+边界行为：
+
+- `type` 没传时兜底为 `js_error`。
+- `message` 没传时兜底为 `Unknown early error`。
+- `resourceUrl: event.resourceUrl || event.url` 是兼容写法，允许调用方用更短的 `url`。
+
+## script.tsx：take/peek/stop/getStats 全局接管协议
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/script.tsx`
+
+```ts
+    take: function () {
+      var copy = queue.slice()
+      queue.length = 0
+      keys = {}
+      bytes = 0
+      return copy
+    },
+    peek: function () {
+      return queue.slice()
+    },
+    stop: stop,
+    getStats: function () {
+      return {
+        count: queue.length,
+        bytes: bytes,
+        dropped: dropped,
+      }
+    },
+  }
+
+  window.addEventListener('error', onError, true)
+  window.addEventListener('unhandledrejection', onUnhandledRejection)
+  installReportingObserver()
+})()
+```
+
+全局协议和 TS 接管函数配合：
+
+- `take`：被 `takeGlobalEarlyErrors` 调用。它返回 `queue.slice()` 的副本，然后清空 `queue/keys/bytes`，语义是“交出早期缓存”。
+- `peek`：只返回副本，不清空，适合调试。
+- `stop`：移除 `error/unhandledrejection` 监听，并断开 `ReportingObserver`，语义是“完整 SDK 已接管，bootstrap 停止继续收集”。
+- `getStats`：返回当前 `count/bytes/dropped`，用于调试或接管前观测。
+
+最后三行是真正安装监听的地方。`error` 使用 capture 阶段，是为了捕获资源加载失败这类不会冒泡到 window bubble 阶段的事件。
+
+## interface.ts：公共默认值和队列配置协议
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/interface.ts`
+
+```ts
+export const DEFAULT_EARLY_ERROR_MAX_COUNT = 50
+export const DEFAULT_EARLY_ERROR_MAX_BYTES = 48 * 1024
+export const DEFAULT_EARLY_ERROR_MAX_AGE = 60 * 1000
+export const DEFAULT_EARLY_ERROR_MAX_STACK_LENGTH = 8 * 1024
+export const DEFAULT_EARLY_ERROR_MAX_MESSAGE_LENGTH = 1000
+export const DEFAULT_EARLY_ERROR_MAX_HTML_LENGTH = 300
+export const DEFAULT_EARLY_ERROR_SENSITIVE_KEYS =
+  /token|ticket|sid|session|password|passwd|phone|mobile|email|idcard|identity|search|keyword|query/i
+
+export interface EarlyErrorQueueOptions {
+  maxCount?: number
+  maxBytes?: number
+  maxAge?: number
+  maxStackLength?: number
+  maxMessageLength?: number
+  maxHtmlLength?: number
+  sensitiveKeys?: RegExp
+  beforeEnqueue?: (event: EarlyErrorEvent) => EarlyErrorEvent | false
+}
+```
+
+默认值放在 `interface.ts` 是因为它们是公共协议的一部分，调用方可以 import 后用于展示、覆盖或保持业务配置一致。
+
+这些默认值分别控制：
+
+- `MAX_COUNT/MAX_BYTES/MAX_AGE`：限制队列条数、估算体积和接收窗口。
+- `MAX_STACK/MAX_MESSAGE/MAX_HTML`：限制单条事件字段长度。
+- `SENSITIVE_KEYS`：定义默认需要脱敏的 query key。
+
+`EarlyErrorQueueOptions` 是调用方传入配置，所以放在公共协议里。完整运行时配置对象没放这里，因为它只在 `EarlyErrorQueue` 实例内部使用；暴露内部中间结构会增加 API 面。
+
+## interface.ts：copy-only script 和 TS 接管层的全局队列协议
+
+源码位置：`packages/element-utils/src/earlyErrorQueue/interface.ts`
+
+```ts
+export interface EarlyErrorGlobalQueue {
+  push: (event: Partial<EarlyErrorEvent>) => void
+  take: () => EarlyErrorEvent[]
+  peek?: () => EarlyErrorEvent[]
+  stop?: () => void
+  getStats?: () => EarlyErrorQueueStats
+}
+
+export interface TakeGlobalEarlyErrorsOptions {
+  globalName?: string
+  stopAfterTake?: boolean
+}
+```
+
+这两个类型描述的是 TS 模块和 copy-only script 之间的边界：
+
+- `EarlyErrorGlobalQueue` 必须公开，因为 `script.tsx` 在 `window` 上暴露的对象需要被 `takeGlobalEarlyErrors` 读取。
+- `push` 接收 `Partial<EarlyErrorEvent>`，因为 inline 阶段可能只能拿到部分字段。
+- `peek/stop/getStats` 是可选能力，接管逻辑只强依赖 `take`。
+- `TakeGlobalEarlyErrorsOptions` 允许测试或业务使用自定义全局名，也允许读取后不停止监听。
+
+这里的接口不是 `EarlyErrorQueue` class 的 public method 列表；它只描述 `window.__EARLY_ERROR_QUEUE__` 这个跨脚本协议。
+
+## 关键不变量
+
+- `queue` 和 `keys` 必须同步：新增事件时一起写，裁剪或清空时一起删。
+- `bytes` 只通过 `recalculateBytes` 或清空逻辑更新，避免多个分支各自手动维护。
+- `dropped` 只统计容量裁剪导致的旧事件丢弃，不统计业务过滤或超时拒绝。
+- `createPayload` 和 `flush` 都会消费队列；调用前如果只是查看，应使用 `peek`。
+- `script.tsx` 是复制使用的 inline script，不能因为 TS 模块已经有工具函数就引入 import。
