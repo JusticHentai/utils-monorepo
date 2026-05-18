@@ -1,1 +1,0 @@
-import{r as t}from"./iframe-DzFAswoa.js";const s=e=>{const n=t.useRef(e);n.current=t.useMemo(()=>e,[e]);const r=t.useRef(void 0);return r.current||(r.current=function(...u){return n.current.apply(this,u)}),r.current};export{s as u};

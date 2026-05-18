@@ -1,0 +1,1 @@
+const c=r=>{try{return String(r)}catch{return Object.prototype.toString.call(r)}},s=r=>{const n=[];try{return JSON.stringify(r,(e,t)=>typeof t=="bigint"?t.toString():typeof t!="object"||t===null?t:n.includes(t)?"[Circular]":(n.push(t),t))??c(r)}catch{return c(r)}};export{s};

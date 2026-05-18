@@ -1,0 +1,1 @@
+import{i as r}from"./index-DL3VI9dp.js";import{s as o}from"./index-DVLjHT2G.js";import{s}from"./index-fWKVhAfw.js";const f=t=>{const e=r(t)?t:o(t);return s()?new TextEncoder().encode(e).length:e.length};export{f as e};
